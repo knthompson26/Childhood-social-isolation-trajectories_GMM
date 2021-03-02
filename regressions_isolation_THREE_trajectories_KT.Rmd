@@ -61,7 +61,7 @@ library(dplyr) #conflicts with tidyverse for e.g. rename and row_number
 
 ```{r source the data file path}
 #source raw data directory: data_raw and data included
-source("../../isolation_trajectories_data_path.R")
+source("../../../isolation_trajectories_data_path.R")
 ```
 
 ```{r read in prepped regression data and check variable names, include=FALSE}
@@ -280,7 +280,6 @@ theme.antecedent <- theme(panel.grid.major.x = element_line(size = 0.5,
         strip.text.y = element_blank())
 ```
 
-
 # Test for multicollinearity 
 Create correlation matrix to look for variables that are highly correlated.
 Here parental antisocial behaviour and parental alcoholism have a correlation of 0.94 (Pearson). *Parental alcoholism has been excluded.*
@@ -335,6 +334,7 @@ ggsave(
   height = 15
 )
 ```
+
 # Antecedent regression analyses
 
 Decided that 40 variables is too many to include. Variables that have been dropped for the 3 class analysis (those that aren't adding anything):

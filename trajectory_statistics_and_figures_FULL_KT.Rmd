@@ -44,7 +44,7 @@ palette6 <- c("#78D9C5","#F5BE5E","#EEB6E9","#DBDB73","#FFED98","#BFD2EB")
  
 ```{r source the data file path}
 #source raw data directory: data_raw and data included
-source("../isolation_trajectories_data_path.R")
+source("../../../isolation_trajectories_data_path.R")
 ```
 
 ```{r Mplus packages}
