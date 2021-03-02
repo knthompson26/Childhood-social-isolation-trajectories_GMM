@@ -53,7 +53,7 @@ library(tidyverse)
 Source the data file path
 ```{r source data file path}
 #source raw data directory: data_raw and data included
-source("../isolation_trajectories_data_path.R")
+source("../../../isolation_trajectories_data_path.R")
 ```
 
 # Read in data
