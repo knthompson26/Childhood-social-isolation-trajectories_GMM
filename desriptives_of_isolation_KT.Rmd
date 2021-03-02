@@ -1,0 +1,1201 @@
+---
+title: "Descriptives of E-risk social isolation"
+author: "Katherine N Thompson"
+date: "13th Jan 2021"
+output:  
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+    number_sections: false
+    highlight: monochrome
+    theme: cerulean
+code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,
+                      comment = NA,
+                      prompt = FALSE,
+                      cache = FALSE,
+                      message = FALSE,
+                      warning = FALSE)
+
+
+options(bitmapType = 'quartz') # to render fonts better
+```
+
+```{r Clear global environment}
+remove(list = ls())
+```
+
+```{r Current date}
+date = Sys.Date()
+```
+
+```{r palletes}
+palette2 <- c("#78D9C5","#F5BE5E")
+
+palette3 <- c("#78D9C5","#F5BE5E","#EEB6E9")
+
+palette4 <- c("#78D9C5","#F5BE5E","#EEB6E9","#DBDB73")
+
+palette5 <- c("#78D9C5","#F5BE5E","#EEB6E9","#DBDB73","#FFED98")
+
+palette6 <- c("#78D9C5","#F5BE5E","#EEB6E9","#DBDB73","#FFED98","#BFD2EB")
+```
+
+```{r Load packages}
+library(knitr)
+library(summarytools)
+library(psych)
+library(skimr)
+library(ggpubr)
+library(ggplot2)
+library(tidyr)
+library(gplots)
+library(Rmisc)
+library(tidyverse)
+```
+
+```{r source the data file path}
+#source raw data directory: data_raw and data included
+source("../isolation_trajectories_data_path.R")
+```
+
+```{r read in data and check variable names, include=FALSE}
+dat <- readRDS(file = paste0(data_path, "preprocessed_isolation_trajectories_Jan2021_full_sample.rds"))
+colnames(dat)
+```
+
+```{r prepare item lists}
+#All lists for isolation and grouping variables
+#Only using elder twin variables as each twin is included in the data set as an individual. Without doing twin analyses, the elder and younger variables show the same information.
+combined_social_isolation <- c("isolation_combined_05",
+                              "isolation_combined_07",
+                              "isolation_combined_10",
+                              "isolation_combined_12")
+
+teacher_social_isolation <- c("isolation_teacher_05",
+                              "isolation_teacher_07",
+                              "isolation_teacher_10",
+                              "isolation_teacher_12")
+
+mother_social_isolation <- c("isolation_mother_05",
+                              "isolation_mother_07",
+                              "isolation_mother_10",
+                              "isolation_mother_12")
+```
+
+```{r Half-violin plot}
+#source the half/flat function for the violin plot
+source("https://raw.githubusercontent.com/datavizpyr/data/master/half_flat_violinplot.R")
+
+#theme for ggplotting
+theme_personal <-  theme(
+    text = element_text(color = "black"),
+    axis.title = element_text(color = "black"),
+    axis.text = element_text(color = "black"),
+    axis.title.y = element_blank(),
+    legend.background = element_blank(),
+    legend.box.background = element_blank(),
+    panel.background = element_blank(),
+    panel.grid.minor.x = element_blank(),
+    panel.grid.major.x = element_line(
+      colour = "gray",
+      linetype = "dashed",
+      size = 0.2
+      ),
+    axis.ticks = element_blank()
+    )
+```
+
+```{r create ordered SES variable for the Kruskal-Wallis test}
+dat <- dat %>%
+  mutate(
+    SES_ordered = 
+      ordered(SES,
+              levels = c("Low",
+                         "Middle",
+                         "High")
+      )
+  )
+```
+
+```{r convert data to long format, include=FALSE}
+#convert to long format 
+dat_long<- dat %>%
+  gather(
+    key = "time_point_raw",
+    value = "social_isolation",
+      all_of(combined_social_isolation)) %>%
+  select(
+    id,
+    sex,
+    zygosity_binary,
+    SES,
+    SES_ordered,
+    time_point_raw,
+    social_isolation)
+
+head(dat_long)
+
+#create variable that has just the number for the time point
+dat_long <- dat_long %>%
+  mutate(time_point =
+  recode_factor(time_point_raw, 
+                "isolation_combined_05" = "5", 
+                "isolation_combined_07" = "7", 
+                "isolation_combined_10" = "10", 
+                "isolation_combined_12" = "12")) %>%
+  select(
+    id,
+    sex,
+    zygosity_binary,
+    SES,
+    SES_ordered,
+    time_point,
+    social_isolation)
+
+head(dat_long)
+```
+
+
+**Please note** that in all the following analyses I haven't corrected for multiple testing, nor have I corrected for the twin sample using the Huber-White correction or randomly sampling one individual from each twin-pair
+
+
+# Means across all time points {.tabset .tabset-fade}
+
+```{r means across time plot}
+#summarize the data fir the plot 
+dat_summary.isolation <- summarySE(dat_long, 
+                            measurevar = "social_isolation", 
+                            groupvars = c("time_point"),
+                            na.rm=TRUE)
+#create plot
+diff.plot <- ggplot(dat_summary.isolation, 
+       aes(x = time_point, 
+           y = social_isolation,
+           group = 1)) + 
+    geom_errorbar(aes(ymin = social_isolation - se, 
+                      ymax = social_isolation + se), 
+                  colour = "black", 
+                  width = 0.1) +
+    geom_line(colour = "red") +
+    geom_point(size = 3, 
+               shape = 21, 
+               fill = "white") + # 21 is filled circle
+    xlab("Time point") +
+    ylab("Social isolation") +
+    ggtitle("Average differences in social isolation at time point 5, 7, 10 and 12") +
+    expand_limits(y = 0) +                     
+    scale_y_continuous(expand = c(0.1,0.1),
+                     limits = c(0,12),
+                     breaks = seq(0, 12, 2)) +
+  theme_bw()
+diff.plot
+
+#create scaled plot
+diff.plot.scaled <- diff.plot+ 
+  scale_y_continuous(expand = c(0.1,0.1),
+                     limits = c(0,2),
+                     breaks = seq(0, 2, 0.25)) +
+   ggtitle("Scaled average differences in social isolation at time point 5, 7, 10 and 12")
+diff.plot.scaled
+```
+
+## Combined report
+```{r means for social isolation combined}
+descr(x = dat[,combined_social_isolation], 
+      headings = FALSE,
+      stats =  c("mean", "sd", "min", "med", "max", "skewness", "kurtosis", "n.valid", "pct.valid")) %>%
+  print(method = "render")
+```
+
+## Mother report
+```{r means for social isolation mother report}
+descr(x = dat[,mother_social_isolation], 
+      headings = FALSE,
+      stats =  c("mean", "sd", "min", "med", "max", "skewness", "kurtosis", "n.valid", "pct.valid")) %>%
+  print(method = "render") 
+```
+
+## Teacher report
+```{r means for social isolation teacher report}
+descr(x = dat[,teacher_social_isolation], 
+      headings = FALSE,
+      stats =  c("mean", "sd", "min", "med", "max", "skewness", "kurtosis", "n.valid", "pct.valid")) %>%
+  print(method = "render")
+```
+
+**Comments:**
+
+* It seems like for each time point mean social isolation values are increasing across time. 
+* The mother report is slightly higher than the parent report of social isolation at each time point. 
+* There seems to be more of a "jump" between age 7 and age 10, with an increase in ~0.1
+* For mother report, isolation dips slightly at age 12, whereas in combined and teacher report is keeps on rising. 
+
+*****
+
+# Sex differences 
+
+## Means {.tabset .tabset-fade}
+### Combined report
+```{r social isolation means at all time points by sex for combined report}
+stby(data = dat[,combined_social_isolation], 
+     INDICES = dat$sex,
+     FUN = descr,
+     stats = c("mean", "sd", "min", "med", "max"), 
+     transpose = FALSE,
+     simplify = TRUE) %>%
+  print(method = "render")
+```
+
+### Mother report
+```{r social isolation means at all time points by sex for mother report}
+stby(data = dat[,mother_social_isolation], 
+     INDICES = dat$sex,
+     FUN = descr,
+     stats = c("mean", "sd", "min", "med", "max"), 
+     transpose = FALSE,
+     simplify = TRUE) %>%
+  print(method = "render")
+```
+
+### Teacher report
+```{r social isolation means at all time points by sex for teacher report}
+stby(data = dat[,teacher_social_isolation], 
+     INDICES = dat$sex,
+     FUN = descr,
+     stats = c("mean", "sd", "min", "med", "max"), 
+     transpose = FALSE,
+     simplify = TRUE) %>%
+  print(method = "render")
+```
+
+**Comments:**
+
+* The male estimates of social isolation at all time points are higher than the female estimates, for combined, parent and teacher report.
+* When split by sex, the jump of ~0.1 from age 7 to age 10 is even more clear, particularly in females where ages 5 and 7, and 10 and 12 have the same estimates (combined report). 
+* In mother report, female isolation seems to drop off slightly more than male isolation at age 5. 
+
+## Plots
+
+```{r plot means for sex diffs using ggplot}
+#summarize the data fir the plot 
+dat_summary.sex.isolation <- summarySE(dat_long, 
+                            measurevar = "social_isolation", 
+                            groupvars = c("sex","time_point"),
+                            na.rm=TRUE)
+#create plot
+sex.diff.plot <- ggplot(dat_summary.sex.isolation, 
+       aes(x = time_point, 
+           y = social_isolation, 
+           colour = sex, 
+           group = sex)) + 
+    geom_errorbar(aes(ymin = social_isolation - se, 
+                      ymax = social_isolation + se), 
+                  colour = "black", 
+                  width = 0.1, 
+                  position = position_dodge(width = 0.3)) +
+    geom_line(position = position_dodge(width = 0.3)) +
+    geom_point(position = position_dodge(width = 0.3), 
+               size = 3, 
+               shape = 21, 
+               fill = "white") + # 21 is filled circle
+    xlab("Time point") +
+    ylab("Social isolation") +
+    scale_colour_hue(name = "Sex",   
+                     breaks = c("Male", "Female"),
+                     labels = c("Male", "Female"),
+                     l = 40) +                  
+    ggtitle("Average sex differences in social isolation at time point 5, 7, 10 and 12") +
+    expand_limits(y = 0) +                     
+    scale_y_continuous(expand = c(0.1,0.1),
+                     limits = c(0,12),
+                     breaks = seq(0, 12, 2)) +
+  theme_bw()
+sex.diff.plot
+
+#create scaled plot
+sex.diff.plot.scaled <- sex.diff.plot + 
+  scale_y_continuous(expand = c(0.1,0.1),
+                     limits = c(0,3),
+                     breaks = seq(0, 3, 0.5)) +
+   ggtitle("Scaled average sex differences in social isolation at time point 5, 7, 10 and 12")
+sex.diff.plot.scaled
+```
+
+
+## Tests {.tabset .tabset-fade} 
+
+For the violin plots:
+
+* Time point 5: Did not remove any rows no missing data.
+* Time point 7: Removed 54 rows 54 individuals had missing data.
+* Time point 10: Removed 94 rows 94 individuals had missing data.
+* Time point 12: Removed 87 rows 87 individuals had missing data.
+
+### 5 years 
+#### T-test
+```{r t-test sex differences in isolation at 5 years}
+#sex differences at 5 years using t-test
+t.test(
+  isolation_combined_05 ~ sex,
+  data = dat,
+  alternative = "two.sided",
+  conf.level = 0.95) 
+```
+
+#### Wilcoxon
+```{r wilcoxon sex differences in isolation at 5 years}
+wilcox.test(
+  isolation_combined_05 ~ sex,
+  data = dat,
+  alternative = "two.sided",
+  conf.level = 0.95
+)
+```
+
+```{r plotmeans for sex diffs at age 5}
+#plot the means for SES
+plotmeans(isolation_combined_05 ~ sex, 
+          data = dat, 
+          main="Means of social isolation at age 5, stratified by sex", 
+          ylab = "Social isoaltion at age 5", 
+          xlab = "Sex")
+```
+
+```{r boxplot for sex diffs at age 5, include=FALSE}
+ggplot(dat, 
+       aes(sex, isolation_combined_05)) +
+       geom_boxplot(outlier.shape=16,
+             outlier.size=2, 
+             notch=FALSE,
+         aes(col = sex)) +
+       labs(title = "Boxplot of social isolation in males and females at age 5",
+            x = "Sex",
+            y = "Social isolation") +
+  scale_color_manual(
+    values = palette2) +
+  theme_personal
+```
+
+```{r violin plot for sex diffs at age 5}
+dat %>%
+  ggplot(
+    mapping = aes(
+    x = sex,
+    y = isolation_combined_05,
+    fill = sex)) +
+  geom_hline(yintercept = 5, linetype = "dashed", color = "gray") +
+  geom_hline(yintercept = 10, linetype = "dashed", color = "gray") +
+  geom_hline(yintercept = 15, linetype = "dashed", color = "gray") +
+  geom_flat_violin(
+    position = position_nudge(x = .2, y = 0),
+    trim = FALSE,
+    alpha = 0.5
+    ) +
+  geom_point(
+    aes(
+      y = isolation_combined_05,
+      color = sex),
+    position = position_jitter(width = .15),
+    size = .5,
+    alpha = 0.8) +
+ stat_summary(fun = mean,
+              fun.min = function(x) mean(x)* sd(x),
+              fun.max = function(x) mean(x) + sd(x),
+              geom = "pointrange"
+              ) +
+  labs(
+    title = "Social isolation in males and females at age 5",
+    y = "Social isolation",
+    fill = "Sex") +
+  theme_personal +
+  theme(
+    axis.text.y = element_blank()
+  ) +
+  scale_fill_manual(
+    values = palette2,
+    breaks = c("Male", "Female")
+) +
+  scale_alpha(guide = 'none') +
+  scale_size(guide = 'none') +
+  scale_color_manual(
+    values = palette2,
+    breaks = c("Male", "Female"),
+    guide = "none") +
+  coord_flip()
+```
+
+**Comments:**
+
+* At age 5, males on average had higher social isolation levels compared to females 
+* Significant t-test but non-significant Wilcoxon test 
+ 
+### 7 years 
+
+#### T-test
+```{r t-test sex differences in isolation at 7 years}
+#sex differences at 7 years using t-test
+t.test(
+  isolation_combined_07 ~ sex,
+  data = dat,
+  alternative = "two.sided",
+  conf.level = 0.95)
+```
+
+#### Wilcoxon
+```{r wilcoxon sex differences in isolation at 7 years}
+wilcox.test(
+  isolation_combined_07 ~ sex,
+  data = dat,
+  alternative = "two.sided",
+  conf.level = 0.95
+)
+```
+
+```{r plotmeans for sex diffs at age 7}
+#plot the means for SES
+plotmeans(isolation_combined_07 ~ sex, 
+          data = dat, 
+          main="Means of social isolation at age 7, stratified by sex", 
+          ylab = "Social isoaltion at age 7", 
+          xlab = "Sex")
+
+```
+
+
+```{r boxplot for sex diffs at age 7, include=FALSE}
+ggplot(dat, 
+       aes(sex, isolation_combined_07)) +
+       geom_boxplot(outlier.shape=16,
+             outlier.size=2, 
+             notch=FALSE,
+         aes(col = sex)) +
+       labs(title = "Boxplot of social isolation in males and females at age 7",
+            x = "Sex",
+            y = "Social isolation") +
+  scale_color_manual(
+    values = palette2) +
+  theme_personal
+```
+
+```{r violin plot for sex diffs at age 7}
+dat %>%
+  ggplot(
+    mapping = aes(
+    x = sex,
+    y = isolation_combined_07,
+    fill = sex)) +
+  geom_hline(yintercept = 5, linetype = "dashed", color = "gray") +
+  geom_hline(yintercept = 10, linetype = "dashed", color = "gray") +
+  geom_hline(yintercept = 15, linetype = "dashed", color = "gray") +
+  geom_flat_violin(
+    position = position_nudge(x = .2, y = 0),
+    trim = FALSE,
+    alpha = 0.5
+    ) +
+  geom_point(
+    aes(
+      y = isolation_combined_05,
+      color = sex),
+    position = position_jitter(width = .15),
+    size = .5,
+    alpha = 0.8) +
+ stat_summary(fun = mean,
+              fun.min = function(x) mean(x)* sd(x),
+              fun.max = function(x) mean(x) + sd(x),
+              geom = "pointrange"
+              ) +
+  labs(
+    title = "Social isolation in males and females at age 7",
+    y = "Social isolation",
+    fill = "Sex") +
+  theme_personal +
+  theme(
+    axis.text.y = element_blank()
+  ) +
+  scale_fill_manual(
+    values = palette2,
+    breaks = c("Male", "Female")
+) +
+  scale_alpha(guide = 'none') +
+  scale_size(guide = 'none') +
+  scale_color_manual(
+    values = palette2,
+    breaks = c("Male", "Female"),
+    guide = "none") +
+  coord_flip()
+```
+
+
+**Comments:**
+
+* At age 7, males on average had significantly higher social isolation levels compared to females 
+* Significant t-test and Wilcoxon test 
+ 
+### 10 years 
+#### T-test
+```{r t-test sex differences in isolation at  10 years}
+#sex differences at 10 years using t-test
+t.test(
+  isolation_combined_10 ~ sex,
+  data = dat,
+  alternative = "two.sided",
+  conf.level = 0.95)
+```
+
+#### Wilcoxon
+```{r wilcoxon sex differences in isolation at 10 years}
+wilcox.test(
+  isolation_combined_10 ~ sex,
+  data = dat,
+  alternative = "two.sided",
+  conf.level = 0.95
+)
+```
+
+```{r plotmeans for sex diffs at age 10}
+#plot the means for SES
+plotmeans(isolation_combined_10 ~ sex, 
+          data = dat, 
+          main="Means of social isolation at age 10, stratified by sex", 
+          ylab = "Social isoaltion at age 10", 
+          xlab = "Sex")
+
+```
+
+```{r boxplot for sex diffs at age 10, include=FALSE}
+ggplot(dat, 
+       aes(sex, isolation_combined_10)) +
+       geom_boxplot(outlier.shape=16,
+             outlier.size=2, 
+             notch=FALSE,
+         aes(col = sex)) +
+       labs(title = "Boxplot of social isolation in males and females at age 10",
+            x = "Sex",
+            y = "Social isolation") +
+  scale_color_manual(
+    values = palette2) +
+  theme_personal
+```
+
+```{r violin plot for sex diffs at age 10}
+dat %>%
+  ggplot(
+    mapping = aes(
+    x = sex,
+    y = isolation_combined_10,
+    fill = sex)) +
+  geom_hline(yintercept = 5, linetype = "dashed", color = "gray") +
+  geom_hline(yintercept = 10, linetype = "dashed", color = "gray") +
+  geom_hline(yintercept = 15, linetype = "dashed", color = "gray") +
+  geom_flat_violin(
+    position = position_nudge(x = .2, y = 0),
+    trim = FALSE,
+    alpha = 0.5
+    ) +
+  geom_point(
+    aes(
+      y = isolation_combined_05,
+      color = sex),
+    position = position_jitter(width = .15),
+    size = .5,
+    alpha = 0.8) +
+ stat_summary(fun = mean,
+              fun.min = function(x) mean(x)* sd(x),
+              fun.max = function(x) mean(x) + sd(x),
+              geom = "pointrange"
+              ) +
+  labs(
+    title = "Social isolation in males and females at age 10",
+    y = "Social isolation",
+    fill = "Sex") +
+  theme_personal +
+  theme(
+    axis.text.y = element_blank()
+  ) +
+  scale_fill_manual(
+    values = palette2,
+    breaks = c("Male", "Female")
+) +
+  scale_alpha(guide = 'none') +
+  scale_size(guide = 'none') +
+  scale_color_manual(
+    values = palette2,
+    breaks = c("Male", "Female"),
+    guide = "none") +
+  coord_flip()
+```
+
+**Comments:**
+
+* At age 10, males on average had higher social isolation levels compared to females 
+* Significant t-test and non-significant Wilcoxon test 
+
+### 12 years 
+#### T-test
+```{r t-test social isolation and sex 12 years}
+#sex differences at 12 years using t-test
+t.test(
+  isolation_combined_12 ~ sex,
+  data = dat,
+  alternative = "two.sided",
+  conf.level = 0.95)
+```
+
+#### Wilcoxon 
+```{r wilcoxon sex differences in isolation at 12 years}
+wilcox.test(
+  isolation_combined_12 ~ sex,
+  data = dat,
+  alternative = "two.sided",
+  conf.level = 0.95
+)
+```
+```{r plotmeans for sex diffs at age 12}
+#plot the means for SES
+plotmeans(isolation_combined_12 ~ sex, 
+          data = dat, 
+          main="Means of social isolation at age 12, stratified by sex", 
+          ylab = "Social isoaltion at age 12", 
+          xlab = "Sex")
+
+```
+
+```{r boxplot for sex diffs at age 12, include=FALSE}
+ggplot(dat, 
+       aes(sex, isolation_combined_12)) +
+       geom_boxplot(outlier.shape=16,
+             outlier.size=2, 
+             notch=FALSE,
+         aes(col = sex)) +
+       labs(title = "Boxplot of social isolation in males and females at age 12",
+            x = "Sex",
+            y = "Social isolation") +
+  scale_fill_manual(
+    values = palette2) +
+  scale_color_manual(
+    values = palette2) +
+  theme_personal
+```
+
+```{r violin plot for sex diffs at age 12}
+dat %>%
+  ggplot(
+    mapping = aes(
+    x = sex,
+    y = isolation_combined_12,
+    fill = sex)) +
+  geom_hline(yintercept = 5, linetype = "dashed", color = "gray") +
+  geom_hline(yintercept = 10, linetype = "dashed", color = "gray") +
+  geom_hline(yintercept = 15, linetype = "dashed", color = "gray") +
+  geom_flat_violin(
+    position = position_nudge(x = .2, y = 0),
+    trim = FALSE,
+    alpha = 0.5
+    ) +
+  geom_point(
+    aes(
+      y = isolation_combined_05,
+      color = sex),
+    position = position_jitter(width = .15),
+    size = .5,
+    alpha = 0.8) +
+ stat_summary(fun = mean,
+              fun.min = function(x) mean(x)* sd(x),
+              fun.max = function(x) mean(x) + sd(x),
+              geom = "pointrange"
+              ) +
+  labs(
+    title = "Social isolation in males and females at age 12",
+    y = "Social isolation",
+    fill = "Sex") +
+  theme_personal +
+  theme(
+    axis.text.y = element_blank()
+  ) +
+  scale_fill_manual(
+    values = palette2,
+    breaks = c("Male", "Female")
+) +
+  scale_alpha(guide = 'none') +
+  scale_size(guide = 'none') +
+  scale_color_manual(
+    values = palette2,
+    breaks = c("Male", "Female"),
+    guide = "none") +
+  coord_flip()
+```
+
+**Comments:**
+
+* At age 12, males on average had higher social isolation levels compared to females
+* Significant t-test and non-significant Wilcoxon test 
+
+*****
+
+# SES differences {.tabset .tabset-fade}
+Test for differences in isolation from levels of SES using the one-way ANOVA and Kruskal-Wallis test
+
+```{r plot means for SES diffs using ggplot}
+#summarize the data fir the plot 
+dat_summary.ses.isolation <- summarySE(dat_long, 
+                            measurevar = "social_isolation", 
+                            groupvars = c("SES","time_point"),
+                            na.rm=TRUE)
+#create plot
+ses.diff.plot <- ggplot(dat_summary.ses.isolation, 
+       aes(x = time_point, 
+           y = social_isolation, 
+           colour = SES, 
+           group = SES)) + 
+    geom_errorbar(aes(ymin = social_isolation - se, 
+                      ymax = social_isolation + se), 
+                  colour = "black", 
+                  width = 0.1, 
+                  position = position_dodge(width = 0.3)) +
+    geom_line(position = position_dodge(width = 0.3)) +
+    geom_point(position = position_dodge(width = 0.3), 
+               size = 3, 
+               shape = 21, 
+               fill = "white") + # 21 is filled circle
+    xlab("Time point") +
+    ylab("Social isolation") +
+    scale_colour_hue(name = "SES",   
+                     breaks = c("Low", "Middle", "High"),
+                     labels = c("Low", "Middle", "High"),
+                     l = 40) +                  
+    ggtitle("Average SES differences in social isolation at time point 5, 7, 10 and 12") +
+    expand_limits(y = 0) +                     
+    scale_y_continuous(expand = c(0.1,0.1),
+                     limits = c(0,12),
+                     breaks = seq(0, 12, 2)) +
+  theme_bw()
+ses.diff.plot
+
+#create scaled plot
+ses.diff.plot.scaled <- ses.diff.plot + 
+  scale_y_continuous(expand = c(0.1,0.1),
+                     limits = c(0,2),
+                     breaks = seq(0, 2, 0.25)) +
+   ggtitle("Scaled average SES differences in social isolation at time point 5, 7, 10 and 12")
+ses.diff.plot.scaled
+```
+
+## 5 years
+### ANOVA
+```{r SES differences at time point 5 using ANOVA}
+#create the model
+model_SES_age5 <- aov(isolation_combined_05 ~ SES, data = dat)
+
+#summary for one-way ANOVA
+summary(model_SES_age5)
+
+#See which pairs differ using Tukey's HSD test
+TukeyHSD(model_SES_age5, conf.level = 0.99)
+
+#plot pair-wise differences
+plot(TukeyHSD(model_SES_age5, conf.level = 0.99),las = 0, col = "red")
+
+#plot the means for SES
+plotmeans(isolation_combined_05 ~ SES, 
+          data = dat, 
+          main="Means of social isolation at age 5, stratified by SES", 
+          ylab = "Social isoaltion at age 5", 
+          xlab = "SES")
+
+#look at the distribution of the points
+ggline(dat, 
+       x = "SES", y = "isolation_combined_05", 
+       add = c("mean_se", "jitter"), 
+       order = c("Low", "Middle", "High"),
+       ylab = "Social isolation at age 5", xlab = "SES")
+```
+
+**Comments:**
+
+* ANOVA showed significant differences between the groups 
+* Pairwise differences show that there are significant differences between the middle and low group, and the high and low group. There were no significant differences between the high and middle groups
+* Social isolation was much higher in those who had low SES compared to middle and high SES. 
+* From the distribution plot you can see this difference is pulled over by a handful of individuals. 
+* These results are confirmed in the K-W test below
+
+### Kruskal-Wallis 
+```{r SES differences at time point 5 using K-W}
+#Kruskal-Wallis test
+kruskal.test(isolation_combined_05 ~ SES_ordered, data = dat)
+
+#Check pair-wise comparison
+pairwise.wilcox.test(dat$isolation_combined_05, dat$SES_ordered,
+                 p.adjust.method = "BH")
+```
+
+## 7 years
+### ANOVA
+```{r SES differences at time point 7 using ANOVA}
+#create the model
+model_SES_age7 <- aov(isolation_combined_07 ~ SES, data = dat)
+
+#summary for one-way ANOVA
+summary(model_SES_age7)
+
+#See which pairs differ using Tukey's HSD test
+TukeyHSD(model_SES_age7, conf.level = 0.99)
+
+#plot pair-wise differences
+plot(TukeyHSD(model_SES_age7, conf.level = 0.99),las = 0, col = "red")
+
+#plot the means for SES
+plotmeans(isolation_combined_07 ~ SES, 
+          data = dat, 
+          main="Means of social isolation at age 7, stratified by SES", 
+          ylab = "Social isoaltion at age 7", 
+          xlab = "SES")
+
+#look at the distribution of the points
+ggline(dat, 
+       x = "SES", y = "isolation_combined_07", 
+       add = c("mean_se", "jitter"), 
+       order = c("Low", "Middle", "High"),
+       ylab = "Social isolation at age 7", xlab = "SES")
+```
+
+**Comments:**
+
+* ANOVA showed significant differences between the groups 
+* Pairwise differences show that there are significant differences between the middle and low group, and the high and low group. There were no significant differences between the high and middle groups
+* Social isolation was much higher in those who had low SES compared to middle and high SES. 
+* From the distribution plot you can see this difference is pulled over by a handful of individuals* even more so than at age 5 as there are several individual who have high social isolation scores that are in the middle and high groups.  
+* These results are confirmed in the K-W test below
+
+### Kruskal-Wallis 
+```{r SES differences at time point 7 using K-W}
+#Kruskal-Wallis test
+kruskal.test(isolation_combined_07 ~ SES_ordered, data = dat)
+
+#Check pair-wise comparison
+pairwise.wilcox.test(dat$isolation_combined_07, dat$SES_ordered,
+                 p.adjust.method = "BH")
+```
+
+## 10 years
+### ANOVA
+```{r SES differences at time point 10 using ANOVA}
+#create the model
+model_SES_age10 <- aov(isolation_combined_10 ~ SES, data = dat)
+
+#summary for one-way ANOVA
+summary(model_SES_age10)
+
+#See which pairs differ using Tukey's HSD test
+TukeyHSD(model_SES_age10, conf.level = 0.99)
+
+#plot pair-wise differences
+plot(TukeyHSD(model_SES_age10, conf.level = 0.99),las = 0, col = "red")
+
+#plot the means for SES
+plotmeans(isolation_combined_10 ~ SES, 
+          data = dat, 
+          main="Means of social isolation at age 10, stratified by SES", 
+          ylab = "Social isoaltion at age 10", 
+          xlab = "SES")
+
+#look at the distribution of the points
+ggline(dat, 
+       x = "SES", y = "isolation_combined_10", 
+       add = c("mean_se", "jitter"), 
+       order = c("Low", "Middle", "High"),
+       ylab = "Social isolation at age 10", xlab = "SES")
+```
+
+**Comments:**
+
+* ANOVA showed significant differences between the groups 
+* Pairwise differences show that there are significant differences between the middle and low group, and the high and low group. There were no significant differences between the high and middle groups
+* Social isolation was much higher in those who had low SES compared to middle and high SES. 
+* From the distribution plot you can see this difference is pulled over by a handful of individuals* even more so than at age 5 as there are several individual who have high social isolation scores that are in the middle and high groups.  
+* These results are confirmed in the K-W test below
+ 
+### Kruskal-Wallis 
+```{r SES differences at time point 10 using K-W}
+#Kruskal-Wallis test
+kruskal.test(isolation_combined_10 ~ SES_ordered, data = dat)
+
+#Check pair-wise comparison
+pairwise.wilcox.test(dat$isolation_combined_10, dat$SES_ordered,
+                 p.adjust.method = "BH")
+```
+
+## 12 years 
+### ANOVA
+```{r SES differences at time point 12 using ANOVA}
+#create the model
+model_SES_age12 <- aov(isolation_combined_12 ~ SES, data = dat)
+
+#summary for one-way ANOVA
+summary(model_SES_age12)
+
+#See which pairs differ using Tukey's HSD test
+TukeyHSD(model_SES_age12, conf.level = 0.99)
+
+#plot pair-wise differences
+plot(TukeyHSD(model_SES_age12, conf.level = 0.99),las = 0, col = "red")
+
+#plot the means for SES
+plotmeans(isolation_combined_12 ~ SES, 
+          data = dat, 
+          main="Means of social isolation at age 12, stratified by SES", 
+          ylab = "Social isoaltion at age 12", 
+          xlab = "SES")
+
+#look at the distribution of the points
+ggline(dat, 
+       x = "SES", y = "isolation_combined_12", 
+       add = c("mean_se", "jitter"), 
+       order = c("Low", "Middle", "High"),
+       ylab = "Social isolation at age 12", xlab = "SES")
+```
+
+**Comments:**
+
+* ANOVA showed significant differences between the groups 
+* Pairwise differences show that there are significant differences between all three groups* including the middle and high groups. 
+* Social isolation was much higher in those who had middle SES compared to high SES, and low SES  had even higher levels of SES compared to middle and high SES groups. 
+* From the distribution plot you can see the clear levels in the data* with low SES indicating individuals with high isolation and high SES indicating individuals with low isolation.
+* Interesting that these significant differences were only found as the children got older. 
+* These results are confirmed in the K-W test below* all 3 pairwise comparisons are significant. 
+ 
+### Kruskal-Wallis 
+```{r SES differences at time point 12 using K-W}
+#Kruskal-Wallis test
+kruskal.test(isolation_combined_12 ~ SES_ordered, data = dat)
+
+#Check pair-wise comparison
+pairwise.wilcox.test(dat$isolation_combined_12, dat$SES_ordered,
+                 p.adjust.method = "BH")
+```
+
+*****
+
+# Mother-teacher report correlation {.tabset .tabset-fade}
+
+## 5 years
+```{r correlations between parent and teacher report at age 5}
+cor.test(dat$isolation_mother_05, dat$isolation_teacher_05, method = "spearman")
+
+ggscatter(dat, x = "isolation_mother_05", y = "isolation_teacher_05", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "spearman",
+          title = "Association between mother and teacher report of social isolation at age 5",
+          xlab = "Mother report social isolation", ylab = "Teacher report social isolation")
+```
+
+**Comments:**
+
+* Correlation of 0.18 between parent and teacher* very low!
+* Removed 141 rows with missing data
+
+## 7 years
+```{r correlations between parent and teacher report at age 7}
+#get correlation statistic
+cor.test(dat$isolation_mother_07, dat$isolation_teacher_07, method = "spearman")
+
+#plot correlation
+ggscatter(dat, x = "isolation_mother_07", y = "isolation_teacher_07", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "spearman",
+          title = "Association between mother and teacher report of social isolation at age 7",
+          xlab = "Mother report social isolation", ylab = "Teacher report social isolation")
+```
+
+**Comments:**
+
+* Correlation of 0.21 between parent and teacher* slightly higher than age 5 but still very low.
+* Removed 206 rows with missing data
+
+## 10 years
+```{r correlations between parent and teacher report at age 10}
+#get correlation statistic
+cor.test(dat$isolation_mother_10, dat$isolation_teacher_10, method = "spearman")
+
+#plot correlation
+ggscatter(dat, x = "isolation_mother_10", y = "isolation_teacher_10", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "spearman",
+          title = "Association between mother and teacher report of social isolation at age 10",
+          xlab = "Mother report social isolation", ylab = "Teacher report social isolation")
+```
+
+**Comments:**
+
+* Correlation of 0.22 between parent and teacher* slightly higher than age 5 but still very low. 
+* Removed 308 rows with missing data
+ 
+## 12 years 
+```{r correlations between parent and teacher report at age 12}
+#get correlation statistic
+cor.test(dat$isolation_mother_12, dat$isolation_teacher_12, method = "spearman")
+
+#plot correlation
+ggscatter(dat, x = "isolation_mother_12", y = "isolation_teacher_12", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "spearman",
+          title = "Association between mother and teacher report of social isolation at age 12",
+          xlab = "Mother report social isolation", ylab = "Teacher report social isolation")
+```
+
+**Comments:**
+
+* Correlation of 0.21 between parent and teacher* slightly higher than age 5 but still very low. 
+* Lowest at age 5 then consistent across the remaining ages. 
+* Removed 461 rows with missing data
+
+*****
+
+# Zygosity differences 
+
+```{r descriptives by zygosity}
+#means split by zygosity for combined report
+stby(data = dat[,combined_social_isolation], 
+     INDICES = dat$zygosity_binary,
+     FUN = descr,
+     stats = c("mean", "sd", "min", "med", "max"), 
+     transpose = FALSE,
+     simplify = TRUE) %>%
+  print(method = "render")
+```
+
+```{r plot means for zygosity diffs using ggplot}
+#summarize the data fir the plot 
+dat_summary.zyg.isolation <- summarySE(dat_long, 
+                            measurevar = "social_isolation", 
+                            groupvars = c("zygosity_binary","time_point"),
+                            na.rm=TRUE)
+#create plot
+zyg.diff.plot <- ggplot(dat_summary.zyg.isolation, 
+       aes(x = time_point, 
+           y = social_isolation, 
+           colour = zygosity_binary, 
+           group = zygosity_binary)) + 
+    geom_errorbar(aes(ymin = social_isolation - se, 
+                      ymax = social_isolation + se), 
+                  colour = "black", 
+                  width = 0.1, 
+                  position = position_dodge(width = 0.3)) +
+    geom_line(position = position_dodge(width = 0.3)) +
+    geom_point(position = position_dodge(width = 0.3), 
+               size = 3, 
+               shape = 21, 
+               fill = "white") + # 21 is filled circle
+    xlab("Time point") +
+    ylab("Social isolation") +
+    scale_colour_hue(name = "Zygosity",   
+                     breaks = c("MZ", "DZ"),
+                     labels = c("Monozygotic", "Dizygotic"),
+                     l = 40) +                  
+    ggtitle("Average zygosity differences in social isolation at time point 5, 7, 10 and 12") +
+    expand_limits(y = 0) +                     
+    scale_y_continuous(expand = c(0.1, 0.1),
+                     limits = c(0, 12),
+                     breaks = seq(0, 12, 2)) +
+  theme_bw()
+zyg.diff.plot
+
+#create scaled plot
+zyg.diff.plot.scaled <- zyg.diff.plot + 
+  scale_y_continuous(expand = c(0.1,0.1),
+                     limits = c(0,2),
+                     breaks = seq(0, 2, 0.25)) +
+   ggtitle("Scaled average zygosity differences in social isolation at time point 5, 7, 10 and 12")
+zyg.diff.plot.scaled
+```
+
+## Tests {.tabset .tabset-fade}
+
+### 5 years
+```{r differences between MZ and DZ twins age 5 }
+#zygosity differences at 5 years using t-test
+t.test(
+  isolation_combined_05 ~ zygosity_binary,
+  data = dat,
+  alternative = "two.sided",
+  conf.level = 0.95) 
+
+wilcox.test(
+  isolation_combined_05 ~ zygosity_binary,
+  data = dat,
+  alternative = "two.sided",
+  conf.level = 0.95
+)
+```
+
+### 7 years
+```{r differences between MZ and DZ twins age 7}
+#zygosity differences at 7 years using t-test
+t.test(
+  isolation_combined_07 ~ zygosity_binary,
+  data = dat,
+  alternative = "two.sided",
+  conf.level = 0.95) 
+
+wilcox.test(
+  isolation_combined_07 ~ zygosity_binary,
+  data = dat,
+  alternative = "two.sided",
+  conf.level = 0.95
+)
+```
+
+### 10 years
+```{r differences between MZ and DZ twins age 10}
+#zygosity differences at 10 years using t-test
+t.test(
+  isolation_combined_10 ~ zygosity_binary,
+  data = dat,
+  alternative = "two.sided",
+  conf.level = 0.95) 
+
+wilcox.test(
+  isolation_combined_10 ~ zygosity_binary,
+  data = dat,
+  alternative = "two.sided",
+  conf.level = 0.95
+)
+```
+
+### 12 years
+```{r differences between MZ and DZ twins age 12}
+#zygosity differences at 12 years using t-test
+t.test(
+  isolation_combined_12 ~ zygosity_binary,
+  data = dat,
+  alternative = "two.sided",
+  conf.level = 0.95) 
+
+wilcox.test(
+  isolation_combined_12 ~ zygosity_binary,
+  data = dat,
+  alternative = "two.sided",
+  conf.level = 0.95
+)
+```
+
+**Comments:**
+
+* At all time points - there were significant differences in social isolation between MZ and DZ twins 
+* DZ twins showed higher levels of social isolation at all time points 
+* This could be due to the genetic similarities of MZ twins - acts as a protective factor for social isolation. 
+* This is likely something we will need to control for when looking at associations with risk factors
+
+```{r save data file}
+# save R data file
+saveRDS(object = dat, file = paste0(data_path, "descriptives_output_isolation_trajectories_Jan2021.rds"))
+```
+
+
+

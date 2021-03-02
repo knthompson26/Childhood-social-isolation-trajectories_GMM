@@ -1,0 +1,959 @@
+---
+title: "isolation_trajectories_preprocessing_KT"
+author: "K N Thompson"
+date: Sys.Date()
+output:  
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+    number_sections: false
+    highlight: monochrome
+    theme: cerulean
+code_folding: show
+
+html_notebook:
+  theme: cerulean
+toc: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,
+                      comment=NA,
+                      prompt=FALSE,
+                      cache=FALSE)
+
+
+options(bitmapType = 'quartz') # to render fonts better
+```
+
+Clear global environment
+```{r Clear global environment}
+remove(list = ls())
+```
+
+Retrieve the current date to use it for file endings to not overwrite files when one exports files
+```{r Recent date}
+date = Sys.Date()
+```
+
+# Packages
+
+Load packages
+```{r Load packages}
+library(knitr)
+library(summarytools)
+library(psych)
+library(foreign) # Needed to load spss data files
+library(tidyverse)
+```
+
+Source the data file path
+```{r source data file path}
+#source raw data directory: data_raw and data included
+source("../isolation_trajectories_data_path.R")
+```
+
+# Read in data
+Read in full spss file
+```{r read in data (spss)}
+dat <- read.spss(file = paste0(data.raw_path, "Katie_18Dec20.sav"),
+                  use.value.labels = FALSE, #convert value labels into factors with those labels
+                  to.data.frame = TRUE) #return data frame 
+
+colnames(dat)
+```
+
+# Item lists
+Only using elder twin variables as each twin is included in the data set as an individual. Without doing twin analyses, the elder and younger variables show the same information. 
+```{r prepare item lists}
+#All the items in numeric form
+all_social_isolation <- c("sisoe5",
+                          "sisoet5",
+                          "sisoem5",
+                          "sisoe7",
+                          "sisoet7",
+                          "sisoem7",
+                          "sisoe10",
+                          "sisoet10",
+                          "sisoem10",
+                          "sisoe12",
+                          "sisoet12",
+                          "sisoem12")
+
+social_isoaltion_5 <- c("sisoe5",
+                          "sisoet5",
+                          "sisoem5")
+
+social_isoaltion_7 <- c("sisoe7",
+                          "sisoet7",
+                          "sisoem7")
+
+social_isoaltion_10 <- c("sisoe10",
+                          "sisoet10",
+                          "sisoem10")
+
+social_isoaltion_12 <- c("sisoe12",
+                          "sisoet12",
+                          "sisoem12")
+
+combined_social_isolation <- c("sisoe5",
+                              "sisoe7",
+                              "sisoe10",
+                              "sisoe12")
+
+teacher_social_isolation <- c("sisoet5",
+                              "sisoet7",
+                              "sisoet10",
+                              "sisoet12")
+
+mother_social_isolation <- c("sisoem5",
+                              "sisoem7",
+                              "sisoem10",
+                              "sisoem12")
+```
+
+#Rename ID variable
+When doing non-twin analyses - the atwin and btwin id give the same information
+```{r rename ID}
+dat <- dat %>%
+  mutate(
+    id = atwinid
+  )
+
+dat <- dat %>%
+  mutate(
+    randomised_order = rorderp5
+  )
+#check
+colnames(dat)
+```
+
+# Demographic variables
+
+```{r twin order factor}
+# twin order
+dat <- dat %>%
+  mutate(
+    twin_order = 
+      recode_factor(torder,
+        "1" = "Elder",
+        "2" = "Younger"))
+```
+
+```{r sample group factor}
+# sample groups
+dat <- dat %>%
+  mutate(
+    risk = # this represents mothers who had their first child under 20 years old
+      recode_factor(risks,
+        "0" = "Low risk",
+        "1" = "High risk"))
+```
+
+```{r cohort factor}
+# cohort
+dat <- dat %>%
+  mutate(
+    cohort_binary = 
+      recode_factor(cohort,
+        "94" = "Born in 1994",
+        "95" = "Born in 1995"))
+```
+
+```{r sex factor}
+# sex
+dat <- dat %>%
+  mutate(
+    sex = 
+      recode_factor(sampsex,
+        "1" = "Male",
+        "2" = "Female"))
+```
+
+```{r zygosity factor}
+# zygosity
+dat <- dat %>%
+  mutate(
+    zygosity_binary = 
+      recode_factor(zygosity,
+        "1" = "MZ",
+        "2" = "DZ"))
+```
+
+```{r SES factor}
+# SES
+dat <- dat %>%
+  mutate(
+    SES = 
+      recode_factor(seswq35,
+        "1" = "Low",
+        "2" = "Middle", #this was missing in original SPSS file but still have 2s in the data set
+        "3" = "High"))
+```
+
+```{r ethnicity factor}
+# ethnicity
+dat <- dat %>%
+  mutate(
+    ethnicity = 
+      recode_factor(sethnic,
+        "1" = "White",
+        "2" = "Asian", 
+        "3" = "Black",
+        "4" = "Mixed race",
+        "5" = "Other"))
+```
+
+# Social factors at age 5
+
+```{r acorn factor}
+# acorn_05
+dat <- dat %>%
+  mutate(
+    acorn_05 = 
+      recode_factor(P5CACORNCategory,
+        "1" = "Wealthy Achievers",
+        "2" = "Urban Prosperity",
+        "3" = "Comfortably Off",
+        "4" = "Moderate Means",
+        "5" = "Hard Pressed"))
+```
+
+# Home environment at age 5
+
+```{r mother not lived with biodad coding}
+# mum_notlived_biodad_sincebirth_05
+dat <- dat %>%
+  mutate(
+    mum_notlived_biodad_sincebirth_05 =
+      recode_factor(nobiodl5,
+                    "0" = "No",
+                    "1" = "Yes")
+  )
+```
+
+```{r any domestic violence coding}
+# any_domestic_violence_05
+dat <- dat %>%
+  mutate(
+    any_domestic_violence_05 =
+      recode_factor(anyviom5,
+                    "0" = "No",
+                    "1" = "Yes")
+  )
+```
+
+```{r child harm coding}
+# child_harm_05
+dat <- dat %>%
+  mutate(
+    child_harm_05 =
+      recode_factor(harm3em5,
+                    "0" = "No harm",
+                    "1" = "Possible harm",
+                    "2" = "Definite harm")
+  )
+```
+
+```{r maternal warmth coding}
+# maternal_warmth_05
+dat <- dat %>%
+  mutate(
+    maternal_warmth_05 =
+      recode_factor(warme5,
+                    "0" = "No warmth",
+                    "1" = "Very little warmth",
+                    "2" = "Some warmth",
+                    "3" = "Moderate warmth",
+                    "4" = "Moderately high warmth",
+                    "5" = "High warmth")
+  )
+```
+
+# Parent characterisrics at age 5
+
+```{r maternal depression lifetime}
+# maternal_depression_lifetime_05
+dat <- dat %>%
+  mutate(
+    maternal_depression_lifetime_05 =
+      recode_factor(fdepmm5,
+                    "0" = "No",
+                    "1" = "Yes")
+  )
+```
+
+# Mental health and service use at age 18
+
+```{r depression diagnosis in last 12 months}
+# depression_diagnosis_12mo_18
+dat <- dat %>%
+  mutate(
+    depression_diagnosis_12mo_18 =
+      recode_factor(dxmdee18,
+                    "0" = "No",
+                    "1" = "Yes")
+  )
+```
+
+```{r anxiety diagnosis}
+# anxiety_diagnosis_12mo_18
+dat <- dat %>%
+  mutate(
+    anxiety_diagnosis_18 =
+      recode_factor(dxgade18,
+                    "0" = "No",
+                    "1" = "Yes")
+  )
+```
+
+```{r ADHD diagnosis}
+# ADHD_diagnosis_12mo_18
+dat <- dat %>%
+  mutate(
+    ADHD_diagnosis_18 =
+      recode_factor(dxadhd5_18e,
+                    "0" = "No",
+                    "1" = "Yes")
+  )
+```
+
+```{r conduct disorder diagnosis(???)}
+# conduct_disorder_moderate_18
+dat <- dat %>%
+  mutate(
+    conduct_disorder_moderate_18 =
+      recode_factor(cdmode18,
+                    "0" = "No",
+                    "1" = "Yes")
+  )
+```
+
+```{r alcohol dependence}
+# alcohol_dependence_18
+dat <- dat %>%
+  mutate(
+    alcohol_dependence_18 =
+      recode_factor(dxalcdepe18,
+                    "0" = "No",
+                    "1" = "Yes")
+  )
+```
+
+```{r alcohol abuse}
+# alcohol_abuse_18
+dat <- dat %>%
+  mutate(
+    alcohol_abuse_18 =
+      recode_factor(dxalcabue18,
+                    "0" = "No",
+                    "1" = "Yes")
+  )
+```
+
+```{r cannabis dependence}
+# cannabis_dependence_18
+dat <- dat %>%
+  mutate(
+    cannabis_dependence_18 =
+      recode_factor(dxmarje18,
+                    "0" = "No",
+                    "1" = "Yes")
+  )
+```
+
+```{r PTSD diagnosis lifetime}
+# PTSD_diagnosis_lifetime_18
+dat <- dat %>%
+  mutate(
+    PTSD_diagnosis_lifetime_18 =
+      recode_factor(dxptsd5lfe18,
+                    "0" = "No",
+                    "1" = "Yes")
+  )
+```
+
+```{r PTSD diagnosis current}
+# PTSD_diagnosis_current_18
+dat <- dat %>%
+  mutate(
+    PTSD_diagnosis_current_18 =
+      recode_factor(dxptsd5cue18,
+                    "0" = "No",
+                    "1" = "Yes")
+  )
+```
+
+```{r pychosis symptom count categorical}
+# cat_psychosis_symptom_count_18
+dat <- dat %>%
+  mutate(
+    cat_psychosis_symptom_count_18 =
+      recode_factor(psysymp01e18,
+                    "0" = "No symptoms",
+                    "1" = "One or more symptoms")
+  )
+```
+
+```{r categorical pychosis symptom count categorical}
+# cat_psychosis_experiences_scale_18
+dat <- dat %>%
+  mutate(
+    cat_psychosis_experiences_scale_18 =
+      recode_factor(psyexpce18,
+                    "0" = "No symptoms",
+                    "1" = "One to two symptoms",
+                    "2" = "Three to five symptoms",
+                    "3" = "Six or more symptoms")
+  )
+```
+
+```{r suicide attempt or self harm}
+# suicide_attempt_selfharm_18
+dat <- dat %>%
+  mutate(
+    suicide_attempt_selfharm_18 =
+      recode_factor(sharmsuice18,
+                    "0" = "No",
+                    "1" = "Yes")
+  )
+```
+
+```{r service use}
+# service_use_18
+dat <- dat %>%
+  mutate(
+    service_use_18 =
+      recode_factor(srvusemhe18,
+                    "0" = "No",
+                    "1" = "Yes")
+  )
+```
+
+# Physical health and health risks at age 18
+*Decided to keep as a continuous scale rather than categories - have hashed out*
+```{r physical activity}
+# physical_activity_18
+# dat <- dat %>%
+#   mutate(
+#     physical_activity_18 =
+#       recode_factor(phyacte18,
+#                     "1" = "Inactive",
+#                     "2" = "Light intensity",
+#                     "3" = "Moderate intensity",
+#                     "4" = "Hard intensity",
+#                     "5" = "Very hard intensity")
+#   )
+```
+
+# Employment prospects
+
+```{r not in education, employment or training}
+# not_in_employment_education_18
+dat <- dat %>%
+  mutate(
+    not_in_employment_education_18 =
+      recode_factor(neete18,
+                    "0" = "No",
+                    "1" = "Yes")
+  )
+```
+
+```{r highest level of education}
+# highest_education_18
+dat <- dat %>%
+  mutate(
+    highest_education_18 =
+      recode_factor(educachve18,
+                    "0" = "No qualification",
+                    "1" = "Level 1 (GCSE at grades D-G)",
+                    "2" = "Level 2 (GCSE at grades A*-C)",
+                    "3" = "Level 3 (A Level)"
+                    )
+  )
+```
+
+# Social isolation 
+
+```{r log transform social isolation combined variables}
+colnames(dat)
+dat <- dat %>%
+  mutate(log_sisoe5 =
+           log1p(sisoe5))
+dat <- dat %>%
+  mutate(log_sisoe7 =
+           log1p(sisoe7))
+dat <- dat %>%
+  mutate(log_sisoe10 =
+           log1p(sisoe10))
+dat <- dat %>%
+  mutate(log_sisoe12 =
+           log1p(sisoe12))
+
+#check
+colnames(dat)
+```
+
+# Missing values
+Make sue that any values coded as -9, -999 , -8, -7 or -1 are coded as NA
+```{r recode missing values}
+# Recode missing values to NAs in numeric variables
+dat <- dat %>%
+  mutate_if(is.numeric, ~na_if(., -9)) %>% # missing
+  mutate_if(is.numeric, ~na_if(., -999)) %>% # missing
+  mutate_if(is.numeric, ~na_if(., -1))  %>% # no question
+  mutate_if(is.numeric, ~na_if(., -8))  %>% # missing specific to the question
+  mutate_if(is.numeric, ~na_if(., -7)) # missing specific to the question
+```
+
+## Missingness for social isolation variables
+
+```{r social isolation missingness}
+# create the NA per person variable
+dat <- dat %>%
+  mutate(
+    na.per.person.si =
+      rowSums(
+        is.na(dat[,colnames(dat) %in% combined_social_isolation])
+      )
+  )
+
+#look at the frequency of this
+freq(dat$na.per.person.si,
+     cumul = FALSE)
+```
+
+```{r create variables for different group combinations}
+# group with 18 missing 3 time points vs everyone else
+dat <- dat %>%
+  mutate(
+    missing_3_time_points = 
+      if_else(
+        na.per.person.si > 2, 
+        1,
+        0) %>%
+      recode_factor(
+        "0" = "No",
+        "1" = "Yes"
+      )
+  )
+
+# create group of just 18 who have 3 missing time points
+dat.18 <- filter(dat, missing_3_time_points == "Yes")
+
+# excluding the 18 missing 3 time points, those with 2 missing time points vs every one else
+dat.missing.3time <- filter(dat,
+                      na.per.person.si != 3)
+
+dat.missing.3time <- dat.missing.3time %>%
+  mutate(
+    missing_2_time_points = 
+      if_else(
+        na.per.person.si > 1 & na.per.person.si < 3, 
+        1,
+        0) %>%
+      recode_factor(
+        "0" = "No",
+        "1" = "Yes"
+      )
+  )
+```
+
+What Tim found :
+There were no differences between those who did and did not take part at age 18 in terms of social isolation at age 5 (t = 0.71, p = 0.49), socioeconomic status (SES) assessed when the cohort was initially defined (χ2 = 0.86, p = 0.65), age-5 IQ scores (t = 0.98, p = 0.33), or age-5 emotional or behavioural problems (t = 0.40, p = 0.69 and t = 0.41, p = 0.68, respectively)
+```{r check differences in missingness between the 4 groups}
+# Social isolation at age 5
+ttest_SI_3time <- t.test( 
+  sisoe5 ~ missing_3_time_points,
+  data = dat,
+  alternative = "two.sided",
+  conf.level = 0.95)
+
+ttest_SI_2time <- t.test( 
+  sisoe5 ~ missing_2_time_points,
+  data = dat.missing.3time,
+  alternative = "two.sided",
+  conf.level = 0.95) 
+
+# SES - chi square
+chisq_SES_3time <- chisq.test(dat$SES,dat$missing_3_time_points) # nonsig
+chisq_SES_2time <- chisq.test(dat.missing.3time$SES, dat.missing.3time$missing_2_time_points) # nonsig
+
+# IQ - t-test
+ttest_IQ_3time <- t.test( #nonsig
+  iqe5 ~ missing_3_time_points,
+  data = dat,
+  alternative = "two.sided",
+  conf.level = 0.95) 
+
+ttest_IQ_2time <- t.test( #SIGNIFICANT - missing two time points has lower IQ
+  iqe5 ~ missing_2_time_points,
+  data = dat.missing.3time,
+  alternative = "two.sided",
+  conf.level = 0.95) 
+
+# Emotional problems - internalising??? - t-test
+ttest_int_3time <- t.test( #nonsig
+  intisoe5 ~ missing_3_time_points,
+  data = dat,
+  alternative = "two.sided",
+  conf.level = 0.95) 
+
+ttest_int_2time <- t.test( #nonsig
+  intisoe5 ~ missing_2_time_points,
+  data = dat.missing.3time,
+  alternative = "two.sided",
+  conf.level = 0.95) 
+
+# Behavioural problems - externalising?? - t-test
+ttest_ext_3time <- t.test( #nonsig
+  totexte5 ~ missing_3_time_points,
+  data = dat,
+  alternative = "two.sided",
+  conf.level = 0.95) 
+
+ttest_ext_2time <- t.test( #nonsig
+  totexte5 ~ missing_2_time_points,
+  data = dat.missing.3time,
+  alternative = "two.sided",
+  conf.level = 0.95) 
+```
+
+# Create data set exluding those with 3 isolation data points missing 
+
+```{r remove those that have 3 missing data points on combined isolation}
+# only select those who who have less than 3 combined isolation variables missing
+dat.3missing <- dat %>%
+  filter(
+    na.per.person.si < 3
+  )
+
+# check the new number of rows int he data set - 2079
+nrow(dat.3missing)
+```
+
+# Select all renamed variables
+Remember to select which data set you want exported - dat (full sample), or dat.3missing (those with 3 missing time points excluded)
+
+```{r rename social isolation variables for 3 missing dataset}
+# same order as the variable list for the concept paper
+# those with an "=" are just renamed with no other coding needed. Coding all done above. 
+dat.renamed.3missing <- dat.3missing %>%
+  select(
+    # Demographics
+    id,
+    sex,
+    random_order = rorderp5,
+    zygosity_binary,
+    ethnicity,
+    risk,
+    cohort_binary,
+    twin_order,
+    # Social factors
+    acorn_05,
+    vandalism_05 = vndngdm5, # original data frame only reported 0 = low and 6 = high
+    problems_neighbours_05 = socprbm5, # original data frame only reported 0 = low and 6 = high
+    SES,
+    number_children_school_05 = nchildren00e5,
+    number_children_school_free_meals_05 = schmeals00e5,
+    class_size_average_05 = classsize00e5,
+    # Home environment
+    resident_moves_05 = nmovel5,
+    mum_notlived_biodad_sincebirth_05,
+    total_siblings_05 = tsibl5,
+    any_domestic_violence_05,
+    child_harm_05,
+    total_social_support_05 = tssupm5,
+    total_activities_with_mum_05 = actvm5,
+    maternal_warmth_05,
+    prosocial_behaviours_combined_05 = totproe5,
+    # Parent characteristics
+    maternal_depression_lifetime_05,
+    maternal_personality_openness_05 = bfiom5,
+    maternal_personality_conscientiousness_05 = bficm5,
+    maternal_personality_extroversion_05 = bfiem5,
+    maternal_personality_agreeableness_05 = bfiam5,
+    maternal_personality_neuroticism_05 = bfinm5,
+    antisocial_behaviour_mum_05 = asbmm5,
+    antisocial_behaviour_dad_05 = asbfm5,
+    alcoholism_mum_05 = alcmm5,
+    alcoholism_dad_05 = alcfm5,
+    # Child neurodevelopment
+    IQ_05 = iqe5,
+    executive_function_05 = exfunce5,
+    theory_of_mind_05 = tomtote5,
+    # Child emotional and behavioural development
+    externalising_combined_05 = totexte5,
+    internalising_combined_excl_sis_05 = intisoe5,
+    ADHD_combined_05 = totadde5,
+    temp_negative_affect_05 = irre5,
+    temp_impulsivity_05 = impe5,
+    temp_approach_05 = appe5,
+    temp_sluggishness_05 = slue5,
+    temp_wariness_05 = ware5,
+    temp_undercontrolled_05 = unce5,
+    temp_inhibited_05 = inhe5,
+    temp_shy_05 = shye5,
+    ## Age 18
+    # Mental health and service use
+    depression_diagnosis_12mo_18,
+    depression_current_scale_18 = mdesxe18, #which scale is this?
+    anxiety_diagnosis_18,
+    anxiety_current_scale_18 = gadsxe18, #which scale is this?
+    ADHD_diagnosis_18,
+    inattentive_hyperactive_symptoms_total_18 = SR_symtot18e,
+    conduct_disorder_moderate_18, # is this a diagnosis?
+    conduct_disorder_symptoms_18 = cdsxe18,
+    alcohol_dependence_18,
+    alcohol_abuse_18,
+    alcohol_symptom_scale_18 = alcsxe18,
+    cannabis_dependence_18,
+    cannabis_symptom_scale_18 = marjsxe18,
+    PTSD_diagnosis_lifetime_18,
+    PTSD_diagnosis_current_18,
+    psychosis_symptom_count_18 = psysympe18,
+    cat_psychosis_symptom_count_18,
+    psychosis_experiences_scale_18 = psyexpe18,
+    cat_psychosis_experiences_scale_18,
+    suicide_attempt_selfharm_18,
+    service_use_18,
+    # Physical health and health risks
+    BMI_18 = bmie18,
+    CRP_log_18 = lnCRP_E18_4SD,
+    physical_activity_18 = phyacte18,
+    smoking_current_number_18 = smkcnume18,
+    # Coping and functioning
+    loneliness_18 = lonelye18,
+    life_satisfaction_18 = lifsate18,
+    technology_use_18 = teche18,
+    coping_with_stress_18 = copstrse18,
+    PSQI_global_score_18 = psqie18,
+    #Employment prospects
+    not_in_employment_education_18,
+    highest_education_18,
+    job_preparedness_skills_18 = jprepse18,
+    job_preparedness_attributes_18 = jprepae18,
+    optimism_18 = optime18,
+    job_search_activities_count_18 = jbschacte18,
+    ## Social isolation
+    isolation_combined_05 = sisoe5, # only ELDER variables included here - need to add a chunk to select younger variables if decide to do twin analyses. 
+    isolation_combined_07 = sisoe7,
+    isolation_combined_10 = sisoe10,
+    isolation_combined_12 = sisoe12,
+    isolation_mother_05 = sisoem5,
+    isolation_mother_07 = sisoem7,
+    isolation_mother_10 = sisoem10,
+    isolation_mother_12 = sisoem12,
+    isolation_teacher_05 = sisoet5,
+    isolation_teacher_07 = sisoet7,
+    isolation_teacher_10 = sisoet10,
+    isolation_teacher_12 = sisoet12,
+    log_isolation_combined_05 = log_sisoe5, # log values needed for trajectory analyses
+    log_isolation_combined_07 = log_sisoe7,
+    log_isolation_combined_10 = log_sisoe10,
+    log_isolation_combined_12 = log_sisoe12,
+    na.per.person.si
+  )
+# check
+colnames(dat.renamed.3missing)
+```
+
+```{r rename social isolation variables for full dataset}
+# same order as the variable list for the concept paper
+# those with an "=" are just renamed with no other coding needed. Coding all done above. 
+dat.renamed.full <- dat %>%
+  select(
+    # Demographics
+    id,
+    sex,
+    random_order = rorderp5,
+    zygosity_binary,
+    ethnicity,
+    risk,
+    cohort_binary,
+    twin_order,
+    # Social factors
+    acorn_05,
+    vandalism_05 = vndngdm5, # original data frame only reported 0 = low and 6 = high
+    problems_neighbours_05 = socprbm5, # original data frame only reported 0 = low and 6 = high
+    SES,
+    number_children_school_05 = nchildren00e5,
+    number_children_school_free_meals_05 = schmeals00e5,
+    class_size_average_05 = classsize00e5,
+    # Home environment
+    resident_moves_05 = nmovel5,
+    mum_notlived_biodad_sincebirth_05,
+    total_siblings_05 = tsibl5,
+    any_domestic_violence_05,
+    child_harm_05,
+    total_social_support_05 = tssupm5,
+    total_activities_with_mum_05 = actvm5,
+    maternal_warmth_05,
+    prosocial_behaviours_combined_05 = totproe5,
+    # Parent characteristics
+    maternal_depression_lifetime_05,
+    maternal_personality_openness_05 = bfiom5,
+    maternal_personality_conscientiousness_05 = bficm5,
+    maternal_personality_extroversion_05 = bfiem5,
+    maternal_personality_agreeableness_05 = bfiam5,
+    maternal_personality_neuroticism_05 = bfinm5,
+    antisocial_behaviour_mum_05 = asbmm5,
+    antisocial_behaviour_dad_05 = asbfm5,
+    alcoholism_mum_05 = alcmm5,
+    alcoholism_dad_05 = alcfm5,
+    # Child neurodevelopment
+    IQ_05 = iqe5,
+    executive_function_05 = exfunce5,
+    theory_of_mind_05 = tomtote5,
+    # Child emotional and behavioural development
+    externalising_combined_05 = totexte5,
+    internalising_combined_excl_sis_05 = intisoe5,
+    ADHD_combined_05 = totadde5,
+    temp_negative_affect_05 = irre5,
+    temp_impulsivity_05 = impe5,
+    temp_approach_05 = appe5,
+    temp_sluggishness_05 = slue5,
+    temp_wariness_05 = ware5,
+    temp_undercontrolled_05 = unce5,
+    temp_inhibited_05 = inhe5,
+    temp_shy_05 = shye5,
+    ## Age 18
+    # Mental health and service use
+    depression_diagnosis_12mo_18,
+    depression_current_scale_18 = mdesxe18, #which scale is this?
+    anxiety_diagnosis_18,
+    anxiety_current_scale_18 = gadsxe18, #which scale is this?
+    ADHD_diagnosis_18,
+    inattentive_hyperactive_symptoms_total_18 = SR_symtot18e,
+    conduct_disorder_moderate_18, # is this a diagnosis?
+    conduct_disorder_symptoms_18 = cdsxe18,
+    alcohol_dependence_18,
+    alcohol_abuse_18,
+    alcohol_symptom_scale_18 = alcsxe18,
+    cannabis_dependence_18,
+    cannabis_symptom_scale_18 = marjsxe18,
+    PTSD_diagnosis_lifetime_18,
+    PTSD_diagnosis_current_18,
+    psychosis_symptom_count_18 = psysympe18,
+    cat_psychosis_symptom_count_18,
+    psychosis_experiences_scale_18 = psyexpe18,
+    cat_psychosis_experiences_scale_18,
+    suicide_attempt_selfharm_18,
+    service_use_18,
+    # Physical health and health risks
+    BMI_18 = bmie18,
+    CRP_log_18 = lnCRP_E18_4SD,
+    physical_activity_18 = phyacte18,
+    smoking_current_number_18 = smkcnume18,
+    # Coping and functioning
+    loneliness_18 = lonelye18,
+    life_satisfaction_18 = lifsate18,
+    technology_use_18 = teche18,
+    coping_with_stress_18 = copstrse18,
+    PSQI_global_score_18 = psqie18,
+    #Employment prospects
+    not_in_employment_education_18,
+    highest_education_18,
+    job_preparedness_skills_18 = jprepse18,
+    job_preparedness_attributes_18 = jprepae18,
+    optimism_18 = optime18,
+    job_search_activities_count_18 = jbschacte18,
+    ## Social isolation
+    isolation_combined_05 = sisoe5, # only ELDER variables included here - need to add a chunk to select younger variables if decide to do twin analyses. 
+    isolation_combined_07 = sisoe7,
+    isolation_combined_10 = sisoe10,
+    isolation_combined_12 = sisoe12,
+    isolation_mother_05 = sisoem5,
+    isolation_mother_07 = sisoem7,
+    isolation_mother_10 = sisoem10,
+    isolation_mother_12 = sisoem12,
+    isolation_teacher_05 = sisoet5,
+    isolation_teacher_07 = sisoet7,
+    isolation_teacher_10 = sisoet10,
+    isolation_teacher_12 = sisoet12,
+    log_isolation_combined_05 = log_sisoe5, # log values needed for trajectory analyses
+    log_isolation_combined_07 = log_sisoe7,
+    log_isolation_combined_10 = log_sisoe10,
+    log_isolation_combined_12 = log_sisoe12,
+    na.per.person.si
+  )
+# check
+colnames(dat.renamed.full)
+```
+
+# Select variables to be exported into rds and csv files 
+Have hashed out the trajectory file - as each time you need to manually edit the NAs and header for Mplus. So just use this one export and no need to run the whole chunk again. 
+
+	
+```{r selct variables to export files}
+#select variables for rds file
+dat_rds.3missing <- dat.renamed.3missing 
+dat_rds.full <- dat.renamed.full
+
+#select variables for csv file (for Mplus) - uses numeric values rather than factors
+dat_csv.3missing <- dat.3missing %>%
+  select(
+    id, 
+    familyid, 
+    rorderp5, 
+    torder, 
+    risks,
+    cohort,
+    sampsex,
+    zygosity,
+    seswq35,
+    sisoe5,
+    sisoe7,
+    sisoe10,
+    sisoe12,
+    log_5 = log_sisoe5,
+    log_7 = log_sisoe7,
+    log_10 = log_sisoe10,
+    log_12 = log_sisoe12)
+
+#select variables for csv file (for Mplus) - uses numeric values rather than factors
+dat_csv.full <- dat %>%
+  select(
+    id, 
+    familyid, 
+    rorderp5, 
+    torder, 
+    risks,
+    cohort,
+    sampsex,
+    zygosity,
+    seswq35,
+    sisoe5,
+    sisoe7,
+    sisoe10,
+    sisoe12,
+    log_5 = log_sisoe5,
+    log_7 = log_sisoe7,
+    log_10 = log_sisoe10,
+    log_12 = log_sisoe12)
+```
+
+Export the data as rds and csv (for Mplus) files 
+```{r export new data files}
+# save R data file
+saveRDS(object = dat_rds.3missing, file = paste0(data_path, "preprocessed_isolation_trajectories_Jan2021_3missing.rds"))
+saveRDS(object = dat_rds.full, file = paste0(data_path, "preprocessed_isolation_trajectories_Jan2021_full_sample.rds"))
+
+# save csv file in two places
+
+# write_csv(x = dat_csv.3missing, path = paste0(data_path, "Mplus_back_up/FOR_MPLUS_preprocessed_isolation_trajectories_Jan2021_3missing.csv"))
+# write_csv(x = dat_csv.3missing, path = "/Users/katiethompson/Desktop/mplusisolationtrajectoriesJan2021_3missing.csv")
+# write_csv(x = dat_csv.full, path = paste0(data_path, "Mplus_back_up/FOR_MPLUS_preprocessed_isolation_trajectories_Jan2021_full_sample.csv"))
+# write_csv(x = dat_csv.full, path = "/Users/katiethompson/Desktop/mplusisolationtrajectoriesJan2021_full_sample.csv") 
+
+#remember to delete the headings. There will be no NAs as they have been removed for the isolation variables but in future Mplus files need NA to be a fullstop (.)
+```
+
+
+
+
+
+

@@ -1,0 +1,420 @@
+---
+title: "Analyses for testing the association betwween isolation trajectories and outcomes - Three trajectories"
+author: "Katherine N Thompson"
+date: "19th Jan 2021"
+output:
+  word_document:
+    toc: yes
+    toc_depth: '2'
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_depth: 2
+    toc_float:
+      collapsed: no
+    number_sections: no
+    highlight: monochrome
+    theme: cerulean
+code_folding: hide
+---
+
+outcomes_isolation_THREE_trajectories_KT
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,
+                      comment = NA,
+                      prompt = FALSE,
+                      cache = FALSE,
+                      message = FALSE,
+                      warning = FALSE)
+
+options(bitmapType = 'quartz') # to render fonts better
+```
+
+```{r Clear global environment}
+remove(list = ls())
+```
+
+```{r colour palletes for graphs}
+palette2 <- c("#78D9C5","#F5BE5E")
+palette2b <- c("#78D9C5","#EEB6E9")
+```
+
+```{r Load packages}
+library(knitr)
+library(summarytools)
+library(psych)
+library(skimr)
+library(ggpubr)
+library(tidyr)
+library(gplots)
+library(Rmisc)
+library(MplusAutomation)
+library(stringr)
+library(stringi)
+library(filesstrings)
+library(texreg)
+library(relimp)
+library(nnet)
+library(ggplot2)
+library(tidyverse)
+library(dplyr) #conflicts with tidyverse for e.g. rename and row_number
+```
+
+```{r source the data file path}
+#source raw data directory: data_raw and data included
+source("../isolation_trajectories_data_path.R")
+```
+
+# Theme for plotting
+
+```{r theme for all plots}
+theme.antecedent <- theme(panel.grid.major.x = element_line(size = 0.5,
+                                          linetype = 'dashed',
+                                          colour = "gray"),
+        plot.title = element_text(size = 15, face = "bold", hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5),
+        axis.title.x = element_text(size=12,face="bold"),
+        axis.title.y = element_blank(),
+        axis.text.x = element_text(colour = "black", size = 9),
+        axis.text.y = element_text(colour = "black", size = 12),
+        axis.ticks.x = element_blank(),
+        axis.ticks.y = element_blank(),
+        panel.background = element_blank(),
+        legend.position = "bottom",
+        strip.text.y = element_blank())
+```
+
+# Variable lists
+
+```{r lists for outcome regressions}
+outcome.dependent <- c( # mental health
+                      "depression_diagnosis_12mo_18", 
+                       "depression_current_scale_18",
+                       "anxiety_diagnosis_18", 
+                       "anxiety_current_scale_18",
+                       "ADHD_diagnosis_18", 
+                       "inattentive_hyperactive_symptoms_total_18",
+                       "conduct_disorder_moderate_18", 
+                       "conduct_disorder_symptoms_18", 
+                       "alcohol_dependence_18", 
+                       "alcohol_abuse_18", # combine with the above?
+                       "alcohol_symptom_scale_18",
+                       "cannabis_dependence_18", 
+                       "cannabis_symptom_scale_18", 
+                       "PTSD_diagnosis_lifetime_18", 
+                       "PTSD_diagnosis_current_18", 
+                       "cat_psychosis_experiences_scale_18", 
+                       "suicide_attempt_selfharm_18", 
+                       "service_use_18", 
+                      # physical health
+                       "BMI_18", 
+                       "CRP_log_18",
+                       "physical_activity_18",
+                       "smoking_current_number_18",
+                      # coping and functioning
+                       "loneliness_18",
+                       "life_satisfaction_18",
+                       "technology_use_18",
+                       "coping_with_stress_18",
+                       "PSQI_global_score_18",
+                      # employment
+                       "not_in_employment_education_18", 
+                       "job_preparedness_skills_18",
+                       "job_preparedness_attributes_18",
+                       "optimism_18",
+                       "job_search_activities_count_18")
+
+outcome.dependent.numeric <- c( # mental health
+                               "depression_diagnosis_12mo_numeric_18", 
+                               "depression_current_scale_18",
+                               "anxiety_diagnosis_numeric_18", 
+                               "anxiety_current_scale_18",
+                               "ADHD_diagnosis_numeric_18", 
+                               "inattentive_hyperactive_symptoms_total_18",
+                               "conduct_disorder_moderate_numeric_18", 
+                               "conduct_disorder_symptoms_18", 
+                               "alcohol_dependence_numeric_18", 
+                               "alcohol_abuse_numeric_18", # combine with the above?
+                               "alcohol_symptom_scale_18",
+                               "cannabis_dependence_numeric_18", 
+                               "cannabis_symptom_scale_18", 
+                               "PTSD_diagnosis_lifetime_numeric_18", 
+                               "PTSD_diagnosis_current_numeric_18", 
+                               "cat_psychosis_experiences_scale_numeric_18", 
+                               "suicide_attempt_selfharm_numeric_18", 
+                               "service_use_numeric_18", 
+                               "BMI_18", # physical health
+                               "CRP_log_18",
+                               "physical_activity_18",
+                               "smoking_current_number_18",
+                               "loneliness_18", # coping and functioning
+                               "life_satisfaction_18",
+                               "technology_use_18",
+                               "coping_with_stress_18",
+                               "PSQI_global_score_18",
+                               "not_in_employment_education_numeric_18", # employment
+                               "job_preparedness_skills_18",
+                               "job_preparedness_attributes_18",
+                               "optimism_18",
+                               "job_search_activities_count_18")
+
+name.list <- c(
+              "Depression diagnosis: Yes",
+              "Current depression",
+              "Anxiety diagnosis: Yes",
+              "Current anxiety",
+              "ADHD diagnosis: Yes",
+              "Current inattentive and hyperactive symptoms",
+              "Moderate conduct disorder: Yes",
+              "Current conduct disorder symptoms",
+              "Alcohol dependence: Yes",
+              "Alcohol abuse: Yes",
+              "Current alcohol dependence symptoms",
+              "Canabis dependence: Yes",
+              "Current canabis dependence symptoms",
+              "PTSD lifetime diagnosis: Yes",
+              "PTSD current diagnosis: Yes",
+              "Expereinces of psychosis",
+              "Suicide attempt: Yes",
+              "Service use: Yes",
+              "BMI",
+              "Log CRP",
+              "Physical activity",
+              "Current number of cigarettes smoked",
+              "Loneliness",
+              "Life satisfaction",
+              "Technology use",
+              "Coping with stress",
+              "PSQI score",
+              "Not in employment or education: Yes",
+              "Job preparedness: skills",
+              "Job preparedness: attributes",
+              "Optimism",
+              "Job search activities")
+```
+
+# Read in data
+
+```{r read in prepped regression data and check variable names, include=FALSE}
+dat <- readRDS(file = paste0(data_path, "regression_data_THREE_traj.rds"))
+colnames(dat)
+```
+
+# Test for multicollinearity fo routcome variables
+Create correlation matrix to look for variables that are highly correlated.
+Here parental antisocial behaviour and parental alcoholism have a correlation of 0.94 (Pearson). *Parental alcoholism has been excluded.*
+
+```{r test for multicollinearity for outcome variables}
+# create data frame with just numeric antecedent variables
+outcome_data_frame <- as.data.frame(dat[,outcome.dependent.numeric])
+colnames(outcome_data_frame) <- name.list
+
+# get correlation matrix
+isolation_cor_matrix <- cor(outcome_data_frame, method = "pearson", use = "complete.obs")
+
+reorder_cor_matrix <- function(cor_matrix){
+ dd <- as.dist((1-cor_matrix)/2) #Use correlation between variables as distance
+ hc <- hclust(dd)
+ cormat <-cor_matrix[hc$order, hc$order]
+ }
+
+# Reorder the correlation matrix
+cor_matrix_full <- reorder_cor_matrix(isolation_cor_matrix)
+  
+#melt the values
+metled_cor_matrix <- reshape::melt(cor_matrix_full, na.rm = TRUE)
+
+#correlation heat map
+correlation_heat_map <- ggplot(metled_cor_matrix, aes(X2, X1, fill = value))+
+ geom_tile(color = "white")+
+ scale_fill_gradient2(low = "blue", high = "red", mid = "white",
+   midpoint = 0, limit = c(-1,1), space = "Lab",
+    name="Pearson\nCorrelation") +
+  theme_minimal() +
+  labs(y = "",
+       x = "",
+       title = "Correlation heat map for outcomes")+
+ theme(axis.text.x = element_text(angle = 45, vjust = 1, size = 12, hjust = 1),
+       axis.text.y = element_text(size = 12),
+       plot.margin=grid::unit(c(0,0,0,0), "mm"),
+       plot.title = element_text(size = 20),
+       )+
+ coord_fixed() +
+  geom_text(aes(X2, X1, label = round(value, digits = 2)), color = "black", size = 3)
+
+correlation_heat_map
+
+#save
+ggsave(
+  "outcomes_correlation_heat_map.png",
+  plot = correlation_heat_map,
+  device = "png",
+  path = paste0(graph_save_data_path, "outcomes/analysis_interpretation"),
+  width = 15,
+  height = 15
+)
+```
+
+
+# Association with outcome variables at age 18
+
+ANALYSIS PLAN 
+
+1. **Individual outcome regressions**: single regressions are computed to see if the class can predict the the occurrence of each variable (variable ~ class). This is done through a loop. Relative Risk Ratios (RRR) and their confidence intervals are calculated. Statistics for all variables are combined and RRR (95% CI) are plotted. FDR multiple testing correction is accounted for independent tests in each block. Will be a mix of linear and logistic regressions dependent on the variable. 
+
+Linear regressions (continuous variables):
+depression_current_scale_18, anxiety_current_scale_18, inattentive_hyperactive_symptoms_total_18, conduct_disorder_symptoms_18, alcohol_symptom_scale_18, cannabis_symptom_scale_18,   cat_psychosis_experiences_scale_18, BMI_18, CRP_log_18, physical_activity_18, smoking_current_number_18, loneliness_18, life_satisfaction_18, technology_use_18, coping_with_stress_18, PSQI_global_score_18, job_preparedness_skills_18, job_preparedness_attributes_18, optimism_18, job_search_activities_count_18
+
+Logistic regressions (binary variables):
+depression_diagnosis_12mo_18, anxiety_diagnosis_18, ADHD_diagnosis_18, conduct_disorder_moderate_18, alcohol_dependence_18, alcohol_abuse_18, cannabis_dependence_18, PTSD_diagnosis_lifetime_18, PTSD_diagnosis_current_18,suicide_attempt_selfharm_18, service_use_18, not_in_employment_education_numeric_18,
+
+
+# Pairwise comparisons - ADAPT FOR OUTCOMES
+**We have decided this doesn't make sense for antecedents, as this is only measuring the differences in the intercept rather than the slope. This will be used at the outcome stage and not for antecedent analyses**
+
+## Create new dataset dropping those who are in the lowstable class 
+
+```{r create pairwise dataset and order class variable}
+# dat.pairwise <- dat %>%
+#   filter(class_renamed != "Low stable") %>%
+#   mutate_if(is.factor, ~forcats::fct_drop(., only = "Low stable"))
+# 
+# dat.pairwise <- dat.pairwise %>%
+#   mutate(
+#     class_binary = 
+#       as.factor(class_renamed) %>%
+#       relevel(ref = "Increasing", 
+#               first = TRUE,
+#               collapse = "+",
+#               xlevels = TRUE)
+#   )
+```
+
+```{r loop for running antecedent regressions, include=FALSE}
+# logistic.stats.ant <- list() #create empty list to store the information in
+# 
+# for (i in 1:length(antecedent.independent))
+# { cat(i)
+#   logistic.formula.ant <- as.formula(sprintf("class_binary ~ %s", antecedent.independent[i]))
+# 
+#   logistic.reg.ant <- glm(logistic.formula.ant, data = dat.pairwise, family = "binomial")
+# 
+#   logistic.output.ant.full <- broom::tidy(logistic.reg.ant, conf.int = TRUE, exponantiate = TRUE)[-c(1),] %>%
+#     add_column(Variable = name.list[[i]]) %>%
+#     add_column(OR = exp(coef(logistic.reg.ant))[2]) %>% 
+#     add_column(`Lower CI` = exp(confint(logistic.reg.ant))[2,1]) %>%
+#     add_column(`Upper CI` = exp(confint(logistic.reg.ant))[2,2])
+#  
+#   if (i < 7) {
+#     logistic.output.ant.full <- logistic.output.ant.full %>%
+#       mutate(block = "Social block") %>%
+#                   mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 6))
+#   } else if (i < 13 ) {
+#    logistic.output.ant.full <- logistic.output.ant.full %>%
+#       mutate(block = "Home block") %>%
+#                   mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 7))
+#   } else if (i < 21) {
+#     logistic.output.ant.full <- logistic.output.ant.full %>%
+#       mutate(block = "Parent block") %>%
+#                   mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 8))
+#   } else if (i < 24) {
+#     logistic.output.ant.full <- logistic.output.ant.full %>%
+#       mutate(block = "Neuro block") %>%
+#                   mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 3))
+#   } else {
+#     logistic.output.ant.full <- logistic.output.ant.full %>%
+#       mutate(block = "Emo/behave block") %>%
+#                   mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 4))
+#   }
+#   
+#    logistic.output.ant.full <- logistic.output.ant.full %>% 
+#     mutate(
+#     Significance = 
+#       if_else(
+#         p.value.adjusted < 0.05, 
+#         1,
+#         0
+#       ) %>%
+#     recode_factor(
+#         "0" = "Non-significant",
+#         "1" = "Significant"
+#       ))
+#   
+#   logistic.stats.ant[[i]] <- logistic.output.ant.full
+# }
+# # set the names of the list to match the variable names
+# names(logistic.stats.ant) <- antecedent.independent
+```
+
+```{r call statistics for all continuous antecedent regressions, include=FALSE}
+# for (i in 1:length(antecedent.independent))
+# { 
+#   assign(paste0("logistic.", names(logistic.stats.ant[i])), as.tibble(logistic.stats.ant[[i]]))
+# }
+# 
+# logistic.stats.all <- bind_rows(logistic.SES_binary_releveled, logistic.acorn_recoded_05, logistic.vandalism_05, logistic.problems_neighbours_05, logistic.number_children_school_05, logistic.number_children_school_free_meals_05, logistic.child_harm_recoded_05, logistic.total_siblings_05, logistic.total_social_support_05, logistic.total_activities_with_mum_05, logistic.mum_notlived_biodad_sincebirth_05, logistic.any_domestic_violence_05, logistic.maternal_depression_lifetime_05, logistic.maternal_personality_openness_05, logistic.maternal_personality_conscientiousness_05, logistic.maternal_personality_extroversion_05, logistic.maternal_personality_agreeableness_05, logistic.maternal_personality_neuroticism_05, logistic.antisocial_behaviour_parent_05, logistic.alcoholism_parent_05, logistic.IQ_05, logistic.executive_function_05, logistic.theory_of_mind_05, logistic.externalising_combined_05, logistic.internalising_combined_excl_sis_05, logistic.ADHD_combined_05, logistic.prosocial_behaviours_combined_05 )
+# 
+# logistic.stats.all.table <- kable(logistic.stats.all)
+```
+
+```{r pairwise plot}
+# pairwise.all.plot <- ggplot(
+#   logistic.stats.all,
+#   aes(x = Variable,
+#       y = OR,
+#       ymin = `Lower CI`,
+#       ymax = `Upper CI`)
+#   ) +
+#   scale_fill_manual(values = palette2b) +
+#   scale_color_manual(values = palette2b) +
+#   scale_shape_manual(values = c(21, 19)) +
+#   geom_pointrange(aes(shape = Significance), position = position_dodge(width = 0.7)) +
+#   labs(y = "OR (95% CI) \n OR>1 shows association with being in the decreasing class compared to increasing",
+#        x = "Symptom",
+#        title = "Antecedents and pairwise class membership",
+#        subtitle = paste("N(Total) = ", length(dat.pairwise$sex),
+#                         "; N(Increasing) = ", sum(!is.na(dat.pairwise$class_binary[dat.pairwise$class_binary=="Increasing"])),
+#                         "; N(Decreasing) = ", sum(!is.na(dat.pairwise$class_binary[dat.pairwise$class_binary=="Decreasing"])), sep = ""),
+#        color = "",
+#        shape = "") +
+#   theme(panel.grid.major.x = element_line(size = 0.5,
+#                                           linetype = 'dashed',
+#                                           colour = "gray"),
+#         plot.title = element_text(size = 12, face = "bold", hjust=0.5),
+#         plot.subtitle = element_text(hjust = 0.5),
+#         axis.title.x = element_text(size=10,face="bold"),
+#         axis.title.y = element_blank(),
+#         axis.text.x = element_text(colour = "black", size = 9),
+#         axis.text.y = element_text(colour = "black", size = 10),
+#         axis.ticks.x = element_blank(),
+#         axis.ticks.y = element_blank(),
+#         panel.background = element_blank(),
+#         legend.position = "bottom") +
+#   geom_hline(linetype = "dashed", yintercept = 1) +
+#   scale_y_continuous(trans = scales::log10_trans(), breaks=c(0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1, 1.5, 2, 2.5, 3, 3.5, 4)) +
+#   coord_flip()
+# 
+# pairwise.all.plot
+# 
+# #save
+# ggsave(
+#   "pairwise.all.plot.png",
+#   plot = pairwise.all.plot,
+#   device = "png",
+#   path = paste0(graph_save_data_path, "antecedents/"),
+#   width = 10,
+#   height = 7
+# )
+
+```
+
+
+
+
+
+
+
+
+
+

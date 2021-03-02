@@ -1,0 +1,622 @@
+---
+title: 'Preparation for regression analyses with outcomes and antecedents - Four trajectories'
+author: "Katherine N Thompson"
+date: "02 Feb 2021"
+output:
+  word_document:
+    toc: yes
+    toc_depth: '2'
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_depth: 2
+    toc_float:
+      collapsed: no
+    number_sections: no
+    highlight: monochrome
+    theme: cerulean
+code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,
+                      comment = NA,
+                      prompt = FALSE,
+                      cache = FALSE,
+                      message = FALSE,
+                      warning = FALSE)
+
+
+options(bitmapType = 'quartz') # to render fonts better
+```
+
+```{r Clear global environment}
+remove(list = ls())
+```
+
+```{r Current date}
+date = Sys.Date()
+```
+
+```{r colour palletes for graphs}
+palette1 <- c("#78D9C5")
+palette2 <- c("#78D9C5","#F5BE5E")
+palette3 <- c("#78D9C5","#F5BE5E","#EEB6E9")
+palette4 <- c("#78D9C5","#F5BE5E","#EEB6E9","#DBDB73")
+palette5 <- c("#78D9C5","#F5BE5E","#EEB6E9","#DBDB73","#FFED98")
+palette6 <- c("#78D9C5","#F5BE5E","#EEB6E9","#DBDB73","#FFED98","#BFD2EB")
+```
+
+```{r Load packages}
+library(knitr)
+library(summarytools)
+library(MplusAutomation)
+library(tidyr)
+library(tidyverse)
+library(plyr)
+library(dplyr) #conflicts with tidyverse for e.g. rename and row_number
+```
+
+```{r source the data file path}
+#source raw data directory: data_raw and data included
+source("../isolation_trajectories_data_path.R")
+```
+
+# Read in descriptives output file
+
+```{r read in prior descriptives data and check variable names, include=FALSE}
+dat.descriptives <- readRDS(file = paste0(data_path, "descriptives_output_isolation_trajectories_Jan2021.rds"))
+colnames(dat.descriptives)
+```
+
+# Read in class probability file 
+
+```{r read in txt file with probabilities, include=FALSE}
+dat.tra.prob.full <- read.table(paste0(mplus_GMM_clustered_full_output_data_path, "GMM_SI_3Cl_full_sample_clustered.txt"), 
+                            header = FALSE, 
+                            col.names = c("SISOE5", # original social isolation score at age 5
+                                         "SISOE7",  # original social isolation score at age 7
+                                         "SISOE10", # original social isolation score at age 10
+                                         "SISOE12", # original social isolation score at age 12
+                                         "I",       # intercept
+                                         "S",       # slope
+                                         "C_I",     # factor scores based on most likely class membership
+                                         "C_S",     # factor scores based on most likely class membership
+                                         "CPROB1",  # class probability 1
+                                         "CPROB2",  # class probability 2
+                                         "CPROB3",  # class probability 3
+                                         "C",       # class 
+                                         "ID",      # ID
+                                         "FAMILYID" # Family ID - twin clustering  
+                                       ))   
+#check 
+dat.tra.prob.full
+```
+
+```{r select relevant variables, include=FALSE}
+dat.tra.prob <- dat.tra.prob.full %>%
+  select(id = ID, 
+         prob1 = CPROB1,
+         prob2 = CPROB2,
+         prob3 = CPROB3,
+         class = C
+         )
+#check 
+dat.tra.prob
+
+#create list of data frames to merge
+dataframe_list <- list(
+  dat.descriptives,
+  dat.tra.prob
+)
+
+#merge data frames
+dat <- plyr::join_all(
+  dataframe_list,
+  by = "id" # Alternatively you can join by several columns
+  )
+
+#check
+colnames(dat)
+```
+
+# Rename class variable to shape of trajectory
+
+```{r rename class variable}
+dat <- dat %>%
+  mutate(class_renamed =
+    recode_factor(class,
+      "1" = "Low stable",
+      "2" = "Increasing",
+      "3" = "Decreasing"
+    )
+  )
+table(dat$class_renamed)
+```
+
+# Descriptives by class
+
+```{r ethnicity descriptives by class, include=FALSE}
+# calculate Ns and %s for each class by ethnicity
+ethnicity_descriptives_stable <- dat %>% #create object to bind later on
+  dplyr::count(class_renamed, ethnicity) %>%
+  filter(class_renamed == "Low stable") %>%
+  mutate(Prop = round(n/sum(n)*100, digits = 2)) %>%
+  pivot_wider(names_from = class_renamed, values_from = c(n, Prop)) 
+
+ethnicity_descriptives_decreasing <- dat %>% #create object to bind later on
+  dplyr::count(class_renamed, ethnicity) %>%
+  filter(class_renamed == "Decreasing") %>%
+  mutate(Prop = round(n/sum(n)*100, digits = 2)) %>%
+  pivot_wider(names_from = class_renamed, values_from = c(n, Prop)) 
+
+ethnicity_descriptives_increasing <- dat %>% #create object to bind later on
+  dplyr::count(class_renamed, ethnicity) %>%
+  filter(class_renamed == "Increasing") %>%
+  mutate(Prop = round(n/sum(n)*100, digits = 2)) %>%
+  pivot_wider(names_from = class_renamed, values_from = c(n, Prop)) 
+
+eth_df <- list(ethnicity_descriptives_stable, ethnicity_descriptives_decreasing, ethnicity_descriptives_increasing)
+ethnicity_descriptives <- join_all(eth_df,
+                                   by = "ethnicity",
+                                   type = "left")
+
+
+# to avoid NAs in later descriptives table - change Na to 0
+ethnicity_descriptives$`n_Increasing` <- ethnicity_descriptives$`n_Increasing` %>% replace_na(0)
+ethnicity_descriptives$`Prop_Increasing` <- ethnicity_descriptives$`Prop_Increasing` %>% replace_na(0)
+
+ethnicity_descriptives <- ethnicity_descriptives %>%
+  mutate(Total = `n_Increasing` + `n_Decreasing` + `n_Low stable`,
+         Prop_total = round(Total/2232*100, digits = 2))
+
+# rename columns 
+ethnicity_descriptives <- ethnicity_descriptives %>%
+  select(
+    "Descriptive" = ethnicity,
+    "Low stable" = `n_Low stable`,
+    "% Low stable" = `Prop_Low stable`,
+    "Increasing" = `n_Increasing`,
+    "% Increasing" = `Prop_Increasing`,
+    "Decreasing" = `n_Decreasing`,
+    "% Decreasing" = `Prop_Decreasing`,
+    "Total" = Total,
+    "% Total" = Prop_total)
+ethnicity_descriptives
+```
+
+```{r SES descriptives by class, include=FALSE}
+SES_descriptives_stable <- dat %>% 
+  dplyr::count(class_renamed, SES) %>%
+  filter(class_renamed == "Low stable") %>%
+  mutate(Prop = round(n/sum(n)*100, digits = 2)) %>%
+  pivot_wider(names_from = class_renamed, values_from = c(n, Prop)) 
+
+SES_descriptives_decreasing <- dat %>% 
+  dplyr::count(class_renamed, SES) %>%
+  filter(class_renamed == "Decreasing") %>%
+  mutate(Prop = round(n/sum(n)*100, digits = 2)) %>%
+  pivot_wider(names_from = class_renamed, values_from = c(n, Prop)) 
+
+SES_descriptives_increasing <- dat %>% 
+  dplyr::count(class_renamed, SES) %>%
+  filter(class_renamed == "Increasing") %>%
+  mutate(Prop = round(n/sum(n)*100, digits = 2)) %>%
+  pivot_wider(names_from = class_renamed, values_from = c(n, Prop)) 
+
+ses_df <- list(SES_descriptives_stable, SES_descriptives_decreasing, SES_descriptives_increasing)
+SES_descriptives <- join_all(ses_df,
+                                   by = "SES",
+                                   type = "left")
+
+SES_descriptives <- SES_descriptives %>%
+  mutate(Total = `n_Increasing` + `n_Decreasing` + `n_Low stable`,
+         Prop_total = round(Total/2232*100, digits = 2)) %>% 
+  select(
+    "Descriptive" = SES,
+    "Low stable" = `n_Low stable`,
+    "% Low stable" = `Prop_Low stable`,
+    "Increasing" = `n_Increasing`,
+    "% Increasing" = `Prop_Increasing`,
+    "Decreasing" = `n_Decreasing`,
+    "% Decreasing" = `Prop_Decreasing`,
+    "Total" = Total,
+    "% Total" = Prop_total)
+SES_descriptives
+```
+
+```{r zygosity descriptives by class, include=FALSE}
+zygosity_binary_descriptives_stable <- dat %>% 
+  dplyr::count(class_renamed, zygosity_binary) %>%
+  filter(class_renamed == "Low stable") %>%
+  mutate(Prop = round(n/sum(n)*100, digits = 2)) %>%
+  pivot_wider(names_from = class_renamed, values_from = c(n, Prop)) 
+
+zygosity_binary_descriptives_decreasing <- dat %>% 
+  dplyr::count(class_renamed, zygosity_binary) %>%
+  filter(class_renamed == "Decreasing") %>%
+  mutate(Prop = round(n/sum(n)*100, digits = 2)) %>%
+  pivot_wider(names_from = class_renamed, values_from = c(n, Prop)) 
+
+zygosity_binary_descriptives_increasing <- dat %>% 
+  dplyr::count(class_renamed, zygosity_binary) %>%
+  filter(class_renamed == "Increasing") %>%
+  mutate(Prop = round(n/sum(n)*100, digits = 2)) %>%
+  pivot_wider(names_from = class_renamed, values_from = c(n, Prop)) 
+
+zyg_df <- list(zygosity_binary_descriptives_stable, zygosity_binary_descriptives_decreasing, zygosity_binary_descriptives_increasing)
+zygosity_binary_descriptives <- join_all(zyg_df,
+                                   by = "zygosity_binary",
+                                   type = "left")
+
+zygosity_binary_descriptives <- zygosity_binary_descriptives %>%
+  mutate(Total = `n_Increasing` + `n_Decreasing` + `n_Low stable`,
+         Prop_total = round(Total/2232*100, digits = 2)) %>% 
+  select(
+    "Descriptive" = zygosity_binary,
+    "Low stable" = `n_Low stable`,
+    "% Low stable" = `Prop_Low stable`,
+    "Increasing" = `n_Increasing`,
+    "% Increasing" = `Prop_Increasing`,
+    "Decreasing" = `n_Decreasing`,
+    "% Decreasing" = `Prop_Decreasing`,
+    "Total" = Total,
+    "% Total" = Prop_total)
+zygosity_binary_descriptives
+```
+
+```{r sex descriptives by class, include=FALSE}
+sex_descriptives_stable <- dat %>% 
+  dplyr::count(class_renamed, sex) %>%
+  filter(class_renamed == "Low stable") %>%
+  mutate(Prop = round(n/sum(n)*100, digits = 2)) %>%
+  pivot_wider(names_from = class_renamed, values_from = c(n, Prop))
+
+sex_descriptives_decreasing <- dat %>% 
+  dplyr::count(class_renamed, sex) %>%
+  filter(class_renamed == "Decreasing") %>%
+  mutate(Prop = round(n/sum(n)*100, digits = 2)) %>%
+  pivot_wider(names_from = class_renamed, values_from = c(n, Prop))
+
+sex_descriptives_increasing <- dat %>% 
+  dplyr::count(class_renamed, sex) %>%
+  filter(class_renamed == "Increasing") %>%
+  mutate(Prop = round(n/sum(n)*100, digits = 2)) %>%
+  pivot_wider(names_from = class_renamed, values_from = c(n, Prop))
+
+sex_df <- list(sex_descriptives_stable, sex_descriptives_decreasing, sex_descriptives_increasing)
+sex_descriptives <- join_all(sex_df,
+                                   by = "sex",
+                                   type = "left")
+
+sex_descriptives <- sex_descriptives %>%
+  mutate(Total = `n_Increasing` + `n_Decreasing` + `n_Low stable`,
+         Prop_total = round(Total/2232*100, digits = 2)) %>% 
+  select(
+    "Descriptive" = sex,
+    "Low stable" = `n_Low stable`,
+    "% Low stable" = `Prop_Low stable`,
+    "Increasing" = `n_Increasing`,
+    "% Increasing" = `Prop_Increasing`,
+    "Decreasing" = `n_Decreasing`,
+    "% Decreasing" = `Prop_Decreasing`,
+    "Total" = Total,
+    "% Total" = Prop_total)
+sex_descriptives
+```
+
+```{r combine descriptives, include=FALSE}
+class.descriptives <- bind_rows(
+  sex_descriptives,
+  zygosity_binary_descriptives,
+  SES_descriptives,
+  ethnicity_descriptives
+)
+
+class.descriptives <- class.descriptives %>%
+  mutate(
+    Category = 
+      c("Sex", "",
+        "Zygosity", "", 
+        "SES", "", "",
+        "Ethnicity", "", "", "", "")) %>%
+  select(
+    Category,
+    Descriptive,
+    `Low stable`,
+    `% Low stable`,
+    `Increasing`,
+    `% Increasing`,
+    `Decreasing`,
+    `% Decreasing`,
+    Total,
+    `% Total`
+  )
+```
+
+```{r all descriptives by class}
+#final descriptives by class table
+kable(class.descriptives)
+```
+
+
+# Adapt variables for regression analysis
+
+```{r relevel class, include=FALSE}
+library(nnet)
+# check the biggest group in the class to be the reference group
+table(dat$class_renamed)
+
+# relevel class_factor
+dat <- dat %>% 
+  mutate(
+    class_reordered =
+      relevel(
+        class_renamed,
+        ref = "Low stable",
+        first = TRUE, #levels in ref come first
+        collapse = "+", #String used when constructing names for combined factor levels
+        xlevels = TRUE #levels maintained even if not actually occurring
+        
+      )
+  )
+# check
+table(dat$class_reordered)
+```
+
+```{r ACORN recode, include=FALSE}
+dat <- dat %>%
+  mutate(acorn_recoded_05 =
+           if_else(
+             acorn_05 == "Moderate Means" |
+               acorn_05 == "Hard Pressed",
+             1,
+             0
+           ) %>%
+           recode_factor(
+             "1" = "Deprived",
+             "0" = "Relatively affluent"
+           ) %>%
+           relevel(ref = "Relatively affluent",
+            first = TRUE, #levels in ref come first
+            collapse = "+", #String used when constructing names for combined factor levels
+            xlevels = TRUE) #levels maintained even if not actually occurring
+      )
+table(dat$acorn_recoded_05)
+
+dat <- dat %>%
+  mutate(
+    acorn_continuous_05 =
+      as.numeric(acorn_05)
+  )
+```
+
+```{r SES recode - combine middle and high, include=FALSE}
+dat <- dat %>%
+  mutate(
+    SES_binary_releveled =
+      as.factor(fct_collapse(
+        SES,
+        "Middle to high" = c("Middle","High"),
+        "Low" = c("Low")
+      )
+  ) %>%
+    relevel(ref = "Middle to high",
+            first = TRUE, #levels in ref come first
+            collapse = "+", #String used when constructing names for combined factor levels
+            xlevels = TRUE) #levels maintained even if not actually occurring
+  )
+table(dat$SES_binary_releveled)
+```
+
+```{r child harm recode, include=FALSE}
+dat <- dat %>%
+  mutate(child_harm_recoded_05 =
+           if_else(
+             child_harm_05 == "Possible harm" |
+               child_harm_05 == "Definite harm",
+             1,
+             0
+           ) %>%
+           recode_factor(
+             "1" = "Harm",
+             "0" = "No harm"
+           ) %>%
+           relevel(ref = "No harm",
+            first = TRUE, #levels in ref come first
+            collapse = "+", #String used when constructing names for combined factor levels
+            xlevels = TRUE)
+      )
+table(dat$child_harm_recoded_05)
+```
+
+Originally maternal warmth was condensed - this resulted in a large reduction in power. Therefore maternal warmth has been recoded to be continuous. 
+```{r maternal warmth recode, include=FALSE}
+# dat <- dat %>%
+#   mutate(
+#     maternal_warmth_recoded_05 =
+#       as.factor(fct_collapse(
+#         maternal_warmth_05,
+#         "Little warmth" = c("No warmth","Very little warmth"),
+#         "Some warmth" = c("Some warmth","Moderate warmth"),
+#         "High warmth" = c("Moderately high warmth","High warmth")
+#       )
+#   ) %>%
+#     relevel(ref = "Some warmth",
+#         first = TRUE, #levels in ref come first
+#         collapse = "+", #String used when constructing names for combined factor levels
+#         xlevels = TRUE #levels maintained even if not actually occurring
+#   ))
+# table(dat$maternal_warmth_recoded_05)
+
+dat <- dat %>%
+  mutate(
+    maternal_warmth_continuous_05 = 
+      as.numeric(maternal_warmth_05)
+  )
+```
+
+```{r highest education recode, include=FALSE}
+dat <- dat %>%
+  mutate(
+    highest_education_recode_18 =
+      as.factor(fct_collapse(
+        highest_education_18,
+        "Level 1 or below (GCSE grades D-G or below)" = c("No qualification","Level 1 (GCSE at grades D-G)"),
+        "Level 2 or 3 (GCSE grades A*-C or A-level)" = c("Level 2 (GCSE at grades A*-C)","Level 3 (A Level)")
+      )
+  ))
+table(dat$highest_education_recode_18)
+```
+
+```{r recode antisocial behaviour for parent}
+# create total score for mum and data to make parent
+dat <- dat %>%
+  mutate(antisocial_behaviour_parent_05 =
+           antisocial_behaviour_mum_05 + antisocial_behaviour_dad_05)
+```
+
+```{r recode alcoholism for parent}
+# create total score for mum and data to make parent
+dat <- dat %>%
+  mutate(alcoholism_parent_05 =
+           alcoholism_mum_05 + antisocial_behaviour_dad_05)
+```
+ 
+Create numeric versions of all categorical antecedent variables for the correlation matrix
+```{r numreic varions of categorical antecedent variables}
+dat <- dat %>%
+  mutate(SES_binary_releveled_numeric = as.numeric(SES_binary_releveled)) %>%
+  mutate(child_harm_recoded_numeric_05 = as.numeric(child_harm_recoded_05)) %>%
+  mutate(mum_notlived_biodad_sincebirth_numeric_05 = as.numeric(mum_notlived_biodad_sincebirth_05)) %>%
+  mutate(any_domestic_violence_numeric_05 = as.numeric(any_domestic_violence_05)) %>%
+  mutate(maternal_depression_lifetime_numeric_05 = as.numeric(maternal_depression_lifetime_05))
+```
+
+Create numeric versions of all categorical outcome variables for the correlation matrix
+```{r numreic varions of categorical outcome variables}
+dat <- dat %>%
+  mutate(depression_diagnosis_12mo_numeric_18 = as.numeric(depression_diagnosis_12mo_18)) %>%
+  mutate(anxiety_diagnosis_numeric_18 = as.numeric(anxiety_diagnosis_18)) %>%
+  mutate(ADHD_diagnosis_numeric_18 = as.numeric(ADHD_diagnosis_18)) %>%
+  mutate(conduct_disorder_moderate_numeric_18 = as.numeric(conduct_disorder_moderate_18)) %>%
+  mutate(alcohol_dependence_numeric_18 = as.numeric(alcohol_dependence_18)) %>%
+  mutate(alcohol_abuse_numeric_18 = as.numeric(alcohol_abuse_18)) %>%
+  mutate(cannabis_dependence_numeric_18 = as.numeric(cannabis_dependence_18)) %>%
+  mutate(PTSD_diagnosis_lifetime_numeric_18 = as.numeric(PTSD_diagnosis_lifetime_18)) %>%
+  mutate(PTSD_diagnosis_current_numeric_18 = as.numeric(PTSD_diagnosis_current_18)) %>%
+  mutate(cat_psychosis_experiences_scale_numeric_18 = as.numeric(cat_psychosis_experiences_scale_18)) %>%
+  mutate(suicide_attempt_selfharm_numeric_18 = as.numeric(suicide_attempt_selfharm_18)) %>%
+  mutate(service_use_numeric_18 = as.numeric(service_use_18)) %>%
+  mutate(not_in_employment_education_numeric_18 = as.numeric(not_in_employment_education_18)) 
+```
+
+
+```{r remove variables that wont be used, include=FALSE}
+dat <- dat %>%
+  select(
+    -c(acorn_05,
+       child_harm_05,
+       maternal_warmth_05,
+       highest_education_18,
+       psychosis_symptom_count_18, # only including one psychosis variable for now - can add back in later if we find interesting associations
+       cat_psychosis_symptom_count_18,
+       psychosis_experiences_scale_18,
+       isolation_mother_05,
+       isolation_mother_07,
+       isolation_mother_10,
+       isolation_mother_12,
+       isolation_teacher_05,
+       isolation_teacher_07,
+       isolation_teacher_10,
+       isolation_teacher_12
+       )
+  )
+colnames(dat)
+```
+
+# Class probability statistics
+
+```{r read in data for all traj models, include=FALSE}
+class.all <- readModels(paste0(mplus_GMM_clustered_full_output_data_path), recursive = TRUE)
+```
+
+## Classification probabilities 
+
+```{r extract classification probs for 3 class model, include=FALSE}
+# extract the classification probabilities for the most likely class memberships (column) by latent class (row). This shows the uncertainty rate of the probabilities. If it was perfect - the diagonal would be 1. E.g. for Class 1 - 98.3% of individuals fit that category. 
+class.probs <- data.frame(class.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.output..isolation_3traj_full_sample_clustered.out$class_counts$classificationProbs.mostLikely)
+
+# add column names
+colnames(class.probs) <- c("Low stable","Increasing","Decreasing")
+
+class.probs$Class <- c("Low stable","Increasing","Decreasing")
+
+as.tibble(class.probs)
+
+class.probs <- class.probs %>%
+  tidyr::pivot_longer(-Class, 
+               names_to = "class", 
+               values_to = "Classification probabilities")
+
+class.probs <- class.probs[-c(2:4,6:8),-c(2)]
+```
+
+```{r classification probabilities table, include=FALSE}
+kable(class.probs)
+```
+
+## Class means
+
+```{r extract means (TECH7 output) for each class}
+# extract means for each class 
+class.1.means <- as.tibble(class.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.output..isolation_3traj_full_sample_clustered.out$tech7$CLASS.1$classSampMeans)
+
+class.2.means <- as.tibble(class.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.output..isolation_3traj_full_sample_clustered.out$tech7$CLASS.2$classSampMeans)
+
+class.3.means <- as.tibble(class.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.output..isolation_3traj_full_sample_clustered.out$tech7$CLASS.3$classSampMeans)
+
+class.means <- rbind(class.1.means,class.2.means,class.3.means)
+
+class.means$Class <- c("Low stable","Increasing","Decreasing")
+
+class.means <- class.means %>%
+  select(
+    Class,
+    `Mean at age 5` = SISOE5,
+    `Mean at age 7` = SISOE7,
+    `Mean at age 10` = SISOE10,
+    `Mean at age 12` = SISOE12
+  )
+```
+
+```{r class means table}
+kable(class.means)
+```
+
+# Save data for regressions
+
+```{r save regression data}
+# save R data file
+saveRDS(object = dat, file = paste0(data_path, "regression_data_THREE_traj.rds"))
+```
+
+# Na per person split by class
+
+```{r na per person slipt by class}
+ctable(dat$class_renamed, dat$na.per.person.si)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
