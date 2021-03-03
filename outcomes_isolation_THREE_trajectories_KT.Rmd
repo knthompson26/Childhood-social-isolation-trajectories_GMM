@@ -213,7 +213,30 @@ outcome.dependent.linear <- c(
   "job_preparedness_skills_18", #employment
   "job_preparedness_attributes_18",
   "optimism_18",
-  "job_search_activities_count_18"     
+  "job_search_activities_count_18"
+)
+
+outcome.dependent.linear.zscore <- c(
+  "z_score.depression_current_scale_18", # mental health
+  "z_score.anxiety_current_scale_18",
+  "z_score.inattentive_hyperactive_symptoms_total_18",
+  "z_score.conduct_disorder_symptoms_18", 
+  "z_score.alcohol_symptom_scale_18",
+  "z_score.cannabis_symptom_scale_18", 
+  "z_score.cat_psychosis_experiences_scale_numeric_18", # can to be numeric to be in linear regression
+  "z_score.BMI_18", # physical health
+  "z_score.CRP_log_18",
+  "z_score.physical_activity_18",
+  "z_score.smoking_current_number_18",
+  "z_score.loneliness_18", #coping and functioning
+  "z_score.life_satisfaction_18",
+  "z_score.technology_use_18",
+  "z_score.coping_with_stress_18",
+  "z_score.PSQI_global_score_18",
+  "z_score.job_preparedness_skills_18", #employment
+  "z_score.job_preparedness_attributes_18",
+  "z_score.optimism_18",
+  "z_score.job_search_activities_count_18"     
 )
 
 outcome.dependent.linear.name.list <- c(
@@ -237,7 +260,6 @@ outcome.dependent.linear.name.list <- c(
                                         "Job preparedness: attributes",
                                         "Optimism",
                                         "Job search activities")
-
 
 outcome.dependent.logistic <- c(
   "depression_diagnosis_12mo_18", # mental health 
@@ -333,8 +355,6 @@ ggsave(
   height = 15
 )
 ```
-
-
 # Association with outcome variables at age 18
 
 ANALYSIS PLAN 
@@ -529,7 +549,7 @@ for (i in 1:length(outcome.dependent.linear))
 # set the names of the list to match the variable names
 names(linear.stats.outcome) <- outcome.dependent.linear
 
-for (i in 1:length(outcome.dependent.logistic))
+for (i in 1:length(outcome.dependent.linear))
 { 
   assign(paste0("linear.", names(linear.stats.outcome[i]), ".outcome"), as.tibble(linear.stats.outcome[[i]]))
 }
@@ -549,9 +569,84 @@ data.outcome.linear <- data.table::rbindlist(linear.stats.outcome) %>%
          block)
 ```
 
+## Linear regression loop using z scores
+
+```{r linear regression loop}
+linear.stats.outcome.zscore <- list() #create empty list to store the information in
+
+for (i in 1:length(outcome.dependent.linear.zscore))
+{ cat(i)
+  linear.formula.outcome.zscore <- as.formula(sprintf("%s ~ class_reordered", outcome.dependent.linear.zscore[i]))
+
+  linear.reg.outcome.zscore <- lm(linear.formula.outcome.zscore, data = dat)
+
+  linear.output.outcome.full.zscore <- broom::tidy(linear.reg.outcome.zscore, conf.int = TRUE, conf.level = 0.95)[-c(1),] 
+ 
+  if (i < 8) {
+    linear.output.outcome.full.zscore <- linear.output.outcome.full.zscore %>%
+      mutate(block = "Mental health block") %>%
+      mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 18))
+  } else if (i < 12 ) {
+   linear.output.outcome.full.zscore <- linear.output.outcome.full.zscore %>%
+      mutate(block = "Physical health block") %>%
+      mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 4))
+  } else if (i < 17) {
+    linear.output.outcome.full.zscore <- linear.output.outcome.full.zscore %>%
+      mutate(block = "Coping and functioning block") %>%
+      mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 5))
+  } else {
+    linear.output.outcome.full.zscore <- linear.output.outcome.full.zscore %>%
+      mutate(block = "Employment block") %>%
+      mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 5))
+  }
+  
+   linear.output.outcome.full.zscore <- linear.output.outcome.full.zscore %>% 
+    mutate(
+    Significance = 
+      if_else(
+        p.value.adjusted < 0.05, 
+        1,
+        0
+      ) %>%
+    recode_factor(
+        "0" = "Non-significant",
+        "1" = "Significant"
+      ))
+    
+  linear.stats.outcome.zscore[[i]] <- linear.output.outcome.full.zscore
+}
+# set the names of the list to match the variable names
+names(linear.stats.outcome.zscore) <- outcome.dependent.linear.zscore
+
+for (i in 1:length(outcome.dependent.linear.zscore))
+{ 
+  assign(paste0("linear.zscore.", names(linear.stats.outcome.zscore[i]), ".outcome"), as.tibble(linear.stats.outcome.zscore[[i]]))
+}
+```
+
+```{r combine linear dataframes}
+data.outcome.linear.zscore <- data.table::rbindlist(linear.stats.outcome.zscore) %>%
+  mutate(Class = rep(c("Increasing", "Decreasing"), 20)) %>% # Create new formatted class variable
+  select(Class,
+         `Dependent variable` = Variable,
+         estimate,
+         conf.low,
+         conf.high,
+         p.value, 
+         p.value.adjusted,
+         Significance,
+         block)
+```
+
+Plot the linear regression results 
+
 ```{r linear regression outcome plot}
-outcome.linear.separate.plot <- ggplot(
-  data.outcome.linear, # CHANGE DEPENDING IF YOU WANT TO USE Z SCORES OR NOT - remember to rename the plot if you change it
+outcome.linear.separate.plot.zscore <- ggplot(
+  data.outcome.linear.zscore, # CHANGE DEPENDING IF YOU WANT TO USE Z SCORES OR NOT - remember to rename the plot if you change it
   aes(x = `Dependent variable`,
       y = estimate,
       ymin = conf.low,
@@ -563,7 +658,7 @@ outcome.linear.separate.plot <- ggplot(
   scale_shape_manual(values = c(21, 19)) +
   geom_pointrange(aes(shape = Significance), position = position_dodge(width = 0.7)) +
   facet_grid(block ~ Class, drop = TRUE, scales = "free_y", space = "free") +
-  labs(y = "RRR (95% CI)",
+  labs(y = "Standardised Estimate (95% CI)",
        x = "names",
        title = "Association between childhood social isolation class membership and outcomes at age 18",
        subtitle = paste("N(Total) = ", length(dat$sex),
@@ -573,15 +668,15 @@ outcome.linear.separate.plot <- ggplot(
        shape = "") +
   theme.outcome +
   geom_hline(linetype = "dashed", yintercept = 0) +
- scale_y_continuous(breaks=c(-3, -2, -1, 0, 1, 2, 3, 4, 5)) + # log10_trans() has been removed here
+ scale_y_continuous(breaks=c(-1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2)) + # log10_trans() has been removed here
   coord_flip()
 
-outcome.linear.separate.plot
+outcome.linear.separate.plot.zscore
 
 #save
 ggsave(
-  "linear_outcome_individual_regressions.png",
-  plot = outcome.linear.separate.plot,
+  "linear_outcome_individual_regressions_zscore.png",
+  plot = outcome.linear.separate.plot.zscore,
   device = "png",
   path = paste0(graph_save_data_path, "outcomes/analysis_interpretation"),
   width = 12,
