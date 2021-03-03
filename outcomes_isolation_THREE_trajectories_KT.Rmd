@@ -69,7 +69,7 @@ source("../../../isolation_trajectories_data_path.R")
 # Theme for plotting
 
 ```{r theme for all plots}
-theme.antecedent <- theme(panel.grid.major.x = element_line(size = 0.5,
+theme.outcome <- theme(panel.grid.major.x = element_line(size = 0.5,
                                           linetype = 'dashed',
                                           colour = "gray"),
         plot.title = element_text(size = 15, face = "bold", hjust = 0.5),
@@ -277,9 +277,11 @@ dat <- readRDS(file = paste0(data_path, "regression_data_THREE_traj.rds"))
 colnames(dat)
 ```
 
-# Test for multicollinearity fo routcome variables
+# Test for multicollinearity for outcome variables
 Create correlation matrix to look for variables that are highly correlated.
-Here parental antisocial behaviour and parental alcoholism have a correlation of 0.94 (Pearson). *Parental alcoholism has been excluded.*
+
+The only variables that are highly correlated here are those that are actually measuring the same construct. For example, current depression and having a depression diagnosis. This is expected and not considered multicollinearity as these lifetime vs current measures will not be used within the same model. 
+
 
 ```{r test for multicollinearity for outcome variables}
 # create data frame with just numeric antecedent variables
@@ -348,6 +350,23 @@ depression_current_scale_18, anxiety_current_scale_18, inattentive_hyperactive_s
 
 Logistic regressions (binary variables):
 depression_diagnosis_12mo_18, anxiety_diagnosis_18, ADHD_diagnosis_18, conduct_disorder_moderate_18, alcohol_dependence_18, alcohol_abuse_18, cannabis_dependence_18, PTSD_diagnosis_lifetime_18, PTSD_diagnosis_current_18,suicide_attempt_selfharm_18, service_use_18, not_in_employment_education_numeric_18,
+
+## Create zscores for continuous variables
+
+# Create *z scores* for all continuous variables
+
+```{r scale continuous variables and combine to main dataset}
+# create a scaled version of the continuous variables - z scores for all variables
+scaled_continuous_data <- as.data.frame(scale(dat[outcome.dependent.linear], center = TRUE, scale = TRUE))
+
+# rename variables to show that they are z scores 
+colnames(scaled_continuous_data) <- paste0("z_score.", colnames(scaled_continuous_data))
+
+# combine the scaled data to the main dataset 
+dat <- cbind(dat, scaled_continuous_data)
+
+colnames(dat)
+```
 
 ## Logistic regression loop
 
@@ -439,7 +458,7 @@ outcome.logistic.separate.plot <- ggplot(
                         "; N(Decreasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Decreasing"])), sep = ""),
        color = "",
        shape = "") +
-  theme.antecedent +
+  theme.outcome +
   geom_hline(linetype = "dashed", yintercept = 1) +
   scale_y_continuous(trans = scales::log10_trans(), breaks=c(0.2,0.4,0.6,0.8, 1, 1.5, 2, 2.5, 3, 4, 5)) +
   coord_flip()
@@ -552,7 +571,7 @@ outcome.linear.separate.plot <- ggplot(
                         "; N(Decreasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Decreasing"])), sep = ""),
        color = "",
        shape = "") +
-  theme.antecedent +
+  theme.outcome +
   geom_hline(linetype = "dashed", yintercept = 0) +
  scale_y_continuous(breaks=c(-3, -2, -1, 0, 1, 2, 3, 4, 5)) + # log10_trans() has been removed here
   coord_flip()
@@ -570,13 +589,11 @@ ggsave(
 )
 ```
 
-
-# Chi square tests of difference
-
+# Chi square tests of difference **is this needed??**
 
 
 # Pairwise comparisons
-**We have decided this doesn't make sense for antecedents, as this is only measuring the differences in the intercept rather than the slope. This will be used at the outcome stage and not for antecedent analyses**
+We first attempted to run pairwise comparisons between increasing and decreasing classes for the antecedents but then decided this doesn't make sense for antecedents - as it is only measuring the differences in the intercept rather than the slope. Therefore, pairwise comparisons makes more logical sense for outcome variables as we can test for differences in slope and intercept. 
 
 ## Create new dataset dropping those who are in the lowstable class 
 
@@ -595,6 +612,8 @@ dat.pairwise <- dat.pairwise %>%
               xlevels = TRUE)
   )
 ```
+
+Now we want to use the pairwise dataset and run the same regressions for logistic and linear. 
 
 ```{r loop for running antecedent regressions, include=FALSE}
 # logistic.stats.ant <- list() #create empty list to store the information in
