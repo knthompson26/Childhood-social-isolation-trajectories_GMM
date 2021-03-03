@@ -216,7 +216,8 @@ outcome.dependent.linear <- c(
   "job_search_activities_count_18"     
 )
 
-outcome.dependent.linear.name.list <- c("Current depression",
+outcome.dependent.linear.name.list <- c(
+                                        "Current depression",
                                         "Current anxiety",
                                         "Current inattentive and hyperactive symptoms",
                                         "Current conduct disorder symptoms",
@@ -348,51 +349,7 @@ depression_current_scale_18, anxiety_current_scale_18, inattentive_hyperactive_s
 Logistic regressions (binary variables):
 depression_diagnosis_12mo_18, anxiety_diagnosis_18, ADHD_diagnosis_18, conduct_disorder_moderate_18, alcohol_dependence_18, alcohol_abuse_18, cannabis_dependence_18, PTSD_diagnosis_lifetime_18, PTSD_diagnosis_current_18,suicide_attempt_selfharm_18, service_use_18, not_in_employment_education_numeric_18,
 
-```{r logistic regression loop}
-logistic.stats.outcome <- list() #create empty list to store the information in
-
-for (i in 1:length(outcome.dependent.logistic))
-{ cat(i)
-  logistic.formula.outcome <- as.formula(sprintf("%s ~ class_reordered", outcome.dependent.logistic[i]))
-
-  logistic.reg.outcome <- glm(logistic.formula.outcome, data = dat, family = "binomial")
-
-  logistic.output.outcome.full <- broom::tidy(logistic.reg.outcome, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1),] %>%
-    dplyr::rename(
-           OR = estimate,
-           OR.conf.low = conf.low,
-           OR.conf.high = conf.high)
- 
-  if (i < 12) {
-    logistic.output.outcome.full <- logistic.output.outcome.full %>%
-      mutate(block = "Mental health block") %>%
-      mutate(Variable = outcome.dependent.logistic.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 18)) # change depending if we combine a few variables 
-  } else {
-   logistic.output.outcome.full <- logistic.output.outcome.full %>%
-      mutate(block = "Employment block") %>%
-      mutate(Variable = outcome.dependent.logistic.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 5))
-  }
-  
-   logistic.output.outcome.full <- logistic.output.outcome.full %>% 
-    mutate(
-    Significance = 
-      if_else(
-        p.value.adjusted < 0.05, 
-        1,
-        0
-      ) %>%
-    recode_factor(
-        "0" = "Non-significant",
-        "1" = "Significant"
-      ))
-    
-  logistic.stats.outcome[[i]] <- logistic.output.outcome.full
-}
-# set the names of the list to match the variable names
-names(logistic.stats.outcome) <- outcome.dependent.logistic
-```
+## Logistic regression loop
 
 ```{r logistic regression loop}
 logistic.stats.outcome <- list() #create empty list to store the information in
@@ -436,6 +393,7 @@ for (i in 1:length(outcome.dependent.logistic))
     
   logistic.stats.outcome[[i]] <- logistic.output.outcome.full
 }
+
 # set the names of the list to match the variable names
 names(logistic.stats.outcome) <- outcome.dependent.logistic
 
@@ -444,6 +402,8 @@ for (i in 1:length(outcome.dependent.logistic))
   assign(paste0("logistic.", names(logistic.stats.outcome[i]), ".outcome"), as.tibble(logistic.stats.outcome[[i]]))
 }
 ```
+
+## Linear regression loop
 
 ```{r linear regression loop}
 linear.stats.outcome <- list() #create empty list to store the information in
@@ -454,36 +414,31 @@ for (i in 1:length(outcome.dependent.linear))
 
   linear.reg.outcome <- lm(linear.formula.outcome, data = dat)
 
-  multinom.output.ant.full <- broom::tidy(linear.reg.outcome, conf.int = TRUE, conf.level = 0.95)[-c(1,3),] 
+  linear.output.outcome.full <- broom::tidy(linear.reg.outcome, conf.int = TRUE, conf.level = 0.95)[-c(1),] 
  
-  if (i < 7) {
-    multinom.output.ant.full <- multinom.output.ant.full %>%
-      mutate(block = "Social block") %>%
-      mutate(Variable = name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 6))
-  } else if (i < 14 ) {
-   multinom.output.ant.full <- multinom.output.ant.full %>%
-      mutate(block = "Home block") %>%
-      mutate(Variable = name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 7))
-  } else if (i < 21) {
-    multinom.output.ant.full <- multinom.output.ant.full %>%
-      mutate(block = "Parent block") %>%
-      mutate(Variable = name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 7))
-  } else if (i < 24) {
-    multinom.output.ant.full <- multinom.output.ant.full %>%
-      mutate(block = "Neuro block") %>%
-      mutate(Variable = name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 3))
-  } else {
-    multinom.output.ant.full <- multinom.output.ant.full %>%
-      mutate(block = "Emo/behave block") %>%
-      mutate(Variable = name.list[[i]]) %>%
+  if (i < 8) {
+    linear.output.outcome.full <- linear.output.outcome.full %>%
+      mutate(block = "Mental health block") %>%
+      mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 18))
+  } else if (i < 12 ) {
+   linear.output.outcome.full <- linear.output.outcome.full %>%
+      mutate(block = "Physical health block") %>%
+      mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
                   mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 4))
+  } else if (i < 17) {
+    linear.output.outcome.full <- linear.output.outcome.full %>%
+      mutate(block = "Coping and functioning block") %>%
+      mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 5))
+  } else {
+    linear.output.outcome.full <- linear.output.outcome.full %>%
+      mutate(block = "Employment block") %>%
+      mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 5))
   }
   
-   multinom.output.ant.full <- multinom.output.ant.full %>% 
+   linear.output.outcome.full <- linear.output.outcome.full %>% 
     mutate(
     Significance = 
       if_else(
@@ -496,10 +451,15 @@ for (i in 1:length(outcome.dependent.linear))
         "1" = "Significant"
       ))
     
-  linear.stats.outcome[[i]] <- multinom.output.ant.full
+  linear.stats.outcome[[i]] <- linear.output.outcome.full
 }
 # set the names of the list to match the variable names
-names(linear.stats.outcome) <- antecedent.independent
+names(linear.stats.outcome) <- outcome.dependent.linear
+
+for (i in 1:length(outcome.dependent.logistic))
+{ 
+  assign(paste0("linear.", names(linear.stats.outcome[i]), ".outcome"), as.tibble(linear.stats.outcome[[i]]))
+}
 ```
 
 
