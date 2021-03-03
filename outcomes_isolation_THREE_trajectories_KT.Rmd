@@ -554,7 +554,7 @@ outcome.linear.separate.plot <- ggplot(
        shape = "") +
   theme.antecedent +
   geom_hline(linetype = "dashed", yintercept = 0) +
- # scale_y_continuous(trans = scales::log10_trans(), breaks=c(0.2,0.4,0.6,0.8, 1, 1.5, 2, 2.5, 3, 4, 5)) + # should this be plotted this way - or should this be a normal scale?
+ scale_y_continuous(breaks=c(-3, -2, -1, 0, 1, 2, 3, 4, 5)) + # log10_trans() has been removed here
   coord_flip()
 
 outcome.linear.separate.plot
