@@ -1,0 +1,43 @@
+! MPLUS CODE FOR GROWTH MIXTURE MODEL FOR ERISK SOCIAL ISOLATION TRAJECTORIES
+! Authors: K N Thompson
+ 
+TITLE: Single-class log-linear growth curve model full sample with clustering
+
+
+DATA:
+   FILE IS "/Users/katiethompson/Desktop/
+   mplusisolationtrajectoriesJan2021_full_sample.csv";
+   ! using file saved on desktop as doesn't like long paths
+
+VARIABLE: 
+	NAMES = 
+	id familyid rorderp5 torder 
+	risks cohort sampsex zygosity seswq35 
+	sisoe5 sisoe7 sisoe10 sisoe12 
+	log_5 log_7 log_10 log_12 ;
+
+	USEVARIABLES = log_5 log_7 log_10 log_12 ;
+
+	MISSING = .; ! . are missing values
+
+! To restrict analysis to a specific variable only (eg girls only USEOBSERVATIONS sex EQ 2;)  
+
+	IDVARIABLE = id ;
+	
+	CLUSTER = familyid ; !control for twins in sample
+
+ANALYSIS:
+	TYPE = COMPLEX ; ! to account for complex twin structure 
+
+MODEL:
+! This model includes an intercept (i) and linear slope (s). Add (q) for quadratic
+
+     i s | log_5@0 log_7@2 log_10@5 log_12@7 ;
+      
+ 
+PLOT:
+	SERIES = log_5-log_12(S);
+	TYPE = PLOT3 ;
+OUTPUT:	
+	sampstat standardized 
+
