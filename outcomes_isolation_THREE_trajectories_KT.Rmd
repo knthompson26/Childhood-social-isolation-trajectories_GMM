@@ -403,6 +403,20 @@ for (i in 1:length(outcome.dependent.logistic))
 }
 ```
 
+```{r combine logistic dataframes}
+data.outcome.logistic <- data.table::rbindlist(logistic.stats.outcome) %>%
+  mutate(Class = rep(c("Increasing", "Decreasing"), 12)) %>% # Create new formatted class variable
+  select(Class,
+         `Dependent variable` = Variable,
+         OR,
+         OR.conf.low,
+         OR.conf.high,
+         p.value, 
+         p.value.adjusted,
+         Significance,
+         block)
+```
+
 ## Linear regression loop
 
 ```{r linear regression loop}
@@ -461,6 +475,7 @@ for (i in 1:length(outcome.dependent.logistic))
   assign(paste0("linear.", names(linear.stats.outcome[i]), ".outcome"), as.tibble(linear.stats.outcome[[i]]))
 }
 ```
+
 
 
 
