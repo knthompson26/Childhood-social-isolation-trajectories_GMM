@@ -69,7 +69,7 @@ source("../../../isolation_trajectories_data_path.R")
 # Theme for plotting
 
 ```{r theme for all plots}
-theme.antecedent <- theme(panel.grid.major.x = element_line(size = 0.5,
+theme.outcome <- theme(panel.grid.major.x = element_line(size = 0.5,
                                           linetype = 'dashed',
                                           colour = "gray"),
         plot.title = element_text(size = 15, face = "bold", hjust = 0.5),
@@ -200,7 +200,7 @@ outcome.dependent.linear <- c(
   "conduct_disorder_symptoms_18", 
   "alcohol_symptom_scale_18",
   "cannabis_symptom_scale_18", 
-  "cat_psychosis_experiences_scale_18", 
+  "cat_psychosis_experiences_scale_numeric_18", # can to be numeric to be in linear regression
   "BMI_18", # physical health
   "CRP_log_18",
   "physical_activity_18",
@@ -213,10 +213,34 @@ outcome.dependent.linear <- c(
   "job_preparedness_skills_18", #employment
   "job_preparedness_attributes_18",
   "optimism_18",
-  "job_search_activities_count_18"     
+  "job_search_activities_count_18"
 )
 
-outcome.dependent.linear.name.list <- c("Current depression",
+outcome.dependent.linear.zscore <- c(
+  "z_score.depression_current_scale_18", # mental health
+  "z_score.anxiety_current_scale_18",
+  "z_score.inattentive_hyperactive_symptoms_total_18",
+  "z_score.conduct_disorder_symptoms_18", 
+  "z_score.alcohol_symptom_scale_18",
+  "z_score.cannabis_symptom_scale_18", 
+  "z_score.cat_psychosis_experiences_scale_numeric_18", # can to be numeric to be in linear regression
+  "z_score.BMI_18", # physical health
+  "z_score.CRP_log_18",
+  "z_score.physical_activity_18",
+  "z_score.smoking_current_number_18",
+  "z_score.loneliness_18", #coping and functioning
+  "z_score.life_satisfaction_18",
+  "z_score.technology_use_18",
+  "z_score.coping_with_stress_18",
+  "z_score.PSQI_global_score_18",
+  "z_score.job_preparedness_skills_18", #employment
+  "z_score.job_preparedness_attributes_18",
+  "z_score.optimism_18",
+  "z_score.job_search_activities_count_18"     
+)
+
+outcome.dependent.linear.name.list <- c(
+                                        "Current depression",
                                         "Current anxiety",
                                         "Current inattentive and hyperactive symptoms",
                                         "Current conduct disorder symptoms",
@@ -237,7 +261,6 @@ outcome.dependent.linear.name.list <- c("Current depression",
                                         "Optimism",
                                         "Job search activities")
 
-
 outcome.dependent.logistic <- c(
   "depression_diagnosis_12mo_18", # mental health 
   "anxiety_diagnosis_18", 
@@ -254,18 +277,18 @@ outcome.dependent.logistic <- c(
 )
 
 outcome.dependent.logistic.name.list <- c(
-  "Depression diagnosis: Yes",
-  "Anxiety diagnosis: Yes",
-  "ADHD diagnosis: Yes",
-  "Moderate conduct disorder: Yes",
-  "Alcohol dependence: Yes",
-  "Alcohol abuse: Yes",
-  "Canabis dependence: Yes",
-  "PTSD lifetime diagnosis: Yes",
-  "PTSD current diagnosis: Yes",
-  "Suicide attempt: Yes",
-  "Service use: Yes",
-  "Not in employment or education: Yes"
+  "Depression diagnosis",
+  "Anxiety diagnosis",
+  "ADHD diagnosis",
+  "Moderate conduct disorder",
+  "Alcohol dependence",
+  "Alcohol abuse",
+  "Canabis dependence",
+  "PTSD lifetime diagnosis",
+  "PTSD current diagnosis",
+  "Suicide attempt",
+  "Service use",
+  "Not in employment or education"
 )
 ```
 
@@ -276,9 +299,11 @@ dat <- readRDS(file = paste0(data_path, "regression_data_THREE_traj.rds"))
 colnames(dat)
 ```
 
-# Test for multicollinearity fo routcome variables
+# Test for multicollinearity for outcome variables
 Create correlation matrix to look for variables that are highly correlated.
-Here parental antisocial behaviour and parental alcoholism have a correlation of 0.94 (Pearson). *Parental alcoholism has been excluded.*
+
+The only variables that are highly correlated here are those that are actually measuring the same construct. For example, current depression and having a depression diagnosis. This is expected and not considered multicollinearity as these lifetime vs current measures will not be used within the same model. 
+
 
 ```{r test for multicollinearity for outcome variables}
 # create data frame with just numeric antecedent variables
@@ -330,8 +355,6 @@ ggsave(
   height = 15
 )
 ```
-
-
 # Association with outcome variables at age 18
 
 ANALYSIS PLAN 
@@ -348,52 +371,25 @@ depression_current_scale_18, anxiety_current_scale_18, inattentive_hyperactive_s
 Logistic regressions (binary variables):
 depression_diagnosis_12mo_18, anxiety_diagnosis_18, ADHD_diagnosis_18, conduct_disorder_moderate_18, alcohol_dependence_18, alcohol_abuse_18, cannabis_dependence_18, PTSD_diagnosis_lifetime_18, PTSD_diagnosis_current_18,suicide_attempt_selfharm_18, service_use_18, not_in_employment_education_numeric_18,
 
-```{r logistic regression loop}
-logistic.stats.outcome <- list() #create empty list to store the information in
+## Create zscores for continuous variables
 
-for (i in 1:length(outcome.dependent.logistic))
-{ cat(i)
-  logistic.formula.outcome <- as.formula(sprintf("%s ~ class_reordered", outcome.dependent.logistic[i]))
+# Create *z scores* for all continuous variables
 
-  logistic.reg.outcome <- glm(logistic.formula.outcome, data = dat, family = "binomial")
+```{r scale continuous variables and combine to main dataset}
+# create a scaled version of the continuous variables - z scores for all variables
+scaled_continuous_data <- as.data.frame(scale(dat[outcome.dependent.linear], center = TRUE, scale = TRUE))
 
-  logistic.output.outcome.full <- broom::tidy(logistic.reg.outcome, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1),] %>%
-    dplyr::rename(
-           OR = estimate,
-           OR.conf.low = conf.low,
-           OR.conf.high = conf.high)
- 
-  if (i < 12) {
-    logistic.output.outcome.full <- logistic.output.outcome.full %>%
-      mutate(block = "Mental health block") %>%
-      mutate(Variable = outcome.dependent.logistic.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 18)) # change depending if we combine a few variables 
-  } else {
-   logistic.output.outcome.full <- logistic.output.outcome.full %>%
-      mutate(block = "Employment block") %>%
-      mutate(Variable = outcome.dependent.logistic.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 5))
-  }
-  
-   logistic.output.outcome.full <- logistic.output.outcome.full %>% 
-    mutate(
-    Significance = 
-      if_else(
-        p.value.adjusted < 0.05, 
-        1,
-        0
-      ) %>%
-    recode_factor(
-        "0" = "Non-significant",
-        "1" = "Significant"
-      ))
-    
-  logistic.stats.outcome[[i]] <- logistic.output.outcome.full
-}
-# set the names of the list to match the variable names
-names(logistic.stats.outcome) <- outcome.dependent.logistic
+# rename variables to show that they are z scores 
+colnames(scaled_continuous_data) <- paste0("z_score.", colnames(scaled_continuous_data))
+
+# combine the scaled data to the main dataset 
+dat <- cbind(dat, scaled_continuous_data)
+
+colnames(dat)
 ```
 
+## Logistic regression loop
+
 ```{r logistic regression loop}
 logistic.stats.outcome <- list() #create empty list to store the information in
 
@@ -436,6 +432,7 @@ for (i in 1:length(outcome.dependent.logistic))
     
   logistic.stats.outcome[[i]] <- logistic.output.outcome.full
 }
+
 # set the names of the list to match the variable names
 names(logistic.stats.outcome) <- outcome.dependent.logistic
 
@@ -444,6 +441,62 @@ for (i in 1:length(outcome.dependent.logistic))
   assign(paste0("logistic.", names(logistic.stats.outcome[i]), ".outcome"), as.tibble(logistic.stats.outcome[[i]]))
 }
 ```
+
+```{r combine logistic dataframes}
+data.outcome.logistic <- data.table::rbindlist(logistic.stats.outcome) %>%
+  mutate(Class = rep(c("Increasing", "Decreasing"), 12)) %>% # Create new formatted class variable
+  select(Class,
+         `Dependent variable` = Variable,
+         OR,
+         OR.conf.low,
+         OR.conf.high,
+         p.value, 
+         p.value.adjusted,
+         Significance,
+         block)
+```
+
+```{r logistic regression outcome plot}
+outcome.logistic.separate.plot <- ggplot(
+  data.outcome.logistic, # CHANGE DEPENDING IF YOU WANT TO USE Z SCORES OR NOT - remember to rename the plot if you change it
+  aes(x = `Dependent variable`,
+      y = OR,
+      ymin = OR.conf.low,
+      ymax = OR.conf.high,
+      color = Class)
+  ) +
+  scale_fill_manual(values = palette2b) +
+  scale_color_manual(values = palette2b) +
+  scale_shape_manual(values = c(21, 19)) +
+  geom_pointrange(aes(shape = Significance), position = position_dodge(width = 0.7)) +
+  facet_grid(block ~ Class, drop = TRUE, scales = "free_y", space = "free") +
+  labs(y = "RRR (95% CI)",
+       x = "names",
+       title = "Association between childhood social isolation class membership and outcomes at age 18",
+       subtitle = paste("N(Total) = ", length(dat$sex),
+                        "; N(Increasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Increasing"])),
+                        "; N(Decreasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Decreasing"])), sep = ""),
+       color = "",
+       shape = "") +
+  theme.outcome +
+  geom_hline(linetype = "dashed", yintercept = 1) +
+  scale_y_continuous(trans = scales::log10_trans(), breaks=c(0.2,0.4,0.6,0.8, 1, 1.5, 2, 2.5, 3, 4, 5)) +
+  coord_flip()
+
+outcome.logistic.separate.plot
+
+#save
+ggsave(
+  "logistic_outcome_individual_regressions.png",
+  plot = outcome.logistic.separate.plot,
+  device = "png",
+  path = paste0(graph_save_data_path, "outcomes/analysis_interpretation"),
+  width = 12,
+  height = 9
+)
+```
+
+## Linear regression loop
 
 ```{r linear regression loop}
 linear.stats.outcome <- list() #create empty list to store the information in
@@ -454,36 +507,31 @@ for (i in 1:length(outcome.dependent.linear))
 
   linear.reg.outcome <- lm(linear.formula.outcome, data = dat)
 
-  multinom.output.ant.full <- broom::tidy(linear.reg.outcome, conf.int = TRUE, conf.level = 0.95)[-c(1,3),] 
+  linear.output.outcome.full <- broom::tidy(linear.reg.outcome, conf.int = TRUE, conf.level = 0.95)[-c(1),] 
  
-  if (i < 7) {
-    multinom.output.ant.full <- multinom.output.ant.full %>%
-      mutate(block = "Social block") %>%
-      mutate(Variable = name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 6))
-  } else if (i < 14 ) {
-   multinom.output.ant.full <- multinom.output.ant.full %>%
-      mutate(block = "Home block") %>%
-      mutate(Variable = name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 7))
-  } else if (i < 21) {
-    multinom.output.ant.full <- multinom.output.ant.full %>%
-      mutate(block = "Parent block") %>%
-      mutate(Variable = name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 7))
-  } else if (i < 24) {
-    multinom.output.ant.full <- multinom.output.ant.full %>%
-      mutate(block = "Neuro block") %>%
-      mutate(Variable = name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 3))
-  } else {
-    multinom.output.ant.full <- multinom.output.ant.full %>%
-      mutate(block = "Emo/behave block") %>%
-      mutate(Variable = name.list[[i]]) %>%
+  if (i < 8) {
+    linear.output.outcome.full <- linear.output.outcome.full %>%
+      mutate(block = "Mental health block") %>%
+      mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 18))
+  } else if (i < 12 ) {
+   linear.output.outcome.full <- linear.output.outcome.full %>%
+      mutate(block = "Physical health block") %>%
+      mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
                   mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 4))
+  } else if (i < 17) {
+    linear.output.outcome.full <- linear.output.outcome.full %>%
+      mutate(block = "Coping and functioning block") %>%
+      mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 5))
+  } else {
+    linear.output.outcome.full <- linear.output.outcome.full %>%
+      mutate(block = "Employment block") %>%
+      mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 5))
   }
   
-   multinom.output.ant.full <- multinom.output.ant.full %>% 
+   linear.output.outcome.full <- linear.output.outcome.full %>% 
     mutate(
     Significance = 
       if_else(
@@ -496,171 +544,391 @@ for (i in 1:length(outcome.dependent.linear))
         "1" = "Significant"
       ))
     
-  linear.stats.outcome[[i]] <- multinom.output.ant.full
+  linear.stats.outcome[[i]] <- linear.output.outcome.full
 }
 # set the names of the list to match the variable names
-names(linear.stats.outcome) <- antecedent.independent
+names(linear.stats.outcome) <- outcome.dependent.linear
+
+for (i in 1:length(outcome.dependent.linear))
+{ 
+  assign(paste0("linear.", names(linear.stats.outcome[i]), ".outcome"), as.tibble(linear.stats.outcome[[i]]))
+}
 ```
 
+```{r combine linear dataframes}
+data.outcome.linear <- data.table::rbindlist(linear.stats.outcome) %>%
+  mutate(Class = rep(c("Increasing", "Decreasing"), 20)) %>% # Create new formatted class variable
+  select(Class,
+         `Dependent variable` = Variable,
+         estimate,
+         conf.low,
+         conf.high,
+         p.value, 
+         p.value.adjusted,
+         Significance,
+         block)
+```
+
+## Linear regression loop using z scores
+
+```{r linear regression loop}
+linear.stats.outcome.zscore <- list() #create empty list to store the information in
+
+for (i in 1:length(outcome.dependent.linear.zscore))
+{ cat(i)
+  linear.formula.outcome.zscore <- as.formula(sprintf("%s ~ class_reordered", outcome.dependent.linear.zscore[i]))
+
+  linear.reg.outcome.zscore <- lm(linear.formula.outcome.zscore, data = dat)
+
+  linear.output.outcome.full.zscore <- broom::tidy(linear.reg.outcome.zscore, conf.int = TRUE, conf.level = 0.95)[-c(1),] 
+ 
+  if (i < 8) {
+    linear.output.outcome.full.zscore <- linear.output.outcome.full.zscore %>%
+      mutate(block = "Mental health block") %>%
+      mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 18))
+  } else if (i < 12 ) {
+   linear.output.outcome.full.zscore <- linear.output.outcome.full.zscore %>%
+      mutate(block = "Physical health block") %>%
+      mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 4))
+  } else if (i < 17) {
+    linear.output.outcome.full.zscore <- linear.output.outcome.full.zscore %>%
+      mutate(block = "Coping and functioning block") %>%
+      mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 5))
+  } else {
+    linear.output.outcome.full.zscore <- linear.output.outcome.full.zscore %>%
+      mutate(block = "Employment block") %>%
+      mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 5))
+  }
+  
+   linear.output.outcome.full.zscore <- linear.output.outcome.full.zscore %>% 
+    mutate(
+    Significance = 
+      if_else(
+        p.value.adjusted < 0.05, 
+        1,
+        0
+      ) %>%
+    recode_factor(
+        "0" = "Non-significant",
+        "1" = "Significant"
+      ))
+    
+  linear.stats.outcome.zscore[[i]] <- linear.output.outcome.full.zscore
+}
+# set the names of the list to match the variable names
+names(linear.stats.outcome.zscore) <- outcome.dependent.linear.zscore
+
+for (i in 1:length(outcome.dependent.linear.zscore))
+{ 
+  assign(paste0("linear.", names(linear.stats.outcome.zscore[i]), ".outcome"), as.tibble(linear.stats.outcome.zscore[[i]]))
+}
+```
+
+```{r combine linear dataframes}
+data.outcome.linear.zscore <- data.table::rbindlist(linear.stats.outcome.zscore) %>%
+  mutate(Class = rep(c("Increasing", "Decreasing"), 20)) %>% # Create new formatted class variable
+  select(Class,
+         `Dependent variable` = Variable,
+         estimate,
+         conf.low,
+         conf.high,
+         p.value, 
+         p.value.adjusted,
+         Significance,
+         block)
+```
+
+Plot the linear regression results 
+
+```{r linear regression outcome plot}
+outcome.linear.separate.plot.zscore <- ggplot(
+  data.outcome.linear.zscore, # CHANGE DEPENDING IF YOU WANT TO USE Z SCORES OR NOT - remember to rename the plot if you change it
+  aes(x = `Dependent variable`,
+      y = estimate,
+      ymin = conf.low,
+      ymax = conf.high,
+      color = Class)
+  ) +
+  scale_fill_manual(values = palette2b) +
+  scale_color_manual(values = palette2b) +
+  scale_shape_manual(values = c(21, 19)) +
+  geom_pointrange(aes(shape = Significance), position = position_dodge(width = 0.7)) +
+  facet_grid(block ~ Class, drop = TRUE, scales = "free_y", space = "free") +
+  labs(y = "Standardised Estimate (95% CI)",
+       x = "names",
+       title = "Association between childhood social isolation class membership and outcomes at age 18",
+       subtitle = paste("N(Total) = ", length(dat$sex),
+                        "; N(Increasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Increasing"])),
+                        "; N(Decreasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Decreasing"])), sep = ""),
+       color = "",
+       shape = "") +
+  theme.outcome +
+  geom_hline(linetype = "dashed", yintercept = 0) +
+ scale_y_continuous(breaks=c(-1.5, -1, -0.75, -0.5, -0.25, 0, 0.25, 0.5, 0.75, 1, 1.5, 2)) + # log10_trans() has been removed here
+  coord_flip()
+
+outcome.linear.separate.plot.zscore
+
+#save
+ggsave(
+  "linear_outcome_individual_regressions_zscore.png",
+  plot = outcome.linear.separate.plot.zscore,
+  device = "png",
+  path = paste0(graph_save_data_path, "outcomes/analysis_interpretation"),
+  width = 12,
+  height = 9
+)
+```
+
+# Chi square tests of difference **is this needed??**
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-# Pairwise comparisons - ADAPT FOR OUTCOMES
-**We have decided this doesn't make sense for antecedents, as this is only measuring the differences in the intercept rather than the slope. This will be used at the outcome stage and not for antecedent analyses**
+# Pairwise comparisons
+We first attempted to run pairwise comparisons between increasing and decreasing classes for the antecedents but then decided this doesn't make sense for antecedents - as it is only measuring the differences in the intercept rather than the slope. Therefore, pairwise comparisons makes more logical sense for outcome variables as we can test for differences in slope and intercept. 
 
 ## Create new dataset dropping those who are in the lowstable class 
 
 ```{r create pairwise dataset and order class variable}
-# dat.pairwise <- dat %>%
-#   filter(class_renamed != "Low stable") %>%
-#   mutate_if(is.factor, ~forcats::fct_drop(., only = "Low stable"))
-# 
-# dat.pairwise <- dat.pairwise %>%
-#   mutate(
-#     class_binary = 
-#       as.factor(class_renamed) %>%
-#       relevel(ref = "Increasing", 
-#               first = TRUE,
-#               collapse = "+",
-#               xlevels = TRUE)
-#   )
+dat.pairwise <- dat %>%
+  filter(class_renamed != "Low stable") %>%
+  mutate_if(is.factor, ~forcats::fct_drop(., only = "Low stable"))
+
+dat.pairwise <- dat.pairwise %>%
+  mutate(
+    class_binary =
+      as.factor(class_renamed) %>%
+      relevel(ref = "Increasing",
+              first = TRUE,
+              collapse = "+",
+              xlevels = TRUE)
+  )
 ```
 
-```{r loop for running antecedent regressions, include=FALSE}
-# logistic.stats.ant <- list() #create empty list to store the information in
-# 
-# for (i in 1:length(antecedent.independent))
-# { cat(i)
-#   logistic.formula.ant <- as.formula(sprintf("class_binary ~ %s", antecedent.independent[i]))
-# 
-#   logistic.reg.ant <- glm(logistic.formula.ant, data = dat.pairwise, family = "binomial")
-# 
-#   logistic.output.ant.full <- broom::tidy(logistic.reg.ant, conf.int = TRUE, exponantiate = TRUE)[-c(1),] %>%
-#     add_column(Variable = name.list[[i]]) %>%
-#     add_column(OR = exp(coef(logistic.reg.ant))[2]) %>% 
-#     add_column(`Lower CI` = exp(confint(logistic.reg.ant))[2,1]) %>%
-#     add_column(`Upper CI` = exp(confint(logistic.reg.ant))[2,2])
-#  
-#   if (i < 7) {
-#     logistic.output.ant.full <- logistic.output.ant.full %>%
-#       mutate(block = "Social block") %>%
-#                   mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 6))
-#   } else if (i < 13 ) {
-#    logistic.output.ant.full <- logistic.output.ant.full %>%
-#       mutate(block = "Home block") %>%
-#                   mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 7))
-#   } else if (i < 21) {
-#     logistic.output.ant.full <- logistic.output.ant.full %>%
-#       mutate(block = "Parent block") %>%
-#                   mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 8))
-#   } else if (i < 24) {
-#     logistic.output.ant.full <- logistic.output.ant.full %>%
-#       mutate(block = "Neuro block") %>%
-#                   mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 3))
-#   } else {
-#     logistic.output.ant.full <- logistic.output.ant.full %>%
-#       mutate(block = "Emo/behave block") %>%
-#                   mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 4))
-#   }
-#   
-#    logistic.output.ant.full <- logistic.output.ant.full %>% 
-#     mutate(
-#     Significance = 
-#       if_else(
-#         p.value.adjusted < 0.05, 
-#         1,
-#         0
-#       ) %>%
-#     recode_factor(
-#         "0" = "Non-significant",
-#         "1" = "Significant"
-#       ))
-#   
-#   logistic.stats.ant[[i]] <- logistic.output.ant.full
-# }
-# # set the names of the list to match the variable names
-# names(logistic.stats.ant) <- antecedent.independent
+Now we want to use the pairwise dataset and run the same regressions for logistic and linear. 
+
+```{r logistic regression loop}
+logistic.stats.outcome.pairwise <- list() #create empty list to store the information in
+
+for (i in 1:length(outcome.dependent.logistic))
+{ cat(i)
+  logistic.formula.outcome.pairwise <- as.formula(sprintf("%s ~ class_binary", outcome.dependent.logistic[i]))
+
+  logistic.reg.outcome.pairwise <- glm(logistic.formula.outcome.pairwise, data = dat.pairwise, family = "binomial")
+
+  logistic.output.outcome.full.pairwise <- broom::tidy(logistic.reg.outcome.pairwise, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1),] %>%
+    dplyr::rename(
+           OR = estimate,
+           OR.conf.low = conf.low,
+           OR.conf.high = conf.high)
+ 
+  if (i < 12) {
+    logistic.output.outcome.full.pairwise <- logistic.output.outcome.full.pairwise %>%
+      mutate(block = "Mental health block") %>%
+      mutate(Variable = outcome.dependent.logistic.name.list[[i]]) %>%
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 18)) # change depending if we combine a few variables 
+  } else {
+   logistic.output.outcome.full.pairwise <- logistic.output.outcome.full.pairwise %>%
+      mutate(block = "Employment block") %>%
+      mutate(Variable = outcome.dependent.logistic.name.list[[i]]) %>%
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 5))
+  }
+  
+   logistic.output.outcome.full.pairwise <- logistic.output.outcome.full.pairwise %>% 
+    mutate(
+    Significance = 
+      if_else(
+        p.value.adjusted < 0.05, 
+        1,
+        0
+      ) %>%
+    recode_factor(
+        "0" = "Non-significant",
+        "1" = "Significant"
+      ))
+    
+  logistic.stats.outcome.pairwise[[i]] <- logistic.output.outcome.full.pairwise
+}
+
+# set the names of the list to match the variable names
+names(logistic.stats.outcome.pairwise) <- outcome.dependent.logistic
+
+for (i in 1:length(outcome.dependent.logistic))
+{ 
+  assign(paste0("logistic.pairwise.", names(logistic.stats.outcome.pairwise[i]), ".outcome"), as.tibble(logistic.stats.outcome.pairwise[[i]]))
+}
 ```
 
-```{r call statistics for all continuous antecedent regressions, include=FALSE}
-# for (i in 1:length(antecedent.independent))
-# { 
-#   assign(paste0("logistic.", names(logistic.stats.ant[i])), as.tibble(logistic.stats.ant[[i]]))
-# }
-# 
-# logistic.stats.all <- bind_rows(logistic.SES_binary_releveled, logistic.acorn_recoded_05, logistic.vandalism_05, logistic.problems_neighbours_05, logistic.number_children_school_05, logistic.number_children_school_free_meals_05, logistic.child_harm_recoded_05, logistic.total_siblings_05, logistic.total_social_support_05, logistic.total_activities_with_mum_05, logistic.mum_notlived_biodad_sincebirth_05, logistic.any_domestic_violence_05, logistic.maternal_depression_lifetime_05, logistic.maternal_personality_openness_05, logistic.maternal_personality_conscientiousness_05, logistic.maternal_personality_extroversion_05, logistic.maternal_personality_agreeableness_05, logistic.maternal_personality_neuroticism_05, logistic.antisocial_behaviour_parent_05, logistic.alcoholism_parent_05, logistic.IQ_05, logistic.executive_function_05, logistic.theory_of_mind_05, logistic.externalising_combined_05, logistic.internalising_combined_excl_sis_05, logistic.ADHD_combined_05, logistic.prosocial_behaviours_combined_05 )
-# 
-# logistic.stats.all.table <- kable(logistic.stats.all)
+```{r combine logistic dataframes}
+data.outcome.logistic.pairwise <- data.table::rbindlist(logistic.stats.outcome.pairwise) %>%
+  mutate(Class = "Decreasing") %>% # Decreasing compared to increasing
+  select(Class,
+         `Dependent variable` = Variable,
+         OR,
+         OR.conf.low,
+         OR.conf.high,
+         p.value, 
+         p.value.adjusted,
+         Significance,
+         block)
 ```
 
-```{r pairwise plot}
-# pairwise.all.plot <- ggplot(
-#   logistic.stats.all,
-#   aes(x = Variable,
-#       y = OR,
-#       ymin = `Lower CI`,
-#       ymax = `Upper CI`)
-#   ) +
-#   scale_fill_manual(values = palette2b) +
-#   scale_color_manual(values = palette2b) +
-#   scale_shape_manual(values = c(21, 19)) +
-#   geom_pointrange(aes(shape = Significance), position = position_dodge(width = 0.7)) +
-#   labs(y = "OR (95% CI) \n OR>1 shows association with being in the decreasing class compared to increasing",
-#        x = "Symptom",
-#        title = "Antecedents and pairwise class membership",
-#        subtitle = paste("N(Total) = ", length(dat.pairwise$sex),
-#                         "; N(Increasing) = ", sum(!is.na(dat.pairwise$class_binary[dat.pairwise$class_binary=="Increasing"])),
-#                         "; N(Decreasing) = ", sum(!is.na(dat.pairwise$class_binary[dat.pairwise$class_binary=="Decreasing"])), sep = ""),
-#        color = "",
-#        shape = "") +
-#   theme(panel.grid.major.x = element_line(size = 0.5,
-#                                           linetype = 'dashed',
-#                                           colour = "gray"),
-#         plot.title = element_text(size = 12, face = "bold", hjust=0.5),
-#         plot.subtitle = element_text(hjust = 0.5),
-#         axis.title.x = element_text(size=10,face="bold"),
-#         axis.title.y = element_blank(),
-#         axis.text.x = element_text(colour = "black", size = 9),
-#         axis.text.y = element_text(colour = "black", size = 10),
-#         axis.ticks.x = element_blank(),
-#         axis.ticks.y = element_blank(),
-#         panel.background = element_blank(),
-#         legend.position = "bottom") +
-#   geom_hline(linetype = "dashed", yintercept = 1) +
-#   scale_y_continuous(trans = scales::log10_trans(), breaks=c(0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1, 1.5, 2, 2.5, 3, 3.5, 4)) +
-#   coord_flip()
-# 
-# pairwise.all.plot
-# 
-# #save
-# ggsave(
-#   "pairwise.all.plot.png",
-#   plot = pairwise.all.plot,
-#   device = "png",
-#   path = paste0(graph_save_data_path, "antecedents/"),
-#   width = 10,
-#   height = 7
-# )
+```{r logistic regression pairwise outcome plot}
+outcome.logistic.separate.pairwise.plot <- ggplot(
+  data.outcome.logistic.pairwise, # CHANGE DEPENDING IF YOU WANT TO USE Z SCORES OR NOT - remember to rename the plot if you change it
+  aes(x = `Dependent variable`,
+      y = OR,
+      ymin = OR.conf.low,
+      ymax = OR.conf.high,
+      color = Class)
+  ) +
+  scale_fill_manual(values = palette2b) +
+  scale_color_manual(values = palette2b) +
+  scale_shape_manual(values = c(21, 19)) +
+  geom_pointrange(aes(shape = Significance), position = position_dodge(width = 0.7)) +
+  facet_grid(block ~ ., drop = TRUE, scales = "free_y", space = "free") +
+  labs(y = "OR (95% CI) \n OR>1 indicates association with decreasing compared to increasing",
+       x = "names",
+       title = "Pairwise comparison between childhood social isolation class membership and outcomes at age 18",
+       subtitle = paste("N(Total) = ", length(dat$sex),
+                        "; N(Increasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Increasing"])),
+                        "; N(Decreasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Decreasing"])), sep = ""),
+       color = "",
+       shape = "") +
+  theme.outcome +
+  geom_hline(linetype = "dashed", yintercept = 1) +
+  scale_y_continuous(trans = scales::log10_trans(), breaks=c(0.2,0.4,0.6,0.8, 1, 1.5, 2, 2.5, 3)) +
+  coord_flip()
 
+outcome.logistic.separate.pairwise.plot
+
+#save
+ggsave(
+  "logistic_pairwise_outcome_individual_regressions.png",
+  plot = outcome.logistic.separate.pairwise.plot,
+  device = "png",
+  path = paste0(graph_save_data_path, "outcomes/analysis_interpretation"),
+  width = 12,
+  height = 9
+)
 ```
 
+Linear regressions - using z scores
 
+```{r linear pairwise regression loop using zscores}
+linear.stats.outcome.zscore.pairwise <- list() #create empty list to store the information in
 
+for (i in 1:length(outcome.dependent.linear.zscore))
+{ cat(i)
+  linear.formula.outcome.zscore.pairwise <- as.formula(sprintf("%s ~ class_binary", outcome.dependent.linear.zscore[i]))
 
+  linear.reg.outcome.zscore.pairwise <- lm(linear.formula.outcome.zscore.pairwise, data = dat.pairwise)
 
+  linear.output.outcome.full.zscore.pairwise <- broom::tidy(linear.reg.outcome.zscore.pairwise, conf.int = TRUE, conf.level = 0.95)[-c(1),]
+ 
+  if (i < 8) {
+    linear.output.outcome.full.zscore.pairwise <- linear.output.outcome.full.zscore.pairwise %>%
+      mutate(block = "Mental health block") %>%
+      mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 18))
+  } else if (i < 12 ) {
+   linear.output.outcome.full.zscore.pairwise <- linear.output.outcome.full.zscore.pairwise %>%
+      mutate(block = "Physical health block") %>%
+      mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 4))
+  } else if (i < 17) {
+    linear.output.outcome.full.zscore.pairwise <- linear.output.outcome.full.zscore.pairwise %>%
+      mutate(block = "Coping and functioning block") %>%
+      mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 5))
+  } else {
+    linear.output.outcome.full.zscore.pairwise <- linear.output.outcome.full.zscore.pairwise %>%
+      mutate(block = "Employment block") %>%
+      mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 5))
+  }
+  
+   linear.output.outcome.full.zscore.pairwise <- linear.output.outcome.full.zscore.pairwise %>% 
+    mutate(
+    Significance = 
+      if_else(
+        p.value.adjusted < 0.05, 
+        1,
+        0
+      ) %>%
+    recode_factor(
+        "0" = "Non-significant",
+        "1" = "Significant"
+      ))
+    
+  linear.stats.outcome.zscore.pairwise[[i]] <- linear.output.outcome.full.zscore.pairwise
+}
 
+# set the names of the list to match the variable names
+names(linear.stats.outcome.zscore.pairwise) <- outcome.dependent.linear.zscore
 
+for (i in 1:length(outcome.dependent.linear.zscore))
+{ 
+  assign(paste0("linear.pairwise.", names(linear.stats.outcome.zscore.pairwise[i]), ".outcome"), as.tibble(linear.stats.outcome.zscore.pairwise[[i]]))
+}
+```
+
+```{r combine linear dataframes}
+data.outcome.linear.zscore.pairwise <- data.table::rbindlist(linear.stats.outcome.zscore.pairwise) %>%
+  mutate(Class = "Decreasing") %>% # Decreasing compared to increasing
+  select(Class,
+         `Dependent variable` = Variable,
+         estimate,
+         conf.low,
+         conf.high,
+         p.value, 
+         p.value.adjusted,
+         Significance,
+         block)
+```
+
+```{r linear regression pairwise outcome plot}
+outcome.linear.separate.plot.zscore.pairwise <- ggplot(
+  data.outcome.linear.zscore.pairwise, # CHANGE DEPENDING IF YOU WANT TO USE Z SCORES OR NOT - remember to rename the plot if you change it
+  aes(x = `Dependent variable`,
+      y = estimate,
+      ymin = conf.low,
+      ymax = conf.high,
+      color = Class)
+  ) +
+  scale_fill_manual(values = palette2b) +
+  scale_color_manual(values = palette2b) +
+  scale_shape_manual(values = c(21, 19)) +
+  geom_pointrange(aes(shape = Significance), position = position_dodge(width = 0.7)) +
+  facet_grid(block ~ ., drop = TRUE, scales = "free_y", space = "free") +
+  labs(y = "Standardised Estimate (95% CI) \n >0 indicates association with decreasing compared to increasing",
+       x = "names",
+       title = "Pairwise comparison between childhood social isolation class membership and outcomes at age 18",
+       subtitle = paste("N(Total) = ", length(dat$sex),
+                        "; N(Increasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Increasing"])),
+                        "; N(Decreasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Decreasing"])), sep = ""),
+       color = "",
+       shape = "") +
+  theme.outcome +
+  geom_hline(linetype = "dashed", yintercept = 0) +
+ scale_y_continuous(breaks=c(-1.5, -1, -0.75, -0.5, -0.25, 0, 0.25, 0.5, 0.75, 1, 1.5, 2)) + # log10_trans() has been removed here
+  coord_flip()
+
+outcome.linear.separate.plot.zscore.pairwise
+
+#save
+ggsave(
+  "linear_outcome_individual_regressions_zscore_pairwise.png",
+  plot = outcome.linear.separate.plot.zscore.pairwise,
+  device = "png",
+  path = paste0(graph_save_data_path, "outcomes/analysis_interpretation"),
+  width = 12,
+  height = 9
+)
+```
 
 
 
