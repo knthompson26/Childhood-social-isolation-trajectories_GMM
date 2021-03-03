@@ -1,0 +1,42 @@
+! MPLUS CODE FOR GROWTH CURVE MODEL FOR SOCIAL ISOLATION IN ERISK
+! Authors: K N Thompson 2021
+ 
+TITLE: Single-class linear growth curve model in full sample with clustering
+
+
+DATA:
+   FILE IS "/Users/katiethompson/Desktop/
+   mplusisolationtrajectoriesJan2021_full_sample.csv";
+   ! using file saved on desktop as doesn't like long paths
+
+VARIABLE: 
+	NAMES = 
+	id familyid rorderp5 torder 
+	risks cohort sampsex zygosity seswq35 
+	sisoe5 sisoe7 sisoe10 sisoe12 
+	log_5 log_7 log_10 log_12 ;
+
+	USEVARIABLES = sisoe5 sisoe7 sisoe10 sisoe12;
+
+	MISSING = .; ! . are missing values
+
+! To restrict to specific variable only, eg for girls only USEOBSERVATIONS sampsex EQ 2;  
+
+	IDVARIABLE = id ;
+	
+	CLUSTER = familyid ; !control for twins in sample
+	
+ANALYSIS:
+	TYPE = COMPLEX ; ! to account for complex twin structure
+
+MODEL:
+! This model includes an intercept (i) and linear slope (s). Add (q) for quadratic
+
+     i s | sisoe5@0 sisoe7@2 sisoe10@5 sisoe12@7 ; 
+     
+PLOT:
+	SERIES = sisoe5-sisoe12(S);
+	TYPE = PLOT3 ;
+OUTPUT:	
+	sampstat standardized
+
