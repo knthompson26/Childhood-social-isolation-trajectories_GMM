@@ -200,7 +200,7 @@ outcome.dependent.linear <- c(
   "conduct_disorder_symptoms_18", 
   "alcohol_symptom_scale_18",
   "cannabis_symptom_scale_18", 
-  "cat_psychosis_experiences_scale_18", 
+  "cat_psychosis_experiences_scale_numeric_18", # can to be numeric to be in linear regression
   "BMI_18", # physical health
   "CRP_log_18",
   "physical_activity_18",
@@ -255,18 +255,18 @@ outcome.dependent.logistic <- c(
 )
 
 outcome.dependent.logistic.name.list <- c(
-  "Depression diagnosis: Yes",
-  "Anxiety diagnosis: Yes",
-  "ADHD diagnosis: Yes",
-  "Moderate conduct disorder: Yes",
-  "Alcohol dependence: Yes",
-  "Alcohol abuse: Yes",
-  "Canabis dependence: Yes",
-  "PTSD lifetime diagnosis: Yes",
-  "PTSD current diagnosis: Yes",
-  "Suicide attempt: Yes",
-  "Service use: Yes",
-  "Not in employment or education: Yes"
+  "Depression diagnosis",
+  "Anxiety diagnosis",
+  "ADHD diagnosis",
+  "Moderate conduct disorder",
+  "Alcohol dependence",
+  "Alcohol abuse",
+  "Canabis dependence",
+  "PTSD lifetime diagnosis",
+  "PTSD current diagnosis",
+  "Suicide attempt",
+  "Service use",
+  "Not in employment or education"
 )
 ```
 
@@ -417,6 +417,46 @@ data.outcome.logistic <- data.table::rbindlist(logistic.stats.outcome) %>%
          block)
 ```
 
+```{r logistic regression outcome plot}
+outcome.logistic.separate.plot <- ggplot(
+  data.outcome.logistic, # CHANGE DEPENDING IF YOU WANT TO USE Z SCORES OR NOT - remember to rename the plot if you change it
+  aes(x = `Dependent variable`,
+      y = OR,
+      ymin = OR.conf.low,
+      ymax = OR.conf.high,
+      color = Class)
+  ) +
+  scale_fill_manual(values = palette2b) +
+  scale_color_manual(values = palette2b) +
+  scale_shape_manual(values = c(21, 19)) +
+  geom_pointrange(aes(shape = Significance), position = position_dodge(width = 0.7)) +
+  facet_grid(block ~ Class, drop = TRUE, scales = "free_y", space = "free") +
+  labs(y = "RRR (95% CI)",
+       x = "names",
+       title = "Association between childhood social isolation class membership and outcomes at age 18",
+       subtitle = paste("N(Total) = ", length(dat$sex),
+                        "; N(Increasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Increasing"])),
+                        "; N(Decreasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Decreasing"])), sep = ""),
+       color = "",
+       shape = "") +
+  theme.antecedent +
+  geom_hline(linetype = "dashed", yintercept = 1) +
+  scale_y_continuous(trans = scales::log10_trans(), breaks=c(0.2,0.4,0.6,0.8, 1, 1.5, 2, 2.5, 3, 4, 5)) +
+  coord_flip()
+
+outcome.logistic.separate.plot
+
+#save
+ggsave(
+  "logistic_outcome_individual_regressions.png",
+  plot = outcome.logistic.separate.plot,
+  device = "png",
+  path = paste0(graph_save_data_path, "outcomes/analysis_interpretation"),
+  width = 12,
+  height = 9
+)
+```
+
 ## Linear regression loop
 
 ```{r linear regression loop}
@@ -476,40 +516,84 @@ for (i in 1:length(outcome.dependent.logistic))
 }
 ```
 
+```{r combine linear dataframes}
+data.outcome.linear <- data.table::rbindlist(linear.stats.outcome) %>%
+  mutate(Class = rep(c("Increasing", "Decreasing"), 20)) %>% # Create new formatted class variable
+  select(Class,
+         `Dependent variable` = Variable,
+         estimate,
+         conf.low,
+         conf.high,
+         p.value, 
+         p.value.adjusted,
+         Significance,
+         block)
+```
+
+```{r linear regression outcome plot}
+outcome.linear.separate.plot <- ggplot(
+  data.outcome.linear, # CHANGE DEPENDING IF YOU WANT TO USE Z SCORES OR NOT - remember to rename the plot if you change it
+  aes(x = `Dependent variable`,
+      y = estimate,
+      ymin = conf.low,
+      ymax = conf.high,
+      color = Class)
+  ) +
+  scale_fill_manual(values = palette2b) +
+  scale_color_manual(values = palette2b) +
+  scale_shape_manual(values = c(21, 19)) +
+  geom_pointrange(aes(shape = Significance), position = position_dodge(width = 0.7)) +
+  facet_grid(block ~ Class, drop = TRUE, scales = "free_y", space = "free") +
+  labs(y = "RRR (95% CI)",
+       x = "names",
+       title = "Association between childhood social isolation class membership and outcomes at age 18",
+       subtitle = paste("N(Total) = ", length(dat$sex),
+                        "; N(Increasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Increasing"])),
+                        "; N(Decreasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Decreasing"])), sep = ""),
+       color = "",
+       shape = "") +
+  theme.antecedent +
+  geom_hline(linetype = "dashed", yintercept = 0) +
+ # scale_y_continuous(trans = scales::log10_trans(), breaks=c(0.2,0.4,0.6,0.8, 1, 1.5, 2, 2.5, 3, 4, 5)) + # should this be plotted this way - or should this be a normal scale?
+  coord_flip()
+
+outcome.linear.separate.plot
+
+#save
+ggsave(
+  "linear_outcome_individual_regressions.png",
+  plot = outcome.linear.separate.plot,
+  device = "png",
+  path = paste0(graph_save_data_path, "outcomes/analysis_interpretation"),
+  width = 12,
+  height = 9
+)
+```
+
+
+# Chi square tests of difference
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-# Pairwise comparisons - ADAPT FOR OUTCOMES
+# Pairwise comparisons
 **We have decided this doesn't make sense for antecedents, as this is only measuring the differences in the intercept rather than the slope. This will be used at the outcome stage and not for antecedent analyses**
 
 ## Create new dataset dropping those who are in the lowstable class 
 
 ```{r create pairwise dataset and order class variable}
-# dat.pairwise <- dat %>%
-#   filter(class_renamed != "Low stable") %>%
-#   mutate_if(is.factor, ~forcats::fct_drop(., only = "Low stable"))
-# 
-# dat.pairwise <- dat.pairwise %>%
-#   mutate(
-#     class_binary = 
-#       as.factor(class_renamed) %>%
-#       relevel(ref = "Increasing", 
-#               first = TRUE,
-#               collapse = "+",
-#               xlevels = TRUE)
-#   )
+dat.pairwise <- dat %>%
+  filter(class_renamed != "Low stable") %>%
+  mutate_if(is.factor, ~forcats::fct_drop(., only = "Low stable"))
+
+dat.pairwise <- dat.pairwise %>%
+  mutate(
+    class_binary =
+      as.factor(class_renamed) %>%
+      relevel(ref = "Increasing",
+              first = TRUE,
+              collapse = "+",
+              xlevels = TRUE)
+  )
 ```
 
 ```{r loop for running antecedent regressions, include=FALSE}
