@@ -53,7 +53,7 @@ library(tidyverse)
 Source the data file path
 ```{r source data file path}
 #source raw data directory: data_raw and data included
-source("../../../isolation_trajectories_data_path.R")
+source("../../../../isolation_trajectories_data_path.R")
 ```
 
 # Read in data
@@ -523,6 +523,23 @@ dat <- dat %>%
 
 #look at the frequency of this
 freq(dat$na.per.person.si,
+     cumul = FALSE)
+
+
+#look at the frequency at 5 years only
+freq(dat$sisoe5,
+     cumul = FALSE)
+
+#look at the frequency at 7 years only
+freq(dat$sisoe7,
+     cumul = FALSE)
+
+#look at the frequency at 10 years only
+freq(dat$sisoe10,
+     cumul = FALSE)
+
+#look at the frequency at 12 years only
+freq(dat$sisoe12,
      cumul = FALSE)
 ```
 
