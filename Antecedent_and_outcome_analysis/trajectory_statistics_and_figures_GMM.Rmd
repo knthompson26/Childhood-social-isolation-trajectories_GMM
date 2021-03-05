@@ -1,5 +1,5 @@
 ---
-title: "GMM trajectory statistics and figures for the four class model"
+title: "GMM trajectory statistics and figures"
 author: "Katherine N Thompson"
 date: "13th Jan 2021"
 output:
