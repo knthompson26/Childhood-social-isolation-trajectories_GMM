@@ -628,7 +628,7 @@ for (i in 1:length(outcome.dependent.linear.zscore))
 }
 ```
 
-```{r combine linear dataframes}
+```{r combine linear dataframes zscore}
 data.outcome.linear.zscore <- data.table::rbindlist(linear.stats.outcome.zscore) %>%
   mutate(Class = rep(c("Increasing", "Decreasing"), 20)) %>% # Create new formatted class variable
   select(Class,
@@ -684,7 +684,12 @@ ggsave(
 )
 ```
 
-# Chi square tests of difference **is this needed??**
+# Sex differences?
+
+
+
+# Zygosity differences?
+
 
 
 # Pairwise comparisons
