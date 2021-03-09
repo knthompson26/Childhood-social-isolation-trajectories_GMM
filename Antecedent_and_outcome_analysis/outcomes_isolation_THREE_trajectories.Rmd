@@ -686,11 +686,284 @@ ggsave(
 
 # Sex differences?
 
+## Logistic regression loop  - sex differences
 
+```{r logistic regression loop with sex diffs}
+logistic.stats.outcome.sex <- list() #create empty list to store the information in
 
-# Zygosity differences?
+for (i in 1:length(outcome.dependent.logistic))
+{ cat(i)
+  logistic.formula.outcome.sex <- as.formula(sprintf("%s ~ class_reordered + sex + sex*class_reordered", outcome.dependent.logistic[i]))
 
+  logistic.reg.outcome.sex <- glm(logistic.formula.outcome.sex, data = dat, family = "binomial")
 
+  logistic.output.outcome.full.sex <- broom::tidy(logistic.reg.outcome.sex, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1:4),] %>%
+    dplyr::rename(
+           OR = estimate,
+           OR.conf.low = conf.low,
+           OR.conf.high = conf.high)
+ 
+  if (i < 12) {
+    logistic.output.outcome.full.sex <- logistic.output.outcome.full.sex %>%
+      mutate(block = "Mental health block") %>%
+      mutate(Variable = outcome.dependent.logistic.name.list[[i]]) %>%
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 18)) # change depending if we combine a few variables 
+  } else {
+   logistic.output.outcome.full.sex <- logistic.output.outcome.full.sex %>%
+      mutate(block = "Employment block") %>%
+      mutate(Variable = outcome.dependent.logistic.name.list[[i]]) %>%
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 5))
+  }
+  
+   logistic.output.outcome.full.sex <- logistic.output.outcome.full.sex %>% 
+    mutate(
+    Significance = 
+      if_else(
+        p.value.adjusted < 0.05, 
+        1,
+        0
+      ) %>%
+    recode_factor(
+        "0" = "Non-significant",
+        "1" = "Significant"
+      ))
+    
+  logistic.stats.outcome.sex[[i]] <- logistic.output.outcome.full.sex
+}
+
+# set the names of the list to match the variable names
+names(logistic.stats.outcome.sex) <- outcome.dependent.logistic
+```
+
+```{r combine logistic dataframes sex diffs}
+data.outcome.logistic.sex <- data.table::rbindlist(logistic.stats.outcome.sex) %>%
+  mutate(Class = rep(c("Increasing", "Decreasing"), 12)) %>% # Create new formatted class variable
+  select(Class,
+         `Dependent variable` = Variable,
+         OR,
+         OR.conf.low,
+         OR.conf.high,
+         p.value, 
+         p.value.adjusted,
+         Significance,
+         block)
+
+# check for significant interaction effects between class and sex for each variable
+data.outcome.logistic.sex
+```
+Significant interaction for "Not in employment or education" for both increasing and decreasing classes. 
+
+## Linear regression loop - sex differences
+
+```{r linear regression loop sex diffs}
+linear.stats.outcome.sex <- list() #create empty list to store the information in
+
+for (i in 1:length(outcome.dependent.linear))
+{ cat(i)
+  linear.formula.outcome.sex <- as.formula(sprintf("%s ~ class_reordered + sex + sex*class_reordered", outcome.dependent.linear[i]))
+
+  linear.reg.outcome.sex <- lm(linear.formula.outcome.sex, data = dat)
+
+  linear.output.outcome.full.sex <- broom::tidy(linear.reg.outcome.sex, conf.int = TRUE, conf.level = 0.95)[-c(1:4),] 
+ 
+  if (i < 8) {
+    linear.output.outcome.full.sex <- linear.output.outcome.full.sex %>%
+      mutate(block = "Mental health block") %>%
+      mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 18))
+  } else if (i < 12 ) {
+   linear.output.outcome.full.sex <- linear.output.outcome.full.sex %>%
+      mutate(block = "Physical health block") %>%
+      mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 4))
+  } else if (i < 17) {
+    linear.output.outcome.full.sex <- linear.output.outcome.full.sex %>%
+      mutate(block = "Coping and functioning block") %>%
+      mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 5))
+  } else {
+    linear.output.outcome.full.sex <- linear.output.outcome.full.sex %>%
+      mutate(block = "Employment block") %>%
+      mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 5))
+  }
+  
+   linear.output.outcome.full.sex <- linear.output.outcome.full.sex %>% 
+    mutate(
+    Significance = 
+      if_else(
+        p.value.adjusted < 0.05, 
+        1,
+        0
+      ) %>%
+    recode_factor(
+        "0" = "Non-significant",
+        "1" = "Significant"
+      ))
+    
+  linear.stats.outcome.sex[[i]] <- linear.output.outcome.full.sex
+}
+# set the names of the list to match the variable names
+names(linear.stats.outcome.sex) <- outcome.dependent.linear
+```
+
+```{r combine linear dataframes sex diffs}
+data.outcome.linear.sex <- data.table::rbindlist(linear.stats.outcome.sex) %>%
+  mutate(Class = rep(c("Increasing", "Decreasing"), 20)) %>% # Create new formatted class variable
+  select(Class,
+         `Dependent variable` = Variable,
+         estimate,
+         conf.low,
+         conf.high,
+         p.value, 
+         p.value.adjusted,
+         Significance,
+         block)
+
+# check for significant interactions between sex and class
+data.outcome.linear.sex
+```
+Significant interactions for BMI and the increasing class. 
+
+# Zygosity differences
+
+## Logistic regression loop  - zygosity differences
+
+```{r logistic regression loop with zyg diffs}
+logistic.stats.outcome.zyg <- list() #create empty list to store the information in
+
+for (i in 1:length(outcome.dependent.logistic))
+{ cat(i)
+  logistic.formula.outcome.zyg <- as.formula(sprintf("%s ~ class_reordered + zygosity_binary + zygosity_binary*class_reordered", outcome.dependent.logistic[i]))
+
+  logistic.reg.outcome.zyg <- glm(logistic.formula.outcome.zyg, data = dat, family = "binomial")
+
+  logistic.output.outcome.full.zyg <- broom::tidy(logistic.reg.outcome.zyg, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1:4),] %>%
+    dplyr::rename(
+           OR = estimate,
+           OR.conf.low = conf.low,
+           OR.conf.high = conf.high)
+ 
+  if (i < 12) {
+    logistic.output.outcome.full.zyg <- logistic.output.outcome.full.zyg %>%
+      mutate(block = "Mental health block") %>%
+      mutate(Variable = outcome.dependent.logistic.name.list[[i]]) %>%
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 18)) # change depending if we combine a few variables 
+  } else {
+   logistic.output.outcome.full.zyg <- logistic.output.outcome.full.zyg %>%
+      mutate(block = "Employment block") %>%
+      mutate(Variable = outcome.dependent.logistic.name.list[[i]]) %>%
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 5))
+  }
+  
+   logistic.output.outcome.full.zyg <- logistic.output.outcome.full.zyg %>% 
+    mutate(
+    Significance = 
+      if_else(
+        p.value.adjusted < 0.05, 
+        1,
+        0
+      ) %>%
+    recode_factor(
+        "0" = "Non-significant",
+        "1" = "Significant"
+      ))
+    
+  logistic.stats.outcome.zyg[[i]] <- logistic.output.outcome.full.zyg
+}
+
+# set the names of the list to match the variable names
+names(logistic.stats.outcome.zyg) <- outcome.dependent.logistic
+```
+
+```{r combine logistic dataframes zyg diffs}
+data.outcome.logistic.zyg <- data.table::rbindlist(logistic.stats.outcome.zyg) %>%
+  mutate(Class = rep(c("Increasing", "Decreasing"), 12)) %>% # Create new formatted class variable
+  select(Class,
+         `Dependent variable` = Variable,
+         OR,
+         OR.conf.low,
+         OR.conf.high,
+         p.value, 
+         p.value.adjusted,
+         Significance,
+         block)
+
+# check for significant interaction effects between class and sex for each variable
+data.outcome.logistic.zyg
+```
+## Linear regression loop - zygosity differences
+
+```{r linear regression loop zyg diffs}
+linear.stats.outcome.zyg <- list() #create empty list to store the information in
+
+for (i in 1:length(outcome.dependent.linear))
+{ cat(i)
+  linear.formula.outcome.zyg <- as.formula(sprintf("%s ~ class_reordered + zygosity_binary + zygosity_binary*class_reordered", outcome.dependent.linear[i]))
+
+  linear.reg.outcome.zyg <- lm(linear.formula.outcome.zyg, data = dat)
+
+  linear.output.outcome.full.zyg <- broom::tidy(linear.reg.outcome.zyg, conf.int = TRUE, conf.level = 0.95)[-c(1:4),] 
+ 
+  if (i < 8) {
+    linear.output.outcome.full.zyg <- linear.output.outcome.full.zyg %>%
+      mutate(block = "Mental health block") %>%
+      mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 18))
+  } else if (i < 12 ) {
+   linear.output.outcome.full.zyg <- linear.output.outcome.full.zyg %>%
+      mutate(block = "Physical health block") %>%
+      mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 4))
+  } else if (i < 17) {
+    linear.output.outcome.full.zyg <- linear.output.outcome.full.zyg %>%
+      mutate(block = "Coping and functioning block") %>%
+      mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 5))
+  } else {
+    linear.output.outcome.full.zyg <- linear.output.outcome.full.zyg %>%
+      mutate(block = "Employment block") %>%
+      mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 5))
+  }
+  
+   linear.output.outcome.full.zyg <- linear.output.outcome.full.zyg %>% 
+    mutate(
+    Significance = 
+      if_else(
+        p.value.adjusted < 0.05, 
+        1,
+        0
+      ) %>%
+    recode_factor(
+        "0" = "Non-significant",
+        "1" = "Significant"
+      ))
+    
+  linear.stats.outcome.zyg[[i]] <- linear.output.outcome.full.zyg
+}
+# set the names of the list to match the variable names
+names(linear.stats.outcome.zyg) <- outcome.dependent.linear
+```
+
+```{r combine linear dataframes sex diffs}
+data.outcome.linear.zyg <- data.table::rbindlist(linear.stats.outcome.zyg) %>%
+  mutate(Class = rep(c("Increasing", "Decreasing"), 20)) %>% # Create new formatted class variable
+  select(Class,
+         `Dependent variable` = Variable,
+         estimate,
+         conf.low,
+         conf.high,
+         p.value, 
+         p.value.adjusted,
+         Significance,
+         block)
+
+# check for significant interactions between sex and class
+data.outcome.linear.zyg
+```
+
+No significant zygosity differences. 
 
 # Pairwise comparisons
 We first attempted to run pairwise comparisons between increasing and decreasing classes for the antecedents but then decided this doesn't make sense for antecedents - as it is only measuring the differences in the intercept rather than the slope. Therefore, pairwise comparisons makes more logical sense for outcome variables as we can test for differences in slope and intercept. 
