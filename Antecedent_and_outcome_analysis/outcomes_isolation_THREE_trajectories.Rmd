@@ -171,7 +171,7 @@ name.list <- c(
               "Alcohol dependence: Yes",
               "Alcohol abuse: Yes",
               "Current alcohol dependence symptoms",
-              "Canabis dependence: Yes",
+              "Cannabis dependence: Yes",
               "Current canabis dependence symptoms",
               "PTSD lifetime diagnosis: Yes",
               "PTSD current diagnosis: Yes",
@@ -245,7 +245,7 @@ outcome.dependent.linear.name.list <- c(
                                         "Current inattentive and hyperactive symptoms",
                                         "Current conduct disorder symptoms",
                                         "Current alcohol dependence symptoms",
-                                        "Current canabis dependence symptoms",
+                                        "Current cannabis dependence symptoms",
                                         "Expereinces of psychosis",
                                         "BMI",
                                         "Log CRP",
@@ -283,7 +283,7 @@ outcome.dependent.logistic.name.list <- c(
   "Moderate conduct disorder",
   "Alcohol dependence",
   "Alcohol abuse",
-  "Canabis dependence",
+  "Cannabis dependence",
   "PTSD lifetime diagnosis",
   "PTSD current diagnosis",
   "Suicide attempt",
@@ -303,7 +303,6 @@ colnames(dat)
 Create correlation matrix to look for variables that are highly correlated.
 
 The only variables that are highly correlated here are those that are actually measuring the same construct. For example, current depression and having a depression diagnosis. This is expected and not considered multicollinearity as these lifetime vs current measures will not be used within the same model. 
-
 
 ```{r test for multicollinearity for outcome variables}
 # create data frame with just numeric antecedent variables
@@ -359,19 +358,16 @@ ggsave(
 
 ANALYSIS PLAN 
 
-1. **Individual outcome regressions**: single regressions are computed to see if the class can predict the the occurrence of each variable (variable ~ class). This is done through a loop. Relative Risk Ratios (RRR) and their confidence intervals are calculated. Statistics for all variables are combined and RRR (95% CI) are plotted. FDR multiple testing correction is accounted for independent tests in each block. Will be a mix of linear and logistic regressions dependent on the variable. 
-
-OR 
-
-Is it best to look at group differences between the classes using Chi square? 
+1. **Individual outcome regressions**: single regressions are computed to see if the class can predict the the occurrence of each variable (variable ~ class). This is done through a loop. OR (Odds ratios) and their confidence intervals are calculated for binary variables (logistic regression). Standardized Beta values are calculated for continuous variables (linear regression). Continuous and binary variables are plotted separately. FDR multiple testing correction is accounted for independent tests in each block. Z scores are calculated for all contiuous variables. All linear regressions are run with raw scores and z scores.
 
 Linear regressions (continuous variables):
 depression_current_scale_18, anxiety_current_scale_18, inattentive_hyperactive_symptoms_total_18, conduct_disorder_symptoms_18, alcohol_symptom_scale_18, cannabis_symptom_scale_18,   cat_psychosis_experiences_scale_18, BMI_18, CRP_log_18, physical_activity_18, smoking_current_number_18, loneliness_18, life_satisfaction_18, technology_use_18, coping_with_stress_18, PSQI_global_score_18, job_preparedness_skills_18, job_preparedness_attributes_18, optimism_18, job_search_activities_count_18
 
 Logistic regressions (binary variables):
-depression_diagnosis_12mo_18, anxiety_diagnosis_18, ADHD_diagnosis_18, conduct_disorder_moderate_18, alcohol_dependence_18, alcohol_abuse_18, cannabis_dependence_18, PTSD_diagnosis_lifetime_18, PTSD_diagnosis_current_18,suicide_attempt_selfharm_18, service_use_18, not_in_employment_education_numeric_18,
+depression_diagnosis_12mo_18, anxiety_diagnosis_18, ADHD_diagnosis_18, conduct_disorder_moderate_18, alcohol_dependence_18, alcohol_abuse_18, cannabis_dependence_18, PTSD_diagnosis_lifetime_18, PTSD_diagnosis_current_18,suicide_attempt_selfharm_18, service_use_18, not_in_employment_education_numeric_18
 
-## Create zscores for continuous variables
+2. **Pairwise comparison between increasing and decreasing class**: Individuals in the low stable class are removed. the same regressions are run to see if the class can predict the occurence of each variable (variable ~ class) with class as a binary variable (increasing/decreasing). 
+
 
 # Create *z scores* for all continuous variables
 
@@ -388,7 +384,9 @@ dat <- cbind(dat, scaled_continuous_data)
 colnames(dat)
 ```
 
-## Logistic regression loop
+# Logistic regression
+
+## Loop
 
 ```{r logistic regression loop}
 logistic.stats.outcome <- list() #create empty list to store the information in
@@ -435,11 +433,6 @@ for (i in 1:length(outcome.dependent.logistic))
 
 # set the names of the list to match the variable names
 names(logistic.stats.outcome) <- outcome.dependent.logistic
-
-for (i in 1:length(outcome.dependent.logistic))
-{ 
-  assign(paste0("logistic.", names(logistic.stats.outcome[i]), ".outcome"), as.tibble(logistic.stats.outcome[[i]]))
-}
 ```
 
 ```{r combine logistic dataframes}
@@ -458,7 +451,7 @@ data.outcome.logistic <- data.table::rbindlist(logistic.stats.outcome) %>%
 
 ```{r logistic regression outcome plot}
 outcome.logistic.separate.plot <- ggplot(
-  data.outcome.logistic, # CHANGE DEPENDING IF YOU WANT TO USE Z SCORES OR NOT - remember to rename the plot if you change it
+  data.outcome.logistic, 
   aes(x = `Dependent variable`,
       y = OR,
       ymin = OR.conf.low,
@@ -470,9 +463,9 @@ outcome.logistic.separate.plot <- ggplot(
   scale_shape_manual(values = c(21, 19)) +
   geom_pointrange(aes(shape = Significance), position = position_dodge(width = 0.7)) +
   facet_grid(block ~ Class, drop = TRUE, scales = "free_y", space = "free") +
-  labs(y = "RRR (95% CI)",
+  labs(y = "OR (95% CI)",
        x = "names",
-       title = "Association between childhood social isolation class membership and outcomes at age 18",
+       title = "Association between class membership and outcomes at age 18",
        subtitle = paste("N(Total) = ", length(dat$sex),
                         "; N(Increasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Increasing"])),
                         "; N(Decreasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Decreasing"])), sep = ""),
@@ -491,12 +484,14 @@ ggsave(
   plot = outcome.logistic.separate.plot,
   device = "png",
   path = paste0(graph_save_data_path, "outcomes/analysis_interpretation"),
-  width = 12,
-  height = 9
+  width = 10,
+  height = 7
 )
 ```
 
-## Linear regression loop
+# Linear regression
+
+## Loop
 
 ```{r linear regression loop}
 linear.stats.outcome <- list() #create empty list to store the information in
@@ -548,11 +543,6 @@ for (i in 1:length(outcome.dependent.linear))
 }
 # set the names of the list to match the variable names
 names(linear.stats.outcome) <- outcome.dependent.linear
-
-for (i in 1:length(outcome.dependent.linear))
-{ 
-  assign(paste0("linear.", names(linear.stats.outcome[i]), ".outcome"), as.tibble(linear.stats.outcome[[i]]))
-}
 ```
 
 ```{r combine linear dataframes}
@@ -569,9 +559,11 @@ data.outcome.linear <- data.table::rbindlist(linear.stats.outcome) %>%
          block)
 ```
 
-## Linear regression loop using z scores
+# Linear regression using  scores
 
-```{r linear regression loop}
+## Loop with z scores
+
+```{r linear regression loop with z scores}
 linear.stats.outcome.zscore <- list() #create empty list to store the information in
 
 for (i in 1:length(outcome.dependent.linear.zscore))
@@ -621,11 +613,6 @@ for (i in 1:length(outcome.dependent.linear.zscore))
 }
 # set the names of the list to match the variable names
 names(linear.stats.outcome.zscore) <- outcome.dependent.linear.zscore
-
-for (i in 1:length(outcome.dependent.linear.zscore))
-{ 
-  assign(paste0("linear.", names(linear.stats.outcome.zscore[i]), ".outcome"), as.tibble(linear.stats.outcome.zscore[[i]]))
-}
 ```
 
 ```{r combine linear dataframes zscore}
@@ -642,9 +629,9 @@ data.outcome.linear.zscore <- data.table::rbindlist(linear.stats.outcome.zscore)
          block)
 ```
 
-Plot the linear regression results 
+## Linear regression plot using z scores
 
-```{r linear regression outcome plot}
+```{r linear regression outcome plot zscores}
 outcome.linear.separate.plot.zscore <- ggplot(
   data.outcome.linear.zscore, # CHANGE DEPENDING IF YOU WANT TO USE Z SCORES OR NOT - remember to rename the plot if you change it
   aes(x = `Dependent variable`,
@@ -686,7 +673,7 @@ ggsave(
 
 # Controlling for significant antecedents
 
-Antecedents that remained significant in the full antecedent model:child prosocial behaviours, ADHD behaviours, internalising behaviours, and child executive function 
+Rerun all regression models while controlling for antecedents that remained significant in the full antecedent model. Antecedents that remained significant in the full antecedent model:child prosocial behaviours, ADHD behaviours, internalising behaviours, and child executive function 
 
 ## Logistic regression loop - controlling for antecedents
 
@@ -735,14 +722,9 @@ for (i in 1:length(outcome.dependent.logistic))
 
 # set the names of the list to match the variable names
 names(logistic.stats.outcome.ant_control) <- outcome.dependent.logistic
-
-for (i in 1:length(outcome.dependent.logistic))
-{ 
-  assign(paste0("logistic.", names(logistic.stats.outcome.ant_control[i]), ".outcome"), as.tibble(logistic.stats.outcome.ant_control[[i]]))
-}
 ```
 
-```{r combine logistic dataframes}
+```{r combine logistic dataframes ant control}
 data.outcome.logistic.ant_control <- data.table::rbindlist(logistic.stats.outcome.ant_control) %>%
   mutate(Class = rep(c("Increasing", "Decreasing"), 12)) %>% # Create new formatted class variable
   select(Class,
@@ -756,7 +738,9 @@ data.outcome.logistic.ant_control <- data.table::rbindlist(logistic.stats.outcom
          block)
 ```
 
-```{r logistic regression outcome plot}
+### Logistic regression plot - controlling for antecedents
+
+```{r logistic regression outcome plot ant control}
 outcome.logistic.separate.plot.ant_control <- ggplot(
   data.outcome.logistic.ant_control, 
   aes(x = `Dependent variable`,
@@ -770,9 +754,9 @@ outcome.logistic.separate.plot.ant_control <- ggplot(
   scale_shape_manual(values = c(21, 19)) +
   geom_pointrange(aes(shape = Significance), position = position_dodge(width = 0.7)) +
   facet_grid(block ~ Class, drop = TRUE, scales = "free_y", space = "free") +
-  labs(y = "RRR (95% CI)",
+  labs(y = "OR (95% CI)",
        x = "names",
-       title = "Association between childhood social isolation class membership and outcomes at age 18",
+       title = "Association betweenclass membership and outcomes at age 18",
        subtitle = paste("N(Total) = ", length(dat$sex),
                         "; N(Increasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Increasing"])),
                         "; N(Decreasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Decreasing"])), sep = ""),
@@ -798,7 +782,7 @@ ggsave(
 
 ## Linear regression loop using z scores - controlling for antecedents
 
-```{r linear regression loop}
+```{r linear regression loop zscore ant control}
 linear.stats.outcome.zscore.ant_control <- list() #create empty list to store the information in
 
 for (i in 1:length(outcome.dependent.linear.zscore))
@@ -848,14 +832,9 @@ for (i in 1:length(outcome.dependent.linear.zscore))
 }
 # set the names of the list to match the variable names
 names(linear.stats.outcome.zscore.ant_control) <- outcome.dependent.linear.zscore
-
-for (i in 1:length(outcome.dependent.linear.zscore))
-{ 
-  assign(paste0("linear.", names(linear.stats.outcome.zscore.ant_control[i]), ".outcome"), as.tibble(linear.stats.outcome.zscore.ant_control[[i]]))
-}
 ```
 
-```{r combine linear dataframes zscore}
+```{r combine linear dataframes zscore ant control}
 data.outcome.linear.zscore.ant_control <- data.table::rbindlist(linear.stats.outcome.zscore.ant_control) %>%
   mutate(Class = rep(c("Increasing", "Decreasing"), 20)) %>% # Create new formatted class variable
   select(Class,
@@ -869,9 +848,9 @@ data.outcome.linear.zscore.ant_control <- data.table::rbindlist(linear.stats.out
          block)
 ```
 
-Plot the linear regression results - controlling for antecedents
+### Linear regression plot with z scores - controlling for antecedents
 
-```{r linear regression outcome plot}
+```{r linear regression outcome plot zscore ant control}
 outcome.linear.separate.plot.zscore.ant_control <- ggplot(
   data.outcome.linear.zscore.ant_control, 
   aes(x = `Dependent variable`,
@@ -887,7 +866,7 @@ outcome.linear.separate.plot.zscore.ant_control <- ggplot(
   facet_grid(block ~ Class, drop = TRUE, scales = "free_y", space = "free") +
   labs(y = "Standardised Estimate (95% CI)",
        x = "names",
-       title = "Association between childhood social isolation class membership and outcomes at age 18",
+       title = "Association between lass membership and outcomes at age 18",
        subtitle = paste("N(Total) = ", length(dat$sex),
                         "; N(Increasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Increasing"])),
                         "; N(Decreasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Decreasing"])), sep = ""),
@@ -978,7 +957,8 @@ data.outcome.logistic.sex <- data.table::rbindlist(logistic.stats.outcome.sex) %
 # check for significant interaction effects between class and sex for each variable
 data.outcome.logistic.sex
 ```
-Significant interaction for "Not in employment or education" for both increasing and decreasing classes. 
+Interaction terms are set to "class_reordered:sexFemale", therefore OR>1 indicates association with being female. 
+Significant interaction between sex and class membership for "Not in employment or education".  
 
 ## Linear regression loop - sex differences
 
@@ -1050,7 +1030,8 @@ data.outcome.linear.sex <- data.table::rbindlist(linear.stats.outcome.sex) %>%
 # check for significant interactions between sex and class
 data.outcome.linear.sex
 ```
-Significant interactions for BMI and the increasing class. 
+Interaction terms are set to "class_reordered:sexFemale", therefore OR>1 indicates association with being female. 
+Significant interaction between sex and class membership for "BMI". 
 
 # Zygosity differences
 
@@ -1119,6 +1100,9 @@ data.outcome.logistic.zyg <- data.table::rbindlist(logistic.stats.outcome.zyg) %
 # check for significant interaction effects between class and sex for each variable
 data.outcome.logistic.zyg
 ```
+
+No significant interaction between class membership and zygosity for any of the variables. 
+
 ## Linear regression loop - zygosity differences
 
 ```{r linear regression loop zyg diffs}
@@ -1190,7 +1174,7 @@ data.outcome.linear.zyg <- data.table::rbindlist(linear.stats.outcome.zyg) %>%
 data.outcome.linear.zyg
 ```
 
-No significant zygosity differences. 
+No significant interaction between class membership and zygosity for any of the variables. 
 
 # Pairwise comparisons
 
@@ -1207,7 +1191,7 @@ dat.pairwise <- dat.pairwise %>%
   mutate(
     class_binary =
       as.factor(class_renamed) %>%
-      relevel(ref = "Increasing",
+      relevel(ref = "Decreasing",
               first = TRUE,
               collapse = "+",
               xlevels = TRUE)
@@ -1216,7 +1200,9 @@ dat.pairwise <- dat.pairwise %>%
 
 ## Run the same regressions for the pairwise data set
 
-```{r logistic regression loop}
+### Logistic
+
+```{r logistic regression loop pairwise}
 logistic.stats.outcome.pairwise <- list() #create empty list to store the information in
 
 for (i in 1:length(outcome.dependent.logistic))
@@ -1261,16 +1247,11 @@ for (i in 1:length(outcome.dependent.logistic))
 
 # set the names of the list to match the variable names
 names(logistic.stats.outcome.pairwise) <- outcome.dependent.logistic
-
-for (i in 1:length(outcome.dependent.logistic))
-{ 
-  assign(paste0("logistic.pairwise.", names(logistic.stats.outcome.pairwise[i]), ".outcome"), as.tibble(logistic.stats.outcome.pairwise[[i]]))
-}
 ```
 
-```{r combine logistic dataframes}
+```{r combine logistic dataframes pairwise}
 data.outcome.logistic.pairwise <- data.table::rbindlist(logistic.stats.outcome.pairwise) %>%
-  mutate(Class = "Decreasing") %>% # Decreasing compared to increasing
+  mutate(Class = "Increasing") %>% # Decreasing compared to increasing
   select(Class,
          `Dependent variable` = Variable,
          OR,
@@ -1282,9 +1263,9 @@ data.outcome.logistic.pairwise <- data.table::rbindlist(logistic.stats.outcome.p
          block)
 ```
 
-```{r logistic regression pairwise outcome plot}
+```{r logistic regression outcome plot pairwise}
 outcome.logistic.separate.pairwise.plot <- ggplot(
-  data.outcome.logistic.pairwise, # CHANGE DEPENDING IF YOU WANT TO USE Z SCORES OR NOT - remember to rename the plot if you change it
+  data.outcome.logistic.pairwise, 
   aes(x = `Dependent variable`,
       y = OR,
       ymin = OR.conf.low,
@@ -1296,9 +1277,9 @@ outcome.logistic.separate.pairwise.plot <- ggplot(
   scale_shape_manual(values = c(21, 19)) +
   geom_pointrange(aes(shape = Significance), position = position_dodge(width = 0.7)) +
   facet_grid(block ~ ., drop = TRUE, scales = "free_y", space = "free") +
-  labs(y = "OR (95% CI) \n OR>1 indicates association with decreasing compared to increasing",
+  labs(y = "OR (95% CI) \n OR>1 indicates association with Increasing compared to Decreasing",
        x = "names",
-       title = "Pairwise comparison between childhood social isolation class membership and outcomes at age 18",
+       title = "Pairwise comparison between class membership and outcomes at age 18",
        subtitle = paste("N(Total) = ", length(dat$sex),
                         "; N(Increasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Increasing"])),
                         "; N(Decreasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Decreasing"])), sep = ""),
@@ -1322,7 +1303,7 @@ ggsave(
 )
 ```
 
-Linear regressions - using z scores
+### Linear - using z scores
 
 ```{r linear pairwise regression loop using zscores}
 linear.stats.outcome.zscore.pairwise <- list() #create empty list to store the information in
@@ -1375,16 +1356,11 @@ for (i in 1:length(outcome.dependent.linear.zscore))
 
 # set the names of the list to match the variable names
 names(linear.stats.outcome.zscore.pairwise) <- outcome.dependent.linear.zscore
-
-for (i in 1:length(outcome.dependent.linear.zscore))
-{ 
-  assign(paste0("linear.pairwise.", names(linear.stats.outcome.zscore.pairwise[i]), ".outcome"), as.tibble(linear.stats.outcome.zscore.pairwise[[i]]))
-}
 ```
 
 ```{r combine linear dataframes}
 data.outcome.linear.zscore.pairwise <- data.table::rbindlist(linear.stats.outcome.zscore.pairwise) %>%
-  mutate(Class = "Decreasing") %>% # Decreasing compared to increasing
+  mutate(Class = "Increasing") %>% # Decreasing compared to increasing
   select(Class,
          `Dependent variable` = Variable,
          estimate,
@@ -1398,7 +1374,7 @@ data.outcome.linear.zscore.pairwise <- data.table::rbindlist(linear.stats.outcom
 
 ```{r linear regression pairwise outcome plot}
 outcome.linear.separate.plot.zscore.pairwise <- ggplot(
-  data.outcome.linear.zscore.pairwise, # CHANGE DEPENDING IF YOU WANT TO USE Z SCORES OR NOT - remember to rename the plot if you change it
+  data.outcome.linear.zscore.pairwise, 
   aes(x = `Dependent variable`,
       y = estimate,
       ymin = conf.low,
@@ -1410,9 +1386,9 @@ outcome.linear.separate.plot.zscore.pairwise <- ggplot(
   scale_shape_manual(values = c(21, 19)) +
   geom_pointrange(aes(shape = Significance), position = position_dodge(width = 0.7)) +
   facet_grid(block ~ ., drop = TRUE, scales = "free_y", space = "free") +
-  labs(y = "Standardised Estimate (95% CI) \n >0 indicates association with decreasing compared to increasing",
+  labs(y = "Standardised Estimate (95% CI) \n >0 indicates association with Increasing compared to Decreasing",
        x = "names",
-       title = "Pairwise comparison between childhood social isolation class membership and outcomes at age 18",
+       title = "Pairwise comparison between class membership and outcomes at age 18",
        subtitle = paste("N(Total) = ", length(dat$sex),
                         "; N(Increasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Increasing"])),
                         "; N(Decreasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Decreasing"])), sep = ""),
@@ -1485,16 +1461,11 @@ for (i in 1:length(outcome.dependent.logistic))
 
 # set the names of the list to match the variable names
 names(logistic.stats.outcome.pairwise.ant_control) <- outcome.dependent.logistic
-
-for (i in 1:length(outcome.dependent.logistic))
-{ 
-  assign(paste0("logistic.pairwise.", names(logistic.stats.outcome.pairwise.ant_control[i]), ".outcome"), as.tibble(logistic.stats.outcome.pairwise.ant_control[[i]]))
-}
 ```
 
 ```{r combine logistic dataframes pairwise control antecedent}
 data.outcome.logistic.pairwise.ant_control <- data.table::rbindlist(logistic.stats.outcome.pairwise.ant_control) %>%
-  mutate(Class = "Decreasing") %>% # Decreasing compared to increasing
+  mutate(Class = "Increasing") %>% # Decreasing compared to increasing
   select(Class,
          `Dependent variable` = Variable,
          OR,
@@ -1508,7 +1479,7 @@ data.outcome.logistic.pairwise.ant_control <- data.table::rbindlist(logistic.sta
 
 ```{r logistic regression pairwise outcome plot pairwise control antecedent}
 outcome.logistic.separate.pairwise.plot.ant_control <- ggplot(
-  data.outcome.logistic.pairwise.ant_control, # CHANGE DEPENDING IF YOU WANT TO USE Z SCORES OR NOT - remember to rename the plot if you change it
+  data.outcome.logistic.pairwise.ant_control, 
   aes(x = `Dependent variable`,
       y = OR,
       ymin = OR.conf.low,
@@ -1520,7 +1491,7 @@ outcome.logistic.separate.pairwise.plot.ant_control <- ggplot(
   scale_shape_manual(values = c(21, 19)) +
   geom_pointrange(aes(shape = Significance), position = position_dodge(width = 0.7)) +
   facet_grid(block ~ ., drop = TRUE, scales = "free_y", space = "free") +
-  labs(y = "OR (95% CI) \n OR>1 indicates association with decreasing compared to increasing",
+  labs(y = "OR (95% CI) \n OR>1 indicates association with Increasing compared to Decreasing",
        x = "names",
        title = "Pairwise comparison between childhood social isolation class membership and outcomes at age 18",
        subtitle = paste("N(Total) = ", length(dat$sex),
@@ -1546,7 +1517,7 @@ ggsave(
 )
 ```
 
-Linear regressions - using z scores
+### Linear regressions - using z scores controlling for antecedents
 
 ```{r linear pairwise regression loop using zscores pairwise control antecedent}
 linear.stats.outcome.zscore.pairwise.ant_control <- list() #create empty list to store the information in
@@ -1599,16 +1570,11 @@ for (i in 1:length(outcome.dependent.linear.zscore))
 
 # set the names of the list to match the variable names
 names(linear.stats.outcome.zscore.pairwise.ant_control) <- outcome.dependent.linear.zscore
-
-for (i in 1:length(outcome.dependent.linear.zscore))
-{ 
-  assign(paste0("linear.pairwise.", names(linear.stats.outcome.zscore.pairwise.ant_control[i]), ".outcome.ant_control"), as.tibble(linear.stats.outcome.zscore.pairwise.ant_control[[i]]))
-}
 ```
 
 ```{r combine linear dataframes pairwise control antecedent}
 data.outcome.linear.zscore.pairwise.ant_control <- data.table::rbindlist(linear.stats.outcome.zscore.pairwise.ant_control) %>%
-  mutate(Class = "Decreasing") %>% # Decreasing compared to increasing
+  mutate(Class = "Increasing") %>% # Decreasing compared to increasing
   select(Class,
          `Dependent variable` = Variable,
          estimate,
@@ -1634,7 +1600,7 @@ outcome.linear.separate.plot.zscore.pairwise.ant_control <- ggplot(
   scale_shape_manual(values = c(21, 19)) +
   geom_pointrange(aes(shape = Significance), position = position_dodge(width = 0.7)) +
   facet_grid(block ~ ., drop = TRUE, scales = "free_y", space = "free") +
-  labs(y = "Standardised Estimate (95% CI) \n >0 indicates association with decreasing compared to increasing",
+  labs(y = "Standardised Estimate (95% CI) \n >0 indicates association with Increasing compared to Decreasing",
        x = "names",
        title = "Pairwise comparison between childhood social isolation class membership and outcomes at age 18",
        subtitle = paste("N(Total) = ", length(dat$sex),
