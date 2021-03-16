@@ -346,10 +346,8 @@ ANALYSIS PLAN
 1. **Individual antecedent regressions**: single regressions are computed for each variable (class ~ variable). This is done through a loop. Relative Risk Ratios (RRR) and their confidence intervals are calculated. Statistics for all variables are combined and RRR (95% CI) are plotted for the Increasing and Decreasing class. FDR multiple testing correction is accounted for independent tests in each block: Social block = 6 tests, Home block = 7 tests, Parent block = 8, Child neurodevelopment block = 3 tests, Child emotional/behavioural development = 4 tests.
 
 2. **Block antecedent regressions**: All variables that significantly predicted class membership are taken forward to be included in a model including all variables from that block. E.g. all "Child neurodevelopment" block variables are analyzed together in the same model (class ~ neuro_variable_1 + neuro_variable_2 + neuro_variable_3). RRR (95% CI) are calculated. Z scores for continuous variables are used. Currently, no FDR correction is applied at this step. 
+
 3. **Full model**: All variables that significantly predict class membership with other block variables controlled for, are taken forward to be included in the full antecedent model. E.g. (class ~ social_variable_1 + home_variable_2 + neuro_variable_3 + emo_variable_4). RRR (95% CI) are calculated. Z scores for continuous variables are used. Currently, no FDR correction is applied at this step.
-
-Many people use train and test data sets - should we *change this to the test and train data sets? Or test and train the final model?*
-
 
 ## Antecedent regression loop for ALL variables - variables are either treated as continuous or binary
 

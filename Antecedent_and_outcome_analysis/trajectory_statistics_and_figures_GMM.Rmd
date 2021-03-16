@@ -61,6 +61,10 @@ library(tidyverse)
 library(plyr) #conflicts with tidyverse for e.g. rename and row_number
 ```
 
+```{r MplusAutomation citation}
+citation("MplusAutomation")
+```
+
 # Growth curves 
 
 ## Model fit statistics
