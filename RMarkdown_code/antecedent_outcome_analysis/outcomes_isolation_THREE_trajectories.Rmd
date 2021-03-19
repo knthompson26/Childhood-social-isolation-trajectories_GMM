@@ -408,12 +408,12 @@ for (i in 1:length(outcome.dependent.logistic))
     logistic.output.outcome.full <- logistic.output.outcome.full %>%
       mutate(block = "Mental health block") %>%
       mutate(Variable = outcome.dependent.logistic.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 18)) # change depending if we combine a few variables 
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 11)) # change depending if we combine a few variables 
   } else {
    logistic.output.outcome.full <- logistic.output.outcome.full %>%
       mutate(block = "Employment block") %>%
       mutate(Variable = outcome.dependent.logistic.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 5))
+                  mutate(p.value.adjusted = p.value)
   }
   
    logistic.output.outcome.full <- logistic.output.outcome.full %>% 
@@ -509,7 +509,7 @@ for (i in 1:length(outcome.dependent.linear))
     linear.output.outcome.full <- linear.output.outcome.full %>%
       mutate(block = "Mental health block") %>%
       mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 18))
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 7))
   } else if (i < 12 ) {
    linear.output.outcome.full <- linear.output.outcome.full %>%
       mutate(block = "Physical health block") %>%
@@ -524,7 +524,7 @@ for (i in 1:length(outcome.dependent.linear))
     linear.output.outcome.full <- linear.output.outcome.full %>%
       mutate(block = "Employment block") %>%
       mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 5))
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 4))
   }
   
    linear.output.outcome.full <- linear.output.outcome.full %>% 

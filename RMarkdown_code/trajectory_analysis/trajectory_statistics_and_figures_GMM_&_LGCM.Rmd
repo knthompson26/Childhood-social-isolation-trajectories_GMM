@@ -334,7 +334,7 @@ isolation_growth_curve_log_scale_clustered_full_sample <- ggplot() +
 isolation_growth_curve_log_scale_clustered_full_sample
 ```
 
-# Linear growth mixture models
+# Linear growth mixture models (GMM)
 
 ## Model fit statistics
 
