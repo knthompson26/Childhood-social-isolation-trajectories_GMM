@@ -48,6 +48,11 @@ library(plyr)
 library(dplyr) #conflicts with tidyverse for e.g. rename and row_number
 ```
 
+```{r palette}
+palette3 <- c("#78D9C5","#F5BE5E","#EEB6E9")
+```
+
+
 ```{r source the data file path}
 #source raw data directory: data_raw and data included
 source("../../../../../isolation_trajectories_data_path.R")
@@ -123,6 +128,80 @@ dat <- dat %>%
     )
   )
 table(dat$class_renamed)
+```
+
+# Spaghetti plot of social isolation over time
+
+## Convert data to long format
+
+```{r convert data to long format, include=FALSE}
+combined_social_isolation <- c("isolation_combined_05",
+                              "isolation_combined_07",
+                              "isolation_combined_10",
+                              "isolation_combined_12")
+
+#convert to long format 
+dat_long <- dat %>%
+  gather(
+    key = "time_point_raw",
+    value = "social_isolation",
+      all_of(combined_social_isolation)) %>%
+  select(
+    id,
+    sex,
+    time_point_raw,
+    social_isolation,
+    class_renamed)
+
+head(dat_long)
+
+#create variable that has just the number for the time point
+dat_long <- dat_long %>%
+  mutate(time_point =
+  recode_factor(time_point_raw, 
+                "isolation_combined_05" = "5", 
+                "isolation_combined_07" = "7", 
+                "isolation_combined_10" = "10", 
+                "isolation_combined_12" = "12")) %>%
+  select(
+    id,
+    sex,
+    time_point,
+    social_isolation,
+    class_renamed)
+
+head(dat_long)
+```
+
+```{r spaghetti plot}
+spaghetti_plot <- ggplot(data = dat_long,
+       aes(x = time_point,
+           y = social_isolation,
+           group = factor(id),
+           color = class_renamed)) +
+  geom_line() +
+  scale_color_manual(name = "Class", values = palette3) +
+  labs(y = "Social isolation score",
+       x = "Age (years)") +
+  scale_x_discrete(expand = c(0.05,0.05), breaks = c("5", "7", "10", "12")) +
+  scale_y_continuous(expand = c(0.05,0.05), breaks = c(0,2,4,6,8,10,12)) +
+  theme(
+        panel.grid.major.y = element_line(size = 0.2,linetype = 'dashed',colour = "gray"),
+        axis.title.x = element_text(size = 12,face="bold"),
+        axis.title.y = element_text(size = 12,face="bold"),
+        axis.text.x = element_text(colour = "black", size = 10),
+        axis.text.y = element_text(colour = "black", size = 10),
+        panel.background = element_blank(),
+        legend.position = "bottom")
+
+ggsave(
+  "spaghetti_plot_three_class_colour_coded.jpeg",
+  plot = spaghetti_plot,
+  device = "jpeg",
+  path = paste0(graph_save_data_path, "trajectories/"),
+  width = 7,
+  height = 5
+)
 ```
 
 # Descriptives by class
