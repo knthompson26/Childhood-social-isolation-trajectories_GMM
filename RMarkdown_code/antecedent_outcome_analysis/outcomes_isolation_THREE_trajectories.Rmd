@@ -98,7 +98,7 @@ outcome.dependent <- c( # mental health
                        "conduct_disorder_moderate_18", 
                        "conduct_disorder_symptoms_18", 
                        "alcohol_dependence_18", 
-                       "alcohol_abuse_18", # combine with the above?
+                    #   "alcohol_abuse_18", # using dependence as better representation of severity
                        "alcohol_symptom_scale_18",
                        "cannabis_dependence_18", 
                        "cannabis_symptom_scale_18", 
@@ -135,7 +135,7 @@ outcome.dependent.numeric <- c( # mental health
                                "conduct_disorder_moderate_numeric_18", 
                                "conduct_disorder_symptoms_18", 
                                "alcohol_dependence_numeric_18", 
-                               "alcohol_abuse_numeric_18", # combine with the above?
+                            #   "alcohol_abuse_numeric_18", 
                                "alcohol_symptom_scale_18",
                                "cannabis_dependence_numeric_18", 
                                "cannabis_symptom_scale_18", 
@@ -161,18 +161,18 @@ outcome.dependent.numeric <- c( # mental health
 
 name.list <- c(
               "Depression diagnosis: Yes",
-              "Current depression",
+              "Depression symptoms",
               "Anxiety diagnosis: Yes",
-              "Current anxiety",
+              "Anxiety symptoms",
               "ADHD diagnosis: Yes",
-              "Current inattentive and hyperactive symptoms",
+              "Inattentive and hyperactive symptoms",
               "Moderate conduct disorder: Yes",
-              "Current conduct disorder symptoms",
+              "Conduct disorder symptoms",
               "Alcohol dependence: Yes",
-              "Alcohol abuse: Yes",
-              "Current alcohol dependence symptoms",
+            #  "Alcohol abuse: Yes",
+              "Alcohol dependence symptoms",
               "Cannabis dependence: Yes",
-              "Current canabis dependence symptoms",
+              "Canabis dependence symptoms",
               "PTSD lifetime diagnosis: Yes",
               "PTSD current diagnosis: Yes",
               "Expereinces of psychosis",
@@ -181,7 +181,7 @@ name.list <- c(
               "BMI",
               "Log CRP",
               "Physical activity",
-              "Current number of cigarettes smoked",
+              "Daily number of cigarettes smoked",
               "Loneliness",
               "Life satisfaction",
               "Technology use",
@@ -240,17 +240,17 @@ outcome.dependent.linear.zscore <- c(
 )
 
 outcome.dependent.linear.name.list <- c(
-                                        "Current depression",
-                                        "Current anxiety",
-                                        "Current inattentive and hyperactive symptoms",
-                                        "Current conduct disorder symptoms",
-                                        "Current alcohol dependence symptoms",
-                                        "Current cannabis dependence symptoms",
+                                        "Depression symptoms",
+                                        "Anxiety symptoms",
+                                        "Inattentive and hyperactive symptoms",
+                                        "Conduct disorder symptoms",
+                                        "Alcohol dependence symptoms",
+                                        "Cannabis dependence symptoms",
                                         "Expereinces of psychosis",
                                         "BMI",
                                         "Log CRP",
                                         "Physical activity",
-                                        "Current number of cigarettes smoked",
+                                        "Daily number of cigarettes smoked",
                                         "Loneliness",
                                         "Life satisfaction",
                                         "Technology use",
@@ -267,7 +267,7 @@ outcome.dependent.logistic <- c(
   "ADHD_diagnosis_18",
   "conduct_disorder_moderate_18",
   "alcohol_dependence_18",
-  "alcohol_abuse_18", 
+ # "alcohol_abuse_18", 
   "cannabis_dependence_18", 
   "PTSD_diagnosis_lifetime_18", 
   "PTSD_diagnosis_current_18", 
@@ -282,7 +282,7 @@ outcome.dependent.logistic.name.list <- c(
   "ADHD diagnosis",
   "Moderate conduct disorder",
   "Alcohol dependence",
-  "Alcohol abuse",
+ # "Alcohol abuse",
   "Cannabis dependence",
   "PTSD lifetime diagnosis",
   "PTSD current diagnosis",
@@ -365,7 +365,9 @@ Linear regressions (continuous variables):
 depression_current_scale_18, anxiety_current_scale_18, inattentive_hyperactive_symptoms_total_18, conduct_disorder_symptoms_18, alcohol_symptom_scale_18, cannabis_symptom_scale_18,   cat_psychosis_experiences_scale_18, BMI_18, CRP_log_18, physical_activity_18, smoking_current_number_18, loneliness_18, life_satisfaction_18, technology_use_18, coping_with_stress_18, PSQI_global_score_18, job_preparedness_skills_18, job_preparedness_attributes_18, optimism_18, job_search_activities_count_18
 
 Logistic regressions (binary variables):
-depression_diagnosis_12mo_18, anxiety_diagnosis_18, ADHD_diagnosis_18, conduct_disorder_moderate_18, alcohol_dependence_18, alcohol_abuse_18, cannabis_dependence_18, PTSD_diagnosis_lifetime_18, PTSD_diagnosis_current_18,suicide_attempt_selfharm_18, service_use_18, not_in_employment_education_numeric_18
+depression_diagnosis_12mo_18, anxiety_diagnosis_18, ADHD_diagnosis_18, conduct_disorder_moderate_18, alcohol_dependence_18, cannabis_dependence_18, PTSD_diagnosis_lifetime_18, PTSD_diagnosis_current_18,suicide_attempt_selfharm_18, service_use_18, not_in_employment_education_numeric_18
+
+alcohol_abuse_18 removed as using alcohol_dependence_18 instead as it captures more disordered drinking. 
 
 2. **Pairwise comparison between increasing and decreasing class**: Individuals in the low stable class are removed. the same regressions are run to see if the class can predict the occurence of each variable (variable ~ class) with class as a binary variable (increasing/decreasing). 
 
@@ -579,7 +581,7 @@ for (i in 1:length(outcome.dependent.linear.zscore))
     linear.output.outcome.full.zscore <- linear.output.outcome.full.zscore %>%
       mutate(block = "Mental health block") %>%
       mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 18))
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 11))
   } else if (i < 12 ) {
    linear.output.outcome.full.zscore <- linear.output.outcome.full.zscore %>%
       mutate(block = "Physical health block") %>%
@@ -594,7 +596,7 @@ for (i in 1:length(outcome.dependent.linear.zscore))
     linear.output.outcome.full.zscore <- linear.output.outcome.full.zscore %>%
       mutate(block = "Employment block") %>%
       mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 5))
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 4))
   }
   
    linear.output.outcome.full.zscore <- linear.output.outcome.full.zscore %>% 
@@ -697,12 +699,12 @@ for (i in 1:length(outcome.dependent.logistic))
     logistic.output.outcome.full.ant_control <- logistic.output.outcome.full.ant_control %>%
       mutate(block = "Mental health block") %>%
       mutate(Variable = outcome.dependent.logistic.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 18)) # change depending if we combine a few variables 
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 7)) # change depending if we combine a few variables 
   } else {
    logistic.output.outcome.full.ant_control <- logistic.output.outcome.full.ant_control %>%
       mutate(block = "Employment block") %>%
       mutate(Variable = outcome.dependent.logistic.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 5))
+                  mutate(p.value.adjusted = p.value)
   }
   
    logistic.output.outcome.full.ant_control <- logistic.output.outcome.full.ant_control %>% 
@@ -798,7 +800,7 @@ for (i in 1:length(outcome.dependent.linear.zscore))
     linear.output.outcome.full.zscore.ant_control <- linear.output.outcome.full.zscore.ant_control %>%
       mutate(block = "Mental health block") %>%
       mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 18))
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 11))
   } else if (i < 12 ) {
    linear.output.outcome.full.zscore.ant_control <- linear.output.outcome.full.zscore.ant_control %>%
       mutate(block = "Physical health block") %>%
@@ -813,7 +815,7 @@ for (i in 1:length(outcome.dependent.linear.zscore))
     linear.output.outcome.full.zscore.ant_control <- linear.output.outcome.full.zscore.ant_control %>%
       mutate(block = "Employment block") %>%
       mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 5))
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 4))
   }
   
    linear.output.outcome.full.zscore.ant_control <- linear.output.outcome.full.zscore.ant_control %>% 
@@ -914,12 +916,12 @@ for (i in 1:length(outcome.dependent.logistic))
     logistic.output.outcome.full.sex <- logistic.output.outcome.full.sex %>%
       mutate(block = "Mental health block") %>%
       mutate(Variable = outcome.dependent.logistic.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 18)) # change depending if we combine a few variables 
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 7)) # change depending if we combine a few variables 
   } else {
    logistic.output.outcome.full.sex <- logistic.output.outcome.full.sex %>%
       mutate(block = "Employment block") %>%
       mutate(Variable = outcome.dependent.logistic.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 5))
+                  mutate(p.value.adjusted = p.value)
   }
   
    logistic.output.outcome.full.sex <- logistic.output.outcome.full.sex %>% 
@@ -978,7 +980,7 @@ for (i in 1:length(outcome.dependent.linear))
     linear.output.outcome.full.sex <- linear.output.outcome.full.sex %>%
       mutate(block = "Mental health block") %>%
       mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 18))
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 11))
   } else if (i < 12 ) {
    linear.output.outcome.full.sex <- linear.output.outcome.full.sex %>%
       mutate(block = "Physical health block") %>%
@@ -993,7 +995,7 @@ for (i in 1:length(outcome.dependent.linear))
     linear.output.outcome.full.sex <- linear.output.outcome.full.sex %>%
       mutate(block = "Employment block") %>%
       mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 5))
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 4))
   }
   
    linear.output.outcome.full.sex <- linear.output.outcome.full.sex %>% 
@@ -1057,12 +1059,12 @@ for (i in 1:length(outcome.dependent.logistic))
     logistic.output.outcome.full.zyg <- logistic.output.outcome.full.zyg %>%
       mutate(block = "Mental health block") %>%
       mutate(Variable = outcome.dependent.logistic.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 18)) # change depending if we combine a few variables 
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 7)) # change depending if we combine a few variables 
   } else {
    logistic.output.outcome.full.zyg <- logistic.output.outcome.full.zyg %>%
       mutate(block = "Employment block") %>%
       mutate(Variable = outcome.dependent.logistic.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 5))
+                  mutate(p.value.adjusted = p.value)
   }
   
    logistic.output.outcome.full.zyg <- logistic.output.outcome.full.zyg %>% 
@@ -1121,7 +1123,7 @@ for (i in 1:length(outcome.dependent.linear))
     linear.output.outcome.full.zyg <- linear.output.outcome.full.zyg %>%
       mutate(block = "Mental health block") %>%
       mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 18))
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 11))
   } else if (i < 12 ) {
    linear.output.outcome.full.zyg <- linear.output.outcome.full.zyg %>%
       mutate(block = "Physical health block") %>%
@@ -1136,7 +1138,7 @@ for (i in 1:length(outcome.dependent.linear))
     linear.output.outcome.full.zyg <- linear.output.outcome.full.zyg %>%
       mutate(block = "Employment block") %>%
       mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 5))
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 4))
   }
   
    linear.output.outcome.full.zyg <- linear.output.outcome.full.zyg %>% 
@@ -1222,12 +1224,12 @@ for (i in 1:length(outcome.dependent.logistic))
     logistic.output.outcome.full.pairwise <- logistic.output.outcome.full.pairwise %>%
       mutate(block = "Mental health block") %>%
       mutate(Variable = outcome.dependent.logistic.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 18)) # change depending if we combine a few variables 
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 7)) # change depending if we combine a few variables 
   } else {
    logistic.output.outcome.full.pairwise <- logistic.output.outcome.full.pairwise %>%
       mutate(block = "Employment block") %>%
       mutate(Variable = outcome.dependent.logistic.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 5))
+                  mutate(p.value.adjusted = p.value)
   }
   
    logistic.output.outcome.full.pairwise <- logistic.output.outcome.full.pairwise %>% 
@@ -1321,7 +1323,7 @@ for (i in 1:length(outcome.dependent.linear.zscore))
     linear.output.outcome.full.zscore.pairwise <- linear.output.outcome.full.zscore.pairwise %>%
       mutate(block = "Mental health block") %>%
       mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 18))
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 11))
   } else if (i < 12 ) {
    linear.output.outcome.full.zscore.pairwise <- linear.output.outcome.full.zscore.pairwise %>%
       mutate(block = "Physical health block") %>%
@@ -1336,7 +1338,7 @@ for (i in 1:length(outcome.dependent.linear.zscore))
     linear.output.outcome.full.zscore.pairwise <- linear.output.outcome.full.zscore.pairwise %>%
       mutate(block = "Employment block") %>%
       mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 5))
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 4))
   }
   
    linear.output.outcome.full.zscore.pairwise <- linear.output.outcome.full.zscore.pairwise %>% 
@@ -1436,12 +1438,12 @@ for (i in 1:length(outcome.dependent.logistic))
     logistic.output.outcome.full.pairwise.ant_control <- logistic.output.outcome.full.pairwise.ant_control %>%
       mutate(block = "Mental health block") %>%
       mutate(Variable = outcome.dependent.logistic.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 18)) # change depending if we combine a few variables 
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 7)) # change depending if we combine a few variables 
   } else {
    logistic.output.outcome.full.pairwise.ant_control <- logistic.output.outcome.full.pairwise.ant_control %>%
       mutate(block = "Employment block") %>%
       mutate(Variable = outcome.dependent.logistic.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 5))
+                  mutate(p.value.adjusted = p.value)
   }
   
    logistic.output.outcome.full.pairwise.ant_control <- logistic.output.outcome.full.pairwise.ant_control %>% 
@@ -1535,7 +1537,7 @@ for (i in 1:length(outcome.dependent.linear.zscore))
     linear.output.outcome.full.zscore.pairwise.ant_control <- linear.output.outcome.full.zscore.pairwise.ant_control %>%
       mutate(block = "Mental health block") %>%
       mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 18))
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 11))
   } else if (i < 12 ) {
    linear.output.outcome.full.zscore.pairwise.ant_control <- linear.output.outcome.full.zscore.pairwise.ant_control %>%
       mutate(block = "Physical health block") %>%
@@ -1550,7 +1552,7 @@ for (i in 1:length(outcome.dependent.linear.zscore))
     linear.output.outcome.full.zscore.pairwise.ant_control <- linear.output.outcome.full.zscore.pairwise.ant_control %>%
       mutate(block = "Employment block") %>%
       mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 5))
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 4))
   }
   
    linear.output.outcome.full.zscore.pairwise.ant_control <- linear.output.outcome.full.zscore.pairwise.ant_control %>% 
