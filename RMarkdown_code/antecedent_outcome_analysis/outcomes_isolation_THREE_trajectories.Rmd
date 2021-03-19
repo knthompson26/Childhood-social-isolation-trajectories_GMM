@@ -63,7 +63,7 @@ library(dplyr) #conflicts with tidyverse for e.g. rename and row_number
 
 ```{r source the data file path}
 #source raw data directory: data_raw and data included
-source("../../../../isolation_trajectories_data_path.R")
+source("../../../../../isolation_trajectories_data_path.R")
 ```
 
 # Theme for plotting
@@ -295,7 +295,7 @@ outcome.dependent.logistic.name.list <- c(
 # Read in data
 
 ```{r read in prepped regression data and check variable names, include=FALSE}
-dat <- readRDS(file = paste0(data_path, "regression_data_THREE_traj.rds"))
+dat <- readRDS(file = paste0(data_path, "class_joined_preprocessed_isolation_data_full_sample.rds"))
 colnames(dat)
 ```
 
@@ -354,6 +354,7 @@ ggsave(
   height = 15
 )
 ```
+
 # Association with outcome variables at age 18
 
 ANALYSIS PLAN 

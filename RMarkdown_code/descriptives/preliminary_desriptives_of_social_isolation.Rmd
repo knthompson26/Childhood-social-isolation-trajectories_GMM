@@ -37,13 +37,9 @@ date = Sys.Date()
 
 ```{r palletes}
 palette2 <- c("#78D9C5","#F5BE5E")
-
 palette3 <- c("#78D9C5","#F5BE5E","#EEB6E9")
-
 palette4 <- c("#78D9C5","#F5BE5E","#EEB6E9","#DBDB73")
-
 palette5 <- c("#78D9C5","#F5BE5E","#EEB6E9","#DBDB73","#FFED98")
-
 palette6 <- c("#78D9C5","#F5BE5E","#EEB6E9","#DBDB73","#FFED98","#BFD2EB")
 ```
 
@@ -62,7 +58,7 @@ library(tidyverse)
 
 ```{r source the data file path}
 #source raw data directory: data_raw and data included
-source("../../../../isolation_trajectories_data_path.R")
+source("../../../../../isolation_trajectories_data_path.R")
 ```
 
 ```{r read in data and check variable names, include=FALSE}
@@ -112,17 +108,127 @@ theme_personal <-  theme(
     )
 ```
 
-```{r create ordered SES variable for the Kruskal-Wallis test}
+# Missingness descriptives
+
+```{r social isolation missingness}
+#look at the frequency of missingness
+freq(dat$na.per.person.si,
+     cumul = FALSE)
+
+#look at the frequency at 5 years only
+freq(dat$isolation_combined_05,
+     cumul = FALSE)
+
+#look at the frequency at 7 years only
+freq(dat$isolation_combined_07,
+     cumul = FALSE)
+
+#look at the frequency at 10 years only
+freq(dat$isolation_combined_10,
+     cumul = FALSE)
+
+#look at the frequency at 12 years only
+freq(dat$isolation_combined_12,
+     cumul = FALSE)
+```
+
+```{r create variables for different group combinations}
+# group with 18 missing 3 time points vs everyone else
 dat <- dat %>%
   mutate(
-    SES_ordered = 
-      ordered(SES,
-              levels = c("Low",
-                         "Middle",
-                         "High")
+    missing_3_time_points = 
+      if_else(
+        na.per.person.si > 2, 
+        1,
+        0) %>%
+      recode_factor(
+        "0" = "No",
+        "1" = "Yes"
+      )
+  )
+
+# create group of just 18 who have 3 missing time points
+dat.18 <- filter(dat, missing_3_time_points == "Yes")
+
+# excluding the 18 missing 3 time points, those with 2 missing time points vs every one else
+dat.missing.3time <- filter(dat,
+                      na.per.person.si != 3)
+
+dat.missing.3time <- dat.missing.3time %>%
+  mutate(
+    missing_2_time_points = 
+      if_else(
+        na.per.person.si > 1 & na.per.person.si < 3, 
+        1,
+        0) %>%
+      recode_factor(
+        "0" = "No",
+        "1" = "Yes"
       )
   )
 ```
+
+What Tim found :
+There were no differences between those who did and did not take part at age 18 in terms of social isolation at age 5 (t = 0.71, p = 0.49), socioeconomic status (SES) assessed when the cohort was initially defined (χ2 = 0.86, p = 0.65), age-5 IQ scores (t = 0.98, p = 0.33), or age-5 emotional or behavioural problems (t = 0.40, p = 0.69 and t = 0.41, p = 0.68, respectively)
+```{r check differences in missingness between the 4 groups}
+# Social isolation at age 5
+ttest_SI_3time <- t.test( 
+  isolation_combined_05 ~ missing_3_time_points,
+  data = dat,
+  alternative = "two.sided",
+  conf.level = 0.95)
+
+ttest_SI_2time <- t.test( 
+  isolation_combined_05 ~ missing_2_time_points,
+  data = dat.missing.3time,
+  alternative = "two.sided",
+  conf.level = 0.95) 
+
+# SES - chi square
+chisq_SES_3time <- chisq.test(dat$SES,dat$missing_3_time_points) # nonsig
+chisq_SES_2time <- chisq.test(dat.missing.3time$SES, dat.missing.3time$missing_2_time_points) # nonsig
+
+# IQ - t-test
+ttest_IQ_3time <- t.test( #nonsig
+  IQ_05 ~ missing_3_time_points,
+  data = dat,
+  alternative = "two.sided",
+  conf.level = 0.95) 
+
+ttest_IQ_2time <- t.test( #SIGNIFICANT - missing two time points has lower IQ
+  IQ_05 ~ missing_2_time_points,
+  data = dat.missing.3time,
+  alternative = "two.sided",
+  conf.level = 0.95) 
+
+# internalizing problems - t-test
+ttest_int_3time <- t.test( #nonsig
+  internalising_combined_excl_sis_05 ~ missing_3_time_points,
+  data = dat,
+  alternative = "two.sided",
+  conf.level = 0.95) 
+
+ttest_int_2time <- t.test( #nonsig
+  internalising_combined_excl_sis_05 ~ missing_2_time_points,
+  data = dat.missing.3time,
+  alternative = "two.sided",
+  conf.level = 0.95) 
+
+# Behavioural problems - externalising?? - t-test
+ttest_ext_3time <- t.test( #nonsig
+  externalising_combined_05 ~ missing_3_time_points,
+  data = dat,
+  alternative = "two.sided",
+  conf.level = 0.95) 
+
+ttest_ext_2time <- t.test( #nonsig
+  externalising_combined_05 ~ missing_2_time_points,
+  data = dat.missing.3time,
+  alternative = "two.sided",
+  conf.level = 0.95) 
+```
+
+# Convert data to long format
 
 ```{r convert data to long format, include=FALSE}
 #convert to long format 
@@ -162,9 +268,7 @@ dat_long <- dat_long %>%
 head(dat_long)
 ```
 
-
 **Please note** that in all the following analyses I haven't corrected for multiple testing, nor have I corrected for the twin sample using the Huber-White correction or randomly sampling one individual from each twin-pair
-
 
 # Means across all time points {.tabset .tabset-fade}
 
@@ -468,7 +572,6 @@ plotmeans(isolation_combined_07 ~ sex,
 
 ```
 
-
 ```{r boxplot for sex diffs at age 7, include=FALSE}
 ggplot(dat, 
        aes(sex, isolation_combined_07)) +
@@ -531,7 +634,6 @@ dat %>%
     guide = "none") +
   coord_flip()
 ```
-
 
 **Comments:**
 
@@ -1191,11 +1293,6 @@ wilcox.test(
 * DZ twins showed higher levels of social isolation at all time points 
 * This could be due to the genetic similarities of MZ twins - acts as a protective factor for social isolation. 
 * This is likely something we will need to control for when looking at associations with risk factors
-
-```{r save data file}
-# save R data file
-saveRDS(object = dat, file = paste0(data_path, "descriptives_output_isolation_trajectories_Jan2021.rds"))
-```
 
 
 

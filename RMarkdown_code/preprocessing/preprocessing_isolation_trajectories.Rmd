@@ -1,5 +1,5 @@
 ---
-title: "isolation_trajectories_preprocessing_KT"
+title: "Data preprosessing script for social isolation trajectories"
 author: "K N Thompson"
 date: Sys.Date()
 output:  
@@ -21,9 +21,9 @@ toc: yes
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE,
-                      comment=NA,
-                      prompt=FALSE,
-                      cache=FALSE)
+                      comment = NA,
+                      prompt = FALSE,
+                      cache = FALSE)
 
 
 options(bitmapType = 'quartz') # to render fonts better
@@ -53,7 +53,7 @@ library(tidyverse)
 Source the data file path
 ```{r source data file path}
 #source raw data directory: data_raw and data included
-source("../../../../isolation_trajectories_data_path.R")
+source("../../../../../isolation_trajectories_data_path.R")
 ```
 
 # Read in data
@@ -70,49 +70,10 @@ colnames(dat)
 Only using elder twin variables as each twin is included in the data set as an individual. Without doing twin analyses, the elder and younger variables show the same information. 
 ```{r prepare item lists}
 #All the items in numeric form
-all_social_isolation <- c("sisoe5",
-                          "sisoet5",
-                          "sisoem5",
-                          "sisoe7",
-                          "sisoet7",
-                          "sisoem7",
-                          "sisoe10",
-                          "sisoet10",
-                          "sisoem10",
-                          "sisoe12",
-                          "sisoet12",
-                          "sisoem12")
-
-social_isoaltion_5 <- c("sisoe5",
-                          "sisoet5",
-                          "sisoem5")
-
-social_isoaltion_7 <- c("sisoe7",
-                          "sisoet7",
-                          "sisoem7")
-
-social_isoaltion_10 <- c("sisoe10",
-                          "sisoet10",
-                          "sisoem10")
-
-social_isoaltion_12 <- c("sisoe12",
-                          "sisoet12",
-                          "sisoem12")
-
 combined_social_isolation <- c("sisoe5",
                               "sisoe7",
                               "sisoe10",
                               "sisoe12")
-
-teacher_social_isolation <- c("sisoet5",
-                              "sisoet7",
-                              "sisoet10",
-                              "sisoet12")
-
-mother_social_isolation <- c("sisoem5",
-                              "sisoem7",
-                              "sisoem10",
-                              "sisoem12")
 ```
 
 #Rename ID variable
@@ -192,6 +153,18 @@ dat <- dat %>%
         "1" = "Low",
         "2" = "Middle", #this was missing in original SPSS file but still have 2s in the data set
         "3" = "High"))
+```
+
+```{r SES ordered variable}
+dat <- dat %>%
+  mutate(
+    SES_ordered = 
+      ordered(SES,
+              levels = c("Low",
+                         "Middle",
+                         "High")
+      )
+  )
 ```
 
 ```{r ethnicity factor}
@@ -476,6 +449,157 @@ dat <- dat %>%
   )
 ```
 
+# Variable REcode based on analysis decisions
+
+```{r ACORN recode, include=FALSE}
+dat <- dat %>%
+  mutate(acorn_recoded_05 =
+           if_else(
+             acorn_05 == "Moderate Means" |
+               acorn_05 == "Hard Pressed",
+             1,
+             0
+           ) %>%
+           recode_factor(
+             "1" = "Deprived",
+             "0" = "Relatively affluent"
+           ) %>%
+           relevel(ref = "Relatively affluent",
+            first = TRUE, #levels in ref come first
+            collapse = "+", #String used when constructing names for combined factor levels
+            xlevels = TRUE) #levels maintained even if not actually occurring
+      )
+table(dat$acorn_recoded_05)
+
+dat <- dat %>%
+  mutate(
+    acorn_continuous_05 =
+      as.numeric(acorn_05)
+  )
+```
+
+```{r SES recode - combine middle and high, include=FALSE}
+dat <- dat %>%
+  mutate(
+    SES_binary_releveled =
+      as.factor(fct_collapse(
+        SES,
+        "Middle to high" = c("Middle","High"),
+        "Low" = c("Low")
+      )
+  ) %>%
+    relevel(ref = "Middle to high",
+            first = TRUE, #levels in ref come first
+            collapse = "+", #String used when constructing names for combined factor levels
+            xlevels = TRUE) #levels maintained even if not actually occurring
+  )
+table(dat$SES_binary_releveled)
+```
+
+```{r child harm recode, include=FALSE}
+dat <- dat %>%
+  mutate(child_harm_recoded_05 =
+           if_else(
+             child_harm_05 == "Possible harm" |
+               child_harm_05 == "Definite harm",
+             1,
+             0
+           ) %>%
+           recode_factor(
+             "1" = "Harm",
+             "0" = "No harm"
+           ) %>%
+           relevel(ref = "No harm",
+            first = TRUE, #levels in ref come first
+            collapse = "+", #String used when constructing names for combined factor levels
+            xlevels = TRUE)
+      )
+table(dat$child_harm_recoded_05)
+```
+
+Originally maternal warmth was condensed - this resulted in a large reduction in power. Therefore maternal warmth has been recoded to be continuous. 
+```{r maternal warmth recode, include=FALSE}
+# dat <- dat %>%
+#   mutate(
+#     maternal_warmth_recoded_05 =
+#       as.factor(fct_collapse(
+#         maternal_warmth_05,
+#         "Little warmth" = c("No warmth","Very little warmth"),
+#         "Some warmth" = c("Some warmth","Moderate warmth"),
+#         "High warmth" = c("Moderately high warmth","High warmth")
+#       )
+#   ) %>%
+#     relevel(ref = "Some warmth",
+#         first = TRUE, #levels in ref come first
+#         collapse = "+", #String used when constructing names for combined factor levels
+#         xlevels = TRUE #levels maintained even if not actually occurring
+#   ))
+# table(dat$maternal_warmth_recoded_05)
+
+dat <- dat %>%
+  mutate(
+    maternal_warmth_continuous_05 = 
+      as.numeric(maternal_warmth_05)
+  )
+```
+
+```{r highest education recode, include=FALSE}
+dat <- dat %>%
+  mutate(
+    highest_education_recode_18 =
+      as.factor(fct_collapse(
+        highest_education_18,
+        "Level 1 or below (GCSE grades D-G or below)" = c("No qualification","Level 1 (GCSE at grades D-G)"),
+        "Level 2 or 3 (GCSE grades A*-C or A-level)" = c("Level 2 (GCSE at grades A*-C)","Level 3 (A Level)")
+      )
+  ))
+table(dat$highest_education_recode_18)
+```
+
+```{r recode antisocial behaviour for parent}
+# create total score for mum and data to make parent
+dat <- dat %>%
+  mutate(antisocial_behaviour_parent_05 =
+           asbmm5 + asbfm5) # mum plus dad scores
+```
+
+```{r recode alcoholism for parent}
+# create total score for mum and data to make parent
+dat <- dat %>%
+  mutate(alcoholism_parent_05 =
+           alcmm5 + alcfm5) # mum plus dad scores
+```
+
+# Numeric versions for categorical variables
+
+Create numeric versions of all categorical antecedent variables for the correlation matrix
+```{r numreic varions of categorical antecedent variables}
+dat <- dat %>%
+  mutate(SES_binary_releveled_numeric = as.numeric(SES_binary_releveled)) %>%
+  mutate(child_harm_recoded_numeric_05 = as.numeric(child_harm_recoded_05)) %>%
+  mutate(mum_notlived_biodad_sincebirth_numeric_05 = as.numeric(mum_notlived_biodad_sincebirth_05)) %>%
+  mutate(any_domestic_violence_numeric_05 = as.numeric(any_domestic_violence_05)) %>%
+  mutate(maternal_depression_lifetime_numeric_05 = as.numeric(maternal_depression_lifetime_05))
+```
+
+Create numeric versions of all categorical outcome variables for the correlation matrix
+```{r numreic varions of categorical outcome variables}
+dat <- dat %>%
+  mutate(depression_diagnosis_12mo_numeric_18 = as.numeric(depression_diagnosis_12mo_18)) %>%
+  mutate(anxiety_diagnosis_numeric_18 = as.numeric(anxiety_diagnosis_18)) %>%
+  mutate(ADHD_diagnosis_numeric_18 = as.numeric(ADHD_diagnosis_18)) %>%
+  mutate(conduct_disorder_moderate_numeric_18 = as.numeric(conduct_disorder_moderate_18)) %>%
+  mutate(alcohol_dependence_numeric_18 = as.numeric(alcohol_dependence_18)) %>%
+  mutate(alcohol_abuse_numeric_18 = as.numeric(alcohol_abuse_18)) %>%
+  mutate(cannabis_dependence_numeric_18 = as.numeric(cannabis_dependence_18)) %>%
+  mutate(PTSD_diagnosis_lifetime_numeric_18 = as.numeric(PTSD_diagnosis_lifetime_18)) %>%
+  mutate(PTSD_diagnosis_current_numeric_18 = as.numeric(PTSD_diagnosis_current_18)) %>%
+  mutate(cat_psychosis_experiences_scale_numeric_18 = as.numeric(cat_psychosis_experiences_scale_18)) %>%
+  mutate(suicide_attempt_selfharm_numeric_18 = as.numeric(suicide_attempt_selfharm_18)) %>%
+  mutate(service_use_numeric_18 = as.numeric(service_use_18)) %>%
+  mutate(not_in_employment_education_numeric_18 = as.numeric(not_in_employment_education_18)) 
+```
+
 # Social isolation 
 
 ```{r log transform social isolation combined variables}
@@ -498,6 +622,7 @@ colnames(dat)
 ```
 
 # Missing values
+
 Make sue that any values coded as -9, -999 , -8, -7 or -1 are coded as NA
 ```{r recode missing values}
 # Recode missing values to NAs in numeric variables
@@ -521,122 +646,6 @@ dat <- dat %>%
       )
   )
 
-#look at the frequency of this
-freq(dat$na.per.person.si,
-     cumul = FALSE)
-
-
-#look at the frequency at 5 years only
-freq(dat$sisoe5,
-     cumul = FALSE)
-
-#look at the frequency at 7 years only
-freq(dat$sisoe7,
-     cumul = FALSE)
-
-#look at the frequency at 10 years only
-freq(dat$sisoe10,
-     cumul = FALSE)
-
-#look at the frequency at 12 years only
-freq(dat$sisoe12,
-     cumul = FALSE)
-```
-
-```{r create variables for different group combinations}
-# group with 18 missing 3 time points vs everyone else
-dat <- dat %>%
-  mutate(
-    missing_3_time_points = 
-      if_else(
-        na.per.person.si > 2, 
-        1,
-        0) %>%
-      recode_factor(
-        "0" = "No",
-        "1" = "Yes"
-      )
-  )
-
-# create group of just 18 who have 3 missing time points
-dat.18 <- filter(dat, missing_3_time_points == "Yes")
-
-# excluding the 18 missing 3 time points, those with 2 missing time points vs every one else
-dat.missing.3time <- filter(dat,
-                      na.per.person.si != 3)
-
-dat.missing.3time <- dat.missing.3time %>%
-  mutate(
-    missing_2_time_points = 
-      if_else(
-        na.per.person.si > 1 & na.per.person.si < 3, 
-        1,
-        0) %>%
-      recode_factor(
-        "0" = "No",
-        "1" = "Yes"
-      )
-  )
-```
-
-What Tim found :
-There were no differences between those who did and did not take part at age 18 in terms of social isolation at age 5 (t = 0.71, p = 0.49), socioeconomic status (SES) assessed when the cohort was initially defined (χ2 = 0.86, p = 0.65), age-5 IQ scores (t = 0.98, p = 0.33), or age-5 emotional or behavioural problems (t = 0.40, p = 0.69 and t = 0.41, p = 0.68, respectively)
-```{r check differences in missingness between the 4 groups}
-# Social isolation at age 5
-ttest_SI_3time <- t.test( 
-  sisoe5 ~ missing_3_time_points,
-  data = dat,
-  alternative = "two.sided",
-  conf.level = 0.95)
-
-ttest_SI_2time <- t.test( 
-  sisoe5 ~ missing_2_time_points,
-  data = dat.missing.3time,
-  alternative = "two.sided",
-  conf.level = 0.95) 
-
-# SES - chi square
-chisq_SES_3time <- chisq.test(dat$SES,dat$missing_3_time_points) # nonsig
-chisq_SES_2time <- chisq.test(dat.missing.3time$SES, dat.missing.3time$missing_2_time_points) # nonsig
-
-# IQ - t-test
-ttest_IQ_3time <- t.test( #nonsig
-  iqe5 ~ missing_3_time_points,
-  data = dat,
-  alternative = "two.sided",
-  conf.level = 0.95) 
-
-ttest_IQ_2time <- t.test( #SIGNIFICANT - missing two time points has lower IQ
-  iqe5 ~ missing_2_time_points,
-  data = dat.missing.3time,
-  alternative = "two.sided",
-  conf.level = 0.95) 
-
-# Emotional problems - internalising??? - t-test
-ttest_int_3time <- t.test( #nonsig
-  intisoe5 ~ missing_3_time_points,
-  data = dat,
-  alternative = "two.sided",
-  conf.level = 0.95) 
-
-ttest_int_2time <- t.test( #nonsig
-  intisoe5 ~ missing_2_time_points,
-  data = dat.missing.3time,
-  alternative = "two.sided",
-  conf.level = 0.95) 
-
-# Behavioural problems - externalising?? - t-test
-ttest_ext_3time <- t.test( #nonsig
-  totexte5 ~ missing_3_time_points,
-  data = dat,
-  alternative = "two.sided",
-  conf.level = 0.95) 
-
-ttest_ext_2time <- t.test( #nonsig
-  totexte5 ~ missing_2_time_points,
-  data = dat.missing.3time,
-  alternative = "two.sided",
-  conf.level = 0.95) 
 ```
 
 # Create data set exluding those with 3 isolation data points missing 
@@ -655,9 +664,28 @@ nrow(dat.3missing)
 # Select all renamed variables
 Remember to select which data set you want exported - dat (full sample), or dat.3missing (those with 3 missing time points excluded)
 
+Not using the following variables in analysis:
+       acorn_05,
+       child_harm_05,
+       maternal_warmth_05,
+       highest_education_18,
+       psychosis_symptom_count_18, 
+       cat_psychosis_symptom_count_18,
+       psychosis_experiences_scale_18,
+       isolation_mother_05,
+       isolation_mother_07,
+       isolation_mother_10,
+       isolation_mother_12,
+       isolation_teacher_05,
+       isolation_teacher_07,
+       isolation_teacher_10,
+       isolation_teacher_12
+       
 ```{r rename social isolation variables for 3 missing dataset}
-# same order as the variable list for the concept paper
+# variables split by blocks
 # those with an "=" are just renamed with no other coding needed. Coding all done above. 
+# Have # the variables that aren't being used in analyses
+
 dat.renamed.3missing <- dat.3missing %>%
   select(
     # Demographics
@@ -671,24 +699,35 @@ dat.renamed.3missing <- dat.3missing %>%
     twin_order,
     # Social factors
     acorn_05,
+    acorn_recoded_05,
+    acorn_continuous_05,
     vandalism_05 = vndngdm5, # original data frame only reported 0 = low and 6 = high
     problems_neighbours_05 = socprbm5, # original data frame only reported 0 = low and 6 = high
     SES,
+    SES_ordered,
+    SES_binary_releveled,
+    SES_binary_releveled_numeric,
     number_children_school_05 = nchildren00e5,
     number_children_school_free_meals_05 = schmeals00e5,
     class_size_average_05 = classsize00e5,
     # Home environment
     resident_moves_05 = nmovel5,
     mum_notlived_biodad_sincebirth_05,
+    mum_notlived_biodad_sincebirth_numeric_05,
     total_siblings_05 = tsibl5,
     any_domestic_violence_05,
+    any_domestic_violence_numeric_05,
     child_harm_05,
+    child_harm_recoded_05,
+    child_harm_recoded_numeric_05,
     total_social_support_05 = tssupm5,
     total_activities_with_mum_05 = actvm5,
     maternal_warmth_05,
+    maternal_warmth_continuous_05,
     prosocial_behaviours_combined_05 = totproe5,
     # Parent characteristics
     maternal_depression_lifetime_05,
+    maternal_depression_lifetime_numeric_05,
     maternal_personality_openness_05 = bfiom5,
     maternal_personality_conscientiousness_05 = bficm5,
     maternal_personality_extroversion_05 = bfiem5,
@@ -696,8 +735,10 @@ dat.renamed.3missing <- dat.3missing %>%
     maternal_personality_neuroticism_05 = bfinm5,
     antisocial_behaviour_mum_05 = asbmm5,
     antisocial_behaviour_dad_05 = asbfm5,
+    antisocial_behaviour_parent_05,
     alcoholism_mum_05 = alcmm5,
     alcoholism_dad_05 = alcfm5,
+    alcoholism_parent_05,
     # Child neurodevelopment
     IQ_05 = iqe5,
     executive_function_05 = exfunce5,
@@ -717,26 +758,38 @@ dat.renamed.3missing <- dat.3missing %>%
     ## Age 18
     # Mental health and service use
     depression_diagnosis_12mo_18,
-    depression_current_scale_18 = mdesxe18, #which scale is this?
+    depression_diagnosis_12mo_numeric_18,
+    depression_current_scale_18 = mdesxe18, 
     anxiety_diagnosis_18,
-    anxiety_current_scale_18 = gadsxe18, #which scale is this?
+    anxiety_diagnosis_numeric_18,
+    anxiety_current_scale_18 = gadsxe18, 
     ADHD_diagnosis_18,
+    ADHD_diagnosis_numeric_18,
     inattentive_hyperactive_symptoms_total_18 = SR_symtot18e,
-    conduct_disorder_moderate_18, # is this a diagnosis?
+    conduct_disorder_moderate_18, 
+    conduct_disorder_moderate_numeric_18,
     conduct_disorder_symptoms_18 = cdsxe18,
     alcohol_dependence_18,
+    alcohol_dependence_numeric_18,
     alcohol_abuse_18,
+    alcohol_abuse_numeric_18,
     alcohol_symptom_scale_18 = alcsxe18,
     cannabis_dependence_18,
+    cannabis_dependence_numeric_18,
     cannabis_symptom_scale_18 = marjsxe18,
     PTSD_diagnosis_lifetime_18,
+    PTSD_diagnosis_lifetime_numeric_18,
     PTSD_diagnosis_current_18,
-    psychosis_symptom_count_18 = psysympe18,
-    cat_psychosis_symptom_count_18,
-    psychosis_experiences_scale_18 = psyexpe18,
-    cat_psychosis_experiences_scale_18,
+    PTSD_diagnosis_current_numeric_18,
+  #  psychosis_symptom_count_18 = psysympe18,
+  #  cat_psychosis_symptom_count_18,
+  #  psychosis_experiences_scale_18 = psyexpe18,
+    cat_psychosis_experiences_scale_18, # only including one psychosis variable for now 
+    cat_psychosis_experiences_scale_numeric_18,
     suicide_attempt_selfharm_18,
+    suicide_attempt_selfharm_numeric_18,
     service_use_18,
+    service_use_numeric_18,
     # Physical health and health risks
     BMI_18 = bmie18,
     CRP_log_18 = lnCRP_E18_4SD,
@@ -750,7 +803,9 @@ dat.renamed.3missing <- dat.3missing %>%
     PSQI_global_score_18 = psqie18,
     #Employment prospects
     not_in_employment_education_18,
+    not_in_employment_education_numeric_18,
     highest_education_18,
+    highest_education_recode_18,
     job_preparedness_skills_18 = jprepse18,
     job_preparedness_attributes_18 = jprepae18,
     optimism_18 = optime18,
@@ -794,24 +849,35 @@ dat.renamed.full <- dat %>%
     twin_order,
     # Social factors
     acorn_05,
+    acorn_recoded_05,
+    acorn_continuous_05,
     vandalism_05 = vndngdm5, # original data frame only reported 0 = low and 6 = high
     problems_neighbours_05 = socprbm5, # original data frame only reported 0 = low and 6 = high
     SES,
+    SES_ordered,
+    SES_binary_releveled,
+    SES_binary_releveled_numeric,
     number_children_school_05 = nchildren00e5,
     number_children_school_free_meals_05 = schmeals00e5,
     class_size_average_05 = classsize00e5,
     # Home environment
     resident_moves_05 = nmovel5,
     mum_notlived_biodad_sincebirth_05,
+    mum_notlived_biodad_sincebirth_numeric_05,
     total_siblings_05 = tsibl5,
     any_domestic_violence_05,
+    any_domestic_violence_numeric_05,
     child_harm_05,
+    child_harm_recoded_05,
+    child_harm_recoded_numeric_05,
     total_social_support_05 = tssupm5,
     total_activities_with_mum_05 = actvm5,
     maternal_warmth_05,
+    maternal_warmth_continuous_05,
     prosocial_behaviours_combined_05 = totproe5,
     # Parent characteristics
     maternal_depression_lifetime_05,
+    maternal_depression_lifetime_numeric_05,
     maternal_personality_openness_05 = bfiom5,
     maternal_personality_conscientiousness_05 = bficm5,
     maternal_personality_extroversion_05 = bfiem5,
@@ -819,8 +885,10 @@ dat.renamed.full <- dat %>%
     maternal_personality_neuroticism_05 = bfinm5,
     antisocial_behaviour_mum_05 = asbmm5,
     antisocial_behaviour_dad_05 = asbfm5,
+    antisocial_behaviour_parent_05,
     alcoholism_mum_05 = alcmm5,
     alcoholism_dad_05 = alcfm5,
+    alcoholism_parent_05,
     # Child neurodevelopment
     IQ_05 = iqe5,
     executive_function_05 = exfunce5,
@@ -840,26 +908,38 @@ dat.renamed.full <- dat %>%
     ## Age 18
     # Mental health and service use
     depression_diagnosis_12mo_18,
-    depression_current_scale_18 = mdesxe18, #which scale is this?
+    depression_diagnosis_12mo_numeric_18,
+    depression_current_scale_18 = mdesxe18, 
     anxiety_diagnosis_18,
-    anxiety_current_scale_18 = gadsxe18, #which scale is this?
+    anxiety_diagnosis_numeric_18,
+    anxiety_current_scale_18 = gadsxe18, 
     ADHD_diagnosis_18,
+    ADHD_diagnosis_numeric_18,
     inattentive_hyperactive_symptoms_total_18 = SR_symtot18e,
-    conduct_disorder_moderate_18, # is this a diagnosis?
+    conduct_disorder_moderate_18, 
+    conduct_disorder_moderate_numeric_18,
     conduct_disorder_symptoms_18 = cdsxe18,
     alcohol_dependence_18,
+    alcohol_dependence_numeric_18,
     alcohol_abuse_18,
+    alcohol_abuse_numeric_18,
     alcohol_symptom_scale_18 = alcsxe18,
     cannabis_dependence_18,
+    cannabis_dependence_numeric_18,
     cannabis_symptom_scale_18 = marjsxe18,
     PTSD_diagnosis_lifetime_18,
+    PTSD_diagnosis_lifetime_numeric_18,
     PTSD_diagnosis_current_18,
-    psychosis_symptom_count_18 = psysympe18,
-    cat_psychosis_symptom_count_18,
-    psychosis_experiences_scale_18 = psyexpe18,
-    cat_psychosis_experiences_scale_18,
+    PTSD_diagnosis_current_numeric_18,
+  #  psychosis_symptom_count_18 = psysympe18,
+  #  cat_psychosis_symptom_count_18,
+  #  psychosis_experiences_scale_18 = psyexpe18,
+    cat_psychosis_experiences_scale_18, # only including one psychosis variable for now 
+    cat_psychosis_experiences_scale_numeric_18,
     suicide_attempt_selfharm_18,
+    suicide_attempt_selfharm_numeric_18,
     service_use_18,
+    service_use_numeric_18,
     # Physical health and health risks
     BMI_18 = bmie18,
     CRP_log_18 = lnCRP_E18_4SD,
@@ -873,7 +953,9 @@ dat.renamed.full <- dat %>%
     PSQI_global_score_18 = psqie18,
     #Employment prospects
     not_in_employment_education_18,
+    not_in_employment_education_numeric_18,
     highest_education_18,
+    highest_education_recode_18,
     job_preparedness_skills_18 = jprepse18,
     job_preparedness_attributes_18 = jprepae18,
     optimism_18 = optime18,
@@ -968,9 +1050,6 @@ saveRDS(object = dat_rds.full, file = paste0(data_path, "preprocessed_isolation_
 
 #remember to delete the headings. There will be no NAs as they have been removed for the isolation variables but in future Mplus files need NA to be a fullstop (.)
 ```
-
-
-
 
 
 

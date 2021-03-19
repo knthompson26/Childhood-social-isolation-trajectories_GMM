@@ -1,5 +1,5 @@
 ---
-title: 'Preparation for regression analyses with outcomes and antecedents - Four trajectories'
+title: 'Trajectory descriptives'
 author: "Katherine N Thompson"
 date: "02 Feb 2021"
 output:
@@ -38,15 +38,6 @@ remove(list = ls())
 date = Sys.Date()
 ```
 
-```{r colour palletes for graphs}
-palette1 <- c("#78D9C5")
-palette2 <- c("#78D9C5","#F5BE5E")
-palette3 <- c("#78D9C5","#F5BE5E","#EEB6E9")
-palette4 <- c("#78D9C5","#F5BE5E","#EEB6E9","#DBDB73")
-palette5 <- c("#78D9C5","#F5BE5E","#EEB6E9","#DBDB73","#FFED98")
-palette6 <- c("#78D9C5","#F5BE5E","#EEB6E9","#DBDB73","#FFED98","#BFD2EB")
-```
-
 ```{r Load packages}
 library(knitr)
 library(summarytools)
@@ -59,13 +50,13 @@ library(dplyr) #conflicts with tidyverse for e.g. rename and row_number
 
 ```{r source the data file path}
 #source raw data directory: data_raw and data included
-source("../../../../isolation_trajectories_data_path.R")
+source("../../../../../isolation_trajectories_data_path.R")
 ```
 
 # Read in descriptives output file
 
 ```{r read in prior descriptives data and check variable names, include=FALSE}
-dat.descriptives <- readRDS(file = paste0(data_path, "descriptives_output_isolation_trajectories_Jan2021.rds"))
+dat.descriptives <- readRDS(file = paste0(data_path, "preprocessed_isolation_trajectories_Jan2021_full_sample.rds"))
 colnames(dat.descriptives)
 ```
 
@@ -339,7 +330,6 @@ class.descriptives <- class.descriptives %>%
 kable(class.descriptives)
 ```
 
-
 # Adapt variables for regression analysis
 
 ```{r relevel class, include=FALSE}
@@ -362,177 +352,6 @@ dat <- dat %>%
   )
 # check
 table(dat$class_reordered)
-```
-
-```{r ACORN recode, include=FALSE}
-dat <- dat %>%
-  mutate(acorn_recoded_05 =
-           if_else(
-             acorn_05 == "Moderate Means" |
-               acorn_05 == "Hard Pressed",
-             1,
-             0
-           ) %>%
-           recode_factor(
-             "1" = "Deprived",
-             "0" = "Relatively affluent"
-           ) %>%
-           relevel(ref = "Relatively affluent",
-            first = TRUE, #levels in ref come first
-            collapse = "+", #String used when constructing names for combined factor levels
-            xlevels = TRUE) #levels maintained even if not actually occurring
-      )
-table(dat$acorn_recoded_05)
-
-dat <- dat %>%
-  mutate(
-    acorn_continuous_05 =
-      as.numeric(acorn_05)
-  )
-```
-
-```{r SES recode - combine middle and high, include=FALSE}
-dat <- dat %>%
-  mutate(
-    SES_binary_releveled =
-      as.factor(fct_collapse(
-        SES,
-        "Middle to high" = c("Middle","High"),
-        "Low" = c("Low")
-      )
-  ) %>%
-    relevel(ref = "Middle to high",
-            first = TRUE, #levels in ref come first
-            collapse = "+", #String used when constructing names for combined factor levels
-            xlevels = TRUE) #levels maintained even if not actually occurring
-  )
-table(dat$SES_binary_releveled)
-```
-
-```{r child harm recode, include=FALSE}
-dat <- dat %>%
-  mutate(child_harm_recoded_05 =
-           if_else(
-             child_harm_05 == "Possible harm" |
-               child_harm_05 == "Definite harm",
-             1,
-             0
-           ) %>%
-           recode_factor(
-             "1" = "Harm",
-             "0" = "No harm"
-           ) %>%
-           relevel(ref = "No harm",
-            first = TRUE, #levels in ref come first
-            collapse = "+", #String used when constructing names for combined factor levels
-            xlevels = TRUE)
-      )
-table(dat$child_harm_recoded_05)
-```
-
-Originally maternal warmth was condensed - this resulted in a large reduction in power. Therefore maternal warmth has been recoded to be continuous. 
-```{r maternal warmth recode, include=FALSE}
-# dat <- dat %>%
-#   mutate(
-#     maternal_warmth_recoded_05 =
-#       as.factor(fct_collapse(
-#         maternal_warmth_05,
-#         "Little warmth" = c("No warmth","Very little warmth"),
-#         "Some warmth" = c("Some warmth","Moderate warmth"),
-#         "High warmth" = c("Moderately high warmth","High warmth")
-#       )
-#   ) %>%
-#     relevel(ref = "Some warmth",
-#         first = TRUE, #levels in ref come first
-#         collapse = "+", #String used when constructing names for combined factor levels
-#         xlevels = TRUE #levels maintained even if not actually occurring
-#   ))
-# table(dat$maternal_warmth_recoded_05)
-
-dat <- dat %>%
-  mutate(
-    maternal_warmth_continuous_05 = 
-      as.numeric(maternal_warmth_05)
-  )
-```
-
-```{r highest education recode, include=FALSE}
-dat <- dat %>%
-  mutate(
-    highest_education_recode_18 =
-      as.factor(fct_collapse(
-        highest_education_18,
-        "Level 1 or below (GCSE grades D-G or below)" = c("No qualification","Level 1 (GCSE at grades D-G)"),
-        "Level 2 or 3 (GCSE grades A*-C or A-level)" = c("Level 2 (GCSE at grades A*-C)","Level 3 (A Level)")
-      )
-  ))
-table(dat$highest_education_recode_18)
-```
-
-```{r recode antisocial behaviour for parent}
-# create total score for mum and data to make parent
-dat <- dat %>%
-  mutate(antisocial_behaviour_parent_05 =
-           antisocial_behaviour_mum_05 + antisocial_behaviour_dad_05)
-```
-
-```{r recode alcoholism for parent}
-# create total score for mum and data to make parent
-dat <- dat %>%
-  mutate(alcoholism_parent_05 =
-           alcoholism_mum_05 + antisocial_behaviour_dad_05)
-```
- 
-Create numeric versions of all categorical antecedent variables for the correlation matrix
-```{r numreic varions of categorical antecedent variables}
-dat <- dat %>%
-  mutate(SES_binary_releveled_numeric = as.numeric(SES_binary_releveled)) %>%
-  mutate(child_harm_recoded_numeric_05 = as.numeric(child_harm_recoded_05)) %>%
-  mutate(mum_notlived_biodad_sincebirth_numeric_05 = as.numeric(mum_notlived_biodad_sincebirth_05)) %>%
-  mutate(any_domestic_violence_numeric_05 = as.numeric(any_domestic_violence_05)) %>%
-  mutate(maternal_depression_lifetime_numeric_05 = as.numeric(maternal_depression_lifetime_05))
-```
-
-Create numeric versions of all categorical outcome variables for the correlation matrix
-```{r numreic varions of categorical outcome variables}
-dat <- dat %>%
-  mutate(depression_diagnosis_12mo_numeric_18 = as.numeric(depression_diagnosis_12mo_18)) %>%
-  mutate(anxiety_diagnosis_numeric_18 = as.numeric(anxiety_diagnosis_18)) %>%
-  mutate(ADHD_diagnosis_numeric_18 = as.numeric(ADHD_diagnosis_18)) %>%
-  mutate(conduct_disorder_moderate_numeric_18 = as.numeric(conduct_disorder_moderate_18)) %>%
-  mutate(alcohol_dependence_numeric_18 = as.numeric(alcohol_dependence_18)) %>%
-  mutate(alcohol_abuse_numeric_18 = as.numeric(alcohol_abuse_18)) %>%
-  mutate(cannabis_dependence_numeric_18 = as.numeric(cannabis_dependence_18)) %>%
-  mutate(PTSD_diagnosis_lifetime_numeric_18 = as.numeric(PTSD_diagnosis_lifetime_18)) %>%
-  mutate(PTSD_diagnosis_current_numeric_18 = as.numeric(PTSD_diagnosis_current_18)) %>%
-  mutate(cat_psychosis_experiences_scale_numeric_18 = as.numeric(cat_psychosis_experiences_scale_18)) %>%
-  mutate(suicide_attempt_selfharm_numeric_18 = as.numeric(suicide_attempt_selfharm_18)) %>%
-  mutate(service_use_numeric_18 = as.numeric(service_use_18)) %>%
-  mutate(not_in_employment_education_numeric_18 = as.numeric(not_in_employment_education_18)) 
-```
-
-
-```{r remove variables that wont be used, include=FALSE}
-dat <- dat %>%
-  select(
-    -c(acorn_05,
-       child_harm_05,
-       maternal_warmth_05,
-       highest_education_18,
-       psychosis_symptom_count_18, # only including one psychosis variable for now - can add back in later if we find interesting associations
-       cat_psychosis_symptom_count_18,
-       psychosis_experiences_scale_18,
-       isolation_mother_05,
-       isolation_mother_07,
-       isolation_mother_10,
-       isolation_mother_12,
-       isolation_teacher_05,
-       isolation_teacher_07,
-       isolation_teacher_10,
-       isolation_teacher_12
-       )
-  )
-colnames(dat)
 ```
 
 # Class probability statistics
@@ -594,29 +413,16 @@ class.means <- class.means %>%
 kable(class.means)
 ```
 
-# Save data for regressions
-
-```{r save regression data}
-# save R data file
-saveRDS(object = dat, file = paste0(data_path, "regression_data_THREE_traj.rds"))
-```
-
 # Na per person split by class
 
 ```{r na per person slipt by class}
 ctable(dat$class_renamed, dat$na.per.person.si)
 ```
 
-
-
-
-
-
-
-
-
-
-
-
+Export the data
+```{r export new data files}
+# save R data file
+saveRDS(object = dat, file = paste0(data_path, "class_joined_preprocessed_isolation_data_full_sample.rds"))
+```
 
 
