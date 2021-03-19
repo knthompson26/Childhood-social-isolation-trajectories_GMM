@@ -61,11 +61,11 @@ library(dplyr) #conflicts with tidyverse for e.g. rename and row_number
 
 ```{r source the data file path}
 #source raw data directory: data_raw and data included
-source("../../../isolation_trajectories_data_path.R")
+source("../../../../../isolation_trajectories_data_path.R")
 ```
 
 ```{r read in prepped regression data and check variable names, include=FALSE}
-dat <- readRDS(file = paste0(data_path, "regression_data_THREE_traj.rds"))
+dat <- readRDS(file = paste0(data_path, "class_joined_preprocessed_isolation_data_full_sample.rds"))
 colnames(dat)
 ```
 
@@ -510,150 +510,6 @@ for (i in 1:length(antecedent.independent.continuous.loop))
 }
 ```
 
-# Sex differences in individual antecedent regressions 
-
-```{r loop for running antecedent regressions, include=FALSE}
-multinom.stats.ant.sex <- list() #create empty list to store the information in
-
-for (i in 1:length(antecedent.independent))
-{ cat(i)
-  multinom.formula.ant.sex <- as.formula(sprintf("class_reordered ~ %s + sex + sex*%s", antecedent.independent[i], antecedent.independent[i]))
-
-  multinom.reg.ant.sex <- multinom(multinom.formula.ant.sex, data = dat)
-
-  multinom.output.ant.full.sex <- broom::tidy(multinom.reg.ant.sex, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1:3,5:7),] %>%
-    dplyr::rename(Class = y.level,
-           RRR = estimate,
-           RRR.conf.low = conf.low,
-           RRR.conf.high = conf.high)
- 
-  if (i < 7) {
-    multinom.output.ant.full.sex <- multinom.output.ant.full.sex %>%
-      mutate(block = "Social block") %>%
-      mutate(Variable = name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 6))
-  } else if (i < 14 ) {
-   multinom.output.ant.full.sex <- multinom.output.ant.full.sex %>%
-      mutate(block = "Home block") %>%
-      mutate(Variable = name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 7))
-  } else if (i < 21) {
-    multinom.output.ant.full.sex <- multinom.output.ant.full.sex %>%
-      mutate(block = "Parent block") %>%
-      mutate(Variable = name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 7))
-  } else if (i < 24) {
-    multinom.output.ant.full.sex <- multinom.output.ant.full.sex %>%
-      mutate(block = "Neuro block") %>%
-      mutate(Variable = name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 3))
-  } else {
-    multinom.output.ant.full.sex <- multinom.output.ant.full.sex %>%
-      mutate(block = "Emo/behave block") %>%
-      mutate(Variable = name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 4))
-  }
-  
-   multinom.output.ant.full.sex <- multinom.output.ant.full.sex %>% 
-    mutate(
-    Significance = 
-      if_else(
-        p.value.adjusted < 0.05, 
-        1,
-        0
-      ) %>%
-    recode_factor(
-        "0" = "Non-significant",
-        "1" = "Significant"
-      ))
-    
-  multinom.stats.ant.sex[[i]] <- multinom.output.ant.full.sex
-}
-# set the names of the list to match the variable names
-names(multinom.stats.ant.sex) <- antecedent.independent
-```
-
-## Call statistics from loop
-
-**No sex differences after accounting for multiple testing**
-- No interaction effect between sex and the variable for each class. 
-
-```{r combine all data frames}
-data.ant_full.sex <- data.table::rbindlist(multinom.stats.ant.sex)
-```
-
-# Zygosity differences in individual antecedent regressions 
-
-```{r loop for running antecedent regressions, include=FALSE}
-multinom.stats.ant.zyg <- list() #create empty list to store the information in
-
-for (i in 1:length(antecedent.independent))
-{ cat(i)
-  multinom.formula.ant.zyg <- as.formula(sprintf("class_reordered ~ %s + zygosity_binary + zygosity_binary*%s", antecedent.independent[i], antecedent.independent[i]))
-
-  multinom.reg.ant.zyg <- multinom(multinom.formula.ant.zyg, data = dat)
-
-  multinom.output.ant.full.zyg <- broom::tidy(multinom.reg.ant.zyg, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1:3,5:7),] %>%
-    dplyr::rename(Class = y.level,
-           RRR = estimate,
-           RRR.conf.low = conf.low,
-           RRR.conf.high = conf.high)
- 
-  if (i < 7) {
-    multinom.output.ant.full.zyg <- multinom.output.ant.full.zyg %>%
-      mutate(block = "Social block") %>%
-      mutate(Variable = name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 6))
-  } else if (i < 14 ) {
-   multinom.output.ant.full.zyg <- multinom.output.ant.full.zyg %>%
-      mutate(block = "Home block") %>%
-      mutate(Variable = name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 7))
-  } else if (i < 21) {
-    multinom.output.ant.full.zyg <- multinom.output.ant.full.zyg %>%
-      mutate(block = "Parent block") %>%
-      mutate(Variable = name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 7))
-  } else if (i < 24) {
-    multinom.output.ant.full.zyg <- multinom.output.ant.full.zyg %>%
-      mutate(block = "Neuro block") %>%
-      mutate(Variable = name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 3))
-  } else {
-    multinom.output.ant.full.zyg <- multinom.output.ant.full.zyg %>%
-      mutate(block = "Emo/behave block") %>%
-      mutate(Variable = name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 4))
-  }
-  
-   multinom.output.ant.full.zyg <- multinom.output.ant.full.zyg %>% 
-    mutate(
-    Significance = 
-      if_else(
-        p.value.adjusted < 0.05, 
-        1,
-        0
-      ) %>%
-    recode_factor(
-        "0" = "Non-significant",
-        "1" = "Significant"
-      ))
-    
-  multinom.stats.ant.zyg[[i]] <- multinom.output.ant.full.zyg
-}
-# set the names of the list to match the variable names
-names(multinom.stats.ant.zyg) <- antecedent.independent
-```
-
-## Call statistics from loop
-
-**No zygosity differences after accounting for multiple testing**
-- No interaction effect between zygosity and the variable for each class. 
-
-```{r combine all data frames}
-data.ant_full.zyg <- data.table::rbindlist(multinom.stats.ant.zyg)
-```
-
 # Table including all statistics for individual antecedent regressions
 
 ```{r table for all individual regressions}
@@ -674,6 +530,7 @@ kable(data.ant_full.table %>% mutate_if(is.numeric, ~round(., 3)))
 ```
 
 ```{r table for all individual regressions - z score}
+# combining z score loop output (continuous only) with the original categorical regressions
 data.ant_full.table.cont <- data.table::rbindlist(multinom.stats.ant.cont)
 data.ant_full.table.cont <- rbind(data.ant_full.table.cont, 
                                   multinom.SES_binary_releveled, 
@@ -824,6 +681,150 @@ ggsave(
   width = 12,
   height = 9
 )
+```
+
+# Sex differences in individual antecedent regressions 
+
+```{r loop for running antecedent regressions, include=FALSE}
+multinom.stats.ant.sex <- list() #create empty list to store the information in
+
+for (i in 1:length(antecedent.independent))
+{ cat(i)
+  multinom.formula.ant.sex <- as.formula(sprintf("class_reordered ~ %s + sex + sex*%s", antecedent.independent[i], antecedent.independent[i]))
+
+  multinom.reg.ant.sex <- multinom(multinom.formula.ant.sex, data = dat)
+
+  multinom.output.ant.full.sex <- broom::tidy(multinom.reg.ant.sex, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1:3,5:7),] %>%
+    dplyr::rename(Class = y.level,
+           RRR = estimate,
+           RRR.conf.low = conf.low,
+           RRR.conf.high = conf.high)
+ 
+  if (i < 7) {
+    multinom.output.ant.full.sex <- multinom.output.ant.full.sex %>%
+      mutate(block = "Social block") %>%
+      mutate(Variable = name.list[[i]]) %>%
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 6))
+  } else if (i < 14 ) {
+   multinom.output.ant.full.sex <- multinom.output.ant.full.sex %>%
+      mutate(block = "Home block") %>%
+      mutate(Variable = name.list[[i]]) %>%
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 7))
+  } else if (i < 21) {
+    multinom.output.ant.full.sex <- multinom.output.ant.full.sex %>%
+      mutate(block = "Parent block") %>%
+      mutate(Variable = name.list[[i]]) %>%
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 7))
+  } else if (i < 24) {
+    multinom.output.ant.full.sex <- multinom.output.ant.full.sex %>%
+      mutate(block = "Neuro block") %>%
+      mutate(Variable = name.list[[i]]) %>%
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 3))
+  } else {
+    multinom.output.ant.full.sex <- multinom.output.ant.full.sex %>%
+      mutate(block = "Emo/behave block") %>%
+      mutate(Variable = name.list[[i]]) %>%
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 4))
+  }
+  
+   multinom.output.ant.full.sex <- multinom.output.ant.full.sex %>% 
+    mutate(
+    Significance = 
+      if_else(
+        p.value.adjusted < 0.05, 
+        1,
+        0
+      ) %>%
+    recode_factor(
+        "0" = "Non-significant",
+        "1" = "Significant"
+      ))
+    
+  multinom.stats.ant.sex[[i]] <- multinom.output.ant.full.sex
+}
+# set the names of the list to match the variable names
+names(multinom.stats.ant.sex) <- antecedent.independent
+```
+
+## Call statistics from loop
+
+**No sex differences after accounting for multiple testing**
+- No interaction effect between sex and the variable for each class. 
+
+```{r combine all data frames}
+data.ant_full.sex <- data.table::rbindlist(multinom.stats.ant.sex)
+```
+
+# Zygosity differences in individual antecedent regressions 
+
+```{r loop for running antecedent regressions, include=FALSE}
+multinom.stats.ant.zyg <- list() #create empty list to store the information in
+
+for (i in 1:length(antecedent.independent))
+{ cat(i)
+  multinom.formula.ant.zyg <- as.formula(sprintf("class_reordered ~ %s + zygosity_binary + zygosity_binary*%s", antecedent.independent[i], antecedent.independent[i]))
+
+  multinom.reg.ant.zyg <- multinom(multinom.formula.ant.zyg, data = dat)
+
+  multinom.output.ant.full.zyg <- broom::tidy(multinom.reg.ant.zyg, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1:3,5:7),] %>%
+    dplyr::rename(Class = y.level,
+           RRR = estimate,
+           RRR.conf.low = conf.low,
+           RRR.conf.high = conf.high)
+ 
+  if (i < 7) {
+    multinom.output.ant.full.zyg <- multinom.output.ant.full.zyg %>%
+      mutate(block = "Social block") %>%
+      mutate(Variable = name.list[[i]]) %>%
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 6))
+  } else if (i < 14 ) {
+   multinom.output.ant.full.zyg <- multinom.output.ant.full.zyg %>%
+      mutate(block = "Home block") %>%
+      mutate(Variable = name.list[[i]]) %>%
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 7))
+  } else if (i < 21) {
+    multinom.output.ant.full.zyg <- multinom.output.ant.full.zyg %>%
+      mutate(block = "Parent block") %>%
+      mutate(Variable = name.list[[i]]) %>%
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 7))
+  } else if (i < 24) {
+    multinom.output.ant.full.zyg <- multinom.output.ant.full.zyg %>%
+      mutate(block = "Neuro block") %>%
+      mutate(Variable = name.list[[i]]) %>%
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 3))
+  } else {
+    multinom.output.ant.full.zyg <- multinom.output.ant.full.zyg %>%
+      mutate(block = "Emo/behave block") %>%
+      mutate(Variable = name.list[[i]]) %>%
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 4))
+  }
+  
+   multinom.output.ant.full.zyg <- multinom.output.ant.full.zyg %>% 
+    mutate(
+    Significance = 
+      if_else(
+        p.value.adjusted < 0.05, 
+        1,
+        0
+      ) %>%
+    recode_factor(
+        "0" = "Non-significant",
+        "1" = "Significant"
+      ))
+    
+  multinom.stats.ant.zyg[[i]] <- multinom.output.ant.full.zyg
+}
+# set the names of the list to match the variable names
+names(multinom.stats.ant.zyg) <- antecedent.independent
+```
+
+## Call statistics from loop
+
+**No zygosity differences after accounting for multiple testing**
+- No interaction effect between zygosity and the variable for each class. 
+
+```{r combine all data frames}
+data.ant_full.zyg <- data.table::rbindlist(multinom.stats.ant.zyg)
 ```
 
 # Block regressions

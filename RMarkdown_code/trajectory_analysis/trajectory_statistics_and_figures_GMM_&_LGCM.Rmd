@@ -1,0 +1,877 @@
+---
+title: "GMM trajectory statistics and figures"
+author: "Katherine N Thompson"
+date: "13th Jan 2021"
+output:
+  word_document:
+    toc: yes
+    toc_depth: '2'
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_depth: 2
+    toc_float:
+      collapsed: no
+    number_sections: no
+    highlight: monochrome
+    theme: cerulean
+code_folding: hide
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,
+                      comment = NA,
+                      prompt = FALSE,
+                      cache = FALSE,
+                      message = FALSE,
+                      warning = FALSE)
+
+
+options(bitmapType = 'quartz') # to render fonts better
+```
+
+```{r Clear global environment}
+remove(list = ls())
+```
+
+```{r colour palletes for graphs}
+palette1 <- c("#78D9C5")
+palette2 <- c("#78D9C5","#F5BE5E")
+palette3 <- c("#78D9C5","#F5BE5E","#EEB6E9")
+palette4 <- c("#78D9C5","#F5BE5E","#EEB6E9","#DBDB73")
+palette5 <- c("#78D9C5","#F5BE5E","#EEB6E9","#DBDB73","#FFED98")
+palette6 <- c("#78D9C5","#F5BE5E","#EEB6E9","#DBDB73","#FFED98","#BFD2EB")
+```
+ 
+```{r source the data file path}
+#source raw data directory: data_raw and data included
+source("../../../../../isolation_trajectories_data_path.R")
+```
+
+```{r Mplus packages}
+library(MplusAutomation)
+library(stringr)
+library(stringi)
+library(filesstrings)
+library(texreg)
+library(relimp)
+library(rhdf5)
+library(knitr)
+library(ggplot2)
+library(tidyverse)
+library(plyr) #conflicts with tidyverse for e.g. rename and row_number
+```
+
+```{r MplusAutomation citation}
+citation("MplusAutomation")
+```
+
+# Longitudinal growth gurve models (LGCM)
+
+## Model fit statistics
+*Remember to check if you are reading in the full data set or for the one excluding the three missing*
+
+```{r read in data for growth curves, include=FALSE}
+si.growth.all <- readModels(paste0(mplus_growth_traj_clustered_full_output_data_path), recursive = TRUE)
+```
+
+```{r extract summary stats for growth curves, include=FALSE}
+#extract the summary variables from the mplus output files. Assuming there are multiple files in the above directory, model summaries could be retained as a data.frame as follows:
+si_growth_summaries <- do.call("rbind.fill",
+                        sapply(si.growth.all,
+                               "[", 
+                               "summaries"))
+```
+
+```{r create table of fit statistics for growth curve models, include=FALSE}
+#social isolation summaries 
+si.growth.summaries <- data.frame(matrix(nrow = 4,ncol = 8)) 
+
+#create column names for the variables you will be adding to the empty matrix of si.growth.summaries
+colnames(si.growth.summaries) <- c("Model", 
+                                  "Parameters", 
+                                  "AIC", 
+                                  "BIC", 
+                                  "aBIC", 
+                                  "CFI", 
+                                  "TLI", 
+                                  "RMSEA") #or whichever indices you want to compare; do si_summaries$ to see what's in there
+
+#create "Model" variable
+si.growth.summaries <- si.growth.summaries %>%
+  mutate(
+    Model = 
+    as.factor(c("Linear growth model",
+                "Log linear growth model",
+                "Quadratic growth model", 
+                "Log quadratic growth model")))
+
+#check 
+si.growth.summaries
+
+#add summary information into data frame 
+si.growth.summaries <- si.growth.summaries %>%
+  mutate(
+    Parameters = 
+      si_growth_summaries$Parameters) %>% #parameters
+  mutate(
+    AIC = 
+      si_growth_summaries$AIC) %>% #AIC 
+  mutate(
+    BIC = 
+      si_growth_summaries$BIC) %>% #BIC 
+  mutate(
+    aBIC = 
+      si_growth_summaries$aBIC) %>% #aBIC 
+  mutate(
+    CFI = 
+      si_growth_summaries$CFI) %>% #CFI
+  mutate(
+    TLI = 
+      si_growth_summaries$TLI) %>% #TLI
+  mutate(
+    RMSEA = 
+      si_growth_summaries$RMSEA_Estimate) #RMSEA
+  
+#check
+si.growth.summaries
+```
+
+```{r growth curve model fit table}
+knitr::kable(si.growth.summaries) #table for Word
+```
+Cut offs and best fitting models are:
+
+* lowest aBIC - linear
+* TLI > 0.95 - linear
+* CFI > 0.95 - quadratic  
+* RMSEA  < 0.05 indicates close fit, and  < 0.08 indicates reasonable fit - log linear
+
+*Linear model* is chosen as the best fitting and most parsimonious model.
+
+## Plots {.tabset .tabset-fade}
+
+### Social isolation linear and quadratic growth curves 
+
+```{r Growth curves for social isolation - linear and quadratic, include=FALSE}
+#create empty dataset 
+dat_si <- data.frame(matrix(nrow = 4, ncol = 3))
+
+#add column names
+colnames(dat_si) <- c("Observed", "Linear", "Quadratic")
+
+#add in model statistics from out files - will need to change the folder names depending on which sample you are looking at
+
+dat_si$Observed <- si.growth.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.growth_trajectories.clustered.full_sample.output..isolation_1traj_linear_full_sample_clustered.out$gh5$means_and_variances_data$y_observed_means$values #observed means - used linear but could be any
+
+dat_si$Linear <- si.growth.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.growth_trajectories.clustered.full_sample.output..isolation_1traj_linear_full_sample_clustered.out$gh5$means_and_variances_data$y_estimated_means$values #estimated means
+
+dat_si$Quadratic <- si.growth.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.growth_trajectories.clustered.full_sample.output..isolation_1traj_quad_full_sample_clustered.out$gh5$means_and_variances_data$y_estimated_means$values #estimated means
+
+#add timepoint column 
+dat_si$Timepoint <- c(5, 7, 10, 12)
+
+#convert into long format 
+dat_si <- dat_si %>%
+  tidyr::pivot_longer(-Timepoint, 
+               names_to = "Model", 
+               values_to = "score")
+#check
+dat_si
+```
+
+```{r Plot groth curves for social isolation}
+isolation_growth_curve_clustered_full_sample <- ggplot() + #change name of graph here if using the 3 missing sample 
+  geom_line(data = dat_si,
+        aes(x = Timepoint, 
+            y = score, 
+            colour = Model), 
+        size = 1) +
+  geom_point(data = dat_si,
+        aes(x = Timepoint, 
+            y = score, 
+            colour = Model, 
+            shape = Model), 
+        show.legend = T) +
+  scale_color_manual(values = palette3) +
+  labs(x = "Age (in years)", 
+       y ="Social isolation score",
+       title = "Growth curves for social isolation") +
+  scale_y_continuous(expand = c(0.01,0.01), 
+                     limits = c(0.8,0.96), 
+                     breaks=seq(0.8, 0.96, 0.02)) +
+  scale_x_continuous(expand = c(0.1,0.1), 
+                     limits = c(5,12), 
+                     breaks= c(5, 7, 10, 12)) +
+  theme(panel.grid.major.y = element_line(size = 0.5,
+                                        linetype = 'dashed',
+                                        colour = "gray"),
+        axis.text = element_text(colour="black", size = 12),
+        axis.title = element_text(colour="black", size = 12),
+        panel.background = element_blank()) 
+
+isolation_growth_curve_clustered_full_sample
+```
+
+### Single growth curve only
+
+```{r Single growth curve for social isolation - linear, include=FALSE}
+#create empty dataset 
+dat_si_single <- data.frame(matrix(nrow = 4, ncol = 1))
+
+#add column names
+colnames(dat_si_single) <- c("Linear growth curve")
+
+#add in model statistics from out files - will need to change the folder names depending on which sample
+dat_si_single$`Linear growth curve` <- si.growth.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.growth_trajectories.clustered.full_sample.output..isolation_1traj_linear_full_sample_clustered.out$gh5$means_and_variances_data$y_estimated_means$values #estimated means
+
+#add timepoint column 
+dat_si_single$timepoint <- c(5, 7, 10, 12)
+
+#convert into long format 
+dat_si_single <- dat_si_single %>%
+  tidyr::pivot_longer(-timepoint, 
+               names_to = "Class", 
+               values_to = "social.isolation_score")
+#check
+dat_si_single
+```
+
+```{r Plot groth curves for social isolation - single trajectory}
+isolation_growth_curve_single_clustered_full_sample <- ggplot() +
+  geom_line(data = dat_si_single,
+        aes(x = timepoint, 
+            y = social.isolation_score, 
+            colour = Class), 
+        size = 1.5) +
+  geom_point(data = dat_si_single,
+        aes(x = timepoint, 
+            y = social.isolation_score, 
+            colour = Class, 
+            size = 1), 
+        show.legend = T) +
+  scale_color_manual(values = palette1) +
+  labs(x = "Age (in years)", 
+       y ="Social isolation score",
+       title = "Growth curve for social isolation") +
+  scale_y_continuous(expand = c(0.1,0.1),
+                     limits = c(0,12),
+                     breaks = seq(0, 12, 2)) +
+  scale_x_continuous(expand = c(0.1,0.1),
+                     limits = c(5,12),
+                     breaks = c(5, 7, 10, 12)) +
+  theme(panel.grid.major.y = element_line(size = 0.5,
+                                        linetype = 'dashed',
+                                        colour = "gray"),
+        axis.text = element_text(colour="black", 
+                                 size = 12),
+        axis.title = element_text(colour="black", 
+                                  size = 12),
+        panel.background = element_blank(),
+        plot.title = element_text(size = 12, hjust=0.5)) + 
+  guides(shape = FALSE, size = FALSE)
+
+isolation_growth_curve_single_clustered_full_sample
+```
+
+### Log-transformed social isolation linear and quadratic growth curves 
+
+```{r Growth curves for log transformed social isolation - linear and quadratic, include=FALSE}
+#create empty dataset 
+dat_si_log <- data.frame(matrix(nrow = 4, ncol = 3))
+
+#add column names
+colnames(dat_si_log) <- c("Observed", "Linear", "Quadratic")
+
+#add in model statistics from out files - need to change file name dependant on which sample
+dat_si_log$Observed <- si.growth.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.growth_trajectories.clustered.full_sample.output..isolation_1traj_linear_log_full_sample_clustered.out$gh5$means_and_variances_data$y_observed_means$values #observed means
+
+dat_si_log$Linear <- si.growth.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.growth_trajectories.clustered.full_sample.output..isolation_1traj_linear_log_full_sample_clustered.out$gh5$means_and_variances_data$y_estimated_means$values #estimated means
+
+dat_si_log$Quadratic <- si.growth.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.growth_trajectories.clustered.full_sample.output..isolation_1traj_quad_log_full_sample_clustered.out$gh5$means_and_variances_data$y_estimated_means$values #estimated means
+
+#add timepoint column 
+dat_si_log$Timepoint <- c(5, 7, 10, 12)
+
+#convert into long format 
+dat_si_log <- dat_si_log %>%
+  pivot_longer(-Timepoint, 
+               names_to = "Model", 
+               values_to = "score")
+#check
+dat_si_log
+```
+
+```{r Plot groth curves for log-transformed social isolation}
+isolation_growth_curve_log_scale_clustered_full_sample <- ggplot() +
+  geom_line(data = dat_si_log,
+        aes(x = Timepoint, 
+            y = score, 
+            colour = Model), 
+        size = 1) +
+  geom_point(data = dat_si_log,
+        aes(x = Timepoint, 
+            y = score, 
+            colour = Model, 
+            shape=Model), 
+        show.legend = T) +
+  scale_color_manual(values = palette3) +
+  labs(x = "Age (in years)", 
+       y ="Social isolation score",
+       title = "Growth curves for log-social isolation") +
+  scale_y_continuous(expand = c(0.01,0.01), 
+                     limits = c(0.44,0.52), 
+                     breaks=seq(0.44, 0.52, 0.01)) +
+  scale_x_continuous(expand = c(0.1,0.1), 
+                     limits = c(5,12), 
+                     breaks= c(5, 7, 10, 12)) +
+  theme(panel.grid.major.y = element_line(size = 0.5,
+                                        linetype = 'dashed',
+                                        colour = "gray"),
+        axis.text = element_text(colour="black", size = 12),
+        axis.title = element_text(colour="black", size = 12),
+        panel.background = element_blank()) 
+
+isolation_growth_curve_log_scale_clustered_full_sample
+```
+
+# Linear growth mixture models (GMM)
+
+## Model fit statistics
+
+```{r read in social isolation model data, include=FALSE}
+#For class models, read in all output files within your folder that you have all your class models
+si.classes.all <- readModels(paste0(mplus_GMM_clustered_full_output_data_path), recursive = TRUE) #Recursive means it reads data in sub-folders too
+```
+
+```{r read in trajectoriesectory summary vairables, include=FALSE}
+#extract the summary variables from the mplus output files. Assuming there are multiple files in the above directory, model summaries could be retained as a data.frame as follows:
+si_summaries <- do.call("rbind.fill",
+                        sapply(si.classes.all,
+                               "[", 
+                               "summaries"))
+
+# have a look at the summary data for all files
+si_summaries <- si_summaries[-c(2,3,5,6,9,11),]  # remove rows that are output from OPTSEED tests and keep 5 and 6 trajectory models that fix S to zero
+```
+
+```{r create data frame with sumamary variables, include=FALSE}
+#social isolation summaries 
+si.class.summaries <- data.frame(matrix(nrow = 5, 
+                                         ncol = 8)) 
+
+#create column names for the variables you will be adding to the empty matrix of si.class.summaries
+colnames(si.class.summaries) <- c("Model", 
+                                  "Parameters", 
+                                  "AIC", 
+                                  "BIC", 
+                                  "aBIC", 
+                                  "Entropy", 
+                                  "VLMR LRT p-value", 
+                                  "Class Proportions") #or whichever indices you want to compare; do si_summaries$ to see what's in there
+
+#check colnames
+si.class.summaries
+
+#create "Model" variable
+si.class.summaries <- si.class.summaries %>%
+  mutate(
+    Model = 
+    as.factor(c("Two Class", #change nrow in data frame above when adding more models
+                "Three Class", 
+                "Four Class", 
+                "Five Class",
+                "Six Class")))  
+
+#add summary information into data frame 
+si.class.summaries <- si.class.summaries %>%
+  mutate(
+    Parameters = 
+      si_summaries$Parameters) %>% #parameters col from original summaries data set
+  mutate(
+    AIC = 
+      si_summaries$AIC) %>% #AIC col from original summaries data set
+  mutate(
+    BIC = 
+      si_summaries$BIC) %>% #BIC col from original summaries data set
+  mutate(
+    aBIC = 
+      si_summaries$aBIC) %>% #aBIC col from original summaries data set
+  mutate(
+    Entropy = 
+      si_summaries$Entropy) %>% #Entropy col from original summaries data set
+  mutate(
+    `VLMR LRT p-value` = 
+      si_summaries$T11_VLMR_PValue) #T11_VLMR_PValue col from original summaries data set
+
+#check
+si.class.summaries
+```
+
+```{r create class proportions % for each model}
+#for each class we want to add in the model estimated class counts - then convert this into a list with the percentage of people in each class
+
+#two classes
+si.class.summaries$`Class Proportions`[si.class.summaries$Model == "Two Class"] <- list(c(sprintf("%.0f", si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.output..isolation_2traj_full_sample_clustered.out$class_counts$modelEstimated$proportion*100)))
+
+#three classes
+si.class.summaries$`Class Proportions`[si.class.summaries$Model == "Three Class"] <- list(c(sprintf('%.0f', si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.output..isolation_3traj_full_sample_clustered.out$class_counts$modelEstimated$proportion*100)))
+
+#four classes
+si.class.summaries$`Class Proportions`[si.class.summaries$Model == "Four Class"] <- list(c(sprintf('%.0f', si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.output..isolation_4traj_full_sample_clustered.out$class_counts$modelEstimated$proportion*100)))
+
+#five classes
+si.class.summaries$`Class Proportions`[si.class.summaries$Model == "Five Class"] <- list(c(sprintf('%.0f', si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.output..isolation_5traj_full_sample_clustered_S_fixed_to_zero.out$class_counts$modelEstimated$proportion*100)))
+
+#six classes
+si.class.summaries$`Class Proportions`[si.class.summaries$Model == "Six Class"] <- list(c(sprintf('%.0f', si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.output..isolation_6traj_full_sample_clustered_S_fixed_to_zero.out$class_counts$modelEstimated$proportion*100)))
+```
+
+```{r create class Ns for each model}
+#two classes
+si.class.summaries$`Class N`[si.class.summaries$Model == "Two Class"] <- list(c(sprintf("%.0f", si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.output..isolation_2traj_full_sample_clustered.out$class_counts$posteriorProb$count)))
+
+#three classes
+si.class.summaries$`Class N`[si.class.summaries$Model == "Three Class"] <- list(c(sprintf("%.0f", si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.output..isolation_3traj_full_sample_clustered.out$class_counts$posteriorProb$count)))
+
+#four classes
+si.class.summaries$`Class N`[si.class.summaries$Model == "Four Class"] <- list(c(sprintf("%.0f", si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.output..isolation_4traj_full_sample_clustered.out$class_counts$posteriorProb$count)))
+
+#five classes
+si.class.summaries$`Class N`[si.class.summaries$Model == "Five Class"] <- list(c(sprintf("%.0f", si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.output..isolation_5traj_full_sample_clustered_S_fixed_to_zero.out$class_counts$posteriorProb$count)))
+
+#six classes
+si.class.summaries$`Class N`[si.class.summaries$Model == "Six Class"] <- list(c(sprintf("%.0f", si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.output..isolation_6traj_full_sample_clustered_S_fixed_to_zero.out$class_counts$posteriorProb$count)))
+```
+
+```{r load summary table for GMM models}
+#Look at summary table 
+kable(si.class.summaries)
+```
+ 
+*The five class model in these statistics is fixing the variance of S (slope) to zero - as the original model produces negative variances.*
+
+## Plots {.tabset .tabset-fade}
+
+### Two Class model
+```{r two class GMM model preparation, include=FALSE}
+#create two class data frame with means and variances
+two_class_si <- as.data.frame(
+  si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.output..isolation_2traj_full_sample_clustered.out$gh5$means_and_variances_data$y_estimated_means)
+
+#name the variables
+names(two_class_si) <- c("Class 1","Class 2")
+
+#create timepoint column 
+two_class_si$timepoint <- c(5, 7, 10, 12)
+
+#convert data to long format 
+two_class_si <- two_class_si %>%
+  pivot_longer(-timepoint, 
+               names_to = "Class", 
+               values_to = "social.isolation_score")
+
+#check
+two_class_si
+```
+
+```{r plot 2 class GMM  model}
+two_traj_plot_clustered_full_sample <- ggplot(two_class_si,
+        aes(x = timepoint, 
+            y = social.isolation_score, 
+            colour = Class)) +
+          geom_line(size = 1.5) +
+  geom_point(aes(#shape = class, 
+                 size = 1)) +
+  scale_fill_manual(values = palette2) +
+  scale_color_manual(values = palette2) +
+  labs(x = "Age (in years)", 
+       title = "Two class model of social isolation in E-risk",
+       color = "Class",
+       y ="Social isolation score") +   
+  scale_y_continuous(expand = c(0.1,0.1),
+                     limits = c(0,12),
+                     breaks = seq(0, 12, 2)) +
+  scale_x_continuous(expand = c(0.1,0.1),
+                     limits = c(5,12),
+                     breaks = c(5, 7, 10, 12)) +
+  theme(panel.grid.major.y = element_line(size = 0.5,
+                                        linetype = 'dashed',
+                                        colour = "gray"),
+        axis.text = element_text(colour="black", 
+                                 size = 12),
+        axis.title = element_text(colour="black", 
+                                  size = 12),
+        panel.background = element_blank(),
+        plot.title = element_text(size = 16, hjust = 0.5)) + 
+  guides(shape = FALSE, size = FALSE)
+
+two_traj_plot_clustered_full_sample
+```
+
+### Three Class model
+
+```{r three class GMM model preparation, include=FALSE}
+#create three class data frame with means and variances
+three_class_si <- as.data.frame(
+  si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.output..isolation_3traj_full_sample_clustered.out$gh5$means_and_variances_data$y_estimated_means)
+
+#name the variables
+names(three_class_si) <- c("Class 1","Class 2","Class 3")
+
+#create time point column 
+three_class_si$timepoint <- c(5, 7, 10, 12)
+
+#convert data to long format 
+three_class_si <- three_class_si %>%
+  pivot_longer(-timepoint, 
+               names_to = "Class", 
+               values_to = "social.isolation_score")
+
+#check
+three_class_si
+```
+
+```{r plot 3 class GMM model}
+three_traj_plot_clustered_full_sample <- ggplot(three_class_si,
+        aes(x = timepoint, 
+            y = social.isolation_score, 
+            colour = Class)) +
+          geom_line(size = 1.5) +
+  geom_point(aes(size = 1)) +
+  scale_fill_manual(values = palette3) +
+  scale_color_manual(values = palette3) +
+  labs(x = "Age (in years)", 
+       title = "Three class model of social isolation in E-risk",
+       color = "Class",
+       y ="Social isolation score") +   
+  scale_y_continuous(expand = c(0.1,0.1),
+                     limits = c(0,12),
+                     breaks = seq(0, 12, 2)) +
+  scale_x_continuous(expand = c(0.1,0.1),
+                     limits = c(5,12),
+                     breaks = c(5, 7, 10, 12)) +
+  theme(panel.grid.major.y = element_line(size = 0.5,
+                                        linetype = 'dashed',
+                                        colour = "gray"),
+        axis.text = element_text(colour="black", 
+                                 size = 12),
+        axis.title = element_text(colour="black", 
+                                  size = 12),
+        panel.background = element_blank(),
+        plot.title = element_text(size = 16, hjust=0.5)) + 
+  guides(shape = FALSE, size = FALSE)
+
+three_traj_plot_clustered_full_sample
+```
+
+### Four Class model
+
+```{r four class GMM model preparation, include=FALSE}
+#create four class data frame with means and variances
+four_class_si <- as.data.frame(
+  si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.output..isolation_4traj_full_sample_clustered.out$gh5$means_and_variances_data$y_estimated_means)
+
+#name the variables
+names(four_class_si) <- c("Class 1","Class 2","Class 3","Class 4")
+
+#create timepoint column 
+four_class_si$timepoint <- c(5, 7, 10, 12)
+
+#convert data to long format 
+four_class_si <- four_class_si %>%
+  pivot_longer(-timepoint, 
+               names_to = "Class", 
+               values_to = "social.isolation_score")
+
+#check
+four_class_si
+```
+
+```{r plot 4 class GMM model}
+four_traj_plot_clustered_full_sample <- ggplot(four_class_si,
+        aes(x = timepoint, 
+            y = social.isolation_score, 
+            colour = Class)) +
+          geom_line(size = 1.5) +
+  geom_point(aes(size = 1)) +
+  scale_fill_manual(values = palette4) +
+  scale_color_manual(values = palette4) +
+  labs(x = "Age (in years)", 
+       title = "Four class model of social isolation in E-risk",
+       color = "Class",
+       y ="Social isolation score") +   
+  scale_y_continuous(expand = c(0.1,0.1),
+                     limits = c(0,12),
+                     breaks = seq(0, 12, 2)) +
+  scale_x_continuous(expand = c(0.1,0.1),
+                     limits = c(5,12),
+                     breaks = c(5, 7, 10, 12)) +
+  theme(panel.grid.major.y = element_line(size = 0.5,
+                                        linetype = 'dashed',
+                                        colour = "gray"),
+        axis.text = element_text(colour="black", 
+                                 size = 12),
+        axis.title = element_text(colour="black", 
+                                  size = 12),
+        panel.background = element_blank(),
+        plot.title = element_text(size = 16, hjust=0.5)) + 
+  guides(shape = FALSE, size = FALSE)
+
+four_traj_plot_clustered_full_sample
+```
+
+### Five Class model
+
+```{r five class GMM  model preparation, include=FALSE}
+#create five class data frame with means and variances
+five_class_si <- as.data.frame(
+  si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.output..isolation_5traj_full_sample_clustered_S_fixed_to_zero.out$gh5$means_and_variances_data$y_estimated_means)
+
+#name the variables
+names(five_class_si) <- c("Class 1","Class 2","Class 3","Class 4","Class 5")
+
+#create timepoint column 
+five_class_si$timepoint <- c(5, 7, 10, 12)
+
+#convert data to long format 
+five_class_si <- five_class_si %>%
+  pivot_longer(-timepoint, 
+               names_to = "Class", 
+               values_to = "social.isolation_score")
+
+#check
+five_class_si
+```
+
+```{r plot 5 class GMM model}
+five_traj_plot_clustered_full_sample <- ggplot(five_class_si,
+        aes(x = timepoint, 
+            y = social.isolation_score, 
+            colour = Class)) +
+          geom_line(size = 1.5) +
+  geom_point(aes(size = 1)) +
+  scale_fill_manual(values = palette5) +
+  scale_color_manual(values = palette5) +
+  labs(x = "Age (in years)", 
+       title = "Five class model of social isolation in E-risk",
+       color = "Class",
+       y ="Social isolation score") +   
+  scale_y_continuous(expand = c(0.1,0.1),
+                     limits = c(0,12),
+                     breaks = seq(0, 12, 2)) +
+  scale_x_continuous(expand = c(0.1,0.1),
+                     limits = c(5,12),
+                     breaks = c(5, 7, 10, 12)) +
+  theme(panel.grid.major.y = element_line(size = 0.5,
+                                        linetype = 'dashed',
+                                        colour = "gray"),
+        axis.text = element_text(colour="black", 
+                                 size = 12),
+        axis.title = element_text(colour="black", 
+                                  size = 12),
+        panel.background = element_blank(),
+        plot.title = element_text(size = 16, hjust=0.5)) + 
+  guides(shape = FALSE, size = FALSE)
+
+five_traj_plot_clustered_full_sample
+```
+
+### Six Class model
+
+```{r six class GMM  model preparation, include=FALSE}
+#create five class data frame with means and variances
+six_class_si <- as.data.frame(
+  si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.output..isolation_6traj_full_sample_clustered_S_fixed_to_zero.out$gh5$means_and_variances_data$y_estimated_means)
+
+#name the variables
+names(six_class_si) <- c("Class 1","Class 2","Class 3","Class 4","Class 5","Class 6")
+
+#create timepoint column 
+six_class_si$timepoint <- c(5, 7, 10, 12)
+
+#convert data to long format 
+six_class_si <- six_class_si %>%
+  pivot_longer(-timepoint, 
+               names_to = "Class", 
+               values_to = "social.isolation_score")
+
+#check
+six_class_si
+```
+
+```{r plot 6 class GMM model}
+six_traj_plot_clustered_full_sample <- ggplot(six_class_si,
+        aes(x = timepoint, 
+            y = social.isolation_score, 
+            colour = Class)) +
+          geom_line(size = 1.5) +
+  geom_point(aes(size = 1)) +
+  scale_fill_manual(values = palette6) +
+  scale_color_manual(values = palette6) +
+  labs(x = "Age (in years)", 
+       title = "Six class model of social isolation in E-risk",
+       color = "Class",
+       y = "Social isolation score") +   
+  scale_y_continuous(expand = c(0.1,0.1),
+                     limits = c(0,12),
+                     breaks = seq(0, 12, 2)) +
+  scale_x_continuous(expand = c(0.1,0.1),
+                     limits = c(5,12),
+                     breaks = c(5, 7, 10, 12)) +
+  theme(panel.grid.major.y = element_line(size = 0.5,
+                                        linetype = 'dashed',
+                                        colour = "gray"),
+        axis.text = element_text(colour="black", 
+                                 size = 12),
+        axis.title = element_text(colour="black", 
+                                  size = 12),
+        panel.background = element_blank(),
+        plot.title = element_text(size = 16, hjust=0.5)) + 
+  guides(shape = FALSE, size = FALSE)
+
+six_traj_plot_clustered_full_sample
+```
+
+# Save all graphs as images into folder "plots"
+
+```{r save as JPEG, include=FALSE}
+# Growth curve graphs will likely be needed in supplementary to show why we chose the linear model. 
+#growth curve
+ggsave(
+  "isolation_growth_curve_clustered_full_sample.jpeg",
+  plot = isolation_growth_curve_clustered_full_sample,
+  device = "jpeg",
+  path = paste0(graph_save_data_path, "growth_models/"),
+  width = 7,
+  height = 5
+)
+#growth curve log scale
+ggsave(
+  "isolation_growth_curve_log_scale_clustered_full_sample.jpeg",
+  plot = isolation_growth_curve_log_scale_clustered_full_sample,
+  device = "jpeg",
+  path = paste0(graph_save_data_path, "growth_models/"),
+  width = 7,
+  height = 5
+)
+# Two trajectories
+ggsave(
+  "two_traj_plot_clustered_full_sample.jpeg",
+  plot = two_traj_plot_clustered_full_sample,
+  device = "jpeg",
+  path = paste0(graph_save_data_path, "trajectories/"),
+  width = 7,
+  height = 5
+)
+# Three trajectories
+ggsave(
+  "three_traj_plot_clustered_full_sample.jpeg",
+  plot = three_traj_plot_clustered_full_sample,
+  device = "jpeg",
+  path = paste0(graph_save_data_path, "trajectories/"),
+  width = 7,
+  height = 5
+)
+# Four trajectories
+ggsave(
+  "four_traj_plot_clustered_full_sample.jpeg",
+  plot = four_traj_plot_clustered_full_sample,
+  device = "jpeg",
+  path = paste0(graph_save_data_path, "trajectories/"),
+  width = 7,
+  height = 5
+)
+# Five trajectories
+ggsave(
+  "five_traj_plot_clustered_full_sample.jpeg",
+  plot = five_traj_plot_clustered_full_sample,
+  device = "jpeg",
+  path = paste0(graph_save_data_path, "trajectories/"),
+  width = 7,
+  height = 5
+)
+# Six trajectories
+ggsave(
+  "six_traj_plot_clustered_full_sample.jpeg",
+  plot = six_traj_plot_clustered_full_sample,
+  device = "jpeg",
+  path = paste0(graph_save_data_path, "trajectories/"),
+  width = 7,
+  height = 5
+)
+# Can save all graphs as PNG and PDF if needed - only JPEG for now. 
+```
+
+# Rename and format for joint plot
+
+```{r rename plots, include=FALSE}
+# rename all plot titles
+isolation_growth_curve_single_clustered_full_sample <- isolation_growth_curve_single_clustered_full_sample +
+  labs(title = "Growth curve", color = "") +
+  theme(plot.title = element_text(size = 12,face = "bold"),
+        axis.title.x = element_text(size = 10, face = "bold"),
+        legend.position="none")
+
+two_traj_plot_clustered_full_sample <- two_traj_plot_clustered_full_sample +
+  labs(title = "Two class model", color = "") +
+  theme(plot.title = element_text(size = 12,face = "bold"),
+        axis.title.x = element_text(size = 10, face = "bold"), 
+        legend.position="none")
+
+three_traj_plot_clustered_full_sample <- three_traj_plot_clustered_full_sample +
+  labs(title = "Three class model", color = "") +
+  theme(plot.title = element_text(size = 12,face = "bold"),
+        axis.title.x = element_text(size = 10, face = "bold"),
+        legend.position="none")
+
+four_traj_plot_clustered_full_sample <- four_traj_plot_clustered_full_sample +
+  labs(title = "Four class model", color = "") +
+  theme(plot.title = element_text(size = 12,face = "bold"),
+        axis.title.x = element_text(size = 10, face = "bold"),
+        legend.position="none")
+
+five_traj_plot_clustered_full_sample <- five_traj_plot_clustered_full_sample +
+  labs(title = "Five class model", color = "") +
+  theme(plot.title = element_text(size = 12,face = "bold"),
+        axis.title.x = element_text(size = 10, face = "bold"),
+        legend.position="none")
+
+six_traj_plot_clustered_full_sample <- six_traj_plot_clustered_full_sample +
+  labs(title = "Six class model", color = "") +
+  theme(plot.title = element_text(size = 12,face = "bold"),
+        axis.title.x = element_text(size = 10, face = "bold"),
+        legend.position="none")
+```
+
+
+```{r combine trajectory plots}
+#combine all plots
+library(ggpubr) # Needed for combining plots
+library(gridExtra)
+combined_trajectories_plot_clustered_full_sample <- ggarrange(isolation_growth_curve_single_clustered_full_sample, 
+                                        two_traj_plot_clustered_full_sample, 
+                                        three_traj_plot_clustered_full_sample, 
+                                        four_traj_plot_clustered_full_sample, 
+                                        five_traj_plot_clustered_full_sample,
+                                        six_traj_plot_clustered_full_sample,
+                                        ncol = 2, nrow = 3,
+                                        widths = c(2.7,2.7,2.7,2.7), 
+                                        heights = c(3,3,3,3),
+                                        labels = c("A", "B", "C", "D", "E", "F"),
+                                        legend = "bottom")
+
+ggsave(
+  "combined_trajectories_plot_clustered_full_sample.jpeg",
+  plot = combined_trajectories_plot_clustered_full_sample,
+  device = "jpeg",
+  path = paste0(graph_save_data_path, "trajectories/"),
+  width = 8.5,
+  height = 10
+)
+```
+
+*****
+No need to export any data here. Now should have the saved trajectory graphs and tables. Will need to knit in word to access the trajectory table for the paper. 
+
+
+

@@ -44,7 +44,7 @@ palette6 <- c("#78D9C5","#F5BE5E","#EEB6E9","#DBDB73","#FFED98","#BFD2EB")
  
 ```{r source the data file path}
 #source raw data directory: data_raw and data included
-source("../../../../isolation_trajectories_data_path.R")
+source("../../../../../isolation_trajectories_data_path.R")
 ```
 
 ```{r Mplus packages}
@@ -65,7 +65,7 @@ library(plyr) #conflicts with tidyverse for e.g. rename and row_number
 citation("MplusAutomation")
 ```
 
-# Growth curves 
+# Longitudinal growth gurve models (LGCM)
 
 ## Model fit statistics
 *Remember to check if you are reading in the full data set or for the one excluding the three missing*
@@ -81,138 +81,6 @@ si_growth_summaries <- do.call("rbind.fill",
                                "[", 
                                "summaries"))
 ```
-
-```{r create table of fit statistics for growth curve models, include=FALSE}
-#social isolation summaries 
-si.growth.summaries <- data.frame(matrix(nrow = 4,ncol = 8)) 
-
-#create column names for the variables you will be adding to the empty matrix of si.growth.summaries
-colnames(si.growth.summaries) <- c("Model", 
-                                  "Parameters", 
-                                  "AIC", 
-                                  "BIC", 
-                                  "aBIC", 
-                                  "CFI", 
-                                  "TLI", 
-                                  "RMSEA") #or whichever indices you want to compare; do si_summaries$ to see what's in there
-
-#create "Model" variable
-si.growth.summaries <- si.growth.summaries %>%
-  mutate(
-    Model = 
-    as.factor(c("Linear growth model",
-                "Log linear growth model",
-                "Quadratic growth model", 
-                "Log quadratic growth model")))
-
-#check 
-si.growth.summaries
-
-#add summary information into data frame 
-si.growth.summaries <- si.growth.summaries %>%
-  mutate(
-    Parameters = 
-      si_growth_summaries$Parameters) %>% #parameters
-  mutate(
-    AIC = 
-      si_growth_summaries$AIC) %>% #AIC 
-  mutate(
-    BIC = 
-      si_growth_summaries$BIC) %>% #BIC 
-  mutate(
-    aBIC = 
-      si_growth_summaries$aBIC) %>% #aBIC 
-  mutate(
-    CFI = 
-      si_growth_summaries$CFI) %>% #CFI
-  mutate(
-    TLI = 
-      si_growth_summaries$TLI) %>% #TLI
-  mutate(
-    RMSEA = 
-      si_growth_summaries$RMSEA_Estimate) #RMSEA
-  
-#check
-si.growth.summaries
-```
-
-```{r growth curve model fit table}
-knitr::kable(si.growth.summaries) #table for Word
-```
-Cut offs and best fitting models are:
-
-* lowest aBIC - linear
-* TLI > 0.95 - linear
-* CFI > 0.95 - quadratic  
-* RMSEA  < 0.05 indicates close fit, and  < 0.08 indicates reasonable fit - log linear
-
-*Linear model* is chosen as the best fitting and most parsimonious model.
-
-## Plots {.tabset .tabset-fade}
-
-### Social isolation linear and quadratic growth curves 
-
-```{r Growth curves for social isolation - linear and quadratic, include=FALSE}
-#create empty dataset 
-dat_si <- data.frame(matrix(nrow = 4, ncol = 3))
-
-#add column names
-colnames(dat_si) <- c("Observed", "Linear", "Quadratic")
-
-#add in model statistics from out files - will need to change the folder names depending on which sample you are looking at
-
-dat_si$Observed <- si.growth.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.growth_trajectories.clustered.full_sample.output..isolation_1traj_linear_full_sample_clustered.out$gh5$means_and_variances_data$y_observed_means$values #observed means - used linear but could be any
-
-dat_si$Linear <- si.growth.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.growth_trajectories.clustered.full_sample.output..isolation_1traj_linear_full_sample_clustered.out$gh5$means_and_variances_data$y_estimated_means$values #estimated means
-
-dat_si$Quadratic <- si.growth.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.growth_trajectories.clustered.full_sample.output..isolation_1traj_quad_full_sample_clustered.out$gh5$means_and_variances_data$y_estimated_means$values #estimated means
-
-#add timepoint column 
-dat_si$Timepoint <- c(5, 7, 10, 12)
-
-#convert into long format 
-dat_si <- dat_si %>%
-  tidyr::pivot_longer(-Timepoint, 
-               names_to = "Model", 
-               values_to = "score")
-#check
-dat_si
-```
-
-```{r Plot groth curves for social isolation}
-isolation_growth_curve_clustered_full_sample <- ggplot() + #change name of graph here if using the 3 missing sample 
-  geom_line(data = dat_si,
-        aes(x = Timepoint, 
-            y = score, 
-            colour = Model), 
-        size = 1) +
-  geom_point(data = dat_si,
-        aes(x = Timepoint, 
-            y = score, 
-            colour = Model, 
-            shape = Model), 
-        show.legend = T) +
-  scale_color_manual(values = palette3) +
-  labs(x = "Age (in years)", 
-       y ="Social isolation score",
-       title = "Growth curves for social isolation") +
-  scale_y_continuous(expand = c(0.01,0.01), 
-                     limits = c(0.8,0.96), 
-                     breaks=seq(0.8, 0.96, 0.02)) +
-  scale_x_continuous(expand = c(0.1,0.1), 
-                     limits = c(5,12), 
-                     breaks= c(5, 7, 10, 12)) +
-  theme(panel.grid.major.y = element_line(size = 0.5,
-                                        linetype = 'dashed',
-                                        colour = "gray"),
-        axis.text = element_text(colour="black", size = 12),
-        axis.title = element_text(colour="black", size = 12),
-        panel.background = element_blank()) 
-
-isolation_growth_curve_clustered_full_sample
-```
-
-### Single growth curve only
 
 ```{r Single growth curve for social isolation - linear, include=FALSE}
 #create empty dataset 
@@ -273,68 +141,7 @@ isolation_growth_curve_single_clustered_full_sample <- ggplot() +
 isolation_growth_curve_single_clustered_full_sample
 ```
 
-### Log-transformed social isolation linear and quadratic growth curves 
-
-```{r Growth curves for log transformed social isolation - linear and quadratic, include=FALSE}
-#create empty dataset 
-dat_si_log <- data.frame(matrix(nrow = 4, ncol = 3))
-
-#add column names
-colnames(dat_si_log) <- c("Observed", "Linear", "Quadratic")
-
-#add in model statistics from out files - need to change file name dependant on which sample
-dat_si_log$Observed <- si.growth.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.growth_trajectories.clustered.full_sample.output..isolation_1traj_linear_log_full_sample_clustered.out$gh5$means_and_variances_data$y_observed_means$values #observed means
-
-dat_si_log$Linear <- si.growth.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.growth_trajectories.clustered.full_sample.output..isolation_1traj_linear_log_full_sample_clustered.out$gh5$means_and_variances_data$y_estimated_means$values #estimated means
-
-dat_si_log$Quadratic <- si.growth.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.growth_trajectories.clustered.full_sample.output..isolation_1traj_quad_log_full_sample_clustered.out$gh5$means_and_variances_data$y_estimated_means$values #estimated means
-
-#add timepoint column 
-dat_si_log$Timepoint <- c(5, 7, 10, 12)
-
-#convert into long format 
-dat_si_log <- dat_si_log %>%
-  pivot_longer(-Timepoint, 
-               names_to = "Model", 
-               values_to = "score")
-#check
-dat_si_log
-```
-
-```{r Plot groth curves for log-transformed social isolation}
-isolation_growth_curve_log_scale_clustered_full_sample <- ggplot() +
-  geom_line(data = dat_si_log,
-        aes(x = Timepoint, 
-            y = score, 
-            colour = Model), 
-        size = 1) +
-  geom_point(data = dat_si_log,
-        aes(x = Timepoint, 
-            y = score, 
-            colour = Model, 
-            shape=Model), 
-        show.legend = T) +
-  scale_color_manual(values = palette3) +
-  labs(x = "Age (in years)", 
-       y ="Social isolation score",
-       title = "Growth curves for log-social isolation") +
-  scale_y_continuous(expand = c(0.01,0.01), 
-                     limits = c(0.44,0.52), 
-                     breaks=seq(0.44, 0.52, 0.01)) +
-  scale_x_continuous(expand = c(0.1,0.1), 
-                     limits = c(5,12), 
-                     breaks= c(5, 7, 10, 12)) +
-  theme(panel.grid.major.y = element_line(size = 0.5,
-                                        linetype = 'dashed',
-                                        colour = "gray"),
-        axis.text = element_text(colour="black", size = 12),
-        axis.title = element_text(colour="black", size = 12),
-        panel.background = element_blank()) 
-
-isolation_growth_curve_log_scale_clustered_full_sample
-```
-
-# Linear growth mixture models
+# Quadratic growth mixture models (GMM)
 
 ## Model fit statistics
 
