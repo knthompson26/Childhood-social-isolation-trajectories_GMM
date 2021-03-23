@@ -882,6 +882,184 @@ data.outcome.linear.sex
 Interaction terms are set to "class_reordered:sexFemale", therefore OR>1 indicates association with being female. 
 Significant interaction between sex and class membership for "BMI". 
 
+## Run models separately for boys and girls
+
+```{r datasets for males and males}
+dat.female <- dat %>% filter(sex == "Female")
+dat.male <- dat %>% filter (sex == "Male")
+```
+
+### Not in emplyment/education
+
+```{r employment for boys}
+logistic.formula.outcome.employment.boys <- as.formula(not_in_employment_education_18 ~ class_reordered + SES_ordered)
+
+logistic.reg.outcome.employment.boys <- glm(logistic.formula.outcome.employment.boys, data = dat.male, family = "binomial")
+  
+# robust standard error estimation - account for non-independence of twin sample
+logistic.output.outcome.full.employment.boys <- summ(logistic.reg.outcome.employment.boys,
+                                       scale = TRUE,          # standardized regression coefficients
+                                       confint = TRUE,        # report confidence intervals over standard errors
+                                       ci.width = 0.95,       # desired confidence interval
+                                       robust = "HC0",        # heteroskedasticity-robust standard errors instead of conventional SEs
+                                       cluster = "familyid",  # for clustered standard errors, provide column name of cluster variable
+                                       exp = TRUE
+                                       )
+  
+logistic.output.outcome.full.employment.boys <- as.data.frame(logistic.output.outcome.full.employment.boys$coeftable)[-c(1,4,5),] %>% # delete SES coefficients
+  mutate(Class = c("Increasing", "Decreasing")) %>% # Create new formatted class variable
+  mutate(block = "Employment block") %>%
+  mutate(Variable = "Not in employment or education: Yes") %>%
+  mutate(p.value.adjusted = p.adjust(p, method = "fdr", n = 2)) %>%
+  mutate(Significance = if_else(
+    p.value.adjusted < 0.05,
+    1,
+    0) %>%
+      recode_factor(
+        "0" = "Non-significant",
+        "1" = "Significant")) %>%
+  dplyr::select(
+      Class,
+      `Dependent variable` = Variable,
+      OR = `exp(Est.)`,
+      OR.conf.low = `2.5%`,
+      OR.conf.high = `97.5%`,
+      p.value = p,
+      p.value.adjusted,
+      Significance,
+      block)
+
+# table
+kable(logistic.output.outcome.full.employment.boys)
+```
+
+```{r employment for girls}
+logistic.formula.outcome.employment.girls <- as.formula(not_in_employment_education_18 ~ class_reordered + SES_ordered)
+
+logistic.reg.outcome.employment.girls <- glm(logistic.formula.outcome.employment.girls, data = dat.female, family = "binomial")
+  
+# robust standard error estimation - account for non-independence of twin sample
+logistic.output.outcome.full.employment.girls <- summ(logistic.reg.outcome.employment.girls,
+                                       scale = TRUE,          # standardized regression coefficients
+                                       confint = TRUE,        # report confidence intervals over standard errors
+                                       ci.width = 0.95,       # desired confidence interval
+                                       robust = "HC0",        # heteroskedasticity-robust standard errors instead of conventional SEs
+                                       cluster = "familyid",  # for clustered standard errors, provide column name of cluster variable
+                                       exp = TRUE
+                                       )
+  
+logistic.output.outcome.full.employment.girls <- as.data.frame(logistic.output.outcome.full.employment.girls$coeftable)[-c(1,4,5),] %>% # delete SES coefficients
+  mutate(Class = c("Increasing", "Decreasing")) %>% # Create new formatted class variable
+  mutate(block = "Employment block") %>%
+  mutate(Variable = "Not in employment or education: Yes") %>%
+  mutate(p.value.adjusted = p.adjust(p, method = "fdr", n = 2)) %>%
+  mutate(Significance = if_else(
+    p.value.adjusted < 0.05,
+    1,
+    0) %>%
+      recode_factor(
+        "0" = "Non-significant",
+        "1" = "Significant")) %>%
+  dplyr::select(
+      Class,
+      `Dependent variable` = Variable,
+      OR = `exp(Est.)`,
+      OR.conf.low = `2.5%`,
+      OR.conf.high = `97.5%`,
+      p.value = p,
+      p.value.adjusted,
+      Significance,
+      block)
+
+# table
+kable(logistic.output.outcome.full.employment.girls)
+```
+
+### BMI
+```{r bmi model for boys}
+linear.formula.outcome.bmi.boys <- as.formula(BMI_18 ~ class_reordered)
+
+linear.reg.outcome.bmi.boys <- lm(linear.formula.outcome.bmi.boys, data = dat.male)
+
+# robust standard error estimation - account for non-independence of twin sample
+linear.output.outcome.full.bmi.boys <- broom::tidy(coeftest(linear.reg.outcome.bmi.boys,      # reports coefficients for new covariance matrix
+                                                                    vcov = vcovHC(linear.reg.outcome.bmi.boys,             # estimates a robust covariance matrix
+                                                                    type = "HC0",                            # gives White's estimator 
+                                                                    cluster = "familyid")),                  # clusters by familyid
+                                               conf.int = TRUE, 
+                                               conf.level = 0.95)[-c(1),] %>%
+  rename(robust.std.error = std.error) %>%
+  mutate(Class = c("Increasing", "Decreasing")) %>% # Create new formatted class variable
+  mutate(block = "Physical health block") %>%
+  mutate(Variable = "BMI") %>%
+  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 2)) %>%
+  mutate(Significance = 
+             if_else(
+               p.value.adjusted < 0.05,
+               1,
+               0
+               ) %>%
+             recode_factor(
+               "0" = "Non-significant",
+               "1" = "Significant")) %>%
+  select(Class,
+         `Dependent variable` = Variable,
+         estimate,
+         conf.low,
+         conf.high,
+         p.value, 
+         p.value.adjusted,
+         Significance,
+         block)
+
+# table
+kable(linear.output.outcome.full.bmi.boys)
+```
+
+```{r bmi model for girls}
+linear.formula.outcome.bmi.girls <- as.formula(BMI_18 ~ class_reordered)
+
+linear.reg.outcome.bmi.girls <- lm(linear.formula.outcome.bmi.girls, data = dat.female)
+
+# robust standard error estimation - account for non-independence of twin sample
+linear.output.outcome.full.bmi.girls <- broom::tidy(coeftest(linear.reg.outcome.bmi.girls,      # reports coefficients for new covariance matrix
+                                                                    vcov = vcovHC(linear.reg.outcome.bmi.girls,             # estimates a robust covariance matrix
+                                                                    type = "HC0",                            # gives White's estimator 
+                                                                    cluster = "familyid")),                  # clusters by familyid
+                                               conf.int = TRUE, 
+                                               conf.level = 0.95)[-c(1),] %>%
+  rename(robust.std.error = std.error) %>%
+  mutate(Class = c("Increasing", "Decreasing")) %>% # Create new formatted class variable
+  mutate(block = "Physical health block") %>%
+  mutate(Variable = "BMI") %>%
+  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 2)) %>%
+  mutate(Significance = 
+             if_else(
+               p.value.adjusted < 0.05,
+               1,
+               0
+               ) %>%
+             recode_factor(
+               "0" = "Non-significant",
+               "1" = "Significant"))
+
+linear.output.outcome.full.bmi.girls <- linear.output.outcome.full.bmi.girls %>%
+  select(Class,
+         `Dependent variable` = Variable,
+         estimate,
+         conf.low,
+         conf.high,
+         p.value, 
+         p.value.adjusted,
+         Significance,
+         block)
+
+# table
+kable(linear.output.outcome.full.bmi.girls)
+```
+Significant association between BMI and Increasing class for girls only. 
+
+
 # Zygosity interaction
 
 ## Logistic regression loop  - zygosity interaction
