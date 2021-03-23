@@ -370,7 +370,7 @@ multinom.stats.ant <- list() #create empty list to store the information in
 
 for (i in 1:length(antecedent.independent))
 { cat(i)
-  multinom.formula.ant <- as.formula(sprintf("class_reordered ~ %s", antecedent.independent[i]))
+  multinom.formula.ant <- as.formula(sprintf("class_reordered ~ %s + sex", antecedent.independent[i]))
 
   multinom.reg.ant <- multinom(multinom.formula.ant, data = dat)
 
@@ -380,12 +380,13 @@ for (i in 1:length(antecedent.independent))
            RRR.conf.low = conf.low,
            RRR.conf.high = conf.high)
   
-  # test <- mlogit::mlogit.data(data = dat)
+  
+  ########### IN PROGRESS
+  # test <- mlogit::mlogit.data(data = dat)   
   # multinom.reg.ant <- mlogit::mlogit(multinom.formula.ant, data = test)
   # 
   # cluster.im.mlogit(multinom.output.ant.full, dat = dat, cluster = ~ familyid, report = TRUE, truncate = TRUE)
-  
-  
+  ##########
   
   if (i < 7) {
     multinom.output.ant.full <- multinom.output.ant.full %>%
@@ -462,7 +463,7 @@ multinom.stats.ant.cont <- list() #create empty list to store the information in
 
 for (i in 1:length(antecedent.independent.continuous.loop))
 { cat(i)
-  multinom.formula.ant.cont <- as.formula(sprintf("class_reordered ~ %s", antecedent.independent.continuous.loop[i]))
+  multinom.formula.ant.cont <- as.formula(sprintf("class_reordered ~ %s + sex", antecedent.independent.continuous.loop[i]))
 
   multinom.reg.ant.cont <- multinom(multinom.formula.ant.cont, data = dat)
 
@@ -849,7 +850,7 @@ data.ant_full.zyg <- data.table::rbindlist(multinom.stats.ant.zyg)
 ### Non-scaled
 
 ```{r social block regression}
-multinom.formula.ant.social.block <- as.formula(class_reordered ~ SES_binary_releveled + problems_neighbours_05 + number_children_school_free_meals_05)
+multinom.formula.ant.social.block <- as.formula(class_reordered ~ SES_binary_releveled + problems_neighbours_05 + number_children_school_free_meals_05 + sex)
 
 multinom.reg.ant.social.block <- multinom(multinom.formula.ant.social.block, data = dat)
 
@@ -888,7 +889,7 @@ multinom.output.ant.social.block.full.ordered$Variable <- factor(multinom.output
 ### Scaled (z scores)
 
 ```{r social block regression z score}
-multinom.formula.ant.social.block.cont <- as.formula(class_reordered ~ SES_binary_releveled + z_score.problems_neighbours_05 + z_score.number_children_school_free_meals_05)
+multinom.formula.ant.social.block.cont <- as.formula(class_reordered ~ SES_binary_releveled + z_score.problems_neighbours_05 + z_score.number_children_school_free_meals_05 + sex)
 
 multinom.reg.ant.social.block.cont <- multinom(multinom.formula.ant.social.block.cont, data = dat)
 
@@ -970,7 +971,7 @@ ggsave(
 Have taken forward significant ones based on FDR correction.
 
 ```{r home block regression}
-multinom.formula.ant.home.block <- as.formula(class_reordered ~ child_harm_recoded_05 + maternal_warmth_continuous_05 + any_domestic_violence_05 + total_social_support_05 + total_activities_with_mum_05)
+multinom.formula.ant.home.block <- as.formula(class_reordered ~ child_harm_recoded_05 + maternal_warmth_continuous_05 + any_domestic_violence_05 + total_social_support_05 + total_activities_with_mum_05 + sex)
 
 multinom.reg.ant.home.block <- multinom(multinom.formula.ant.home.block, data = dat)
 
@@ -1010,7 +1011,7 @@ multinom.output.ant.home.block.full.ordered$Variable <- factor(multinom.output.a
 ### Z scores
 
 ```{r home block regression - zscores}
-multinom.formula.ant.home.block.cont <- as.formula(class_reordered ~ child_harm_recoded_05 + z_score.maternal_warmth_continuous_05 + any_domestic_violence_05 + z_score.total_social_support_05 + z_score.total_activities_with_mum_05)
+multinom.formula.ant.home.block.cont <- as.formula(class_reordered ~ child_harm_recoded_05 + z_score.maternal_warmth_continuous_05 + any_domestic_violence_05 + z_score.total_social_support_05 + z_score.total_activities_with_mum_05 + sex)
 
 multinom.reg.ant.home.block.cont <- multinom(multinom.formula.ant.home.block.cont, data = dat)
 
@@ -1092,7 +1093,7 @@ ggsave(
 ## Parent characteristics environment
 
 ```{r parent block regression}
-multinom.formula.ant.parent.block <- as.formula(class_reordered ~ maternal_depression_lifetime_05 + maternal_personality_openness_05 + maternal_personality_conscientiousness_05 + maternal_personality_extroversion_05 + maternal_personality_agreeableness_05 + maternal_personality_neuroticism_05 + antisocial_behaviour_parent_05)
+multinom.formula.ant.parent.block <- as.formula(class_reordered ~ maternal_depression_lifetime_05 + maternal_personality_openness_05 + maternal_personality_conscientiousness_05 + maternal_personality_extroversion_05 + maternal_personality_agreeableness_05 + maternal_personality_neuroticism_05 + antisocial_behaviour_parent_05 + sex)
 
 multinom.reg.ant.parent.block <- multinom(multinom.formula.ant.parent.block, data = dat)
 
@@ -1133,7 +1134,7 @@ multinom.output.ant.parent.block.full.ordered$Variable <- factor(multinom.output
 ### Zscores
 
 ```{r parent block regression - zscores}
-multinom.formula.ant.parent.block.cont <- as.formula(class_reordered ~ maternal_depression_lifetime_05 + z_score.maternal_personality_openness_05 + z_score.maternal_personality_conscientiousness_05 + z_score.maternal_personality_extroversion_05 + z_score.maternal_personality_agreeableness_05 + z_score.maternal_personality_neuroticism_05 + z_score.antisocial_behaviour_parent_05) #alcoholism removed
+multinom.formula.ant.parent.block.cont <- as.formula(class_reordered ~ maternal_depression_lifetime_05 + z_score.maternal_personality_openness_05 + z_score.maternal_personality_conscientiousness_05 + z_score.maternal_personality_extroversion_05 + z_score.maternal_personality_agreeableness_05 + z_score.maternal_personality_neuroticism_05 + z_score.antisocial_behaviour_parent_05 + sex) #alcoholism removed
 
 multinom.reg.ant.parent.block.cont <- multinom(multinom.formula.ant.parent.block.cont, data = dat)
 
@@ -1215,7 +1216,7 @@ ggsave(
 ## Child neurodevelopment 
 
 ```{r neuro block regression}
-multinom.formula.ant.neuro.block <- as.formula(class_reordered ~ IQ_05 + executive_function_05 + theory_of_mind_05)
+multinom.formula.ant.neuro.block <- as.formula(class_reordered ~ IQ_05 + executive_function_05 + theory_of_mind_05 + sex)
 
 multinom.reg.ant.neuro.block <- multinom(multinom.formula.ant.neuro.block, data = dat)
 
@@ -1256,7 +1257,7 @@ multinom.output.ant.neuro.block.full.ordered$Variable <- factor(multinom.output.
 ### Z scores 
 
 ```{r neuro block regression - zscores}
-multinom.formula.ant.neuro.block.cont <- as.formula(class_reordered ~ z_score.IQ_05 + z_score.executive_function_05 + z_score.theory_of_mind_05)
+multinom.formula.ant.neuro.block.cont <- as.formula(class_reordered ~ z_score.IQ_05 + z_score.executive_function_05 + z_score.theory_of_mind_05 + sex)
 
 multinom.reg.ant.neuro.block.cont <- multinom(multinom.formula.ant.neuro.block.cont, data = dat)
 
@@ -1338,7 +1339,7 @@ ggsave(
 ## Child emotional and behavioural development 
 
 ```{r emo block regression}
-multinom.formula.ant.emo.block <- as.formula(class_reordered ~ externalising_combined_05 + internalising_combined_excl_sis_05 + ADHD_combined_05 + prosocial_behaviours_combined_05)
+multinom.formula.ant.emo.block <- as.formula(class_reordered ~ externalising_combined_05 + internalising_combined_excl_sis_05 + ADHD_combined_05 + prosocial_behaviours_combined_05 + sex)
 
 multinom.reg.ant.emo.block <- multinom(multinom.formula.ant.emo.block, data = dat)
 
@@ -1379,7 +1380,7 @@ multinom.output.ant.emo.block.full.ordered$Variable <- factor(multinom.output.an
 ### Z scores 
 
 ```{r emo block regression}
-multinom.formula.ant.emo.block.cont <- as.formula(class_reordered ~ z_score.externalising_combined_05 + z_score.internalising_combined_excl_sis_05 + z_score.ADHD_combined_05 + z_score.prosocial_behaviours_combined_05)
+multinom.formula.ant.emo.block.cont <- as.formula(class_reordered ~ z_score.externalising_combined_05 + z_score.internalising_combined_excl_sis_05 + z_score.ADHD_combined_05 + z_score.prosocial_behaviours_combined_05 + sex)
 
 multinom.reg.ant.emo.block.cont <- multinom(multinom.formula.ant.emo.block.cont, data = dat)
 
@@ -1461,7 +1462,7 @@ ggsave(
 # Full antecedent model with significant variables
 
 ```{r full all sig regression}
-multinom.formula.ant.all <- as.formula(class_reordered ~ SES_binary_releveled + number_children_school_free_meals_05 + child_harm_recoded_05 + total_social_support_05 + total_activities_with_mum_05 + maternal_warmth_continuous_05 + maternal_personality_conscientiousness_05 + antisocial_behaviour_parent_05 + IQ_05 + theory_of_mind_05 + executive_function_05 + internalising_combined_excl_sis_05 + ADHD_combined_05 + prosocial_behaviours_combined_05)
+multinom.formula.ant.all <- as.formula(class_reordered ~ SES_binary_releveled + number_children_school_free_meals_05 + child_harm_recoded_05 + total_social_support_05 + total_activities_with_mum_05 + maternal_warmth_continuous_05 + maternal_personality_conscientiousness_05 + antisocial_behaviour_parent_05 + IQ_05 + theory_of_mind_05 + executive_function_05 + internalising_combined_excl_sis_05 + ADHD_combined_05 + prosocial_behaviours_combined_05 + sex)
 
 multinom.reg.ant.all <- multinom(multinom.formula.ant.all, data = dat)
 
@@ -1499,7 +1500,7 @@ multinom.output.ant.all.full$Variable <- factor(multinom.output.ant.all.full$Var
 ## Z scores
 
 ```{r full all sig regression}
-multinom.formula.ant.all.cont <- as.formula(class_reordered ~ SES_binary_releveled + z_score.number_children_school_free_meals_05 + child_harm_recoded_05 + z_score.total_social_support_05 + z_score.total_activities_with_mum_05 + z_score.maternal_warmth_continuous_05 + z_score.maternal_personality_conscientiousness_05 + z_score.antisocial_behaviour_parent_05 + z_score.IQ_05 + z_score.theory_of_mind_05 + z_score.executive_function_05 + z_score.internalising_combined_excl_sis_05 + z_score.ADHD_combined_05 + z_score.prosocial_behaviours_combined_05)
+multinom.formula.ant.all.cont <- as.formula(class_reordered ~ SES_binary_releveled + z_score.number_children_school_free_meals_05 + child_harm_recoded_05 + z_score.total_social_support_05 + z_score.total_activities_with_mum_05 + z_score.maternal_warmth_continuous_05 + z_score.maternal_personality_conscientiousness_05 + z_score.antisocial_behaviour_parent_05 + z_score.IQ_05 + z_score.theory_of_mind_05 + z_score.executive_function_05 + z_score.internalising_combined_excl_sis_05 + z_score.ADHD_combined_05 + z_score.prosocial_behaviours_combined_05 + sex)
 
 multinom.reg.ant.all.cont <- multinom(multinom.formula.ant.all.cont, data = dat)
 

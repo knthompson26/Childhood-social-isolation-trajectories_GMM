@@ -420,7 +420,9 @@ for (i in 1:length(outcome.dependent.logistic))
                                        )
   
   logistic.output.outcome.full <- as.data.frame(logistic.output.outcome.full$coeftable)[-c(1,4:6),] %>% # delete sex and SES coefficients
+    mutate(Class = c("Increasing", "Decreasing")) %>% # Create new formatted class variable
     dplyr::select(
+      Class,
       OR = `exp(Est.)`,
       OR.conf.low = `2.5%`,
       OR.conf.high = `97.5%`,
@@ -460,7 +462,6 @@ names(logistic.stats.outcome) <- outcome.dependent.logistic
 
 ```{r combine logistic dataframes}
 data.outcome.logistic <- data.table::rbindlist(logistic.stats.outcome) %>%
-  mutate(Class = rep(c("Increasing", "Decreasing"), 11)) %>% # Create new formatted class variable
   dplyr::select(Class,
          `Dependent variable` = Variable,
          OR,
@@ -470,6 +471,10 @@ data.outcome.logistic <- data.table::rbindlist(logistic.stats.outcome) %>%
          p.value.adjusted,
          Significance,
          block)
+```
+
+```{r table for combined logistic dataframes}
+kable(data.outcome.logistic)
 ```
 
 ```{r logistic regression outcome plot}
@@ -591,6 +596,10 @@ data.outcome.linear <- data.table::rbindlist(linear.stats.outcome) %>%
          block)
 ```
 
+```{r table for combines linear dataframes}
+kable(data.outcome.linear)
+```
+
 # Linear regression using  scores
 
 ## Loop with z scores
@@ -669,6 +678,10 @@ data.outcome.linear.zscore <- data.table::rbindlist(linear.stats.outcome.zscore)
          p.value.adjusted,
          Significance,
          block)
+```
+
+```{r table for combined linear dataframes zscore}
+kable(data.outcome.linear.zscore)
 ```
 
 ## Linear regression plot using z scores
@@ -800,6 +813,10 @@ data.outcome.logistic.sex
 ```
 Significant interaction between sex and class membership for "Not in employment or education" - rerun model separately for males and females. 
 
+```{r table combined logistic dataframes sex diffs}
+kable(data.outcome.logistic.sex)
+```
+
 ## Linear regression loop - sex interaction
 
 ```{r linear regression loop sex diffs}
@@ -882,6 +899,10 @@ data.outcome.linear.sex
 Interaction terms are set to "class_reordered:sexFemale", therefore OR>1 indicates association with being female. 
 Significant interaction between sex and class membership for "BMI". 
 
+```{r table combined linear dataframes sex diffs}
+kable(data.outcome.linear.sex)
+```
+
 ## Run models separately for boys and girls
 
 ```{r datasets for males and males}
@@ -890,7 +911,6 @@ dat.male <- dat %>% filter (sex == "Male")
 ```
 
 ### Not in emplyment/education
-
 ```{r employment for boys}
 logistic.formula.outcome.employment.boys <- as.formula(not_in_employment_education_18 ~ class_reordered + SES_ordered)
 
@@ -1059,7 +1079,6 @@ kable(linear.output.outcome.full.bmi.girls)
 ```
 Significant association between BMI and Increasing class for girls only. 
 
-
 # Zygosity interaction
 
 ## Logistic regression loop  - zygosity interaction
@@ -1145,8 +1164,11 @@ data.outcome.logistic.zyg <- data.table::rbindlist(logistic.stats.outcome.zyg) %
 # check for significant interaction effects between class and sex for each variable
 data.outcome.logistic.zyg
 ```
-
 No significant interaction between class membership and zygosity for any of the variables. 
+
+```{r table combined logistic dataframes zyg diffs}
+kable(data.outcome.logistic.zyg)
+```
 
 ## Linear regression loop - zygosity interaction
 
@@ -1229,6 +1251,10 @@ data.outcome.linear.zyg <- data.table::rbindlist(linear.stats.outcome.zyg) %>%
 data.outcome.linear.zyg
 ```
 No significant interaction between class membership and zygosity for any of the variables. 
+
+```{r table combined linear dataframes sex diffs}
+kable(data.outcome.linear.zyg)
+```
 
 # Controlling for significant antecedents
 
@@ -1697,7 +1723,7 @@ for (i in 1:length(outcome.dependent.linear.zscore))
 names(linear.stats.outcome.zscore.pairwise) <- outcome.dependent.linear.zscore
 ```
 
-```{r combine linear dataframes}
+```{r combine linear pairwise dataframes}
 data.outcome.linear.zscore.pairwise <- data.table::rbindlist(linear.stats.outcome.zscore.pairwise) %>%
   select(Class,
          `Dependent variable` = Variable,
@@ -1708,6 +1734,10 @@ data.outcome.linear.zscore.pairwise <- data.table::rbindlist(linear.stats.outcom
          p.value.adjusted,
          Significance,
          block)
+```
+
+```{r table combined linear pairwise dataframes}
+kable(data.outcome.linear.zscore.pairwise)
 ```
 
 ```{r linear regression pairwise outcome plot}
@@ -1832,6 +1862,10 @@ data.outcome.logistic.pairwise.ant_control <- data.table::rbindlist(logistic.sta
          block)
 ```
 
+```{r table combine logistic dataframes pairwise control antecedent}
+kable(data.outcome.logistic.pairwise.ant_control)
+```
+
 ```{r logistic regression pairwise outcome plot pairwise control antecedent}
 outcome.logistic.separate.pairwise.plot.ant_control <- ggplot(
   data.outcome.logistic.pairwise.ant_control, 
@@ -1948,6 +1982,10 @@ data.outcome.linear.zscore.pairwise.ant_control <- data.table::rbindlist(linear.
          p.value.adjusted,
          Significance,
          block)
+```
+
+```{r table combined linear dataframes pairwise control antecedent}
+kable(data.outcome.linear.zscore.pairwise.ant_control)
 ```
 
 ```{r linear regression pairwise outcome plot pairwise control antecedent}
