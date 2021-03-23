@@ -426,7 +426,7 @@ for (i in 1:length(outcome.dependent.logistic))
       OR.conf.high = `97.5%`,
       p.value = p)
     
-  if (i < 12) {
+  if (i < 11) {
     logistic.output.outcome.full <- logistic.output.outcome.full %>%
       mutate(block = "Mental health block") %>%
       mutate(Variable = outcome.dependent.logistic.name.list[[i]]) %>%
@@ -534,7 +534,8 @@ for (i in 1:length(outcome.dependent.linear))
                                              cluster = "familyid")),     # clusters by familyid
                            conf.int = TRUE, 
                            conf.level = 0.95)[-c(1,4:6),] %>%
-    rename(robust.std.error = std.error)
+    rename(robust.std.error = std.error) %>%
+    mutate(Class = c("Increasing", "Decreasing")) # Create new formatted class variable
 
   if (i < 8) {
     linear.output.outcome.full <- linear.output.outcome.full %>%
@@ -579,7 +580,6 @@ names(linear.stats.outcome) <- outcome.dependent.linear
 
 ```{r combine linear dataframes}
 data.outcome.linear <- data.table::rbindlist(linear.stats.outcome) %>%
-  mutate(Class = rep(c("Increasing", "Decreasing"), 20)) %>% # Create new formatted class variable
   dplyr::select(Class,
          `Dependent variable` = Variable,
          estimate,
@@ -613,7 +613,8 @@ for (i in 1:length(outcome.dependent.linear.zscore))
                                              cluster = "familyid")),                    # clusters by familyid
                            conf.int = TRUE, 
                            conf.level = 0.95)[-c(1,4:6),] %>%
-    rename(robust.std.error = std.error)
+    rename(robust.std.error = std.error) %>%
+    mutate(Class = c("Increasing", "Decreasing")) # Create new formatted class variable
  
   if (i < 8) {
     linear.output.outcome.full.zscore <- linear.output.outcome.full.zscore %>%
@@ -658,7 +659,6 @@ names(linear.stats.outcome.zscore) <- outcome.dependent.linear.zscore
 
 ```{r combine linear dataframes zscore}
 data.outcome.linear.zscore <- data.table::rbindlist(linear.stats.outcome.zscore) %>%
-  mutate(Class = rep(c("Increasing", "Decreasing"), 20)) %>% # Create new formatted class variable
   dplyr::select(Class,
          `Dependent variable` = Variable,
          estimate,
@@ -741,14 +741,17 @@ for (i in 1:length(outcome.dependent.logistic))
                                        exp = TRUE
                                        )
   
-  logistic.output.outcome.full.sex <- as.data.frame(logistic.output.outcome.full.sex$coeftable)[-c(1,4:6),] %>% # delete sex and SES coefficients
+  logistic.output.outcome.full.sex <- as.data.frame(logistic.output.outcome.full.sex$coeftable)[-c(1:4),] %>% # delete sex and SES coefficients
+    mutate(Class = c("Increasing:sex", "Decreasing:sex")) %>% # Create new formatted class variable
     dplyr::select(
+      Class,
       OR = `exp(Est.)`,
       OR.conf.low = `2.5%`,
       OR.conf.high = `97.5%`,
       p.value = p)
+    
  
-  if (i < 12) {
+  if (i < 11) {
     logistic.output.outcome.full.sex <- logistic.output.outcome.full.sex %>%
       mutate(block = "Mental health block") %>%
       mutate(Variable = outcome.dependent.logistic.name.list[[i]]) %>%
@@ -781,8 +784,7 @@ names(logistic.stats.outcome.sex) <- outcome.dependent.logistic
 ```
 
 ```{r combine logistic dataframes sex diffs}
-data.outcome.logistic.sex <- data.table::rbindlist(logistic.stats.outcome.sex) %>%
-  mutate(Class = rep(c("Increasing", "Decreasing"), 12)) %>% # Create new formatted class variable
+data.outcome.logistic.sex <- data.table::rbindlist(logistic.stats.outcome.sex) %>% 
   dplyr::select(Class,
          `Dependent variable` = Variable,
          OR,
@@ -796,8 +798,7 @@ data.outcome.logistic.sex <- data.table::rbindlist(logistic.stats.outcome.sex) %
 # check for significant interaction effects between class and sex for each variable
 data.outcome.logistic.sex
 ```
-Interaction terms are set to "class_reordered:sexFemale", therefore OR>1 indicates association with being female. 
-Significant interaction between sex and class membership for "Not in employment or education".  
+Significant interaction between sex and class membership for "Not in employment or education" - rerun model separately for males and females. 
 
 ## Linear regression loop - sex interaction
 
@@ -810,7 +811,17 @@ for (i in 1:length(outcome.dependent.linear))
 
   linear.reg.outcome.sex <- lm(linear.formula.outcome.sex, data = dat)
 
-  linear.output.outcome.full.sex <- broom::tidy(linear.reg.outcome.sex, conf.int = TRUE, conf.level = 0.95)[-c(1:4),] 
+  # linear.output.outcome.full.sex <- broom::tidy(linear.reg.outcome.sex, conf.int = TRUE, conf.level = 0.95)[-c(1:4),] 
+  
+  # robust standard error estimation - account for non-independence of twin sample
+  linear.output.outcome.full.sex <- broom::tidy(coeftest(linear.reg.outcome.sex,      # reports coefficients for new covariance matrix
+                                    vcov = vcovHC(linear.reg.outcome.sex,             # estimates a robust covariance matrix
+                                             type = "HC0",                            # gives White's estimator 
+                                             cluster = "familyid")),                  # clusters by familyid
+                           conf.int = TRUE, 
+                           conf.level = 0.95)[-c(1:4),] %>%
+    rename(robust.std.error = std.error) %>%
+    mutate(Class = c("Increasing:sex", "Decreasing:sex")) # Create new formatted class variable
  
   if (i < 8) {
     linear.output.outcome.full.sex <- linear.output.outcome.full.sex %>%
@@ -855,7 +866,6 @@ names(linear.stats.outcome.sex) <- outcome.dependent.linear
 
 ```{r combine linear dataframes sex diffs}
 data.outcome.linear.sex <- data.table::rbindlist(linear.stats.outcome.sex) %>%
-  mutate(Class = rep(c("Increasing", "Decreasing"), 20)) %>% # Create new formatted class variable
   select(Class,
          `Dependent variable` = Variable,
          estimate,
@@ -885,13 +895,32 @@ for (i in 1:length(outcome.dependent.logistic))
 
   logistic.reg.outcome.zyg <- glm(logistic.formula.outcome.zyg, data = dat, family = "binomial")
 
-  logistic.output.outcome.full.zyg <- broom::tidy(logistic.reg.outcome.zyg, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1:4),] %>%
-    dplyr::rename(
-           OR = estimate,
-           OR.conf.low = conf.low,
-           OR.conf.high = conf.high)
+  # logistic.output.outcome.full.zyg <- broom::tidy(logistic.reg.outcome.zyg, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1:4),] %>%
+  #   dplyr::rename(
+  #          OR = estimate,
+  #          OR.conf.low = conf.low,
+  #          OR.conf.high = conf.high)
+  
+  # robust standard error estimation - account for non-independence of twin sample
+  logistic.output.outcome.full.zyg <- summ(logistic.reg.outcome.zyg,
+                                       scale = TRUE,          # standardized regression coefficients
+                                       confint = TRUE,        # report confidence intervals over standard errors
+                                       ci.width = 0.95,       # desired confidence interval
+                                       robust = "HC0",        # heteroskedasticity-robust standard errors instead of conventional SEs
+                                       cluster = "familyid",  # for clustered standard errors, provide column name of cluster variable
+                                       exp = TRUE
+                                       )
+  
+  logistic.output.outcome.full.zyg <- as.data.frame(logistic.output.outcome.full.zyg$coeftable)[-c(1:4),] %>% # delete sex and SES coefficients
+    mutate(Class = c("Increasing:zyg", "Decreasing:zyg")) %>% # Create new formatted class variable
+    dplyr::select(
+      Class,
+      OR = `exp(Est.)`,
+      OR.conf.low = `2.5%`,
+      OR.conf.high = `97.5%`,
+      p.value = p)
  
-  if (i < 12) {
+  if (i < 11) {
     logistic.output.outcome.full.zyg <- logistic.output.outcome.full.zyg %>%
       mutate(block = "Mental health block") %>%
       mutate(Variable = outcome.dependent.logistic.name.list[[i]]) %>%
@@ -925,7 +954,6 @@ names(logistic.stats.outcome.zyg) <- outcome.dependent.logistic
 
 ```{r combine logistic dataframes zyg diffs}
 data.outcome.logistic.zyg <- data.table::rbindlist(logistic.stats.outcome.zyg) %>%
-  mutate(Class = rep(c("Increasing", "Decreasing"), 12)) %>% # Create new formatted class variable
   select(Class,
          `Dependent variable` = Variable,
          OR,
@@ -953,7 +981,18 @@ for (i in 1:length(outcome.dependent.linear))
 
   linear.reg.outcome.zyg <- lm(linear.formula.outcome.zyg, data = dat)
 
-  linear.output.outcome.full.zyg <- broom::tidy(linear.reg.outcome.zyg, conf.int = TRUE, conf.level = 0.95)[-c(1:4),] 
+  # linear.output.outcome.full.zyg <- broom::tidy(linear.reg.outcome.zyg, conf.int = TRUE, conf.level = 0.95)[-c(1:4),] 
+  
+  # robust standard error estimation - account for non-independence of twin sample
+  linear.output.outcome.full.zyg <- broom::tidy(coeftest(linear.reg.outcome.zyg,      # reports coefficients for new covariance matrix
+                                    vcov = vcovHC(linear.reg.outcome.zyg,             # estimates a robust covariance matrix
+                                             type = "HC0",                            # gives White's estimator 
+                                             cluster = "familyid")),                  # clusters by familyid
+                           conf.int = TRUE, 
+                           conf.level = 0.95)[-c(1:4),] %>%
+    rename(robust.std.error = std.error) %>%
+    mutate(Class = c("Increasing:zyg", "Decreasing:zyg")) # Create new formatted class variable
+ 
  
   if (i < 8) {
     linear.output.outcome.full.zyg <- linear.output.outcome.full.zyg %>%
@@ -998,7 +1037,6 @@ names(linear.stats.outcome.zyg) <- outcome.dependent.linear
 
 ```{r combine linear dataframes sex diffs}
 data.outcome.linear.zyg <- data.table::rbindlist(linear.stats.outcome.zyg) %>%
-  mutate(Class = rep(c("Increasing", "Decreasing"), 20)) %>% # Create new formatted class variable
   select(Class,
          `Dependent variable` = Variable,
          estimate,
@@ -1012,8 +1050,8 @@ data.outcome.linear.zyg <- data.table::rbindlist(linear.stats.outcome.zyg) %>%
 # check for significant interactions between sex and class
 data.outcome.linear.zyg
 ```
-
 No significant interaction between class membership and zygosity for any of the variables. 
+
 # Controlling for significant antecedents
 
 Rerun all regression models while controlling for antecedents that remained significant in the full antecedent model. Antecedents that remained significant in the full antecedent model:child prosocial behaviours, ADHD behaviours, internalising behaviours, and child executive function 
@@ -1029,13 +1067,31 @@ for (i in 1:length(outcome.dependent.logistic))
 
   logistic.reg.outcome.ant_control <- glm(logistic.formula.outcome.ant_control, data = dat, family = "binomial")
 
-  logistic.output.outcome.full.ant_control <- broom::tidy(logistic.reg.outcome.ant_control, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,4:10),] %>%
-    dplyr::rename(
-           OR = estimate,
-           OR.conf.low = conf.low,
-           OR.conf.high = conf.high)
+  # logistic.output.outcome.full.ant_control <- broom::tidy(logistic.reg.outcome.ant_control, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,4:10),] %>%
+  #   dplyr::rename(
+  #          OR = estimate,
+  #          OR.conf.low = conf.low,
+  #          OR.conf.high = conf.high)
+  
+  logistic.output.outcome.full.ant_control <- summ(logistic.reg.outcome.ant_control,
+                                       scale = TRUE,          # standardized regression coefficients
+                                       confint = TRUE,        # report confidence intervals over standard errors
+                                       ci.width = 0.95,       # desired confidence interval
+                                       robust = "HC0",        # heteroskedasticity-robust standard errors instead of conventional SEs
+                                       cluster = "familyid",  # for clustered standard errors, provide column name of cluster variable
+                                       exp = TRUE
+                                       )
+  
+  logistic.output.outcome.full.ant_control <- as.data.frame(logistic.output.outcome.full.ant_control$coeftable)[-c(1,4:10),] %>% # delete sex and SES coefficients
+    mutate(Class = c("Increasing", "Decreasing")) %>% # Create new formatted class variable
+    dplyr::select(
+      Class,
+      OR = `exp(Est.)`,
+      OR.conf.low = `2.5%`,
+      OR.conf.high = `97.5%`,
+      p.value = p)
  
-  if (i < 12) {
+  if (i < 11) {
     logistic.output.outcome.full.ant_control <- logistic.output.outcome.full.ant_control %>%
       mutate(block = "Mental health block") %>%
       mutate(Variable = outcome.dependent.logistic.name.list[[i]]) %>%
@@ -1069,7 +1125,6 @@ names(logistic.stats.outcome.ant_control) <- outcome.dependent.logistic
 
 ```{r combine logistic dataframes ant control}
 data.outcome.logistic.ant_control <- data.table::rbindlist(logistic.stats.outcome.ant_control) %>%
-  mutate(Class = rep(c("Increasing", "Decreasing"), 11)) %>% # Create new formatted class variable
   select(Class,
          `Dependent variable` = Variable,
          OR,
@@ -1079,6 +1134,10 @@ data.outcome.logistic.ant_control <- data.table::rbindlist(logistic.stats.outcom
          p.value.adjusted,
          Significance,
          block)
+```
+
+```{r table for logistic dataframes ant control}
+kable(data.outcome.logistic.ant_control)
 ```
 
 ### Logistic regression plot - controlling for antecedents
@@ -1134,7 +1193,17 @@ for (i in 1:length(outcome.dependent.linear.zscore))
 
   linear.reg.outcome.zscore.ant_control <- lm(linear.formula.outcome.zscore.ant_control, data = dat)
 
-  linear.output.outcome.full.zscore.ant_control <- broom::tidy(linear.reg.outcome.zscore.ant_control, conf.int = TRUE, conf.level = 0.95)[-c(1,4:10),] 
+  # linear.output.outcome.full.zscore.ant_control <- broom::tidy(linear.reg.outcome.zscore.ant_control, conf.int = TRUE, conf.level = 0.95)[-c(1,4:10),] 
+  
+  # robust standard error estimation - account for non-independence of twin sample
+  linear.output.outcome.full.zscore.ant_control <- broom::tidy(coeftest(linear.reg.outcome.zscore.ant_control,      # reports coefficients for new covariance matrix
+                                    vcov = vcovHC(linear.reg.outcome.zscore.ant_control,             # estimates a robust covariance matrix
+                                             type = "HC0",                                           # gives White's estimator 
+                                             cluster = "familyid")),                                 # clusters by familyid
+                           conf.int = TRUE, 
+                           conf.level = 0.95)[-c(1,4:10),]  %>%
+    rename(robust.std.error = std.error) %>%
+    mutate(Class = c("Increasing", "Decreasing")) # Create new formatted class variable
  
   if (i < 8) {
     linear.output.outcome.full.zscore.ant_control <- linear.output.outcome.full.zscore.ant_control %>%
@@ -1179,7 +1248,6 @@ names(linear.stats.outcome.zscore.ant_control) <- outcome.dependent.linear.zscor
 
 ```{r combine linear dataframes zscore ant control}
 data.outcome.linear.zscore.ant_control <- data.table::rbindlist(linear.stats.outcome.zscore.ant_control) %>%
-  mutate(Class = rep(c("Increasing", "Decreasing"), 20)) %>% # Create new formatted class variable
   select(Class,
          `Dependent variable` = Variable,
          estimate,
@@ -1189,6 +1257,10 @@ data.outcome.linear.zscore.ant_control <- data.table::rbindlist(linear.stats.out
          p.value.adjusted,
          Significance,
          block)
+```
+
+```{r table linear dataframes zscore ant control}
+kable(data.outcome.linear.zscore.ant_control)
 ```
 
 ### Linear regression plot with z scores - controlling for antecedents
@@ -1268,13 +1340,31 @@ for (i in 1:length(outcome.dependent.logistic))
 
   logistic.reg.outcome.pairwise <- glm(logistic.formula.outcome.pairwise, data = dat.pairwise, family = "binomial")
 
-  logistic.output.outcome.full.pairwise <- broom::tidy(logistic.reg.outcome.pairwise, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,3:5),] %>%
-    dplyr::rename(
-           OR = estimate,
-           OR.conf.low = conf.low,
-           OR.conf.high = conf.high)
+  # logistic.output.outcome.full.pairwise <- broom::tidy(logistic.reg.outcome.pairwise, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,3:5),] %>%
+  #   dplyr::rename(
+  #          OR = estimate,
+  #          OR.conf.low = conf.low,
+  #          OR.conf.high = conf.high)
+  
+  logistic.output.outcome.full.pairwise <- summ(logistic.reg.outcome.pairwise,
+                                       scale = TRUE,          # standardized regression coefficients
+                                       confint = TRUE,        # report confidence intervals over standard errors
+                                       ci.width = 0.95,       # desired confidence interval
+                                       robust = "HC0",        # heteroskedasticity-robust standard errors instead of conventional SEs
+                                       cluster = "familyid",  # for clustered standard errors, provide column name of cluster variable
+                                       exp = TRUE
+                                       )
+  
+  logistic.output.outcome.full.pairwise <- as.data.frame(logistic.output.outcome.full.pairwise$coeftable)[-c(1,3:5),] %>% # delete sex and SES coefficients
+    mutate(Class = c("Increasing")) %>% # Create new formatted class variable - decreasing class is the comparison group 
+    dplyr::select(
+      Class,
+      OR = `exp(Est.)`,
+      OR.conf.low = `2.5%`,
+      OR.conf.high = `97.5%`,
+      p.value = p)
  
-  if (i < 12) {
+  if (i < 11) {
     logistic.output.outcome.full.pairwise <- logistic.output.outcome.full.pairwise %>%
       mutate(block = "Mental health block") %>%
       mutate(Variable = outcome.dependent.logistic.name.list[[i]]) %>%
@@ -1305,10 +1395,10 @@ for (i in 1:length(outcome.dependent.logistic))
 # set the names of the list to match the variable names
 names(logistic.stats.outcome.pairwise) <- outcome.dependent.logistic
 ```
+The decreasing class is the comparison group - all OR > 1 represent an association with the increasing class. 
 
 ```{r combine logistic dataframes pairwise}
 data.outcome.logistic.pairwise <- data.table::rbindlist(logistic.stats.outcome.pairwise) %>%
-  mutate(Class = "Increasing") %>% # Decreasing compared to increasing
   select(Class,
          `Dependent variable` = Variable,
          OR,
@@ -1318,6 +1408,10 @@ data.outcome.logistic.pairwise <- data.table::rbindlist(logistic.stats.outcome.p
          p.value.adjusted,
          Significance,
          block)
+```
+
+```{r table logistic dataframes pairwise}
+kable(data.outcome.logistic.pairwise)
 ```
 
 ```{r logistic regression outcome plot pairwise}
@@ -1344,7 +1438,7 @@ outcome.logistic.separate.pairwise.plot <- ggplot(
        shape = "") +
   theme.outcome +
   geom_hline(linetype = "dashed", yintercept = 1) +
-  scale_y_continuous(trans = scales::log10_trans(), breaks=c(0.2,0.4,0.6,0.8, 1, 1.5, 2, 2.5, 3)) +
+  scale_y_continuous(trans = scales::log10_trans(), breaks=c(0.2,0.4,0.6,0.8, 1, 2, 3, 4, 5)) +
   coord_flip()
 
 outcome.logistic.separate.pairwise.plot
@@ -1371,7 +1465,17 @@ for (i in 1:length(outcome.dependent.linear.zscore))
 
   linear.reg.outcome.zscore.pairwise <- lm(linear.formula.outcome.zscore.pairwise, data = dat.pairwise)
 
-  linear.output.outcome.full.zscore.pairwise <- broom::tidy(linear.reg.outcome.zscore.pairwise, conf.int = TRUE, conf.level = 0.95)[-c(1,3:5),]
+  # linear.output.outcome.full.zscore.pairwise <- broom::tidy(linear.reg.outcome.zscore.pairwise, conf.int = TRUE, conf.level = 0.95)[-c(1,3:5),]
+  
+  # robust standard error estimation - account for non-independence of twin sample
+  linear.output.outcome.full.zscore.pairwise <- broom::tidy(coeftest(linear.reg.outcome.zscore.pairwise,      # reports coefficients for new covariance matrix
+                                    vcov = vcovHC(linear.reg.outcome.zscore.pairwise,             # estimates a robust covariance matrix
+                                             type = "HC0",                                           # gives White's estimator 
+                                             cluster = "familyid")),                                 # clusters by familyid
+                           conf.int = TRUE, 
+                           conf.level = 0.95)[-c(1,3:5),]  %>%
+    rename(robust.std.error = std.error) %>%
+    mutate(Class = c("Increasing")) # Create new formatted class variable - decreasing is the comparison group
  
   if (i < 8) {
     linear.output.outcome.full.zscore.pairwise <- linear.output.outcome.full.zscore.pairwise %>%
@@ -1417,7 +1521,6 @@ names(linear.stats.outcome.zscore.pairwise) <- outcome.dependent.linear.zscore
 
 ```{r combine linear dataframes}
 data.outcome.linear.zscore.pairwise <- data.table::rbindlist(linear.stats.outcome.zscore.pairwise) %>%
-  mutate(Class = "Increasing") %>% # Decreasing compared to increasing
   select(Class,
          `Dependent variable` = Variable,
          estimate,
@@ -1482,13 +1585,31 @@ for (i in 1:length(outcome.dependent.logistic))
 
   logistic.reg.outcome.pairwise.ant_control <- glm(logistic.formula.outcome.pairwise.ant_control, data = dat.pairwise, family = "binomial")
 
-  logistic.output.outcome.full.pairwise.ant_control <- broom::tidy(logistic.reg.outcome.pairwise.ant_control, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,3:6),] %>%
-    dplyr::rename(
-           OR = estimate,
-           OR.conf.low = conf.low,
-           OR.conf.high = conf.high)
+  # logistic.output.outcome.full.pairwise.ant_control <- broom::tidy(logistic.reg.outcome.pairwise.ant_control, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,3:6),] %>%
+  #   dplyr::rename(
+  #          OR = estimate,
+  #          OR.conf.low = conf.low,
+  #          OR.conf.high = conf.high)
+  
+  logistic.output.outcome.full.pairwise.ant_control <- summ(logistic.reg.outcome.pairwise.ant_control,
+                                       scale = TRUE,          # standardized regression coefficients
+                                       confint = TRUE,        # report confidence intervals over standard errors
+                                       ci.width = 0.95,       # desired confidence interval
+                                       robust = "HC0",        # heteroskedasticity-robust standard errors instead of conventional SEs
+                                       cluster = "familyid",  # for clustered standard errors, provide column name of cluster variable
+                                       exp = TRUE
+                                       )
+  
+  logistic.output.outcome.full.pairwise.ant_control <- as.data.frame(logistic.output.outcome.full.pairwise.ant_control$coeftable)[-c(1,3:9),] %>% # delete sex and SES coefficients
+    mutate(Class = c("Increasing")) %>% # Create new formatted class variable - decreasing class is the comparison group 
+    dplyr::select(
+      Class,
+      OR = `exp(Est.)`,
+      OR.conf.low = `2.5%`,
+      OR.conf.high = `97.5%`,
+      p.value = p)
  
-  if (i < 12) {
+  if (i < 11) {
     logistic.output.outcome.full.pairwise.ant_control <- logistic.output.outcome.full.pairwise.ant_control %>%
       mutate(block = "Mental health block") %>%
       mutate(Variable = outcome.dependent.logistic.name.list[[i]]) %>%
@@ -1522,7 +1643,6 @@ names(logistic.stats.outcome.pairwise.ant_control) <- outcome.dependent.logistic
 
 ```{r combine logistic dataframes pairwise control antecedent}
 data.outcome.logistic.pairwise.ant_control <- data.table::rbindlist(logistic.stats.outcome.pairwise.ant_control) %>%
-  mutate(Class = "Increasing") %>% # Decreasing compared to increasing
   select(Class,
          `Dependent variable` = Variable,
          OR,
@@ -1585,7 +1705,17 @@ for (i in 1:length(outcome.dependent.linear.zscore))
 
   linear.reg.outcome.zscore.pairwise.ant_control <- lm(linear.formula.outcome.zscore.pairwise.ant_control, data = dat.pairwise)
 
-  linear.output.outcome.full.zscore.pairwise.ant_control <- broom::tidy(linear.reg.outcome.zscore.pairwise.ant_control, conf.int = TRUE, conf.level = 0.95)[-c(1,3:6),]
+  # linear.output.outcome.full.zscore.pairwise.ant_control <- broom::tidy(linear.reg.outcome.zscore.pairwise.ant_control, conf.int = TRUE, conf.level = 0.95)[-c(1,3:6),]
+  
+  # robust standard error estimation - account for non-independence of twin sample
+  linear.output.outcome.full.zscore.pairwise.ant_control <- broom::tidy(coeftest(linear.reg.outcome.zscore.pairwise.ant_control,      # reports coefficients for new covariance matrix
+                                    vcov = vcovHC(linear.reg.outcome.zscore.pairwise.ant_control,             # estimates a robust covariance matrix
+                                             type = "HC0",                                           # gives White's estimator 
+                                             cluster = "familyid")),                                 # clusters by familyid
+                           conf.int = TRUE, 
+                           conf.level = 0.95)[-c(1,3:9),]  %>%
+    rename(robust.std.error = std.error) %>%
+    mutate(Class = c("Increasing")) # Create new formatted class variable - decreasing is the comparison group
  
   if (i < 8) {
     linear.output.outcome.full.zscore.pairwise.ant_control <- linear.output.outcome.full.zscore.pairwise.ant_control %>%
@@ -1631,7 +1761,6 @@ names(linear.stats.outcome.zscore.pairwise.ant_control) <- outcome.dependent.lin
 
 ```{r combine linear dataframes pairwise control antecedent}
 data.outcome.linear.zscore.pairwise.ant_control <- data.table::rbindlist(linear.stats.outcome.zscore.pairwise.ant_control) %>%
-  mutate(Class = "Increasing") %>% # Decreasing compared to increasing
   select(Class,
          `Dependent variable` = Variable,
          estimate,
