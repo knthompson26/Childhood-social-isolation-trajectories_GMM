@@ -357,21 +357,37 @@ ACORN (1-5) and maternal warmth (1-6) have been recoded to be continuous variabl
 
 The RRR of a coefficient indicates how the risk of the outcome falling in the comparison group compared to the risk of the outcome falling in the referent group changes with the variable in question. An RRR > 1 indicates that the risk of the outcome falling in the comparison group relative to the risk of the outcome falling in the referent group increases as the variable increases.  In other words, the comparison outcome is more likely. An RRR < 1 indicates that the risk of the outcome falling in the comparison group relative to the risk of the outcome falling in the referent group decreases as the variable increases. See the interpretations of the relative risk ratios below for examples.  In general, if the RRR < 1, the outcome is more likely to be in the referent group.
 
+```{r load packages to calculate robust standard errors}
+# load necessary packages for importing the function
+library(multiwayvcov)
+library(lmtest) # linear models
+library(clusterSEs) #multinomial models
+library(multinomRob)
+```
+
 ```{r loop for running antecedent regressions, include=FALSE}
 multinom.stats.ant <- list() #create empty list to store the information in
 
 for (i in 1:length(antecedent.independent))
 { cat(i)
-  multinom.formula.ant <- as.formula(sprintf("class_reordered ~ %s", antecedent.independent[i]))
+  multinom.formula.ant <- as.formula(sprintf("class_reordered ~ %s + sex", antecedent.independent[i]))
 
   multinom.reg.ant <- multinom(multinom.formula.ant, data = dat)
 
-  multinom.output.ant.full <- broom::tidy(multinom.reg.ant, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,3),] %>%
+  multinom.output.ant.full <- broom::tidy(multinom.reg.ant, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,3,4,6),] %>%
     dplyr::rename(Class = y.level,
            RRR = estimate,
            RRR.conf.low = conf.low,
            RRR.conf.high = conf.high)
- 
+  
+  
+  ########### IN PROGRESS
+  # test <- mlogit::mlogit.data(data = dat)   
+  # multinom.reg.ant <- mlogit::mlogit(multinom.formula.ant, data = test)
+  # 
+  # cluster.im.mlogit(multinom.output.ant.full, dat = dat, cluster = ~ familyid, report = TRUE, truncate = TRUE)
+  ##########
+  
   if (i < 7) {
     multinom.output.ant.full <- multinom.output.ant.full %>%
       mutate(block = "Social block") %>%
@@ -447,11 +463,11 @@ multinom.stats.ant.cont <- list() #create empty list to store the information in
 
 for (i in 1:length(antecedent.independent.continuous.loop))
 { cat(i)
-  multinom.formula.ant.cont <- as.formula(sprintf("class_reordered ~ %s", antecedent.independent.continuous.loop[i]))
+  multinom.formula.ant.cont <- as.formula(sprintf("class_reordered ~ %s + sex", antecedent.independent.continuous.loop[i]))
 
   multinom.reg.ant.cont <- multinom(multinom.formula.ant.cont, data = dat)
 
-  multinom.output.ant.full.cont <- broom::tidy(multinom.reg.ant.cont, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,3),] %>%
+  multinom.output.ant.full.cont <- broom::tidy(multinom.reg.ant.cont, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,3,4,6),] %>%
     dplyr::rename(Class = y.level,
            RRR = estimate,
            RRR.conf.low = conf.low,
@@ -514,7 +530,7 @@ for (i in 1:length(antecedent.independent.continuous.loop))
 
 ```{r table for all individual regressions}
 data.ant_full.table <- data.table::rbindlist(multinom.stats.ant) %>%
-  select(Class, 
+  dplyr::select(Class, 
          Variable, 
          block, 
          RRR, 
@@ -753,6 +769,9 @@ names(multinom.stats.ant.sex) <- antecedent.independent
 
 ```{r combine all data frames}
 data.ant_full.sex <- data.table::rbindlist(multinom.stats.ant.sex)
+
+# table
+kable(data.ant_full.sex)
 ```
 
 # Zygosity differences in individual antecedent regressions 
@@ -825,6 +844,9 @@ names(multinom.stats.ant.zyg) <- antecedent.independent
 
 ```{r combine all data frames}
 data.ant_full.zyg <- data.table::rbindlist(multinom.stats.ant.zyg)
+
+# table
+kable(data.ant_full.zyg)
 ```
 
 # Block regressions
@@ -834,11 +856,11 @@ data.ant_full.zyg <- data.table::rbindlist(multinom.stats.ant.zyg)
 ### Non-scaled
 
 ```{r social block regression}
-multinom.formula.ant.social.block <- as.formula(class_reordered ~ SES_binary_releveled + problems_neighbours_05 + number_children_school_free_meals_05)
+multinom.formula.ant.social.block <- as.formula(class_reordered ~ SES_binary_releveled + problems_neighbours_05 + number_children_school_free_meals_05 + sex)
 
 multinom.reg.ant.social.block <- multinom(multinom.formula.ant.social.block, data = dat)
 
-multinom.output.ant.social.block <- broom::tidy(multinom.reg.ant.social.block, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,5),] %>%
+multinom.output.ant.social.block <- broom::tidy(multinom.reg.ant.social.block, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,5,6,10),] %>%
     dplyr::rename(Class = y.level,
            RRR = estimate,
            RRR.conf.low = conf.low,
@@ -862,6 +884,10 @@ multinom.output.ant.social.block.full <- multinom.output.ant.social.block %>%
 multinom.output.ant.social.block.full
 ```
 
+```{r table social block}
+kable(multinom.output.ant.social.block.full)
+```
+
 ```{r social block graph prep}
 # Arrange to be ordered by OR
 multinom.output.ant.social.block.full.ordered <- arrange(multinom.output.ant.social.block.full, desc(RRR))
@@ -873,11 +899,11 @@ multinom.output.ant.social.block.full.ordered$Variable <- factor(multinom.output
 ### Scaled (z scores)
 
 ```{r social block regression z score}
-multinom.formula.ant.social.block.cont <- as.formula(class_reordered ~ SES_binary_releveled + z_score.problems_neighbours_05 + z_score.number_children_school_free_meals_05)
+multinom.formula.ant.social.block.cont <- as.formula(class_reordered ~ SES_binary_releveled + z_score.problems_neighbours_05 + z_score.number_children_school_free_meals_05 + sex)
 
 multinom.reg.ant.social.block.cont <- multinom(multinom.formula.ant.social.block.cont, data = dat)
 
-multinom.output.ant.social.block.cont <- broom::tidy(multinom.reg.ant.social.block.cont, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,5),] %>%
+multinom.output.ant.social.block.cont <- broom::tidy(multinom.reg.ant.social.block.cont, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,5,6,10),] %>%
     dplyr::rename(Class = y.level,
            RRR = estimate,
            RRR.conf.low = conf.low,
@@ -901,6 +927,10 @@ multinom.output.ant.social.block.full.cont <- multinom.output.ant.social.block.c
 multinom.output.ant.social.block.full.cont
 ```
 
+```{r table social block zscore}
+kable(multinom.output.ant.social.block.full.cont)
+```
+
 ```{r social block graph prep - zscores}
 # Arrange to be ordered by OR
 multinom.output.ant.social.block.full.ordered.cont <- arrange(multinom.output.ant.social.block.full.cont, desc(RRR))
@@ -909,7 +939,6 @@ multinom.output.ant.social.block.full.ordered.cont$Variable <- factor(multinom.o
                                      levels = paste(unique(paste(multinom.output.ant.social.block.full.ordered.cont$Variable)),
                                                     sep = ","))
 ```
-
 
 ```{r social block plot - zscores}
 social_block.plot.cont <- ggplot(
@@ -955,11 +984,11 @@ ggsave(
 Have taken forward significant ones based on FDR correction.
 
 ```{r home block regression}
-multinom.formula.ant.home.block <- as.formula(class_reordered ~ child_harm_recoded_05 + maternal_warmth_continuous_05 + any_domestic_violence_05 + total_social_support_05 + total_activities_with_mum_05)
+multinom.formula.ant.home.block <- as.formula(class_reordered ~ child_harm_recoded_05 + maternal_warmth_continuous_05 + any_domestic_violence_05 + total_social_support_05 + total_activities_with_mum_05 + sex)
 
 multinom.reg.ant.home.block <- multinom(multinom.formula.ant.home.block, data = dat)
 
-multinom.output.ant.home.block <- broom::tidy(multinom.reg.ant.home.block, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,7),] %>%
+multinom.output.ant.home.block <- broom::tidy(multinom.reg.ant.home.block, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,7,8,14),] %>%
     dplyr::rename(Class = y.level,
            RRR = estimate,
            RRR.conf.low = conf.low,
@@ -983,6 +1012,10 @@ multinom.output.ant.home.block.full <- multinom.output.ant.home.block %>%
 multinom.output.ant.home.block.full
 ```
 
+```{r table home block}
+kable(multinom.output.ant.home.block.full)
+```
+
 ```{r home block graph prep}
 # Arrange to be ordered by OR
 multinom.output.ant.home.block.full.ordered <- arrange(multinom.output.ant.home.block.full, desc(RRR))
@@ -995,11 +1028,11 @@ multinom.output.ant.home.block.full.ordered$Variable <- factor(multinom.output.a
 ### Z scores
 
 ```{r home block regression - zscores}
-multinom.formula.ant.home.block.cont <- as.formula(class_reordered ~ child_harm_recoded_05 + z_score.maternal_warmth_continuous_05 + any_domestic_violence_05 + z_score.total_social_support_05 + z_score.total_activities_with_mum_05)
+multinom.formula.ant.home.block.cont <- as.formula(class_reordered ~ child_harm_recoded_05 + z_score.maternal_warmth_continuous_05 + any_domestic_violence_05 + z_score.total_social_support_05 + z_score.total_activities_with_mum_05 + sex)
 
 multinom.reg.ant.home.block.cont <- multinom(multinom.formula.ant.home.block.cont, data = dat)
 
-multinom.output.ant.home.block.cont <- broom::tidy(multinom.reg.ant.home.block.cont, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,7),] %>%
+multinom.output.ant.home.block.cont <- broom::tidy(multinom.reg.ant.home.block.cont, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,7,8,14),] %>%
     dplyr::rename(Class = y.level,
            RRR = estimate,
            RRR.conf.low = conf.low,
@@ -1021,6 +1054,10 @@ multinom.output.ant.home.block.full.cont <- multinom.output.ant.home.block.cont 
   )
 
 multinom.output.ant.home.block.full.cont
+```
+
+```{r table home block zscore}
+kable(multinom.output.ant.home.block.full.cont)
 ```
 
 ```{r home block graph prep - zscores}
@@ -1077,11 +1114,11 @@ ggsave(
 ## Parent characteristics environment
 
 ```{r parent block regression}
-multinom.formula.ant.parent.block <- as.formula(class_reordered ~ maternal_depression_lifetime_05 + maternal_personality_openness_05 + maternal_personality_conscientiousness_05 + maternal_personality_extroversion_05 + maternal_personality_agreeableness_05 + maternal_personality_neuroticism_05 + antisocial_behaviour_parent_05)
+multinom.formula.ant.parent.block <- as.formula(class_reordered ~ maternal_depression_lifetime_05 + maternal_personality_openness_05 + maternal_personality_conscientiousness_05 + maternal_personality_extroversion_05 + maternal_personality_agreeableness_05 + maternal_personality_neuroticism_05 + antisocial_behaviour_parent_05 + sex)
 
 multinom.reg.ant.parent.block <- multinom(multinom.formula.ant.parent.block, data = dat)
 
-multinom.output.ant.parent.block <- broom::tidy(multinom.reg.ant.parent.block, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,9),] %>%
+multinom.output.ant.parent.block <- broom::tidy(multinom.reg.ant.parent.block, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,9,10,18),] %>%
     dplyr::rename(Class = y.level,
            RRR = estimate,
            RRR.conf.low = conf.low,
@@ -1105,6 +1142,10 @@ multinom.output.ant.parent.block.full <- multinom.output.ant.parent.block %>%
 multinom.output.ant.parent.block.full
 ```
 
+```{r table parent block}
+kable(multinom.output.ant.parent.block.full)
+```
+
 ```{r parent block graph prep}
 # Arrange to be ordered by OR
 multinom.output.ant.parent.block.full.ordered <- arrange(multinom.output.ant.parent.block.full, desc(RRR))
@@ -1118,11 +1159,11 @@ multinom.output.ant.parent.block.full.ordered$Variable <- factor(multinom.output
 ### Zscores
 
 ```{r parent block regression - zscores}
-multinom.formula.ant.parent.block.cont <- as.formula(class_reordered ~ maternal_depression_lifetime_05 + z_score.maternal_personality_openness_05 + z_score.maternal_personality_conscientiousness_05 + z_score.maternal_personality_extroversion_05 + z_score.maternal_personality_agreeableness_05 + z_score.maternal_personality_neuroticism_05 + z_score.antisocial_behaviour_parent_05) #alcoholism removed
+multinom.formula.ant.parent.block.cont <- as.formula(class_reordered ~ maternal_depression_lifetime_05 + z_score.maternal_personality_openness_05 + z_score.maternal_personality_conscientiousness_05 + z_score.maternal_personality_extroversion_05 + z_score.maternal_personality_agreeableness_05 + z_score.maternal_personality_neuroticism_05 + z_score.antisocial_behaviour_parent_05 + sex) #alcoholism removed
 
 multinom.reg.ant.parent.block.cont <- multinom(multinom.formula.ant.parent.block.cont, data = dat)
 
-multinom.output.ant.parent.block.cont <- broom::tidy(multinom.reg.ant.parent.block.cont, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,9),] %>%
+multinom.output.ant.parent.block.cont <- broom::tidy(multinom.reg.ant.parent.block.cont, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,9,10,18),] %>%
     dplyr::rename(Class = y.level,
            RRR = estimate,
            RRR.conf.low = conf.low,
@@ -1144,6 +1185,10 @@ multinom.output.ant.parent.block.full.cont <- multinom.output.ant.parent.block.c
   )
 
 multinom.output.ant.parent.block.full.cont
+```
+
+```{r table parent block zscore}
+kable(multinom.output.ant.parent.block.full.cont)
 ```
 
 ```{r parent block graph prep}
@@ -1200,11 +1245,11 @@ ggsave(
 ## Child neurodevelopment 
 
 ```{r neuro block regression}
-multinom.formula.ant.neuro.block <- as.formula(class_reordered ~ IQ_05 + executive_function_05 + theory_of_mind_05)
+multinom.formula.ant.neuro.block <- as.formula(class_reordered ~ IQ_05 + executive_function_05 + theory_of_mind_05 + sex)
 
 multinom.reg.ant.neuro.block <- multinom(multinom.formula.ant.neuro.block, data = dat)
 
-multinom.output.ant.neuro.block <- broom::tidy(multinom.reg.ant.neuro.block, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,5),] %>%
+multinom.output.ant.neuro.block <- broom::tidy(multinom.reg.ant.neuro.block, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,5,6,10),] %>%
    dplyr::rename(Class = y.level,
            RRR = estimate,
            RRR.conf.low = conf.low,
@@ -1228,6 +1273,10 @@ multinom.output.ant.neuro.block.full <- multinom.output.ant.neuro.block %>%
 multinom.output.ant.neuro.block.full
 ```
 
+```{r table neuro block}
+kable(multinom.output.ant.neuro.block.full)
+```
+
 ```{r neuro block graph prep}
 # Arrange to be ordered by OR
 multinom.output.ant.neuro.block.full.ordered <- arrange(multinom.output.ant.neuro.block.full, desc(RRR))
@@ -1241,11 +1290,11 @@ multinom.output.ant.neuro.block.full.ordered$Variable <- factor(multinom.output.
 ### Z scores 
 
 ```{r neuro block regression - zscores}
-multinom.formula.ant.neuro.block.cont <- as.formula(class_reordered ~ z_score.IQ_05 + z_score.executive_function_05 + z_score.theory_of_mind_05)
+multinom.formula.ant.neuro.block.cont <- as.formula(class_reordered ~ z_score.IQ_05 + z_score.executive_function_05 + z_score.theory_of_mind_05 + sex)
 
 multinom.reg.ant.neuro.block.cont <- multinom(multinom.formula.ant.neuro.block.cont, data = dat)
 
-multinom.output.ant.neuro.block.cont <- broom::tidy(multinom.reg.ant.neuro.block.cont, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,5),] %>%
+multinom.output.ant.neuro.block.cont <- broom::tidy(multinom.reg.ant.neuro.block.cont, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,5,6,10),] %>%
     dplyr::rename(Class = y.level,
            RRR = estimate,
            RRR.conf.low = conf.low,
@@ -1267,6 +1316,10 @@ multinom.output.ant.neuro.block.full.cont <- multinom.output.ant.neuro.block.con
   )
 
 multinom.output.ant.neuro.block.full.cont
+```
+
+```{r table neuro block zscore}
+kable(multinom.output.ant.neuro.block.full.cont)
 ```
 
 ```{r neuro block graph prep z scores}
@@ -1323,11 +1376,11 @@ ggsave(
 ## Child emotional and behavioural development 
 
 ```{r emo block regression}
-multinom.formula.ant.emo.block <- as.formula(class_reordered ~ externalising_combined_05 + internalising_combined_excl_sis_05 + ADHD_combined_05 + prosocial_behaviours_combined_05)
+multinom.formula.ant.emo.block <- as.formula(class_reordered ~ externalising_combined_05 + internalising_combined_excl_sis_05 + ADHD_combined_05 + prosocial_behaviours_combined_05 + sex)
 
 multinom.reg.ant.emo.block <- multinom(multinom.formula.ant.emo.block, data = dat)
 
-multinom.output.ant.emo.block <- broom::tidy(multinom.reg.ant.emo.block, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,6),] %>%
+multinom.output.ant.emo.block <- broom::tidy(multinom.reg.ant.emo.block, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,6,7,12),] %>%
     dplyr::rename(Class = y.level,
            RRR = estimate,
            RRR.conf.low = conf.low,
@@ -1351,6 +1404,10 @@ multinom.output.ant.emo.block.full <- multinom.output.ant.emo.block %>%
 multinom.output.ant.emo.block.full
 ```
 
+```{r table emo block}
+kable(multinom.output.ant.emo.block.full)
+```
+
 ```{r emo block graph prep}
 # Arrange to be ordered by OR
 multinom.output.ant.emo.block.full.ordered <- arrange(multinom.output.ant.emo.block.full, desc(RRR))
@@ -1364,11 +1421,11 @@ multinom.output.ant.emo.block.full.ordered$Variable <- factor(multinom.output.an
 ### Z scores 
 
 ```{r emo block regression}
-multinom.formula.ant.emo.block.cont <- as.formula(class_reordered ~ z_score.externalising_combined_05 + z_score.internalising_combined_excl_sis_05 + z_score.ADHD_combined_05 + z_score.prosocial_behaviours_combined_05)
+multinom.formula.ant.emo.block.cont <- as.formula(class_reordered ~ z_score.externalising_combined_05 + z_score.internalising_combined_excl_sis_05 + z_score.ADHD_combined_05 + z_score.prosocial_behaviours_combined_05 + sex)
 
 multinom.reg.ant.emo.block.cont <- multinom(multinom.formula.ant.emo.block.cont, data = dat)
 
-multinom.output.ant.emo.block.cont <- broom::tidy(multinom.reg.ant.emo.block.cont, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,6),] %>%
+multinom.output.ant.emo.block.cont <- broom::tidy(multinom.reg.ant.emo.block.cont, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,6,7,12),] %>%
     dplyr::rename(Class = y.level,
            RRR = estimate,
            RRR.conf.low = conf.low,
@@ -1390,6 +1447,9 @@ multinom.output.ant.emo.block.full.cont <- multinom.output.ant.emo.block.cont %>
   )
 
 multinom.output.ant.emo.block.full.cont
+```
+```{r table emo block zscore}
+kable(multinom.output.ant.emo.block.full.cont)
 ```
 
 ```{r emo block graph prep}
@@ -1446,11 +1506,11 @@ ggsave(
 # Full antecedent model with significant variables
 
 ```{r full all sig regression}
-multinom.formula.ant.all <- as.formula(class_reordered ~ SES_binary_releveled + number_children_school_free_meals_05 + child_harm_recoded_05 + total_social_support_05 + total_activities_with_mum_05 + maternal_warmth_continuous_05 + maternal_personality_conscientiousness_05 + antisocial_behaviour_parent_05 + IQ_05 + theory_of_mind_05 + executive_function_05 + internalising_combined_excl_sis_05 + ADHD_combined_05 + prosocial_behaviours_combined_05)
+multinom.formula.ant.all <- as.formula(class_reordered ~ SES_binary_releveled + number_children_school_free_meals_05 + child_harm_recoded_05 + total_social_support_05 + total_activities_with_mum_05 + maternal_warmth_continuous_05 + maternal_personality_conscientiousness_05 + antisocial_behaviour_parent_05 + IQ_05 + theory_of_mind_05 + executive_function_05 + internalising_combined_excl_sis_05 + ADHD_combined_05 + prosocial_behaviours_combined_05 + sex)
 
 multinom.reg.ant.all <- multinom(multinom.formula.ant.all, data = dat)
 
-multinom.output.ant.all <- broom::tidy(multinom.reg.ant.all, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,16),] %>%
+multinom.output.ant.all <- broom::tidy(multinom.reg.ant.all, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,16,17,32),] %>%
     dplyr::rename(Class = y.level,
            RRR = estimate,
            RRR.conf.low = conf.low,
@@ -1474,6 +1534,10 @@ multinom.output.ant.all.full <- multinom.output.ant.all %>%
 multinom.output.ant.all.full
 ```
 
+```{r table all sig}
+kable(multinom.output.ant.all.full)
+```
+
 ```{r all sig block graph prep}
 # Created a leveled factor for the variables
 multinom.output.ant.all.full$Variable <- factor(multinom.output.ant.all.full$Variable,
@@ -1484,11 +1548,11 @@ multinom.output.ant.all.full$Variable <- factor(multinom.output.ant.all.full$Var
 ## Z scores
 
 ```{r full all sig regression}
-multinom.formula.ant.all.cont <- as.formula(class_reordered ~ SES_binary_releveled + z_score.number_children_school_free_meals_05 + child_harm_recoded_05 + z_score.total_social_support_05 + z_score.total_activities_with_mum_05 + z_score.maternal_warmth_continuous_05 + z_score.maternal_personality_conscientiousness_05 + z_score.antisocial_behaviour_parent_05 + z_score.IQ_05 + z_score.theory_of_mind_05 + z_score.executive_function_05 + z_score.internalising_combined_excl_sis_05 + z_score.ADHD_combined_05 + z_score.prosocial_behaviours_combined_05)
+multinom.formula.ant.all.cont <- as.formula(class_reordered ~ SES_binary_releveled + z_score.number_children_school_free_meals_05 + child_harm_recoded_05 + z_score.total_social_support_05 + z_score.total_activities_with_mum_05 + z_score.maternal_warmth_continuous_05 + z_score.maternal_personality_conscientiousness_05 + z_score.antisocial_behaviour_parent_05 + z_score.IQ_05 + z_score.theory_of_mind_05 + z_score.executive_function_05 + z_score.internalising_combined_excl_sis_05 + z_score.ADHD_combined_05 + z_score.prosocial_behaviours_combined_05 + sex)
 
 multinom.reg.ant.all.cont <- multinom(multinom.formula.ant.all.cont, data = dat)
 
-multinom.output.ant.all.cont <- broom::tidy(multinom.reg.ant.all.cont, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,16),] %>%
+multinom.output.ant.all.cont <- broom::tidy(multinom.reg.ant.all.cont, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,16,17,32),] %>%
     dplyr::rename(Class = y.level,
            RRR = estimate,
            RRR.conf.low = conf.low,
@@ -1510,6 +1574,10 @@ multinom.output.ant.all.full.cont <- multinom.output.ant.all.cont %>%
   ) 
   
 multinom.output.ant.all.full.cont
+```
+
+```{r table all sig zscore}
+kable(multinom.output.ant.all.full.cont)
 ```
 
 ```{r all sig block graph prep}
