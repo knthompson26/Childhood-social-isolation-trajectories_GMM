@@ -409,7 +409,7 @@ for (i in 1:length(outcome.dependent.logistic))
   
   # robust standard error estimation - account for non-independence of twin sample
   logistic.output.outcome.full <- summ(logistic.reg.outcome,
-                                       scale = TRUE,          # standardized regression coefficients
+                                       scale = TRUE,          # standardized regression coefficients 
                                        confint = TRUE,        # report confidence intervals over standard errors
                                        ci.width = 0.95,       # desired confidence interval
                                        robust = "HC0",        # heteroskedasticity-robust standard errors instead of conventional SEs
