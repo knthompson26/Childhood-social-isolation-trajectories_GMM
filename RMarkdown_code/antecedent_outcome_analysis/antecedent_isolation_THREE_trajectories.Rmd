@@ -374,7 +374,7 @@ for (i in 1:length(antecedent.independent))
 
   multinom.reg.ant <- multinom(multinom.formula.ant, data = dat)
 
-  multinom.output.ant.full <- broom::tidy(multinom.reg.ant, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,3),] %>%
+  multinom.output.ant.full <- broom::tidy(multinom.reg.ant, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,3,4,6),] %>%
     dplyr::rename(Class = y.level,
            RRR = estimate,
            RRR.conf.low = conf.low,
@@ -467,7 +467,7 @@ for (i in 1:length(antecedent.independent.continuous.loop))
 
   multinom.reg.ant.cont <- multinom(multinom.formula.ant.cont, data = dat)
 
-  multinom.output.ant.full.cont <- broom::tidy(multinom.reg.ant.cont, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,3),] %>%
+  multinom.output.ant.full.cont <- broom::tidy(multinom.reg.ant.cont, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,3,4,6),] %>%
     dplyr::rename(Class = y.level,
            RRR = estimate,
            RRR.conf.low = conf.low,
@@ -530,7 +530,7 @@ for (i in 1:length(antecedent.independent.continuous.loop))
 
 ```{r table for all individual regressions}
 data.ant_full.table <- data.table::rbindlist(multinom.stats.ant) %>%
-  select(Class, 
+  dplyr::select(Class, 
          Variable, 
          block, 
          RRR, 
@@ -860,7 +860,7 @@ multinom.formula.ant.social.block <- as.formula(class_reordered ~ SES_binary_rel
 
 multinom.reg.ant.social.block <- multinom(multinom.formula.ant.social.block, data = dat)
 
-multinom.output.ant.social.block <- broom::tidy(multinom.reg.ant.social.block, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,5),] %>%
+multinom.output.ant.social.block <- broom::tidy(multinom.reg.ant.social.block, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,5,6,10),] %>%
     dplyr::rename(Class = y.level,
            RRR = estimate,
            RRR.conf.low = conf.low,
@@ -903,7 +903,7 @@ multinom.formula.ant.social.block.cont <- as.formula(class_reordered ~ SES_binar
 
 multinom.reg.ant.social.block.cont <- multinom(multinom.formula.ant.social.block.cont, data = dat)
 
-multinom.output.ant.social.block.cont <- broom::tidy(multinom.reg.ant.social.block.cont, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,5),] %>%
+multinom.output.ant.social.block.cont <- broom::tidy(multinom.reg.ant.social.block.cont, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,5,6,10),] %>%
     dplyr::rename(Class = y.level,
            RRR = estimate,
            RRR.conf.low = conf.low,
@@ -988,7 +988,7 @@ multinom.formula.ant.home.block <- as.formula(class_reordered ~ child_harm_recod
 
 multinom.reg.ant.home.block <- multinom(multinom.formula.ant.home.block, data = dat)
 
-multinom.output.ant.home.block <- broom::tidy(multinom.reg.ant.home.block, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,7),] %>%
+multinom.output.ant.home.block <- broom::tidy(multinom.reg.ant.home.block, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,7,8,14),] %>%
     dplyr::rename(Class = y.level,
            RRR = estimate,
            RRR.conf.low = conf.low,
@@ -1032,7 +1032,7 @@ multinom.formula.ant.home.block.cont <- as.formula(class_reordered ~ child_harm_
 
 multinom.reg.ant.home.block.cont <- multinom(multinom.formula.ant.home.block.cont, data = dat)
 
-multinom.output.ant.home.block.cont <- broom::tidy(multinom.reg.ant.home.block.cont, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,7),] %>%
+multinom.output.ant.home.block.cont <- broom::tidy(multinom.reg.ant.home.block.cont, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,7,8,14),] %>%
     dplyr::rename(Class = y.level,
            RRR = estimate,
            RRR.conf.low = conf.low,
@@ -1118,7 +1118,7 @@ multinom.formula.ant.parent.block <- as.formula(class_reordered ~ maternal_depre
 
 multinom.reg.ant.parent.block <- multinom(multinom.formula.ant.parent.block, data = dat)
 
-multinom.output.ant.parent.block <- broom::tidy(multinom.reg.ant.parent.block, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,9),] %>%
+multinom.output.ant.parent.block <- broom::tidy(multinom.reg.ant.parent.block, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,9,10,18),] %>%
     dplyr::rename(Class = y.level,
            RRR = estimate,
            RRR.conf.low = conf.low,
@@ -1163,7 +1163,7 @@ multinom.formula.ant.parent.block.cont <- as.formula(class_reordered ~ maternal_
 
 multinom.reg.ant.parent.block.cont <- multinom(multinom.formula.ant.parent.block.cont, data = dat)
 
-multinom.output.ant.parent.block.cont <- broom::tidy(multinom.reg.ant.parent.block.cont, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,9),] %>%
+multinom.output.ant.parent.block.cont <- broom::tidy(multinom.reg.ant.parent.block.cont, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,9,10,18),] %>%
     dplyr::rename(Class = y.level,
            RRR = estimate,
            RRR.conf.low = conf.low,
@@ -1249,7 +1249,7 @@ multinom.formula.ant.neuro.block <- as.formula(class_reordered ~ IQ_05 + executi
 
 multinom.reg.ant.neuro.block <- multinom(multinom.formula.ant.neuro.block, data = dat)
 
-multinom.output.ant.neuro.block <- broom::tidy(multinom.reg.ant.neuro.block, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,5),] %>%
+multinom.output.ant.neuro.block <- broom::tidy(multinom.reg.ant.neuro.block, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,5,6,10),] %>%
    dplyr::rename(Class = y.level,
            RRR = estimate,
            RRR.conf.low = conf.low,
@@ -1294,7 +1294,7 @@ multinom.formula.ant.neuro.block.cont <- as.formula(class_reordered ~ z_score.IQ
 
 multinom.reg.ant.neuro.block.cont <- multinom(multinom.formula.ant.neuro.block.cont, data = dat)
 
-multinom.output.ant.neuro.block.cont <- broom::tidy(multinom.reg.ant.neuro.block.cont, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,5),] %>%
+multinom.output.ant.neuro.block.cont <- broom::tidy(multinom.reg.ant.neuro.block.cont, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,5,6,10),] %>%
     dplyr::rename(Class = y.level,
            RRR = estimate,
            RRR.conf.low = conf.low,
@@ -1380,7 +1380,7 @@ multinom.formula.ant.emo.block <- as.formula(class_reordered ~ externalising_com
 
 multinom.reg.ant.emo.block <- multinom(multinom.formula.ant.emo.block, data = dat)
 
-multinom.output.ant.emo.block <- broom::tidy(multinom.reg.ant.emo.block, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,6),] %>%
+multinom.output.ant.emo.block <- broom::tidy(multinom.reg.ant.emo.block, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,6,7,12),] %>%
     dplyr::rename(Class = y.level,
            RRR = estimate,
            RRR.conf.low = conf.low,
@@ -1425,7 +1425,7 @@ multinom.formula.ant.emo.block.cont <- as.formula(class_reordered ~ z_score.exte
 
 multinom.reg.ant.emo.block.cont <- multinom(multinom.formula.ant.emo.block.cont, data = dat)
 
-multinom.output.ant.emo.block.cont <- broom::tidy(multinom.reg.ant.emo.block.cont, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,6),] %>%
+multinom.output.ant.emo.block.cont <- broom::tidy(multinom.reg.ant.emo.block.cont, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,6,7,12),] %>%
     dplyr::rename(Class = y.level,
            RRR = estimate,
            RRR.conf.low = conf.low,
@@ -1510,7 +1510,7 @@ multinom.formula.ant.all <- as.formula(class_reordered ~ SES_binary_releveled + 
 
 multinom.reg.ant.all <- multinom(multinom.formula.ant.all, data = dat)
 
-multinom.output.ant.all <- broom::tidy(multinom.reg.ant.all, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,16),] %>%
+multinom.output.ant.all <- broom::tidy(multinom.reg.ant.all, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,16,17,32),] %>%
     dplyr::rename(Class = y.level,
            RRR = estimate,
            RRR.conf.low = conf.low,
@@ -1552,7 +1552,7 @@ multinom.formula.ant.all.cont <- as.formula(class_reordered ~ SES_binary_relevel
 
 multinom.reg.ant.all.cont <- multinom(multinom.formula.ant.all.cont, data = dat)
 
-multinom.output.ant.all.cont <- broom::tidy(multinom.reg.ant.all.cont, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,16),] %>%
+multinom.output.ant.all.cont <- broom::tidy(multinom.reg.ant.all.cont, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,16,17,32),] %>%
     dplyr::rename(Class = y.level,
            RRR = estimate,
            RRR.conf.low = conf.low,

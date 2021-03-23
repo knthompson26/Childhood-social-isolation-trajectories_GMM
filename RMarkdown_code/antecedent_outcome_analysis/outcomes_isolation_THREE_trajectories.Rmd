@@ -18,8 +18,6 @@ output:
 code_folding: hide
 ---
 
-outcomes_isolation_THREE_trajectories_KT
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE,
                       comment = NA,
