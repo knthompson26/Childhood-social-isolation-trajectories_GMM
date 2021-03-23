@@ -690,6 +690,7 @@ dat.renamed.3missing <- dat.3missing %>%
   select(
     # Demographics
     id,
+    familyid,
     sex,
     random_order = rorderp5,
     zygosity_binary,
@@ -840,6 +841,7 @@ dat.renamed.full <- dat %>%
   select(
     # Demographics
     id,
+    familyid,
     sex,
     random_order = rorderp5,
     zygosity_binary,

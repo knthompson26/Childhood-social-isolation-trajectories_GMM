@@ -357,6 +357,14 @@ ACORN (1-5) and maternal warmth (1-6) have been recoded to be continuous variabl
 
 The RRR of a coefficient indicates how the risk of the outcome falling in the comparison group compared to the risk of the outcome falling in the referent group changes with the variable in question. An RRR > 1 indicates that the risk of the outcome falling in the comparison group relative to the risk of the outcome falling in the referent group increases as the variable increases.  In other words, the comparison outcome is more likely. An RRR < 1 indicates that the risk of the outcome falling in the comparison group relative to the risk of the outcome falling in the referent group decreases as the variable increases. See the interpretations of the relative risk ratios below for examples.  In general, if the RRR < 1, the outcome is more likely to be in the referent group.
 
+```{r load packages to calculate robust standard errors}
+# load necessary packages for importing the function
+library(multiwayvcov)
+library(lmtest) # linear models
+library(clusterSEs) #multinomial models
+library(multinomRob)
+```
+
 ```{r loop for running antecedent regressions, include=FALSE}
 multinom.stats.ant <- list() #create empty list to store the information in
 
@@ -371,7 +379,14 @@ for (i in 1:length(antecedent.independent))
            RRR = estimate,
            RRR.conf.low = conf.low,
            RRR.conf.high = conf.high)
- 
+  
+  # test <- mlogit::mlogit.data(data = dat)
+  # multinom.reg.ant <- mlogit::mlogit(multinom.formula.ant, data = test)
+  # 
+  # cluster.im.mlogit(multinom.output.ant.full, dat = dat, cluster = ~ familyid, report = TRUE, truncate = TRUE)
+  
+  
+  
   if (i < 7) {
     multinom.output.ant.full <- multinom.output.ant.full %>%
       mutate(block = "Social block") %>%
