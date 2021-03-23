@@ -769,6 +769,9 @@ names(multinom.stats.ant.sex) <- antecedent.independent
 
 ```{r combine all data frames}
 data.ant_full.sex <- data.table::rbindlist(multinom.stats.ant.sex)
+
+# table
+kable(data.ant_full.sex)
 ```
 
 # Zygosity differences in individual antecedent regressions 
@@ -841,6 +844,9 @@ names(multinom.stats.ant.zyg) <- antecedent.independent
 
 ```{r combine all data frames}
 data.ant_full.zyg <- data.table::rbindlist(multinom.stats.ant.zyg)
+
+# table
+kable(data.ant_full.zyg)
 ```
 
 # Block regressions
@@ -876,6 +882,10 @@ multinom.output.ant.social.block.full <- multinom.output.ant.social.block %>%
   )
 
 multinom.output.ant.social.block.full
+```
+
+```{r table social block}
+kable(multinom.output.ant.social.block.full)
 ```
 
 ```{r social block graph prep}
@@ -917,6 +927,10 @@ multinom.output.ant.social.block.full.cont <- multinom.output.ant.social.block.c
 multinom.output.ant.social.block.full.cont
 ```
 
+```{r table social block zscore}
+kable(multinom.output.ant.social.block.full.cont)
+```
+
 ```{r social block graph prep - zscores}
 # Arrange to be ordered by OR
 multinom.output.ant.social.block.full.ordered.cont <- arrange(multinom.output.ant.social.block.full.cont, desc(RRR))
@@ -925,7 +939,6 @@ multinom.output.ant.social.block.full.ordered.cont$Variable <- factor(multinom.o
                                      levels = paste(unique(paste(multinom.output.ant.social.block.full.ordered.cont$Variable)),
                                                     sep = ","))
 ```
-
 
 ```{r social block plot - zscores}
 social_block.plot.cont <- ggplot(
@@ -999,6 +1012,10 @@ multinom.output.ant.home.block.full <- multinom.output.ant.home.block %>%
 multinom.output.ant.home.block.full
 ```
 
+```{r table home block}
+kable(multinom.output.ant.home.block.full)
+```
+
 ```{r home block graph prep}
 # Arrange to be ordered by OR
 multinom.output.ant.home.block.full.ordered <- arrange(multinom.output.ant.home.block.full, desc(RRR))
@@ -1037,6 +1054,10 @@ multinom.output.ant.home.block.full.cont <- multinom.output.ant.home.block.cont 
   )
 
 multinom.output.ant.home.block.full.cont
+```
+
+```{r table home block zscore}
+kable(multinom.output.ant.home.block.full.cont)
 ```
 
 ```{r home block graph prep - zscores}
@@ -1121,6 +1142,10 @@ multinom.output.ant.parent.block.full <- multinom.output.ant.parent.block %>%
 multinom.output.ant.parent.block.full
 ```
 
+```{r table parent block}
+kable(multinom.output.ant.parent.block.full)
+```
+
 ```{r parent block graph prep}
 # Arrange to be ordered by OR
 multinom.output.ant.parent.block.full.ordered <- arrange(multinom.output.ant.parent.block.full, desc(RRR))
@@ -1160,6 +1185,10 @@ multinom.output.ant.parent.block.full.cont <- multinom.output.ant.parent.block.c
   )
 
 multinom.output.ant.parent.block.full.cont
+```
+
+```{r table parent block zscore}
+kable(multinom.output.ant.parent.block.full.cont)
 ```
 
 ```{r parent block graph prep}
@@ -1244,6 +1273,10 @@ multinom.output.ant.neuro.block.full <- multinom.output.ant.neuro.block %>%
 multinom.output.ant.neuro.block.full
 ```
 
+```{r table neuro block}
+kable(multinom.output.ant.neuro.block.full)
+```
+
 ```{r neuro block graph prep}
 # Arrange to be ordered by OR
 multinom.output.ant.neuro.block.full.ordered <- arrange(multinom.output.ant.neuro.block.full, desc(RRR))
@@ -1283,6 +1316,10 @@ multinom.output.ant.neuro.block.full.cont <- multinom.output.ant.neuro.block.con
   )
 
 multinom.output.ant.neuro.block.full.cont
+```
+
+```{r table neuro block zscore}
+kable(multinom.output.ant.neuro.block.full.cont)
 ```
 
 ```{r neuro block graph prep z scores}
@@ -1367,6 +1404,10 @@ multinom.output.ant.emo.block.full <- multinom.output.ant.emo.block %>%
 multinom.output.ant.emo.block.full
 ```
 
+```{r table emo block}
+kable(multinom.output.ant.emo.block.full)
+```
+
 ```{r emo block graph prep}
 # Arrange to be ordered by OR
 multinom.output.ant.emo.block.full.ordered <- arrange(multinom.output.ant.emo.block.full, desc(RRR))
@@ -1406,6 +1447,9 @@ multinom.output.ant.emo.block.full.cont <- multinom.output.ant.emo.block.cont %>
   )
 
 multinom.output.ant.emo.block.full.cont
+```
+```{r table emo block zscore}
+kable(multinom.output.ant.emo.block.full.cont)
 ```
 
 ```{r emo block graph prep}
@@ -1490,6 +1534,10 @@ multinom.output.ant.all.full <- multinom.output.ant.all %>%
 multinom.output.ant.all.full
 ```
 
+```{r table all sig}
+kable(multinom.output.ant.all.full)
+```
+
 ```{r all sig block graph prep}
 # Created a leveled factor for the variables
 multinom.output.ant.all.full$Variable <- factor(multinom.output.ant.all.full$Variable,
@@ -1526,6 +1574,10 @@ multinom.output.ant.all.full.cont <- multinom.output.ant.all.cont %>%
   ) 
   
 multinom.output.ant.all.full.cont
+```
+
+```{r table all sig zscore}
+kable(multinom.output.ant.all.full.cont)
 ```
 
 ```{r all sig block graph prep}
