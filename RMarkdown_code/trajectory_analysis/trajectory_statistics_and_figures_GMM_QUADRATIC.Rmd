@@ -1,5 +1,5 @@
 ---
-title: "GMM trajectory statistics and figures"
+title: "GMM trajectory statistics and figures for Quadratic models"
 author: "Katherine N Thompson"
 date: "13th Jan 2021"
 output:

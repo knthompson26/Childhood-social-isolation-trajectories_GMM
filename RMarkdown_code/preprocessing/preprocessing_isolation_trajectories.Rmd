@@ -621,6 +621,47 @@ dat <- dat %>%
 colnames(dat)
 ```
 
+## Binary social isolation
+
+Using the same categorical cut offs as previously used in E-risk:
+- social isolation <= to 1, give it a 0.
+- social isolation > 1 and <= 2, give it a 1
+- social isolation > 2, give it a 2. 
+
+```{r binary social isolation variable}
+dat <- dat %>%
+  mutate(
+    isolation.categorical.5 =
+      case_when(sisoe5 > 2 ~ 2,
+                sisoe5 > 1 & sisoe5 <= 2 ~ 1,
+                sisoe5 <= 1 ~ 0)
+  ) %>%
+  mutate(
+    isolation.categorical.7 =
+      case_when(sisoe7 > 2 ~ 2,
+                sisoe7 > 1 & sisoe7 <= 2 ~ 1,
+                sisoe7 <= 1 ~ 0)
+  ) %>%
+  mutate(
+    isolation.categorical.10 =
+      case_when(sisoe10 > 2 ~ 2,
+                sisoe10 > 1 & sisoe10 <= 2 ~ 1,
+                sisoe10 <= 1 ~ 0)
+  ) %>%
+  mutate(
+    isolation.categorical.12 =
+      case_when(sisoe12 > 2 ~ 2,
+                sisoe12 > 1 & sisoe12 <= 2 ~ 1,
+                sisoe12 <= 1 ~ 0)
+  ) 
+
+# check
+table(dat$isolation.categorical.5)
+table(dat$isolation.categorical.7)
+table(dat$isolation.categorical.10)
+table(dat$isolation.categorical.12)
+```
+
 # Missing values
 
 Make sue that any values coded as -9, -999 , -8, -7 or -1 are coded as NA
@@ -828,6 +869,10 @@ dat.renamed.3missing <- dat.3missing %>%
     log_isolation_combined_07 = log_sisoe7,
     log_isolation_combined_10 = log_sisoe10,
     log_isolation_combined_12 = log_sisoe12,
+    isolation.categorical.5,
+    isolation.categorical.7,
+    isolation.categorical.10,
+    isolation.categorical.12,
     na.per.person.si
   )
 # check
@@ -979,6 +1024,10 @@ dat.renamed.full <- dat %>%
     log_isolation_combined_07 = log_sisoe7,
     log_isolation_combined_10 = log_sisoe10,
     log_isolation_combined_12 = log_sisoe12,
+    isolation.categorical.5,
+    isolation.categorical.7,
+    isolation.categorical.10,
+    isolation.categorical.12,
     na.per.person.si
   )
 # check
@@ -1035,6 +1084,61 @@ dat_csv.full <- dat %>%
     log_7 = log_sisoe7,
     log_10 = log_sisoe10,
     log_12 = log_sisoe12)
+
+# variables for categorical LCGA
+dat_csv.full.cat <- dat %>%
+  select(
+    id, 
+    familyid, 
+    rorderp5, 
+    torder, 
+    risks,
+    cohort,
+    sampsex,
+    zygosity,
+    seswq35,
+    sisoe5,
+    sisoe7,
+    sisoe10,
+    sisoe12,
+    sisoe5_cat = isolation.categorical.5,
+    sisoe7_cat = isolation.categorical.7,
+    sisoe10_cat = isolation.categorical.10,
+    sisoe12_cat = isolation.categorical.12)
+
+# mother report social isolation only
+dat_csv.full.mother <- dat %>%
+  select(
+    id, 
+    familyid, 
+    rorderp5, 
+    torder, 
+    risks,
+    cohort,
+    sampsex,
+    zygosity,
+    seswq35,
+    sisoem5,
+    sisoem7,
+    sisoem10,
+    sisoem12)
+
+# teacher report social isolation only
+dat_csv.full.teacher <- dat %>%
+  select(
+    id, 
+    familyid, 
+    rorderp5, 
+    torder, 
+    risks,
+    cohort,
+    sampsex,
+    zygosity,
+    seswq35,
+    sisoet5,
+    sisoet7,
+    sisoet10,
+    sisoet12)
 ```
 
 Export the data as rds and csv (for Mplus) files 
@@ -1049,6 +1153,14 @@ saveRDS(object = dat_rds.full, file = paste0(data_path, "preprocessed_isolation_
 # write_csv(x = dat_csv.3missing, path = "/Users/katiethompson/Desktop/mplusisolationtrajectoriesJan2021_3missing.csv")
 # write_csv(x = dat_csv.full, path = paste0(data_path, "Mplus_back_up/FOR_MPLUS_preprocessed_isolation_trajectories_Jan2021_full_sample.csv"))
 # write_csv(x = dat_csv.full, path = "/Users/katiethompson/Desktop/mplusisolationtrajectoriesJan2021_full_sample.csv") 
+
+# categorical LCGA
+# write_csv(x = dat_csv.full.cat, path = paste0(data_path, "Mplus_back_up/FOR_MPLUS_preprocessed_isolation_trajectories_Jan2021_full_sample_CAT.csv"))
+# write_csv(x = dat_csv.full.cat, path = "/Users/katiethompson/Desktop/mplusisolationtrajectoriesJan2021_full_sample_CAT.csv") 
+
+# GMM for mother and teacher separately 
+write_csv(x = dat_csv.full.cat, path = "/Users/katiethompson/Desktop/mplusisolationtrajectoriesJan2021_full_sample_CAT.csv") 
+
 
 #remember to delete the headings. There will be no NAs as they have been removed for the isolation variables but in future Mplus files need NA to be a fullstop (.)
 ```
