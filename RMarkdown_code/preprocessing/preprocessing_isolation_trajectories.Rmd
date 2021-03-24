@@ -1158,9 +1158,11 @@ saveRDS(object = dat_rds.full, file = paste0(data_path, "preprocessed_isolation_
 # write_csv(x = dat_csv.full.cat, path = paste0(data_path, "Mplus_back_up/FOR_MPLUS_preprocessed_isolation_trajectories_Jan2021_full_sample_CAT.csv"))
 # write_csv(x = dat_csv.full.cat, path = "/Users/katiethompson/Desktop/mplusisolationtrajectoriesJan2021_full_sample_CAT.csv") 
 
-# GMM for mother and teacher separately 
-write_csv(x = dat_csv.full.cat, path = "/Users/katiethompson/Desktop/mplusisolationtrajectoriesJan2021_full_sample_CAT.csv") 
+# GMM for mother separately 
+# write_csv(x = dat_csv.full.mother, path = "/Users/katiethompson/Desktop/mplusisolationtrajectoriesJan2021_full_sample_MOTHER.csv") 
 
+# GMM for teacher separately 
+# write_csv(x = dat_csv.full.teacher, path = "/Users/katiethompson/Desktop/mplusisolationtrajectoriesJan2021_full_sample_TEACHER.csv") 
 
 #remember to delete the headings. There will be no NAs as they have been removed for the isolation variables but in future Mplus files need NA to be a fullstop (.)
 ```
