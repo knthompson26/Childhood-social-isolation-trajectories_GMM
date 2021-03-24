@@ -327,6 +327,203 @@ ggsave(
 )
 ```
 
+# Check to see how group allocation differs between linear and quadratic 3 class model
+
+## Read in descriptives output file
+
+```{r read in prior descriptives data and check variable names, include=FALSE}
+dat.descriptives <- readRDS(file = paste0(data_path, "preprocessed_isolation_trajectories_Jan2021_full_sample.rds"))
+colnames(dat.descriptives)
+```
+
+## Read in class probability file for linear model
+
+```{r read in txt file with probabilities LINEAR, include=FALSE}
+dat.tra.prob.full.LINEAR <- read.table(paste0(mplus_GMM_clustered_full_output_data_path, "GMM_SI_3Cl_full_sample_clustered.txt"), 
+                            header = FALSE, 
+                            col.names = c("SISOE5", # original social isolation score at age 5
+                                         "SISOE7",  # original social isolation score at age 7
+                                         "SISOE10", # original social isolation score at age 10
+                                         "SISOE12", # original social isolation score at age 12
+                                         "I",       # intercept
+                                         "S",       # slope
+                                         "C_I",     # factor scores based on most likely class membership
+                                         "C_S",     # factor scores based on most likely class membership
+                                         "CPROB1",  # class probability 1
+                                         "CPROB2",  # class probability 2
+                                         "CPROB3",  # class probability 3
+                                         "C",       # class 
+                                         "ID",      # ID
+                                         "FAMILYID" # Family ID - twin clustering  
+                                       ))   
+#check 
+dat.tra.prob.full.LINEAR
+```
+
+```{r read in txt file with probabilities QUAD, include=FALSE}
+dat.tra.prob.full.QUAD <- read.table(paste0(mplus_GMM_clustered_full_output_QUAD_data_path, "GMM_SI_3Cl_full_sample_clustered_QUAD.txt"), 
+                            header = FALSE, 
+                            col.names = c("SISOE5", # original social isolation score at age 5
+                                         "SISOE7",  # original social isolation score at age 7
+                                         "SISOE10", # original social isolation score at age 10
+                                         "SISOE12", # original social isolation score at age 12
+                                         "I",       # intercept
+                                         "S",       # slope
+                                         "Q",       # quadratic
+                                         "C_I",     # factor scores based on most likely class membership
+                                         "C_S",     # factor scores based on most likely class membership
+                                         "C_Q",     # factor scores based on most likely class membership
+                                         "CPROB1",  # class probability 1
+                                         "CPROB2",  # class probability 2
+                                         "CPROB3",  # class probability 3
+                                         "C",       # class 
+                                         "ID",      # ID
+                                         "FAMILYID" # Family ID - twin clustering  
+                                       ))   
+#check 
+dat.tra.prob.full.QUAD
+```
+
+```{r select relevant variables, include=FALSE}
+dat.tra.prob.LINEAR <- dat.tra.prob.full.LINEAR %>%
+  select(id = ID, 
+         prob1.linear = CPROB1,
+         prob2.linear = CPROB2,
+         prob3.linear = CPROB3,
+         class.linear = C
+         )
+#check 
+dat.tra.prob.LINEAR
+
+dat.tra.prob.QUAD <- dat.tra.prob.full.QUAD %>%
+  select(id = ID, 
+         prob1.quad = CPROB1,
+         prob2.quad = CPROB2,
+         prob3.quad = CPROB3,
+         class.quad = C
+         )
+#check 
+dat.tra.prob.QUAD
+
+#create list of data frames to merge
+dataframe_list <- list(
+  dat.descriptives,
+  dat.tra.prob.LINEAR,
+  dat.tra.prob.QUAD
+)
+
+#merge data frames
+dat <- plyr::join_all(
+  dataframe_list,
+  by = "id" # Alternatively you can join by several columns
+  )
+
+#check
+colnames(dat)
+```
+
+## Rename class variable to shape of trajectory
+
+```{r rename class variable}
+# linear
+dat <- dat %>%
+  mutate(class_renamed.linear =
+    recode_factor(class.linear,
+      "1" = "Low stable",
+      "2" = "Increasing",
+      "3" = "Decreasing"
+    )
+  )
+table(dat$class_renamed.linear)
+
+# quadratic
+dat <- dat %>%
+  mutate(class_renamed.quad =
+    recode_factor(class.quad,
+      "1" = "Low stable",
+      "2" = "Increasing",
+      "3" = "Decreasing"
+    )
+  )
+table(dat$class_renamed.quad)
+```
+
+## See how many people were classed the same way
+
+```{r matching linear and quadratic}
+dat <- dat %>%
+  mutate(
+    matching.class = 
+      case_when(
+        class.linear == class.quad ~ "Matching",
+        class.linear != class.quad ~ "Not matching"
+      )
+  )
+
+table(dat$matching.class)
+```
+78 people who were not classified the same way.
+
+```{r descriptives for nonmatching participants}
+dat <- dat %>%
+  mutate(matching.isolated =
+           case_when(
+             matching.class == "Matching" & class_renamed.linear == "Increasing" ~ "Matching and increasing",
+             matching.class == "Matching" & class_renamed.linear == "Decreasing" ~ "Matching and decreasing",
+             matching.class == "Matching" & class_renamed.linear == "Low stable" ~ "Matching and low stable"
+           ))
+
+table(dat$matching.isolated)
+table(dat$class_renamed.linear)
+table(dat$class_renamed.quad)
+```
+Overall average movement: 
+- 1  more person in the increasing class
+- 18 less people in the decreasing class
+- 17 more people in the low stable class
+
+88 of 117 in the decreasing class are classified the same.
+87 of 106 in the increasing class are classified the same.
+1979 of 2009 in the low stable class are classified the same. 
+
+29 in the decreasing class changed classes in the quadratic model. 
+19 in the increasing class changed classes in the quadratic model.
+30 in the low stable class changed classes in the quadratic model.
+== 78 who are not matching. 
+
+```{r filter non matching}
+dat.non.match <- dat %>%
+  filter(matching.class == "Not matching")
+```
+
+```{r direction of non match}
+# from linear to quadratic model
+dat.non.match <- dat.non.match %>%
+  mutate(
+    direction.match =
+      case_when(
+        class_renamed.linear == "Increasing" & class_renamed.quad == "Low stable" ~ "Increasing to low stable",
+        class_renamed.linear == "Decreasing" & class_renamed.quad == "Low stable" ~ "Decreasing to low stable",
+        class_renamed.linear == "Increasing" & class_renamed.quad == "Decreasing" ~ "Increasing to decreasing",
+        class_renamed.linear == "Decreasing" & class_renamed.quad == "Increasing" ~ "Decreasing to increasing",
+        class_renamed.linear == "Low stable" & class_renamed.quad == "Increasing" ~ "Low stable to increasing",
+        class_renamed.linear == "Low stable" & class_renamed.quad == "Decreasing" ~ "Low stable to decreasing",
+      )
+  )
+
+table(dat.non.match$direction.match)
+```
+
+ 1 person moved from the decreasing to the increasing class.
+28 people moved from the decreasing to the low stable class.
+19 people moved from the increasing to the low stable class. 
+11 people moved from the low stable to the decreasing class.
+19 people moved from the low stable to the increasing class.
+== 78 non matching. 
+
+
+
+
 
 
 
