@@ -148,6 +148,28 @@ Cut offs and best fitting models are:
 
 *Linear model* is chosen as the best fitting and most parsimonious model.
 
+```{r extract significance values of I, S and Q}
+# linear
+linear.mean <- si.growth.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.growth_trajectories.clustered.full_sample.output..isolation_1traj_linear_full_sample_clustered.out$parameters$unstandardized %>%
+  filter(paramHeader == "Means") # filter out the means for I and S
+
+linear.variance <- si.growth.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.growth_trajectories.clustered.full_sample.output..isolation_1traj_linear_full_sample_clustered.out$parameters$unstandardized %>%
+  filter(paramHeader == "Variances") # filter out the variance for I and S
+
+linear.mean
+linear.variance
+
+# quadratic
+quad.mean <- si.growth.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.growth_trajectories.clustered.full_sample.output..isolation_1traj_quad_full_sample_clustered.out$parameters$unstandardized %>%
+  filter(paramHeader == "Means") # filter out the means for I, S and Q 
+
+quad.variance <- si.growth.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.growth_trajectories.clustered.full_sample.output..isolation_1traj_quad_full_sample_clustered.out$parameters$unstandardized %>%
+  filter(paramHeader == "Variances") # filter out the variance for I, S and Q 
+
+quad.mean
+quad.variance
+```
+
 ## Plots {.tabset .tabset-fade}
 
 ### Social isolation linear and quadratic growth curves 
@@ -807,7 +829,7 @@ ggsave(
 ```{r rename plots, include=FALSE}
 # rename all plot titles
 isolation_growth_curve_single_clustered_full_sample <- isolation_growth_curve_single_clustered_full_sample +
-  labs(title = "Growth curve", color = "") +
+  labs(title = "Linear latent growth curve", color = "") +
   theme(plot.title = element_text(size = 12,face = "bold"),
         axis.title.x = element_text(size = 10, face = "bold"),
         legend.position="none")

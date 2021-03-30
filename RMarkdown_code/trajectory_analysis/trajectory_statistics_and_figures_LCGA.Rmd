@@ -44,7 +44,7 @@ palette6 <- c("#78D9C5","#F5BE5E","#EEB6E9","#DBDB73","#FFED98","#BFD2EB")
  
 ```{r source the data file path}
 #source raw data directory: data_raw and data included
-source("../../../../isolation_trajectories_data_path.R")
+source("../../../../../isolation_trajectories_data_path.R")
 ```
 
 ```{r Mplus packages}
@@ -173,6 +173,31 @@ kable(si.class.summaries)
 ```
  
 *The five class model in these statistics is fixing the variance of S (slope) to zero - as the original model produces negative variances.*
+
+## Classification probabilities 
+
+```{r extract classification probs for 3 class model, include=FALSE}
+# extract the classification probabilities for the most likely class memberships (column) by latent class (row). This shows the uncertainty rate of the probabilities. If it was perfect - the diagonal would be 1. E.g. for Class 1 - 98.3% of individuals fit that category. 
+class.probs <- data.frame(si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.LCGA.clustered.full_sample.output..LCGA_isolation_4traj_full_sample_clustered.out$class_counts$classificationProbs.mostLikely)
+
+# add column names
+colnames(class.probs) <- c("Low stable","Decreasing","Low increasing", "High increasing")
+
+class.probs$Class <- c("Low stable","Decreasing","Low increasing", "High increasing")
+
+as.tibble(class.probs)
+
+class.probs <- class.probs %>%
+  tidyr::pivot_longer(-Class, 
+               names_to = "class", 
+               values_to = "Classification probabilities")
+
+class.probs <- class.probs[-c(2:5,7:10,12:15),-c(2)]
+```
+
+```{r classification probabilities table, include=FALSE}
+kable(class.probs)
+```
 
 ## Plots {.tabset .tabset-fade}
 
