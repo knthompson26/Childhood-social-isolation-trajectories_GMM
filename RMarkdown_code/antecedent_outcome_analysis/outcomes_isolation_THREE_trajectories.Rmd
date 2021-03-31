@@ -391,6 +391,84 @@ dat <- cbind(dat, scaled_continuous_data)
 colnames(dat)
 ```
 
+## Sensitivity analysis chunk
+
+*IMPORTANT* 
+When posterior.cut is set to TRUE the following chunks will run for the data set that has those probability<0.8 dropped.  
+*IMPORTANT* 
+
+```{r posterior probability indicator}
+posterior.cut = TRUE
+```
+
+```{r posterior probability code}
+if(posterior.cut == TRUE){
+
+# create new variable only with those who have a probability higher than 0.8 for each class
+dat <- dat %>%
+  mutate(class_renamed_cut =
+           factor(
+             case_when(
+             prob2 > 0.8 & class_renamed == "Increasing" ~ "Increasing",
+             prob3 > 0.8 & class_renamed == "Decreasing" ~ "Decreasing",
+             prob1 > 0.8 & class_renamed == "Low stable" ~ "Low stable"
+           ), 
+           ordered = FALSE))
+
+library(nnet)
+# check the biggest group in the class to be the reference group
+table(dat$class_renamed_cut)
+
+# relevel class_factor
+dat <- dat %>% 
+  mutate(
+    class_reordered_cut =
+      relevel(
+        class_renamed_cut,
+        ref = "Low stable",
+        first = TRUE, #levels in ref come first
+        collapse = "+", #String used when constructing names for combined factor levels
+        xlevels = TRUE #levels maintained even if not actually occurring
+        
+      )
+  )
+# check
+table(dat$class_reordered_cut)
+
+# create new data set with only these individuals
+dat_prob_cut_out <- dat %>% filter(is.na(class_reordered_cut))
+dat <- dat %>% filter(!is.na(class_reordered_cut))
+
+# check
+freq(dat$class_reordered)
+}
+```
+
+```{r descriptives for probabilites}
+if(posterior.cut == TRUE){
+low.stable.cut.stats <- dat_prob_cut_out %>%
+  filter(class_reordered == "Low stable") %>%
+  descr(prob1)
+
+increasing.cut.stats <- dat_prob_cut_out %>%
+  filter(class_reordered == "Increasing") %>%
+  descr(prob2)
+
+decreasing.cut.stats <- dat_prob_cut_out %>%
+  filter(class_reordered == "Decreasing") %>%
+  descr(prob3)
+
+low.stable.cut.stats
+increasing.cut.stats
+decreasing.cut.stats
+}
+```
+
+Low stable: Dropped 42 people. Average probability = 0.66, minimum probability = 0.48. 
+Increasing: Dropped 24 people. Average probability = 0.64, minimum probability = 0.49.
+Decreasing: Dropped 25 people. Average probability = 0.63, minimum probability = 0.51.
+
+
 # Logistic regression
 
 ## Loop
@@ -500,8 +578,11 @@ outcome.logistic.separate.plot <- ggplot(
   coord_flip()
 
 outcome.logistic.separate.plot
+```
 
-#save
+```{r save logistic separate plot}
+if(posterior.cut == FALSE){
+# save
 ggsave(
   "logistic_outcome_individual_regressions.png",
   plot = outcome.logistic.separate.plot,
@@ -510,7 +591,9 @@ ggsave(
   width = 10,
   height = 7
 )
+}
 ```
+
 
 # Linear regression
 
@@ -705,8 +788,11 @@ outcome.linear.separate.plot.zscore <- ggplot(
   coord_flip()
 
 outcome.linear.separate.plot.zscore
+```
 
-#save
+```{r save linear individual plot zscore}
+if(posterior.cut == FALSE){
+# save
 ggsave(
   "linear_outcome_individual_regressions_zscore.png",
   plot = outcome.linear.separate.plot.zscore,
@@ -715,7 +801,10 @@ ggsave(
   width = 12,
   height = 9
 )
+}
 ```
+
+
 # Sex interaction
 
 ## Logistic regression loop  - sex interaction
@@ -1074,12 +1163,6 @@ for (i in 1:length(outcome.dependent.logistic))
   logistic.formula.outcome.zyg <- as.formula(sprintf("%s ~ class_reordered + zygosity_binary + zygosity_binary*class_reordered", outcome.dependent.logistic[i]))
 
   logistic.reg.outcome.zyg <- glm(logistic.formula.outcome.zyg, data = dat, family = "binomial")
-
-  # logistic.output.outcome.full.zyg <- broom::tidy(logistic.reg.outcome.zyg, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1:4),] %>%
-  #   dplyr::rename(
-  #          OR = estimate,
-  #          OR.conf.low = conf.low,
-  #          OR.conf.high = conf.high)
   
   # robust standard error estimation - account for non-independence of twin sample
   logistic.output.outcome.full.zyg <- summ(logistic.reg.outcome.zyg,
@@ -1163,8 +1246,6 @@ for (i in 1:length(outcome.dependent.linear))
   linear.formula.outcome.zyg <- as.formula(sprintf("%s ~ class_reordered + zygosity_binary + zygosity_binary*class_reordered", outcome.dependent.linear[i]))
 
   linear.reg.outcome.zyg <- lm(linear.formula.outcome.zyg, data = dat)
-
-  # linear.output.outcome.full.zyg <- broom::tidy(linear.reg.outcome.zyg, conf.int = TRUE, conf.level = 0.95)[-c(1:4),] 
   
   # robust standard error estimation - account for non-independence of twin sample
   linear.output.outcome.full.zyg <- broom::tidy(coeftest(linear.reg.outcome.zyg,      # reports coefficients for new covariance matrix
@@ -1351,8 +1432,11 @@ outcome.logistic.separate.plot.ant_control <- ggplot(
   coord_flip()
 
 outcome.logistic.separate.plot.ant_control
+```
 
-#save
+```{r save logistic spearate plot ant control}
+if(posterior.cut == FALSE){
+# save
 ggsave(
   "logistic_outcome_individual_regressions.ant_control.png",
   plot = outcome.logistic.separate.plot.ant_control,
@@ -1361,7 +1445,9 @@ ggsave(
   width = 12,
   height = 9
 )
+}
 ```
+
 
 ## Linear regression loop using z scores - controlling for antecedents
 
@@ -1460,7 +1546,7 @@ outcome.linear.separate.plot.zscore.ant_control <- ggplot(
   facet_grid(block ~ Class, drop = TRUE, scales = "free_y", space = "free") +
   labs(y = "Standardised Estimate (95% CI)",
        x = "names",
-       title = "Association between lass membership and outcomes at age 18",
+       title = "Association between class membership and outcomes at age 18",
        subtitle = paste("N(Total) = ", length(dat$sex),
                         "; N(Increasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Increasing"])),
                         "; N(Decreasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Decreasing"])), sep = ""),
@@ -1472,8 +1558,11 @@ outcome.linear.separate.plot.zscore.ant_control <- ggplot(
   coord_flip()
 
 outcome.linear.separate.plot.zscore.ant_control
+```
 
-#save
+```{r save linear individual regressions z score ant control}
+if(posterior.cut == FALSE){
+# save
 ggsave(
   "linear_outcome_individual_regressions_zscore.ant_control.png",
   plot = outcome.linear.separate.plot.zscore.ant_control,
@@ -1482,7 +1571,9 @@ ggsave(
   width = 12,
   height = 9
 )
+}
 ```
+
 
 # Pairwise comparisons
 
@@ -1615,8 +1706,11 @@ outcome.logistic.separate.pairwise.plot <- ggplot(
   coord_flip()
 
 outcome.logistic.separate.pairwise.plot
+```
 
-#save
+```{r save logistic pairwise}
+if(posterior.cut == FALSE){
+# save
 ggsave(
   "logistic_pairwise_outcome_individual_regressions.png",
   plot = outcome.logistic.separate.pairwise.plot,
@@ -1625,7 +1719,9 @@ ggsave(
   width = 12,
   height = 9
 )
+}
 ```
+
 
 ### Linear - using z scores
 
@@ -1735,8 +1831,11 @@ outcome.linear.separate.plot.zscore.pairwise <- ggplot(
   coord_flip()
 
 outcome.linear.separate.plot.zscore.pairwise
+```
 
-#save
+```{r save linear regressions z score pairwise}
+if(posterior.cut == FALSE){
+# save
 ggsave(
   "linear_outcome_individual_regressions_zscore_pairwise.png",
   plot = outcome.linear.separate.plot.zscore.pairwise,
@@ -1745,7 +1844,9 @@ ggsave(
   width = 12,
   height = 9
 )
+}
 ```
+
 
 ## Pairwise comparisons controlling for antecedents
 
@@ -1855,8 +1956,11 @@ outcome.logistic.separate.pairwise.plot.ant_control <- ggplot(
   coord_flip()
 
 outcome.logistic.separate.pairwise.plot.ant_control
+```
 
-#save
+```{r logistic pairwise ant control}
+if(posterior.cut == FALSE){
+# save
 ggsave(
   "logistic_pairwise_outcome_individual_regressions.ant_control.png",
   plot = outcome.logistic.separate.pairwise.plot.ant_control,
@@ -1865,7 +1969,9 @@ ggsave(
   width = 12,
   height = 9
 )
+}
 ```
+
 
 ### Linear regressions - using z scores controlling for antecedents
 
@@ -1975,8 +2081,11 @@ outcome.linear.separate.plot.zscore.pairwise.ant_control <- ggplot(
   coord_flip()
 
 outcome.linear.separate.plot.zscore.pairwise.ant_control
+```
 
-#save
+```{r save linear z score pairwise ant control}
+if(posterior.cut == FALSE){
+# save
 ggsave(
   "linear_outcome_individual_regressions_zscore_pairwise.ant_control.png",
   plot = outcome.linear.separate.plot.zscore.pairwise.ant_control,
@@ -1985,20 +2094,8 @@ ggsave(
   width = 12,
   height = 9
 )
+}
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
