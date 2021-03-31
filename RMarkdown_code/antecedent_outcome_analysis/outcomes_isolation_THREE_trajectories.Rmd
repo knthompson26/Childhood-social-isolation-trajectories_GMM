@@ -179,7 +179,7 @@ name.list <- c(
               "Canabis dependence symptoms",
               "PTSD lifetime diagnosis: Yes",
               "PTSD current diagnosis: Yes",
-              "Expereinces of psychosis",
+              "Experiences of psychosis",
               "Suicide attempt: Yes",
               "Service use: Yes",
               "BMI",
@@ -250,7 +250,7 @@ outcome.dependent.linear.name.list <- c(
                                         "Conduct disorder symptoms",
                                         "Alcohol dependence symptoms",
                                         "Cannabis dependence symptoms",
-                                        "Expereinces of psychosis",
+                                        "Experiences of psychosis",
                                         "BMI",
                                         "Log CRP",
                                         "Physical activity",
@@ -404,12 +404,9 @@ for (i in 1:length(outcome.dependent.logistic))
 
   logistic.reg.outcome <- glm(logistic.formula.outcome, data = dat, family = "binomial")
 
-  # logistic.output.outcome.full <- broom::tidy(logistic.reg.outcome, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,4:6),] %>% # delete sex and SES coefficients
-  #   dplyr::rename(OR = estimate,OR.conf.low = conf.low,OR.conf.high = conf.high)
-  
   # robust standard error estimation - account for non-independence of twin sample
   logistic.output.outcome.full <- summ(logistic.reg.outcome,
-                                       scale = TRUE,          # standardized regression coefficients 
+                                       scale = FALSE,          # standardized regression coefficients 
                                        confint = TRUE,        # report confidence intervals over standard errors
                                        ci.width = 0.95,       # desired confidence interval
                                        robust = "HC0",        # heteroskedasticity-robust standard errors instead of conventional SEs
@@ -430,12 +427,12 @@ for (i in 1:length(outcome.dependent.logistic))
     logistic.output.outcome.full <- logistic.output.outcome.full %>%
       mutate(block = "Mental health block") %>%
       mutate(Variable = outcome.dependent.logistic.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 11)) # change depending if we combine a few variables 
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 10)) # change depending if we combine a few variables 
   } else {
    logistic.output.outcome.full <- logistic.output.outcome.full %>%
       mutate(block = "Employment block") %>%
       mutate(Variable = outcome.dependent.logistic.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.value)
+                  mutate(p.value.adjusted = p.value)                                  # no correction needed here as only one variable
   }
   
    logistic.output.outcome.full <- logistic.output.outcome.full %>% 
@@ -528,8 +525,6 @@ for (i in 1:length(outcome.dependent.linear))
 
   linear.reg.outcome <- lm(linear.formula.outcome, data = dat)
 
-  # linear.output.outcome.full <- broom::tidy(linear.reg.outcome, conf.int = TRUE, conf.level = 0.95)[-c(1,4:6),] # including robust standard ewrrors instead
-  
   # robust standard error estimation - account for non-independence of twin sample
   linear.output.outcome.full <- broom::tidy(coeftest(linear.reg.outcome,
                                     vcov = vcovHC(linear.reg.outcome,    # estimates a robust covariance matrix
@@ -537,8 +532,8 @@ for (i in 1:length(outcome.dependent.linear))
                                              cluster = "familyid")),     # clusters by familyid
                            conf.int = TRUE, 
                            conf.level = 0.95)[-c(1,4:6),] %>%
-    rename(robust.std.error = std.error) %>%
-    mutate(Class = c("Increasing", "Decreasing")) # Create new formatted class variable
+    dplyr::rename(robust.std.error = std.error) %>%                      # rename the standard error variable to show that it's robust
+    mutate(Class = c("Increasing", "Decreasing"))                        # Create new formatted class variable
 
   if (i < 8) {
     linear.output.outcome.full <- linear.output.outcome.full %>%
@@ -610,8 +605,6 @@ for (i in 1:length(outcome.dependent.linear.zscore))
   linear.formula.outcome.zscore <- as.formula(sprintf("%s ~ class_reordered + sex + SES_ordered", outcome.dependent.linear.zscore[i]))
 
   linear.reg.outcome.zscore <- lm(linear.formula.outcome.zscore, data = dat)
-
-  # linear.output.outcome.full.zscore <- broom::tidy(linear.reg.outcome.zscore, conf.int = TRUE, conf.level = 0.95)[-c(1,4:6),] 
   
   # robust standard error estimation - account for non-independence of twin sample
   linear.output.outcome.full.zscore <- broom::tidy(coeftest(linear.reg.outcome.zscore,  # reports coefficients for new covariance matrix
@@ -620,14 +613,14 @@ for (i in 1:length(outcome.dependent.linear.zscore))
                                              cluster = "familyid")),                    # clusters by familyid
                            conf.int = TRUE, 
                            conf.level = 0.95)[-c(1,4:6),] %>%
-    rename(robust.std.error = std.error) %>%
+    dplyr::rename(robust.std.error = std.error) %>%
     mutate(Class = c("Increasing", "Decreasing")) # Create new formatted class variable
  
   if (i < 8) {
     linear.output.outcome.full.zscore <- linear.output.outcome.full.zscore %>%
       mutate(block = "Mental health block") %>%
       mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 11))
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 7))
   } else if (i < 12 ) {
    linear.output.outcome.full.zscore <- linear.output.outcome.full.zscore %>%
       mutate(block = "Physical health block") %>%
@@ -735,16 +728,10 @@ for (i in 1:length(outcome.dependent.logistic))
   logistic.formula.outcome.sex <- as.formula(sprintf("%s ~ class_reordered + sex + sex*class_reordered", outcome.dependent.logistic[i]))
 
   logistic.reg.outcome.sex <- glm(logistic.formula.outcome.sex, data = dat, family = "binomial")
-
-  # logistic.output.outcome.full.sex <- broom::tidy(logistic.reg.outcome.sex, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1:4),] %>%
-  #   dplyr::rename(
-  #          OR = estimate,
-  #          OR.conf.low = conf.low,
-  #          OR.conf.high = conf.high)
   
   # robust standard error estimation - account for non-independence of twin sample
   logistic.output.outcome.full.sex <- summ(logistic.reg.outcome.sex,
-                                       scale = TRUE,          # standardized regression coefficients
+                                       scale = FALSE,          # standardized regression coefficients
                                        confint = TRUE,        # report confidence intervals over standard errors
                                        ci.width = 0.95,       # desired confidence interval
                                        robust = "HC0",        # heteroskedasticity-robust standard errors instead of conventional SEs
@@ -766,7 +753,7 @@ for (i in 1:length(outcome.dependent.logistic))
     logistic.output.outcome.full.sex <- logistic.output.outcome.full.sex %>%
       mutate(block = "Mental health block") %>%
       mutate(Variable = outcome.dependent.logistic.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 7)) # change depending if we combine a few variables 
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 10)) # change depending if we combine a few variables 
   } else {
    logistic.output.outcome.full.sex <- logistic.output.outcome.full.sex %>%
       mutate(block = "Employment block") %>%
@@ -825,8 +812,6 @@ for (i in 1:length(outcome.dependent.linear))
   linear.formula.outcome.sex <- as.formula(sprintf("%s ~ class_reordered + sex + sex*class_reordered", outcome.dependent.linear[i]))
 
   linear.reg.outcome.sex <- lm(linear.formula.outcome.sex, data = dat)
-
-  # linear.output.outcome.full.sex <- broom::tidy(linear.reg.outcome.sex, conf.int = TRUE, conf.level = 0.95)[-c(1:4),] 
   
   # robust standard error estimation - account for non-independence of twin sample
   linear.output.outcome.full.sex <- broom::tidy(coeftest(linear.reg.outcome.sex,      # reports coefficients for new covariance matrix
@@ -835,14 +820,14 @@ for (i in 1:length(outcome.dependent.linear))
                                              cluster = "familyid")),                  # clusters by familyid
                            conf.int = TRUE, 
                            conf.level = 0.95)[-c(1:4),] %>%
-    rename(robust.std.error = std.error) %>%
+    dplyr::rename(robust.std.error = std.error) %>%
     mutate(Class = c("Increasing:sex", "Decreasing:sex")) # Create new formatted class variable
  
   if (i < 8) {
     linear.output.outcome.full.sex <- linear.output.outcome.full.sex %>%
       mutate(block = "Mental health block") %>%
       mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 11))
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 7))
   } else if (i < 12 ) {
    linear.output.outcome.full.sex <- linear.output.outcome.full.sex %>%
       mutate(block = "Physical health block") %>%
@@ -916,7 +901,7 @@ logistic.reg.outcome.employment.boys <- glm(logistic.formula.outcome.employment.
   
 # robust standard error estimation - account for non-independence of twin sample
 logistic.output.outcome.full.employment.boys <- summ(logistic.reg.outcome.employment.boys,
-                                       scale = TRUE,          # standardized regression coefficients
+                                       scale = FALSE,          # standardized regression coefficients
                                        confint = TRUE,        # report confidence intervals over standard errors
                                        ci.width = 0.95,       # desired confidence interval
                                        robust = "HC0",        # heteroskedasticity-robust standard errors instead of conventional SEs
@@ -958,7 +943,7 @@ logistic.reg.outcome.employment.girls <- glm(logistic.formula.outcome.employment
   
 # robust standard error estimation - account for non-independence of twin sample
 logistic.output.outcome.full.employment.girls <- summ(logistic.reg.outcome.employment.girls,
-                                       scale = TRUE,          # standardized regression coefficients
+                                       scale = FALSE,          # standardized regression coefficients
                                        confint = TRUE,        # report confidence intervals over standard errors
                                        ci.width = 0.95,       # desired confidence interval
                                        robust = "HC0",        # heteroskedasticity-robust standard errors instead of conventional SEs
@@ -1006,7 +991,7 @@ linear.output.outcome.full.bmi.boys <- broom::tidy(coeftest(linear.reg.outcome.b
                                                                     cluster = "familyid")),                  # clusters by familyid
                                                conf.int = TRUE, 
                                                conf.level = 0.95)[-c(1),] %>%
-  rename(robust.std.error = std.error) %>%
+  dplyr::rename(robust.std.error = std.error) %>%
   mutate(Class = c("Increasing", "Decreasing")) %>% # Create new formatted class variable
   mutate(block = "Physical health block") %>%
   mutate(Variable = "BMI") %>%
@@ -1046,7 +1031,7 @@ linear.output.outcome.full.bmi.girls <- broom::tidy(coeftest(linear.reg.outcome.
                                                                     cluster = "familyid")),                  # clusters by familyid
                                                conf.int = TRUE, 
                                                conf.level = 0.95)[-c(1),] %>%
-  rename(robust.std.error = std.error) %>%
+  dplyr::rename(robust.std.error = std.error) %>%
   mutate(Class = c("Increasing", "Decreasing")) %>% # Create new formatted class variable
   mutate(block = "Physical health block") %>%
   mutate(Variable = "BMI") %>%
@@ -1098,7 +1083,7 @@ for (i in 1:length(outcome.dependent.logistic))
   
   # robust standard error estimation - account for non-independence of twin sample
   logistic.output.outcome.full.zyg <- summ(logistic.reg.outcome.zyg,
-                                       scale = TRUE,          # standardized regression coefficients
+                                       scale = FALSE,          # standardized regression coefficients
                                        confint = TRUE,        # report confidence intervals over standard errors
                                        ci.width = 0.95,       # desired confidence interval
                                        robust = "HC0",        # heteroskedasticity-robust standard errors instead of conventional SEs
@@ -1119,7 +1104,7 @@ for (i in 1:length(outcome.dependent.logistic))
     logistic.output.outcome.full.zyg <- logistic.output.outcome.full.zyg %>%
       mutate(block = "Mental health block") %>%
       mutate(Variable = outcome.dependent.logistic.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 7)) # change depending if we combine a few variables 
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 10)) # change depending if we combine a few variables 
   } else {
    logistic.output.outcome.full.zyg <- logistic.output.outcome.full.zyg %>%
       mutate(block = "Employment block") %>%
@@ -1188,7 +1173,7 @@ for (i in 1:length(outcome.dependent.linear))
                                              cluster = "familyid")),                  # clusters by familyid
                            conf.int = TRUE, 
                            conf.level = 0.95)[-c(1:4),] %>%
-    rename(robust.std.error = std.error) %>%
+    dplyr::rename(robust.std.error = std.error) %>%
     mutate(Class = c("Increasing:zyg", "Decreasing:zyg")) # Create new formatted class variable
  
  
@@ -1196,7 +1181,7 @@ for (i in 1:length(outcome.dependent.linear))
     linear.output.outcome.full.zyg <- linear.output.outcome.full.zyg %>%
       mutate(block = "Mental health block") %>%
       mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 11))
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 7))
   } else if (i < 12 ) {
    linear.output.outcome.full.zyg <- linear.output.outcome.full.zyg %>%
       mutate(block = "Physical health block") %>%
@@ -1268,15 +1253,9 @@ for (i in 1:length(outcome.dependent.logistic))
   logistic.formula.outcome.ant_control <- as.formula(sprintf("%s ~ class_reordered + prosocial_behaviours_combined_05 + ADHD_combined_05 + internalising_combined_excl_sis_05 + executive_function_05 + sex + SES_ordered", outcome.dependent.logistic[i]))
 
   logistic.reg.outcome.ant_control <- glm(logistic.formula.outcome.ant_control, data = dat, family = "binomial")
-
-  # logistic.output.outcome.full.ant_control <- broom::tidy(logistic.reg.outcome.ant_control, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,4:10),] %>%
-  #   dplyr::rename(
-  #          OR = estimate,
-  #          OR.conf.low = conf.low,
-  #          OR.conf.high = conf.high)
   
   logistic.output.outcome.full.ant_control <- summ(logistic.reg.outcome.ant_control,
-                                       scale = TRUE,          # standardized regression coefficients
+                                       scale = FALSE,          # standardized regression coefficients
                                        confint = TRUE,        # report confidence intervals over standard errors
                                        ci.width = 0.95,       # desired confidence interval
                                        robust = "HC0",        # heteroskedasticity-robust standard errors instead of conventional SEs
@@ -1297,7 +1276,7 @@ for (i in 1:length(outcome.dependent.logistic))
     logistic.output.outcome.full.ant_control <- logistic.output.outcome.full.ant_control %>%
       mutate(block = "Mental health block") %>%
       mutate(Variable = outcome.dependent.logistic.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 7)) # change depending if we combine a few variables 
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 10)) # change depending if we combine a few variables 
   } else {
    logistic.output.outcome.full.ant_control <- logistic.output.outcome.full.ant_control %>%
       mutate(block = "Employment block") %>%
@@ -1394,8 +1373,6 @@ for (i in 1:length(outcome.dependent.linear.zscore))
   linear.formula.outcome.zscore.ant_control <- as.formula(sprintf("%s ~ class_reordered + prosocial_behaviours_combined_05 + ADHD_combined_05 + internalising_combined_excl_sis_05 + executive_function_05 + sex + SES_ordered", outcome.dependent.linear.zscore[i]))
 
   linear.reg.outcome.zscore.ant_control <- lm(linear.formula.outcome.zscore.ant_control, data = dat)
-
-  # linear.output.outcome.full.zscore.ant_control <- broom::tidy(linear.reg.outcome.zscore.ant_control, conf.int = TRUE, conf.level = 0.95)[-c(1,4:10),] 
   
   # robust standard error estimation - account for non-independence of twin sample
   linear.output.outcome.full.zscore.ant_control <- broom::tidy(coeftest(linear.reg.outcome.zscore.ant_control,      # reports coefficients for new covariance matrix
@@ -1404,14 +1381,14 @@ for (i in 1:length(outcome.dependent.linear.zscore))
                                              cluster = "familyid")),                                 # clusters by familyid
                            conf.int = TRUE, 
                            conf.level = 0.95)[-c(1,4:10),]  %>%
-    rename(robust.std.error = std.error) %>%
+    dplyr::rename(robust.std.error = std.error) %>%
     mutate(Class = c("Increasing", "Decreasing")) # Create new formatted class variable
  
   if (i < 8) {
     linear.output.outcome.full.zscore.ant_control <- linear.output.outcome.full.zscore.ant_control %>%
       mutate(block = "Mental health block") %>%
       mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 11))
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 7))
   } else if (i < 12 ) {
    linear.output.outcome.full.zscore.ant_control <- linear.output.outcome.full.zscore.ant_control %>%
       mutate(block = "Physical health block") %>%
@@ -1541,15 +1518,9 @@ for (i in 1:length(outcome.dependent.logistic))
   logistic.formula.outcome.pairwise <- as.formula(sprintf("%s ~ class_binary + sex + SES_ordered", outcome.dependent.logistic[i]))
 
   logistic.reg.outcome.pairwise <- glm(logistic.formula.outcome.pairwise, data = dat.pairwise, family = "binomial")
-
-  # logistic.output.outcome.full.pairwise <- broom::tidy(logistic.reg.outcome.pairwise, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,3:5),] %>%
-  #   dplyr::rename(
-  #          OR = estimate,
-  #          OR.conf.low = conf.low,
-  #          OR.conf.high = conf.high)
   
   logistic.output.outcome.full.pairwise <- summ(logistic.reg.outcome.pairwise,
-                                       scale = TRUE,          # standardized regression coefficients
+                                       scale = FALSE,          # standardized regression coefficients
                                        confint = TRUE,        # report confidence intervals over standard errors
                                        ci.width = 0.95,       # desired confidence interval
                                        robust = "HC0",        # heteroskedasticity-robust standard errors instead of conventional SEs
@@ -1570,7 +1541,7 @@ for (i in 1:length(outcome.dependent.logistic))
     logistic.output.outcome.full.pairwise <- logistic.output.outcome.full.pairwise %>%
       mutate(block = "Mental health block") %>%
       mutate(Variable = outcome.dependent.logistic.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 7)) # change depending if we combine a few variables 
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 10)) # change depending if we combine a few variables 
   } else {
    logistic.output.outcome.full.pairwise <- logistic.output.outcome.full.pairwise %>%
       mutate(block = "Employment block") %>%
@@ -1666,8 +1637,6 @@ for (i in 1:length(outcome.dependent.linear.zscore))
   linear.formula.outcome.zscore.pairwise <- as.formula(sprintf("%s ~ class_binary + sex + SES_ordered", outcome.dependent.linear.zscore[i]))
 
   linear.reg.outcome.zscore.pairwise <- lm(linear.formula.outcome.zscore.pairwise, data = dat.pairwise)
-
-  # linear.output.outcome.full.zscore.pairwise <- broom::tidy(linear.reg.outcome.zscore.pairwise, conf.int = TRUE, conf.level = 0.95)[-c(1,3:5),]
   
   # robust standard error estimation - account for non-independence of twin sample
   linear.output.outcome.full.zscore.pairwise <- broom::tidy(coeftest(linear.reg.outcome.zscore.pairwise,      # reports coefficients for new covariance matrix
@@ -1676,14 +1645,14 @@ for (i in 1:length(outcome.dependent.linear.zscore))
                                              cluster = "familyid")),                                 # clusters by familyid
                            conf.int = TRUE, 
                            conf.level = 0.95)[-c(1,3:5),]  %>%
-    rename(robust.std.error = std.error) %>%
+    dplyr::rename(robust.std.error = std.error) %>%
     mutate(Class = c("Increasing")) # Create new formatted class variable - decreasing is the comparison group
  
   if (i < 8) {
     linear.output.outcome.full.zscore.pairwise <- linear.output.outcome.full.zscore.pairwise %>%
       mutate(block = "Mental health block") %>%
       mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 11))
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 7))
   } else if (i < 12 ) {
    linear.output.outcome.full.zscore.pairwise <- linear.output.outcome.full.zscore.pairwise %>%
       mutate(block = "Physical health block") %>%
@@ -1790,15 +1759,9 @@ for (i in 1:length(outcome.dependent.logistic))
   logistic.formula.outcome.pairwise.ant_control <- as.formula(sprintf("%s ~ class_binary + prosocial_behaviours_combined_05 + ADHD_combined_05 + internalising_combined_excl_sis_05 + executive_function_05 + sex + SES_ordered", outcome.dependent.logistic[i]))
 
   logistic.reg.outcome.pairwise.ant_control <- glm(logistic.formula.outcome.pairwise.ant_control, data = dat.pairwise, family = "binomial")
-
-  # logistic.output.outcome.full.pairwise.ant_control <- broom::tidy(logistic.reg.outcome.pairwise.ant_control, conf.int = TRUE, exponentiate = TRUE, conf.level = 0.95)[-c(1,3:6),] %>%
-  #   dplyr::rename(
-  #          OR = estimate,
-  #          OR.conf.low = conf.low,
-  #          OR.conf.high = conf.high)
   
   logistic.output.outcome.full.pairwise.ant_control <- summ(logistic.reg.outcome.pairwise.ant_control,
-                                       scale = TRUE,          # standardized regression coefficients
+                                       scale = FALSE,          # standardized regression coefficients
                                        confint = TRUE,        # report confidence intervals over standard errors
                                        ci.width = 0.95,       # desired confidence interval
                                        robust = "HC0",        # heteroskedasticity-robust standard errors instead of conventional SEs
@@ -1819,7 +1782,7 @@ for (i in 1:length(outcome.dependent.logistic))
     logistic.output.outcome.full.pairwise.ant_control <- logistic.output.outcome.full.pairwise.ant_control %>%
       mutate(block = "Mental health block") %>%
       mutate(Variable = outcome.dependent.logistic.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 7)) # change depending if we combine a few variables 
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 10)) # change depending if we combine a few variables 
   } else {
    logistic.output.outcome.full.pairwise.ant_control <- logistic.output.outcome.full.pairwise.ant_control %>%
       mutate(block = "Employment block") %>%
@@ -1914,8 +1877,6 @@ for (i in 1:length(outcome.dependent.linear.zscore))
   linear.formula.outcome.zscore.pairwise.ant_control <- as.formula(sprintf("%s ~ class_binary + prosocial_behaviours_combined_05 + ADHD_combined_05 + internalising_combined_excl_sis_05 + executive_function_05 + sex + SES_ordered", outcome.dependent.linear.zscore[i]))
 
   linear.reg.outcome.zscore.pairwise.ant_control <- lm(linear.formula.outcome.zscore.pairwise.ant_control, data = dat.pairwise)
-
-  # linear.output.outcome.full.zscore.pairwise.ant_control <- broom::tidy(linear.reg.outcome.zscore.pairwise.ant_control, conf.int = TRUE, conf.level = 0.95)[-c(1,3:6),]
   
   # robust standard error estimation - account for non-independence of twin sample
   linear.output.outcome.full.zscore.pairwise.ant_control <- broom::tidy(coeftest(linear.reg.outcome.zscore.pairwise.ant_control,      # reports coefficients for new covariance matrix
@@ -1924,14 +1885,14 @@ for (i in 1:length(outcome.dependent.linear.zscore))
                                              cluster = "familyid")),                                 # clusters by familyid
                            conf.int = TRUE, 
                            conf.level = 0.95)[-c(1,3:9),]  %>%
-    rename(robust.std.error = std.error) %>%
+    dplyr::rename(robust.std.error = std.error) %>%
     mutate(Class = c("Increasing")) # Create new formatted class variable - decreasing is the comparison group
  
   if (i < 8) {
     linear.output.outcome.full.zscore.pairwise.ant_control <- linear.output.outcome.full.zscore.pairwise.ant_control %>%
       mutate(block = "Mental health block") %>%
       mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 11))
+                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 7))
   } else if (i < 12 ) {
    linear.output.outcome.full.zscore.pairwise.ant_control <- linear.output.outcome.full.zscore.pairwise.ant_control %>%
       mutate(block = "Physical health block") %>%
@@ -2025,5 +1986,22 @@ ggsave(
   height = 9
 )
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

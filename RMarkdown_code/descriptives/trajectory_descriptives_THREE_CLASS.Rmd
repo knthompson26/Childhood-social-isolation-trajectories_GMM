@@ -441,6 +441,10 @@ class.all <- readModels(paste0(mplus_GMM_clustered_full_output_data_path), recur
 
 ## Classification probabilities 
 
+For the diagonal, this represents the probability given that the an observation is a part of a specific latent class that you will classify it as said class.
+
+*Note* this is not average probabilities - this table wasn't available in Mplus version 8. 
+
 ```{r extract classification probs for 3 class model, include=FALSE}
 # extract the classification probabilities for the most likely class memberships (column) by latent class (row). This shows the uncertainty rate of the probabilities. If it was perfect - the diagonal would be 1. E.g. for Class 1 - 98.3% of individuals fit that category. 
 class.probs <- data.frame(class.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.output..isolation_3traj_full_sample_clustered.out$class_counts$classificationProbs.mostLikely)

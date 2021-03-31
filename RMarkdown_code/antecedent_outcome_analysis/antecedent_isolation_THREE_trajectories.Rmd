@@ -1613,3 +1613,129 @@ ggsave(
 )
 ```
 
+
+# Multinomial regression without stepwise approach
+
+Due to critiques of the step-wise regression approach - have run a full model with all antecedents included. 
+
+```{r multinomial regression for entire model}
+multinom.formula.ant.all.cont.FULL <- as.formula(class_reordered ~ 
+                                              SES_binary_releveled + 
+                                              z_score.acorn_continuous_05 +
+                                              z_score.vandalism_05 +
+                                              z_score.problems_neighbours_05 +
+                                              z_score.number_children_school_05 +
+                                              z_score.number_children_school_free_meals_05 +
+                                              child_harm_recoded_05 + 
+                                              z_score.total_siblings_05 +
+                                              z_score.total_social_support_05 +
+                                              z_score.total_activities_with_mum_05 +
+                                              mum_notlived_biodad_sincebirth_05 +
+                                              any_domestic_violence_05 +
+                                              z_score.maternal_warmth_continuous_05 +
+                                              maternal_depression_lifetime_05 +
+                                              z_score.maternal_personality_openness_05 +
+                                              z_score.maternal_personality_conscientiousness_05 +
+                                              z_score.maternal_personality_extroversion_05 +
+                                              z_score.maternal_personality_agreeableness_05 +
+                                              z_score.maternal_personality_neuroticism_05 +
+                                              z_score.antisocial_behaviour_parent_05 +
+                                              z_score.IQ_05 +
+                                              z_score.executive_function_05 +
+                                              z_score.theory_of_mind_05 +
+                                              z_score.externalising_combined_05 +
+                                              z_score.internalising_combined_excl_sis_05 +
+                                              z_score.ADHD_combined_05 +
+                                              z_score.prosocial_behaviours_combined_05 +
+                                              sex) # controlled for in all regressions
+
+multinom.reg.ant.all.cont.FULL <- multinom(multinom.formula.ant.all.cont.FULL, data = dat)
+
+multinom.output.ant.all.cont.FULL <- broom::tidy(multinom.reg.ant.all.cont.FULL, 
+                                                 conf.int = TRUE, 
+                                                 exponentiate = TRUE, 
+                                                 conf.level = 0.95)[-c(1,29,30,58),] %>%
+  dplyr::rename(Class = y.level,
+           RRR = estimate,
+           RRR.conf.low = conf.low,
+           RRR.conf.high = conf.high)
+
+multinom.output.ant.all.full.cont.FULL <- multinom.output.ant.all.cont.FULL %>%
+  mutate(Variable = rep(name.list, 2)) %>%
+    mutate(
+    Significance = 
+      if_else(
+        p.value < 0.05, 
+        1,
+        0
+      ) %>%
+    recode_factor(
+        "0" = "Non-significant",
+        "1" = "Significant"
+      )
+  ) 
+  
+multinom.output.ant.all.full.cont.FULL <- multinom.output.ant.all.full.cont.FULL %>%
+  select(
+         Class,
+         Variable,
+         RRR,
+         RRR.conf.low,
+         RRR.conf.high,
+         p.value,
+         Significance
+         )
+```
+
+```{r table all sig zscore}
+kable(multinom.output.ant.all.full.cont.FULL)
+```
+
+```{r all sig block graph prep}
+# Created a leveled factor for the variables
+multinom.output.ant.all.full.cont.FULL$Variable <- factor(multinom.output.ant.all.full.cont.FULL$Variable,
+                                     levels = paste(unique(paste(multinom.output.ant.all.full.cont.FULL$Variable)),
+                                                    sep = ","))
+```
+
+```{r all sig block plot}
+all.sig.plot.cont.FULL <- ggplot(
+  multinom.output.ant.all.full.cont.FULL,
+  aes(x = Variable,
+      y = RRR,
+      ymin = RRR.conf.low,
+      ymax = RRR.conf.high,
+      colour = Class)
+  ) +
+  scale_fill_manual(values = palette2b) +
+  scale_color_manual(values = palette2b) +
+  scale_shape_manual(values = c(21, 19)) +
+  geom_pointrange(aes(shape = Significance), position = position_dodge(width = 0.7)) +
+  labs(y = "RRR (95% CI)",
+       x = "Symptom",
+       title = "Antecedents and class membership: full model",
+       subtitle = paste("N(Total) = ", length(dat$sex),
+                        "; N(Increasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Increasing"])),
+                        "; N(Decreasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Decreasing"])), sep = ""),
+       color = "",
+       shape = "") +
+  theme.antecedent +
+  geom_hline(linetype = "dashed", yintercept = 1) +
+  scale_y_continuous(trans = scales::log10_trans(), breaks=c(0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1, 1.5, 2, 3, 4)) +
+  coord_flip()
+
+all.sig.plot.cont.FULL
+
+#save
+ggsave(
+  "All_antecedents_using_zscores.FULL_regression_model.png",
+  plot = all.sig.plot.cont.FULL,
+  device = "png",
+  path = paste0(graph_save_data_path, "antecedents/analysis_interpretation"),
+  width = 12,
+  height = 8
+)
+```
+
+
+
