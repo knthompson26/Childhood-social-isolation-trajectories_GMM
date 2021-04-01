@@ -1737,5 +1737,125 @@ ggsave(
 )
 ```
 
+```{r create mlogit STATA file}
+data.mlogit <- dat %>% # need to rename for stata format
+  select(id,
+         familyid,
+         sex,
+         classreordered = class_reordered,
+         ses = SES_binary_releveled, 
+         acorn = z_score.acorn_continuous_05,
+         vandalism = z_score.vandalism_05,
+         probneighbours = z_score.problems_neighbours_05,
+         numberchildschool = z_score.number_children_school_05,
+         meals = z_score.number_children_school_free_meals_05,
+         harm = child_harm_recoded_05, 
+         siblings = z_score.total_siblings_05,
+         socialsupport = z_score.total_social_support_05,
+         activities = z_score.total_activities_with_mum_05,
+         biodad = mum_notlived_biodad_sincebirth_05,
+         domesticviolence = any_domestic_violence_05,
+         maternalwarmth = z_score.maternal_warmth_continuous_05,
+         maternaldepression = maternal_depression_lifetime_05,
+         openness = z_score.maternal_personality_openness_05,
+         conscientiousness = z_score.maternal_personality_conscientiousness_05,
+         extroversion = z_score.maternal_personality_extroversion_05,
+         agreeableness = z_score.maternal_personality_agreeableness_05,
+         neuroticism = z_score.maternal_personality_neuroticism_05,
+         antisocial = z_score.antisocial_behaviour_parent_05,
+         iq = z_score.IQ_05,
+         execfunction = z_score.executive_function_05,
+         theoryofmind = z_score.theory_of_mind_05,
+         externalising = z_score.externalising_combined_05,
+         internalising = z_score.internalising_combined_excl_sis_05,
+         adhd = z_score.ADHD_combined_05,
+         prosocial = z_score.prosocial_behaviours_combined_05)
+
+library(foreign)
+write.dta(data.mlogit, "/Users/katiethompson/Documents/PhD/LISS-DTP_Louise_and_Tim/Social isolation trajectories_Paper 1/data_analysis/data_full/data_raw/multinom.reg.stata.dta")
+```
+
+```{r run stata do file from r}
+library(RStata)
+options("RStata.StataPath" = "/Applications/Stata/StataMP.app/Contents/MacOS/stata-mp")
+options("RStata.StataVersion" = 16)
+
+multinomial.output.clustered <- stata("antecedent_multinomial_regression.do", data.out = TRUE)
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+```{r mlogit attempt}
+# data.mlogit.long <- dfidx::dfidx(data = data.mlogit, idvar = id, shape = "wide", choice = "class_reordered")
+# # data.mlogit.long.test <- mlogit.data(data = data.mlogit,shape = "wide", choice = "choice", alt.var = "class_reordered", alt.levels = c("Low stable", "Increasing", "Decreasing"))
+# 
+# library("mlogit")
+# 
+# mlogit.formula <- as.formula(class_reordered ~ 
+#                                               SES_binary_releveled + 
+#                                               z_score.acorn_continuous_05 +
+#                                               z_score.vandalism_05 +
+#                                               z_score.problems_neighbours_05 +
+#                                               z_score.number_children_school_05 +
+#                                               z_score.number_children_school_free_meals_05 +
+#                                               child_harm_recoded_05 + 
+#                                               z_score.total_siblings_05 +
+#                                               z_score.total_social_support_05 +
+#                                               z_score.total_activities_with_mum_05 +
+#                                               mum_notlived_biodad_sincebirth_05 +
+#                                               any_domestic_violence_05 +
+#                                               z_score.maternal_warmth_continuous_05 +
+#                                               maternal_depression_lifetime_05 +
+#                                               z_score.maternal_personality_openness_05 +
+#                                               z_score.maternal_personality_conscientiousness_05 +
+#                                               z_score.maternal_personality_extroversion_05 +
+#                                               z_score.maternal_personality_agreeableness_05 +
+#                                               z_score.maternal_personality_neuroticism_05 +
+#                                               z_score.antisocial_behaviour_parent_05 +
+#                                               z_score.IQ_05 +
+#                                               z_score.executive_function_05 +
+#                                               z_score.theory_of_mind_05 +
+#                                               z_score.externalising_combined_05 +
+#                                               z_score.internalising_combined_excl_sis_05 +
+#                                               z_score.ADHD_combined_05 +
+#                                               z_score.prosocial_behaviours_combined_05 +
+#                                               sex)
+# 
+# mlogit.formula.test <- as.formula(class_reordered ~ SES_binary_releveled + z_score.acorn_continuous_05 + sex)
+# 
+# mlogit.output <- mlogit(formula = class_reordered ~ 1 | SES_binary_releveled, data = data.mlogit.long, nests = "familyid")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
