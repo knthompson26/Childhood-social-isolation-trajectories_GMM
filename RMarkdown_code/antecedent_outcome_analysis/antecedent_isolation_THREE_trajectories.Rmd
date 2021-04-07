@@ -1771,23 +1771,115 @@ data.mlogit <- dat %>% # need to rename for stata format
          adhd = z_score.ADHD_combined_05,
          prosocial = z_score.prosocial_behaviours_combined_05)
 
-library(foreign)
-write.dta(data.mlogit, "/Users/katiethompson/Documents/PhD/LISS-DTP_Louise_and_Tim/Social isolation trajectories_Paper 1/data_analysis/data_full/data_raw/multinom.reg.stata.dta")
+# library(foreign)
+# write.dta(data.mlogit, "/Users/katiethompson/Documents/PhD/LISS-DTP_Louise_and_Tim/Social isolation trajectories_Paper 1/data_analysis/data_full/data_raw/multinom.reg.stata.dta")
 ```
 
 ```{r run stata do file from r}
+# run stata file
 library(RStata)
-options("RStata.StataPath" = "/Applications/Stata/StataMP.app/Contents/MacOS/stata-mp")
-options("RStata.StataVersion" = 16)
+# options("RStata.StataPath" = "/Applications/Stata/StataMP.app/Contents/MacOS/stata-mp")
+# options("RStata.StataVersion" = 16)
+# stata("antecedent_multinomial_regression.do", data.out = FALSE)
+# 
+# # move txt file to data file 
+# file.move("/Users/katiethompson/Documents/Stata/multinomial_results_si.txt", data_path, overwrite = TRUE)
 
-multinomial.output.clustered <- stata("antecedent_multinomial_regression.do", data.out = TRUE)
-
-
+# read in stata text file
+dat.stata.individual.raw <- read_tsv(paste0(data_path, "multinomial_results_si.txt")) %>%
+  select(results_ses,
+         results_acorn:results_prosocial) # order to match name.list order
 ```
 
+## Reformat dataframe to match ones we already have
+ - b/min95/max95/p is the layout from STATA
+ - Have not included FDR correction here
 
+```{r reformat stata data frame}
+dat.stata.individual <- dat.stata.raw[c(116:223,229:336),] %>%
+  `colnames<-`(name.list) %>%
+  mutate(Class =
+    case_when(
+    row_number() < 109 ~ "Increasing",
+    row_number() > 108 ~ "Decreasing")) %>%
+  mutate(Variable = 
+           rep(c("RRR", "RRR.conf.low", "RRR.conf.high", "p.value"), 54)) %>%
+  gather(key, value, `SES: Low`:`Child prosocial behaviours`, factor_key = TRUE) %>%
+  drop_na() %>%
+  spread(Variable, value) %>%
+  rename(Variable = key) %>%
+  mutate(
+    Significance = 
+      if_else(
+        p.value < 0.05, 
+        1,
+        0
+      ) %>%
+    recode_factor(
+        "0" = "Non-significant",
+        "1" = "Significant")) %>%
+  mutate(
+    block = 
+      case_when(row_number() < 7 ~ "Social block",
+                row_number() < 14 ~ "Home block",
+                row_number() < 21 ~ "Parent block",
+                row_number() < 24 ~ "Neuro block",
+                row_number() < 28 ~ "Emo/behave block",
+                row_number() < 34 ~ "Social block",
+                row_number() < 41 ~ "Home block",
+                row_number() < 48 ~ "Parent block",
+                row_number() < 51 ~ "Neuro block",
+                row_number() > 50 ~ "Emo/behave block")) %>%
+  transmute(Class = Class,
+            Variable = Variable,
+            RRR = as.numeric(RRR),
+            RRR.conf.low = as.numeric(RRR.conf.low),
+            RRR.conf.high = as.numeric(RRR.conf.high),
+            p.value = as.numeric(p.value),
+            Significance = Significance,
+            block = block) 
+```
 
+```{r table for stata coefficients}
+kable(dat.stata.individual)
+```
 
+```{r stata graph prep}
+# Created a leveled factor for the variables
+dat.stata.individual$Variable <- factor(dat.stata.individual$Variable,
+                                     levels = paste(unique(paste(dat.stata.individual$Variable)),
+                                                    sep = ","))
+```
+
+```{r stata plot}
+stata.plot <- ggplot(
+  dat.stata.individual, 
+  aes(x = Variable,
+      y = RRR,
+      ymin = RRR.conf.low,
+      ymax = RRR.conf.high,
+      color = Class)
+  ) +
+  scale_fill_manual(values = palette2b) +
+  scale_color_manual(values = palette2b) +
+  scale_shape_manual(values = c(21, 19)) +
+  geom_pointrange(aes(shape = Significance), position = position_dodge(width = 0.7)) +
+  facet_grid(block ~ Class, drop = TRUE, scales = "free_y", space = "free") +
+  labs(y = "RRR (95% CI)",
+       x = "names",
+       title = "Association between antecedents and social isolation class membership",
+       subtitle = paste("N(Total) = ", length(dat$sex),
+                        "; N(Increasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Increasing"])),
+                        "; N(Decreasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Decreasing"])), sep = ""),
+       color = "",
+       shape = "") +
+  theme.antecedent +
+  geom_hline(linetype = "dashed", yintercept = 1) +
+ scale_y_continuous(trans = scales::log10_trans(), breaks=c(0.6,0.8, 1, 1.5, 2)) +
+  coord_flip()
+
+stata.plot
+```
 
 
 
@@ -1839,6 +1931,111 @@ multinomial.output.clustered <- stata("antecedent_multinomial_regression.do", da
 
 
 
+
+names.repeat <- c("ACORN",
+"ACORN",
+"ACORN",
+"ACORN",
+"Vandalism",
+"Vandalism",
+"Vandalism",
+"Vandalism",
+"Problems with neighbours",
+"Problems with neighbours",
+"Problems with neighbours",
+"Problems with neighbours",
+"Number of children in school",
+"Number of children in school",  
+"Number of children in school",  
+"Number of children in school",  
+"Number of children eligible for free school meals",
+"Number of children eligible for free school meals",
+"Number of children eligible for free school meals",
+"Number of children eligible for free school meals",
+"Child harm: Harmed",
+"Child harm: Harmed",
+"Child harm: Harmed",
+"Child harm: Harmed",
+"Total siblings",
+"Total siblings",
+"Total siblings",
+"Total siblings",
+"Social support",
+"Social support",
+"Social support",
+"Social support",
+"Total activities with mum",
+"Total activities with mum",
+"Total activities with mum",
+"Total activities with mum",
+"Mum not lived with biological dad since birth: Yes",
+"Mum not lived with biological dad since birth: Yes",
+"Mum not lived with biological dad since birth: Yes",
+"Mum not lived with biological dad since birth: Yes",
+"Any domestic violence: Yes",
+"Any domestic violence: Yes",
+"Any domestic violence: Yes",
+"Any domestic violence: Yes",
+"Maternal warmth",
+"Maternal warmth",
+"Maternal warmth",
+"Maternal warmth",
+"Maternal lifetime depression: Yes",
+"Maternal lifetime depression: Yes",
+"Maternal lifetime depression: Yes",
+"Maternal lifetime depression: Yes",
+"Maternal personality: Openness",
+"Maternal personality: Openness",
+"Maternal personality: Openness",
+"Maternal personality: Openness",
+"Maternal personality: Conscientiousness",
+"Maternal personality: Conscientiousness",
+"Maternal personality: Conscientiousness",
+"Maternal personality: Conscientiousness",
+"Maternal personality: Extroversion",
+"Maternal personality: Extroversion",
+"Maternal personality: Extroversion",
+"Maternal personality: Extroversion",
+"Maternal personality: Agreeableness",
+"Maternal personality: Agreeableness",
+"Maternal personality: Agreeableness",
+"Maternal personality: Agreeableness",
+"Maternal personality: Neuroticism",
+"Maternal personality: Neuroticism",
+"Maternal personality: Neuroticism",
+"Maternal personality: Neuroticism",
+"Parental antisocial behaviour",
+"Parental antisocial behaviour",
+"Parental antisocial behaviour",
+"Parental antisocial behaviour",
+"Child IQ",
+"Child IQ",
+"Child IQ",
+"Child IQ",
+"Child executive function",
+"Child executive function",
+"Child executive function",
+"Child executive function",
+"Child theory of mind",
+"Child theory of mind",
+"Child theory of mind",
+"Child theory of mind",
+"Child externalising behaviours",
+"Child externalising behaviours",
+"Child externalising behaviours",
+"Child externalising behaviours",
+"Child internalising behaviours", 
+"Child internalising behaviours", 
+"Child internalising behaviours", 
+"Child internalising behaviours", 
+"Child ADHD behaviours",
+"Child ADHD behaviours",
+"Child ADHD behaviours",
+"Child ADHD behaviours",
+"Child prosocial behaviours",
+"Child prosocial behaviours",
+"Child prosocial behaviours", 
+"Child prosocial behaviours")
 
 
 

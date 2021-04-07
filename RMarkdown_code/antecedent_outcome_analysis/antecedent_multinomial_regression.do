@@ -1,11 +1,21 @@
 // read in file
 use "/Users/katiethompson/Documents/PhD/LISS-DTP_Louise_and_Tim/Social isolation trajectories_Paper 1/data_analysis/data_full/data_raw/multinom.reg.stata.dta"
 
-// multinomial full regression clustered by familyid
-mlogit classreordered i.ses acorn vandalism probneighbours numberchildschool meals i.harm siblings socialsupport activities i.biodad i.domesticviolence maternalwarmth i.maternaldepression openness conscientiousness extroversion agreeableness neuroticism antisocial iq execfunction theoryofmind externalising internalising adhd prosocial i.sex , rrr cluster(familyid)
+// create list of outcome variables
+local outcomes "ses acorn vandalism probneighbours numberchildschool meals harm siblings socialsupport activities biodad domesticviolence maternalwarmth maternaldepression openness conscientiousness extroversion agreeableness neuroticism antisocial iq execfunction theoryofmind externalising internalising adhd prosocial"
 
-// save results as text file
-translate @Results mmultinom_ant.txt
+// loop for multinomial regression clustered by familyid
+foreach var of varlist `outcomes' {
+mlogit classreordered `var' sex, cluster(familyid)
+
+estimates store results_`var'
+}
+
+// install package estout
+ssc install estout
+
+// save results, dropping estimates we don't need and saving the RRR and upper and lower CI for each variable 
+estout results_* using multinomial_results_si.txt, drop(sex) cells(b(fmt(2)) ci_l(fmt(2)) ci_u(fmt(2)) p(fmt(2))) eform replace
 
 
 
