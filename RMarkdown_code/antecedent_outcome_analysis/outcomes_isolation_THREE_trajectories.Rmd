@@ -194,7 +194,7 @@ name.list <- c(
               "Not in employment or education: Yes",
               "Job preparedness: skills",
               "Job preparedness: attributes",
-              "Optimism",
+              "Job optimism",
               "Job search activities")
 
 outcome.dependent.linear <- c(
@@ -262,7 +262,7 @@ outcome.dependent.linear.name.list <- c(
                                         "PSQI score",
                                         "Job preparedness: skills",
                                         "Job preparedness: attributes",
-                                        "Optimism",
+                                        "Job optimism",
                                         "Job search activities")
 
 outcome.dependent.logistic <- c(
@@ -398,7 +398,7 @@ When posterior.cut is set to TRUE the following chunks will run for the data set
 *IMPORTANT* 
 
 ```{r posterior probability indicator}
-posterior.cut = TRUE
+posterior.cut = FALSE
 ```
 
 ```{r posterior probability code}
@@ -504,20 +504,20 @@ for (i in 1:length(outcome.dependent.logistic))
   if (i < 11) {
     logistic.output.outcome.full <- logistic.output.outcome.full %>%
       mutate(block = "Mental health block") %>%
-      mutate(Variable = outcome.dependent.logistic.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 10)) # change depending if we combine a few variables 
+      mutate(Variable = outcome.dependent.logistic.name.list[[i]]) 
+                #  %>% mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 10)) # change depending if we combine a few variables 
   } else {
    logistic.output.outcome.full <- logistic.output.outcome.full %>%
       mutate(block = "Employment block") %>%
-      mutate(Variable = outcome.dependent.logistic.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.value)                                  # no correction needed here as only one variable
+      mutate(Variable = outcome.dependent.logistic.name.list[[i]])
+                #  %>% mutate(p.value.adjusted = p.value)                                  # no correction needed here as only one variable
   }
   
    logistic.output.outcome.full <- logistic.output.outcome.full %>% 
     mutate(
     Significance = 
       if_else(
-        p.value.adjusted < 0.05, 
+        p.value < 0.05, # WITHOUT FDR CORRECTION
         1,
         0
       ) %>%
@@ -541,7 +541,7 @@ data.outcome.logistic <- data.table::rbindlist(logistic.stats.outcome) %>%
          OR.conf.low,
          OR.conf.high,
          p.value, 
-         p.value.adjusted,
+    #     p.value.adjusted,
          Significance,
          block)
 ```
@@ -550,9 +550,30 @@ data.outcome.logistic <- data.table::rbindlist(logistic.stats.outcome) %>%
 kable(data.outcome.logistic)
 ```
 
+```{r bind and order rows stata}
+# mental health
+data.outcome.logistic.mental <- filter(data.outcome.logistic, block == "Mental health block") %>% 
+  arrange(desc(OR)) 
+
+data.outcome.logistic.mental$`Dependent variable` <- factor(data.outcome.logistic.mental$`Dependent variable`, levels = paste(unique(paste(data.outcome.logistic.mental$`Dependent variable`)), sep = ","))
+
+# employment prospects
+data.outcome.logistic.employ <- filter(data.outcome.logistic, block == "Employment block") %>% 
+  arrange(desc(OR))
+
+data.outcome.logistic.employ$`Dependent variable` <- factor(data.outcome.logistic.employ$`Dependent variable`,levels = paste(unique(paste(data.outcome.logistic.employ$`Dependent variable`)),sep = ","))
+
+# all
+dat.logistic.ordered <- rbind(
+  data.outcome.logistic.mental,
+  data.outcome.logistic.employ
+)
+```
+
+
 ```{r logistic regression outcome plot}
 outcome.logistic.separate.plot <- ggplot(
-  data.outcome.logistic, 
+  dat.logistic.ordered, 
   aes(x = `Dependent variable`,
       y = OR,
       ymin = OR.conf.low,
@@ -567,14 +588,26 @@ outcome.logistic.separate.plot <- ggplot(
   labs(y = "OR (95% CI)",
        x = "names",
        title = "Association between class membership and outcomes at age 18",
-       subtitle = paste("N(Total) = ", length(dat$sex),
-                        "; N(Increasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Increasing"])),
-                        "; N(Decreasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Decreasing"])), sep = ""),
+       # subtitle = paste("N(Total) = ", length(dat$sex),
+       #                  "; N(Increasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Increasing"])),
+       #                  "; N(Decreasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Decreasing"])), sep = ""),
        color = "",
        shape = "") +
-  theme.outcome +
+  scale_y_continuous(trans = scales::log10_trans(), breaks = c(0.2,0.4,0.6,0.8, 1, 1.5, 2, 3, 4)) +
+  theme(panel.grid.major.x = element_line(size = 0.5,
+                                          linetype = 'dashed',
+                                          colour = "gray"),
+        plot.title = element_text(size = 15, face = "bold", hjust = 0.5),
+        axis.title.x = element_text(size = 10, face = "bold"),
+        axis.title.y = element_blank(),
+        axis.text.y = element_text(colour = "black", size = 10),
+        axis.text.x = element_text(colour = "black", size = 8),
+        axis.ticks.x = element_blank(),
+        axis.ticks.y = element_blank(),
+        panel.background = element_blank(),
+        legend.position = "bottom",
+        strip.text.y = element_blank()) +
   geom_hline(linetype = "dashed", yintercept = 1) +
-  scale_y_continuous(trans = scales::log10_trans(), breaks=c(0.2,0.4,0.6,0.8, 1, 1.5, 2, 2.5, 3, 4, 5)) +
   coord_flip()
 
 outcome.logistic.separate.plot
@@ -621,30 +654,30 @@ for (i in 1:length(outcome.dependent.linear))
   if (i < 8) {
     linear.output.outcome.full <- linear.output.outcome.full %>%
       mutate(block = "Mental health block") %>%
-      mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 7))
+      mutate(Variable = outcome.dependent.linear.name.list[[i]]) 
+                #  %>% mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 7))
   } else if (i < 12 ) {
    linear.output.outcome.full <- linear.output.outcome.full %>%
       mutate(block = "Physical health block") %>%
-      mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 4))
+      mutate(Variable = outcome.dependent.linear.name.list[[i]])
+                #  %>% mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 4))
   } else if (i < 17) {
     linear.output.outcome.full <- linear.output.outcome.full %>%
       mutate(block = "Coping and functioning block") %>%
-      mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 5))
+      mutate(Variable = outcome.dependent.linear.name.list[[i]]) 
+               # %>%mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 5))
   } else {
     linear.output.outcome.full <- linear.output.outcome.full %>%
       mutate(block = "Employment block") %>%
-      mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 4))
+      mutate(Variable = outcome.dependent.linear.name.list[[i]])
+               # %>%   mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 4))
   }
   
    linear.output.outcome.full <- linear.output.outcome.full %>% 
     mutate(
     Significance = 
       if_else(
-        p.value.adjusted < 0.05, 
+        p.value< 0.05, # WITHOUT FDR CORRECTION
         1,
         0
       ) %>%
@@ -667,7 +700,7 @@ data.outcome.linear <- data.table::rbindlist(linear.stats.outcome) %>%
          conf.low,
          conf.high,
          p.value, 
-         p.value.adjusted,
+      #   p.value.adjusted,
          Significance,
          block)
 ```
@@ -702,30 +735,30 @@ for (i in 1:length(outcome.dependent.linear.zscore))
   if (i < 8) {
     linear.output.outcome.full.zscore <- linear.output.outcome.full.zscore %>%
       mutate(block = "Mental health block") %>%
-      mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 7))
+      mutate(Variable = outcome.dependent.linear.name.list[[i]])
+                # %>% mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 7))
   } else if (i < 12 ) {
    linear.output.outcome.full.zscore <- linear.output.outcome.full.zscore %>%
       mutate(block = "Physical health block") %>%
-      mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 4))
+      mutate(Variable = outcome.dependent.linear.name.list[[i]])
+               # %>%  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 4))
   } else if (i < 17) {
     linear.output.outcome.full.zscore <- linear.output.outcome.full.zscore %>%
       mutate(block = "Coping and functioning block") %>%
-      mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 5))
+      mutate(Variable = outcome.dependent.linear.name.list[[i]])
+                # %>%  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 5))
   } else {
     linear.output.outcome.full.zscore <- linear.output.outcome.full.zscore %>%
       mutate(block = "Employment block") %>%
-      mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 4))
+      mutate(Variable = outcome.dependent.linear.name.list[[i]])
+               # %>% mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 4))
   }
   
    linear.output.outcome.full.zscore <- linear.output.outcome.full.zscore %>% 
     mutate(
     Significance = 
       if_else(
-        p.value.adjusted < 0.05, 
+        p.value < 0.05, 
         1,
         0
       ) %>%
@@ -749,7 +782,7 @@ data.outcome.linear.zscore <- data.table::rbindlist(linear.stats.outcome.zscore)
          conf.low,
          conf.high,
          p.value, 
-         p.value.adjusted,
+     #    p.value.adjusted,
          Significance,
          block)
 ```
@@ -758,11 +791,45 @@ data.outcome.linear.zscore <- data.table::rbindlist(linear.stats.outcome.zscore)
 kable(data.outcome.linear.zscore)
 ```
 
+```{r bind and order rows stata}
+# mental health
+data.outcome.linear.mental <- filter(data.outcome.linear.zscore, block == "Mental health block") %>% 
+  arrange(desc(estimate)) 
+
+data.outcome.linear.mental$`Dependent variable` <- factor(data.outcome.linear.mental$`Dependent variable`, levels = paste(unique(paste(data.outcome.linear.mental$`Dependent variable`)), sep = ","))
+
+# physical health
+data.outcome.linear.physical <- filter(data.outcome.linear.zscore, block == "Physical health block") %>% 
+  arrange(desc(estimate)) 
+
+data.outcome.linear.physical$`Dependent variable` <- factor(data.outcome.linear.physical$`Dependent variable`,levels = paste(unique(paste(data.outcome.linear.physical$`Dependent variable`)),sep = ","))
+
+# coping and functioning
+data.outcome.linear.coping <- filter(data.outcome.linear.zscore, block == "Coping and functioning block") %>% 
+  arrange(desc(estimate))
+
+data.outcome.linear.coping$`Dependent variable` <- factor(data.outcome.linear.coping$`Dependent variable`,levels = paste(unique(paste(data.outcome.linear.coping$`Dependent variable`)),sep = ","))
+
+# employment prospects
+data.outcome.linear.employ <- filter(data.outcome.linear.zscore, block == "Employment block") %>% 
+  arrange(desc(estimate))
+
+data.outcome.linear.employ$`Dependent variable` <- factor(data.outcome.linear.employ$`Dependent variable`,levels = paste(unique(paste(data.outcome.linear.employ$`Dependent variable`)),sep = ","))
+
+# all
+dat.linear.ordered <- rbind(
+  data.outcome.linear.mental,
+  data.outcome.linear.physical,
+  data.outcome.linear.coping,
+  data.outcome.linear.employ
+)
+```
+
 ## Linear regression plot using z scores
 
 ```{r linear regression outcome plot zscores}
 outcome.linear.separate.plot.zscore <- ggplot(
-  data.outcome.linear.zscore, # CHANGE DEPENDING IF YOU WANT TO USE Z SCORES OR NOT - remember to rename the plot if you change it
+  dat.linear.ordered, 
   aes(x = `Dependent variable`,
       y = estimate,
       ymin = conf.low,
@@ -777,9 +844,9 @@ outcome.linear.separate.plot.zscore <- ggplot(
   labs(y = "Standardised Estimate (95% CI)",
        x = "names",
        title = "Association between childhood social isolation class membership and outcomes at age 18",
-       subtitle = paste("N(Total) = ", length(dat$sex),
-                        "; N(Increasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Increasing"])),
-                        "; N(Decreasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Decreasing"])), sep = ""),
+       # subtitle = paste("N(Total) = ", length(dat$sex),
+       #                  "; N(Increasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Increasing"])),
+       #                  "; N(Decreasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Decreasing"])), sep = ""),
        color = "",
        shape = "") +
   theme.outcome +
@@ -804,6 +871,56 @@ ggsave(
 }
 ```
 
+# Panel plots
+
+## Panel plot for linear and logistic regression 
+- linear using z scores 
+
+```{r panel plots for factor and symptoms}
+library(ggpubr)
+outcome.linear.separate.plot.zscore <- outcome.linear.separate.plot.zscore + 
+  labs(title = "Linear models") + 
+  theme(plot.title = element_text(size = 12,face = "bold"),
+        axis.title.x = element_text(size = 10, face = "bold"),
+        axis.text.x = element_text(size = 8, colour = "black"),
+        axis.text.y = element_text(size = 10))
+
+outcome.logistic.separate.plot <- outcome.logistic.separate.plot + 
+  labs(title = "Logistic models") + 
+  theme(plot.title = element_text(size = 12,face = "bold"),
+        axis.title.x = element_text(size = 10, face = "bold"),
+        axis.text.x = element_text(size = 8, colour = "black"),
+        axis.text.y = element_text(size = 10))
+  
+# combined.linear.logistic <- ggarrange(outcome.linear.separate.plot.zscore, 
+#                                       outcome.logistic.separate.plot + 
+#                                         font("x.text", 
+#                                              size = 10),
+#                                       ncol = 2, 
+#                                       nrow = 1, 
+#                                       labels = c("A", "B"),
+#                                       common.legend = TRUE,
+#                                       legend = "bottom")
+
+library(patchwork)
+
+combined.linear.logistic <- outcome.linear.separate.plot.zscore + 
+  outcome.logistic.separate.plot + 
+  plot_layout(ncol = 2, 
+              guides = 'collect') + 
+  plot_annotation(tag_levels = 'A') &
+  theme(legend.position='bottom')
+
+#png
+ggsave(
+  "combined.outcome_plot.png",
+  plot = combined.linear.logistic,
+  device = "png",
+  path = paste0(graph_save_data_path,"outcomes/final"),
+  width = 15,
+  height = 6
+)
+```
 
 # Sex interaction
 
@@ -841,20 +958,20 @@ for (i in 1:length(outcome.dependent.logistic))
   if (i < 11) {
     logistic.output.outcome.full.sex <- logistic.output.outcome.full.sex %>%
       mutate(block = "Mental health block") %>%
-      mutate(Variable = outcome.dependent.logistic.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 10)) # change depending if we combine a few variables 
+      mutate(Variable = outcome.dependent.logistic.name.list[[i]])
+                  # %>% mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 10)) # change depending if we combine a few variables 
   } else {
    logistic.output.outcome.full.sex <- logistic.output.outcome.full.sex %>%
       mutate(block = "Employment block") %>%
-      mutate(Variable = outcome.dependent.logistic.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.value)
+      mutate(Variable = outcome.dependent.logistic.name.list[[i]])
+               # %>%   mutate(p.value.adjusted = p.value)
   }
   
    logistic.output.outcome.full.sex <- logistic.output.outcome.full.sex %>% 
     mutate(
     Significance = 
       if_else(
-        p.value.adjusted < 0.05, 
+        p.value < 0.05, 
         1,
         0
       ) %>%
@@ -878,14 +995,14 @@ data.outcome.logistic.sex <- data.table::rbindlist(logistic.stats.outcome.sex) %
          OR.conf.low,
          OR.conf.high,
          p.value, 
-         p.value.adjusted,
+       #  p.value.adjusted,
          Significance,
          block)
 
 # check for significant interaction effects between class and sex for each variable
 data.outcome.logistic.sex
 ```
-Significant interaction between sex and class membership for "Not in employment or education" - rerun model separately for males and females. 
+Significant interaction between sex and class membership for "Not in employment or education", and "service use" - rerun model separately for males and females. 
 
 ```{r table combined logistic dataframes sex diffs}
 kable(data.outcome.logistic.sex)
@@ -915,30 +1032,30 @@ for (i in 1:length(outcome.dependent.linear))
   if (i < 8) {
     linear.output.outcome.full.sex <- linear.output.outcome.full.sex %>%
       mutate(block = "Mental health block") %>%
-      mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 7))
+      mutate(Variable = outcome.dependent.linear.name.list[[i]])
+                  # %>% mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 7))
   } else if (i < 12 ) {
    linear.output.outcome.full.sex <- linear.output.outcome.full.sex %>%
       mutate(block = "Physical health block") %>%
-      mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 4))
+      mutate(Variable = outcome.dependent.linear.name.list[[i]])
+                 # %>% mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 4))
   } else if (i < 17) {
     linear.output.outcome.full.sex <- linear.output.outcome.full.sex %>%
       mutate(block = "Coping and functioning block") %>%
-      mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 5))
+      mutate(Variable = outcome.dependent.linear.name.list[[i]])
+                 # %>% mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 5))
   } else {
     linear.output.outcome.full.sex <- linear.output.outcome.full.sex %>%
       mutate(block = "Employment block") %>%
-      mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 4))
+      mutate(Variable = outcome.dependent.linear.name.list[[i]])
+                 # %>% mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 4))
   }
   
    linear.output.outcome.full.sex <- linear.output.outcome.full.sex %>% 
     mutate(
     Significance = 
       if_else(
-        p.value.adjusted < 0.05, 
+        p.value < 0.05, 
         1,
         0
       ) %>%
@@ -961,7 +1078,7 @@ data.outcome.linear.sex <- data.table::rbindlist(linear.stats.outcome.sex) %>%
          conf.low,
          conf.high,
          p.value, 
-         p.value.adjusted,
+      #   p.value.adjusted,
          Significance,
          block)
 
@@ -1151,175 +1268,6 @@ kable(linear.output.outcome.full.bmi.girls)
 ```
 Significant association between BMI and Increasing class for girls only. 
 
-# Zygosity interaction
-
-## Logistic regression loop  - zygosity interaction
-
-```{r logistic regression loop with zyg diffs}
-logistic.stats.outcome.zyg <- list() #create empty list to store the information in
-
-for (i in 1:length(outcome.dependent.logistic))
-{ cat(i)
-  logistic.formula.outcome.zyg <- as.formula(sprintf("%s ~ class_reordered + zygosity_binary + zygosity_binary*class_reordered", outcome.dependent.logistic[i]))
-
-  logistic.reg.outcome.zyg <- glm(logistic.formula.outcome.zyg, data = dat, family = "binomial")
-  
-  # robust standard error estimation - account for non-independence of twin sample
-  logistic.output.outcome.full.zyg <- summ(logistic.reg.outcome.zyg,
-                                       scale = FALSE,          # standardized regression coefficients
-                                       confint = TRUE,        # report confidence intervals over standard errors
-                                       ci.width = 0.95,       # desired confidence interval
-                                       robust = "HC0",        # heteroskedasticity-robust standard errors instead of conventional SEs
-                                       cluster = "familyid",  # for clustered standard errors, provide column name of cluster variable
-                                       exp = TRUE
-                                       )
-  
-  logistic.output.outcome.full.zyg <- as.data.frame(logistic.output.outcome.full.zyg$coeftable)[-c(1:4),] %>% # delete sex and SES coefficients
-    mutate(Class = c("Increasing:zyg", "Decreasing:zyg")) %>% # Create new formatted class variable
-    dplyr::select(
-      Class,
-      OR = `exp(Est.)`,
-      OR.conf.low = `2.5%`,
-      OR.conf.high = `97.5%`,
-      p.value = p)
- 
-  if (i < 11) {
-    logistic.output.outcome.full.zyg <- logistic.output.outcome.full.zyg %>%
-      mutate(block = "Mental health block") %>%
-      mutate(Variable = outcome.dependent.logistic.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 10)) # change depending if we combine a few variables 
-  } else {
-   logistic.output.outcome.full.zyg <- logistic.output.outcome.full.zyg %>%
-      mutate(block = "Employment block") %>%
-      mutate(Variable = outcome.dependent.logistic.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.value)
-  }
-  
-   logistic.output.outcome.full.zyg <- logistic.output.outcome.full.zyg %>% 
-    mutate(
-    Significance = 
-      if_else(
-        p.value.adjusted < 0.05, 
-        1,
-        0
-      ) %>%
-    recode_factor(
-        "0" = "Non-significant",
-        "1" = "Significant"
-      ))
-    
-  logistic.stats.outcome.zyg[[i]] <- logistic.output.outcome.full.zyg
-}
-
-# set the names of the list to match the variable names
-names(logistic.stats.outcome.zyg) <- outcome.dependent.logistic
-```
-
-```{r combine logistic dataframes zyg diffs}
-data.outcome.logistic.zyg <- data.table::rbindlist(logistic.stats.outcome.zyg) %>%
-  select(Class,
-         `Dependent variable` = Variable,
-         OR,
-         OR.conf.low,
-         OR.conf.high,
-         p.value, 
-         p.value.adjusted,
-         Significance,
-         block)
-
-# check for significant interaction effects between class and sex for each variable
-data.outcome.logistic.zyg
-```
-No significant interaction between class membership and zygosity for any of the variables. 
-
-```{r table combined logistic dataframes zyg diffs}
-kable(data.outcome.logistic.zyg)
-```
-
-## Linear regression loop - zygosity interaction
-
-```{r linear regression loop zyg diffs}
-linear.stats.outcome.zyg <- list() #create empty list to store the information in
-
-for (i in 1:length(outcome.dependent.linear))
-{ cat(i)
-  linear.formula.outcome.zyg <- as.formula(sprintf("%s ~ class_reordered + zygosity_binary + zygosity_binary*class_reordered", outcome.dependent.linear[i]))
-
-  linear.reg.outcome.zyg <- lm(linear.formula.outcome.zyg, data = dat)
-  
-  # robust standard error estimation - account for non-independence of twin sample
-  linear.output.outcome.full.zyg <- broom::tidy(coeftest(linear.reg.outcome.zyg,      # reports coefficients for new covariance matrix
-                                    vcov = vcovHC(linear.reg.outcome.zyg,             # estimates a robust covariance matrix
-                                             type = "HC0",                            # gives White's estimator 
-                                             cluster = "familyid")),                  # clusters by familyid
-                           conf.int = TRUE, 
-                           conf.level = 0.95)[-c(1:4),] %>%
-    dplyr::rename(robust.std.error = std.error) %>%
-    mutate(Class = c("Increasing:zyg", "Decreasing:zyg")) # Create new formatted class variable
- 
- 
-  if (i < 8) {
-    linear.output.outcome.full.zyg <- linear.output.outcome.full.zyg %>%
-      mutate(block = "Mental health block") %>%
-      mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 7))
-  } else if (i < 12 ) {
-   linear.output.outcome.full.zyg <- linear.output.outcome.full.zyg %>%
-      mutate(block = "Physical health block") %>%
-      mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 4))
-  } else if (i < 17) {
-    linear.output.outcome.full.zyg <- linear.output.outcome.full.zyg %>%
-      mutate(block = "Coping and functioning block") %>%
-      mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 5))
-  } else {
-    linear.output.outcome.full.zyg <- linear.output.outcome.full.zyg %>%
-      mutate(block = "Employment block") %>%
-      mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 4))
-  }
-  
-   linear.output.outcome.full.zyg <- linear.output.outcome.full.zyg %>% 
-    mutate(
-    Significance = 
-      if_else(
-        p.value.adjusted < 0.05, 
-        1,
-        0
-      ) %>%
-    recode_factor(
-        "0" = "Non-significant",
-        "1" = "Significant"
-      ))
-    
-  linear.stats.outcome.zyg[[i]] <- linear.output.outcome.full.zyg
-}
-# set the names of the list to match the variable names
-names(linear.stats.outcome.zyg) <- outcome.dependent.linear
-```
-
-```{r combine linear dataframes sex diffs}
-data.outcome.linear.zyg <- data.table::rbindlist(linear.stats.outcome.zyg) %>%
-  select(Class,
-         `Dependent variable` = Variable,
-         estimate,
-         conf.low,
-         conf.high,
-         p.value, 
-         p.value.adjusted,
-         Significance,
-         block)
-
-# check for significant interactions between sex and class
-data.outcome.linear.zyg
-```
-No significant interaction between class membership and zygosity for any of the variables. 
-
-```{r table combined linear dataframes sex diffs}
-kable(data.outcome.linear.zyg)
-```
-
 # Controlling for significant antecedents
 
 Rerun all regression models while controlling for antecedents that remained significant in the full antecedent model. Antecedents that remained significant in the full antecedent model:child prosocial behaviours, ADHD behaviours, internalising behaviours, and child executive function 
@@ -1345,7 +1293,7 @@ for (i in 1:length(outcome.dependent.logistic))
                                        )
   
   logistic.output.outcome.full.ant_control <- as.data.frame(logistic.output.outcome.full.ant_control$coeftable)[-c(1,4:10),] %>% # delete sex and SES coefficients
-    mutate(Class = c("Increasing", "Decreasing")) %>% # Create new formatted class variable
+    dplyr::mutate(Class = c("Increasing", "Decreasing")) %>% # Create new formatted class variable
     dplyr::select(
       Class,
       OR = `exp(Est.)`,
@@ -1356,20 +1304,20 @@ for (i in 1:length(outcome.dependent.logistic))
   if (i < 11) {
     logistic.output.outcome.full.ant_control <- logistic.output.outcome.full.ant_control %>%
       mutate(block = "Mental health block") %>%
-      mutate(Variable = outcome.dependent.logistic.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 10)) # change depending if we combine a few variables 
+      mutate(Variable = outcome.dependent.logistic.name.list[[i]])
+                 # %>% mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 10)) # change depending if we combine a few variables 
   } else {
    logistic.output.outcome.full.ant_control <- logistic.output.outcome.full.ant_control %>%
       mutate(block = "Employment block") %>%
-      mutate(Variable = outcome.dependent.logistic.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.value)
+      mutate(Variable = outcome.dependent.logistic.name.list[[i]])
+                # %>%  mutate(p.value.adjusted = p.value)
   }
   
    logistic.output.outcome.full.ant_control <- logistic.output.outcome.full.ant_control %>% 
     mutate(
     Significance = 
       if_else(
-        p.value.adjusted < 0.05, 
+        p.value < 0.05, 
         1,
         0
       ) %>%
@@ -1393,7 +1341,7 @@ data.outcome.logistic.ant_control <- data.table::rbindlist(logistic.stats.outcom
          OR.conf.low,
          OR.conf.high,
          p.value, 
-         p.value.adjusted,
+      #   p.value.adjusted,
          Significance,
          block)
 ```
@@ -1473,30 +1421,30 @@ for (i in 1:length(outcome.dependent.linear.zscore))
   if (i < 8) {
     linear.output.outcome.full.zscore.ant_control <- linear.output.outcome.full.zscore.ant_control %>%
       mutate(block = "Mental health block") %>%
-      mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 7))
+      mutate(Variable = outcome.dependent.linear.name.list[[i]]) 
+                # %>%  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 7))
   } else if (i < 12 ) {
    linear.output.outcome.full.zscore.ant_control <- linear.output.outcome.full.zscore.ant_control %>%
       mutate(block = "Physical health block") %>%
-      mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 4))
+      mutate(Variable = outcome.dependent.linear.name.list[[i]])
+                # %>%  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 4))
   } else if (i < 17) {
     linear.output.outcome.full.zscore.ant_control <- linear.output.outcome.full.zscore.ant_control %>%
       mutate(block = "Coping and functioning block") %>%
-      mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 5))
+      mutate(Variable = outcome.dependent.linear.name.list[[i]])
+                # %>%  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 5))
   } else {
     linear.output.outcome.full.zscore.ant_control <- linear.output.outcome.full.zscore.ant_control %>%
       mutate(block = "Employment block") %>%
-      mutate(Variable = outcome.dependent.linear.name.list[[i]]) %>%
-                  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 4))
+      mutate(Variable = outcome.dependent.linear.name.list[[i]])
+                # %>%  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 4))
   }
   
    linear.output.outcome.full.zscore.ant_control <- linear.output.outcome.full.zscore.ant_control %>% 
     mutate(
     Significance = 
       if_else(
-        p.value.adjusted < 0.05, 
+        p.value < 0.05, 
         1,
         0
       ) %>%
@@ -1519,7 +1467,7 @@ data.outcome.linear.zscore.ant_control <- data.table::rbindlist(linear.stats.out
          conf.low,
          conf.high,
          p.value, 
-         p.value.adjusted,
+       #  p.value.adjusted,
          Significance,
          block)
 ```
@@ -1573,7 +1521,6 @@ ggsave(
 )
 }
 ```
-
 
 # Pairwise comparisons
 
