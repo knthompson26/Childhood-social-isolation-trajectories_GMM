@@ -1,5 +1,5 @@
 ---
-title: "LCGA trajectory statistics and figures"
+title: "GMM trajectory statistics and figures"
 author: "Katherine N Thompson"
 date: "13th Jan 2021"
 output:
@@ -61,13 +61,17 @@ library(tidyverse)
 library(plyr) #conflicts with tidyverse for e.g. rename and row_number
 ```
 
-# Linear Latent Class Growth Analysis
+```{r MplusAutomation citation}
+citation("MplusAutomation")
+```
+
+# GMM Mother
 
 ## Model fit statistics
 
 ```{r read in social isolation model data, include=FALSE}
 #For class models, read in all output files within your folder that you have all your class models
-si.classes.all <- readModels(paste0(mplus_LCGA_clustered_full_output_data_path), recursive = TRUE) #Recursive means it reads data in sub-folders too
+si.classes.all <- readModels(paste0(mplus_GMM_clustered_full_MOTHER_output_data_path), recursive = TRUE) #Recursive means it reads data in sub-folders too
 ```
 
 ```{r read in trajectoriesectory summary vairables, include=FALSE}
@@ -76,6 +80,9 @@ si_summaries <- do.call("rbind.fill",
                         sapply(si.classes.all,
                                "[", 
                                "summaries"))
+
+# have a look at the summary data for all files
+si_summaries <- si_summaries[-c(5,7),]  # remove rows that are output from OPTSEED tests and keep 5 and 6 trajectory models that fix S to zero
 ```
 
 ```{r create data frame with sumamary variables, include=FALSE}
@@ -135,37 +142,38 @@ si.class.summaries
 #for each class we want to add in the model estimated class counts - then convert this into a list with the percentage of people in each class
 
 #two classes
-si.class.summaries$`Class Proportions`[si.class.summaries$Model == "Two Class"] <- list(c(sprintf("%.0f", si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.LCGA.clustered.full_sample.output..LCGA_isolation_2traj_full_sample_clustered.out$class_counts$modelEstimated$proportion*100)))
+si.class.summaries$`Class Proportions`[si.class.summaries$Model == "Two Class"] <- list(c(sprintf("%.0f", si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.mother..isolation_2traj_full_sample_clustered_MOTHER.out$class_counts$modelEstimated$proportion*100)))
 
 #three classes
-si.class.summaries$`Class Proportions`[si.class.summaries$Model == "Three Class"] <- list(c(sprintf('%.0f', si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.LCGA.clustered.full_sample.output..LCGA_isolation_3traj_full_sample_clustered.out$class_counts$modelEstimated$proportion*100)))
+si.class.summaries$`Class Proportions`[si.class.summaries$Model == "Three Class"] <- list(c(sprintf('%.0f', si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.mother..isolation_3traj_full_sample_clustered_MOTHER.out$class_counts$modelEstimated$proportion*100)))
 
 #four classes
-si.class.summaries$`Class Proportions`[si.class.summaries$Model == "Four Class"] <- list(c(sprintf('%.0f', si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.LCGA.clustered.full_sample.output..LCGA_isolation_4traj_full_sample_clustered.out$class_counts$modelEstimated$proportion*100)))
+si.class.summaries$`Class Proportions`[si.class.summaries$Model == "Four Class"] <- list(c(sprintf('%.0f', si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.mother..isolation_4traj_full_sample_clustered_MOTHER.out$class_counts$modelEstimated$proportion*100)))
 
 #five classes
-si.class.summaries$`Class Proportions`[si.class.summaries$Model == "Five Class"] <- list(c(sprintf('%.0f', si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.LCGA.clustered.full_sample.output..LCGA_isolation_5traj_full_sample_clustered.out$class_counts$modelEstimated$proportion*100)))
+si.class.summaries$`Class Proportions`[si.class.summaries$Model == "Five Class"] <- list(c(sprintf('%.0f', si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.mother..isolation_5traj_full_sample_clustered_MOTHER_S_fixed_to_zero.out$class_counts$modelEstimated$proportion*100)))
 
 #six classes
-si.class.summaries$`Class Proportions`[si.class.summaries$Model == "Six Class"] <- list(c(sprintf('%.0f', si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.LCGA.clustered.full_sample.output..LCGA_isolation_6traj_full_sample_clustered.out$class_counts$modelEstimated$proportion*100)))
+si.class.summaries$`Class Proportions`[si.class.summaries$Model == "Six Class"] <- list(c(sprintf('%.0f', si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.mother..isolation_6traj_full_sample_clustered_MOTHER_S_fixed_to_zero.out$class_counts$modelEstimated$proportion*100)))
 ```
 
 ```{r create class Ns for each model}
 #two classes
-si.class.summaries$`Class N`[si.class.summaries$Model == "Two Class"] <- list(c(sprintf("%.0f", si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.LCGA.clustered.full_sample.output..LCGA_isolation_2traj_full_sample_clustered.out$class_counts$posteriorProb$count)))
+si.class.summaries$`Class N`[si.class.summaries$Model == "Two Class"] <- list(c(sprintf("%.0f", si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.mother..isolation_2traj_full_sample_clustered_MOTHER.out$class_counts$posteriorProb$count)))
 
 #three classes
-si.class.summaries$`Class N`[si.class.summaries$Model == "Three Class"] <- list(c(sprintf("%.0f", si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.LCGA.clustered.full_sample.output..LCGA_isolation_3traj_full_sample_clustered.out$class_counts$posteriorProb$count)))
+si.class.summaries$`Class N`[si.class.summaries$Model == "Three Class"] <- list(c(sprintf("%.0f", si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.mother..isolation_3traj_full_sample_clustered_MOTHER.out$class_counts$posteriorProb$count)))
 
 #four classes
-si.class.summaries$`Class N`[si.class.summaries$Model == "Four Class"] <- list(c(sprintf("%.0f", si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.LCGA.clustered.full_sample.output..LCGA_isolation_4traj_full_sample_clustered.out$class_counts$posteriorProb$count)))
+si.class.summaries$`Class N`[si.class.summaries$Model == "Four Class"] <- list(c(sprintf("%.0f", si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.mother..isolation_4traj_full_sample_clustered_MOTHER.out$class_counts$posteriorProb$count)))
 
 #five classes
-si.class.summaries$`Class N`[si.class.summaries$Model == "Five Class"] <- list(c(sprintf("%.0f", si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.LCGA.clustered.full_sample.output..LCGA_isolation_5traj_full_sample_clustered.out$class_counts$posteriorProb$count)))
+si.class.summaries$`Class N`[si.class.summaries$Model == "Five Class"] <- list(c(sprintf("%.0f", si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.mother..isolation_5traj_full_sample_clustered_MOTHER_S_fixed_to_zero.out$class_counts$posteriorProb$count)))
 
 #six classes
-si.class.summaries$`Class N`[si.class.summaries$Model == "Six Class"] <- list(c(sprintf("%.0f", si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.LCGA.clustered.full_sample.output..LCGA_isolation_6traj_full_sample_clustered.out$class_counts$posteriorProb$count)))
+si.class.summaries$`Class N`[si.class.summaries$Model == "Six Class"] <- list(c(sprintf("%.0f", si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.mother..isolation_6traj_full_sample_clustered_MOTHER_S_fixed_to_zero.out$class_counts$posteriorProb$count)))
 ```
+
 
 ```{r load summary table for GMM models}
 #Look at summary table 
@@ -174,38 +182,13 @@ kable(si.class.summaries)
  
 *The five class model in these statistics is fixing the variance of S (slope) to zero - as the original model produces negative variances.*
 
-## Classification probabilities 
-
-```{r extract classification probs for 3 class model, include=FALSE}
-# extract the classification probabilities for the most likely class memberships (column) by latent class (row). This shows the uncertainty rate of the probabilities. If it was perfect - the diagonal would be 1. E.g. for Class 1 - 98.3% of individuals fit that category. 
-class.probs <- data.frame(si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.LCGA.clustered.full_sample.output..LCGA_isolation_4traj_full_sample_clustered.out$class_counts$classificationProbs.mostLikely)
-
-# add column names
-colnames(class.probs) <- c("Low stable","Decreasing","Low increasing", "High increasing")
-
-class.probs$Class <- c("Low stable","Decreasing","Low increasing", "High increasing")
-
-as.tibble(class.probs)
-
-class.probs <- class.probs %>%
-  tidyr::pivot_longer(-Class, 
-               names_to = "class", 
-               values_to = "Classification probabilities")
-
-class.probs <- class.probs[-c(2:5,7:10,12:15),-c(2)]
-```
-
-```{r classification probabilities table, include=FALSE}
-kable(class.probs)
-```
-
 ## Plots {.tabset .tabset-fade}
 
 ### Two Class model
 ```{r two class GMM model preparation, include=FALSE}
 #create two class data frame with means and variances
 two_class_si <- as.data.frame(
-  si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.LCGA.clustered.full_sample.output..LCGA_isolation_2traj_full_sample_clustered.out$gh5$means_and_variances_data$y_estimated_means)
+  si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.mother..isolation_2traj_full_sample_clustered_MOTHER.out$gh5$means_and_variances_data$y_estimated_means)
 
 #name the variables
 names(two_class_si) <- c("Class 1","Class 2")
@@ -234,7 +217,7 @@ two_traj_plot_clustered_full_sample <- ggplot(two_class_si,
   scale_fill_manual(values = palette2) +
   scale_color_manual(values = palette2) +
   labs(x = "Age (in years)", 
-       title = "Two class LCGA model of social isolation in E-risk",
+       title = "Two class model of social isolation in E-risk",
        color = "Class",
        y ="Social isolation score") +   
   scale_y_continuous(expand = c(0.1,0.1),
@@ -262,7 +245,7 @@ two_traj_plot_clustered_full_sample
 ```{r three class GMM model preparation, include=FALSE}
 #create three class data frame with means and variances
 three_class_si <- as.data.frame(
-  si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.LCGA.clustered.full_sample.output..LCGA_isolation_3traj_full_sample_clustered.out$gh5$means_and_variances_data$y_estimated_means)
+  si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.mother..isolation_3traj_full_sample_clustered_MOTHER.out$gh5$means_and_variances_data$y_estimated_means)
 
 #name the variables
 names(three_class_si) <- c("Class 1","Class 2","Class 3")
@@ -290,7 +273,7 @@ three_traj_plot_clustered_full_sample <- ggplot(three_class_si,
   scale_fill_manual(values = palette3) +
   scale_color_manual(values = palette3) +
   labs(x = "Age (in years)", 
-       title = "Three class LCGA model of social isolation in E-risk",
+       title = "Three class model of social isolation in E-risk",
        color = "Class",
        y ="Social isolation score") +   
   scale_y_continuous(expand = c(0.1,0.1),
@@ -318,7 +301,7 @@ three_traj_plot_clustered_full_sample
 ```{r four class GMM model preparation, include=FALSE}
 #create four class data frame with means and variances
 four_class_si <- as.data.frame(
-  si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.LCGA.clustered.full_sample.output..LCGA_isolation_4traj_full_sample_clustered.out$gh5$means_and_variances_data$y_estimated_means)
+  si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.mother..isolation_4traj_full_sample_clustered_MOTHER.out$gh5$means_and_variances_data$y_estimated_means)
 
 #name the variables
 names(four_class_si) <- c("Class 1","Class 2","Class 3","Class 4")
@@ -346,7 +329,7 @@ four_traj_plot_clustered_full_sample <- ggplot(four_class_si,
   scale_fill_manual(values = palette4) +
   scale_color_manual(values = palette4) +
   labs(x = "Age (in years)", 
-       title = "Four class LCGA model of social isolation in E-risk",
+       title = "Four class model of social isolation in E-risk",
        color = "Class",
        y ="Social isolation score") +   
   scale_y_continuous(expand = c(0.1,0.1),
@@ -374,7 +357,7 @@ four_traj_plot_clustered_full_sample
 ```{r five class GMM  model preparation, include=FALSE}
 #create five class data frame with means and variances
 five_class_si <- as.data.frame(
-  si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.LCGA.clustered.full_sample.output..LCGA_isolation_5traj_full_sample_clustered.out$gh5$means_and_variances_data$y_estimated_means)
+  si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.mother..isolation_5traj_full_sample_clustered_MOTHER_S_fixed_to_zero.out$gh5$means_and_variances_data$y_estimated_means)
 
 #name the variables
 names(five_class_si) <- c("Class 1","Class 2","Class 3","Class 4","Class 5")
@@ -402,7 +385,7 @@ five_traj_plot_clustered_full_sample <- ggplot(five_class_si,
   scale_fill_manual(values = palette5) +
   scale_color_manual(values = palette5) +
   labs(x = "Age (in years)", 
-       title = "Five class LCGA model of social isolation in E-risk",
+       title = "Five class model of social isolation in E-risk",
        color = "Class",
        y ="Social isolation score") +   
   scale_y_continuous(expand = c(0.1,0.1),
@@ -430,7 +413,7 @@ five_traj_plot_clustered_full_sample
 ```{r six class GMM  model preparation, include=FALSE}
 #create five class data frame with means and variances
 six_class_si <- as.data.frame(
-  si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.LCGA.clustered.full_sample.output..LCGA_isolation_6traj_full_sample_clustered.out$gh5$means_and_variances_data$y_estimated_means)
+  si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.mother..isolation_6traj_full_sample_clustered_MOTHER_S_fixed_to_zero.out$gh5$means_and_variances_data$y_estimated_means)
 
 #name the variables
 names(six_class_si) <- c("Class 1","Class 2","Class 3","Class 4","Class 5","Class 6")
@@ -458,7 +441,7 @@ six_traj_plot_clustered_full_sample <- ggplot(six_class_si,
   scale_fill_manual(values = palette6) +
   scale_color_manual(values = palette6) +
   labs(x = "Age (in years)", 
-       title = "Six class LCGA model of social isolation in E-risk",
+       title = "Six class model of social isolation in E-risk",
        color = "Class",
        y = "Social isolation score") +   
   scale_y_continuous(expand = c(0.1,0.1),
@@ -481,60 +464,9 @@ six_traj_plot_clustered_full_sample <- ggplot(six_class_si,
 six_traj_plot_clustered_full_sample
 ```
 
-# Save all graphs as images into folder "plots"
-
-```{r save as JPEG, include=FALSE}
-# Two trajectories
-ggsave(
-  "LCGA_two_traj_plot_clustered_full_sample.jpeg",
-  plot = two_traj_plot_clustered_full_sample,
-  device = "jpeg",
-  path = paste0(graph_save_data_path, "LCGA/"),
-  width = 7,
-  height = 5
-)
-# Three trajectories
-ggsave(
-  "LCGA_three_traj_plot_clustered_full_sample.jpeg",
-  plot = three_traj_plot_clustered_full_sample,
-  device = "jpeg",
-  path = paste0(graph_save_data_path, "LCGA/"),
-  width = 7,
-  height = 5
-)
-# Four trajectories
-ggsave(
-  "LCGA_four_traj_plot_clustered_full_sample.jpeg",
-  plot = four_traj_plot_clustered_full_sample,
-  device = "jpeg",
-  path = paste0(graph_save_data_path, "LCGA/"),
-  width = 7,
-  height = 5
-)
-# Five trajectories
-ggsave(
-  "LCGA_five_traj_plot_clustered_full_sample.jpeg",
-  plot = five_traj_plot_clustered_full_sample,
-  device = "jpeg",
-  path = paste0(graph_save_data_path, "LCGA/"),
-  width = 7,
-  height = 5
-)
-# Six trajectories
-ggsave(
-  "LCGA_six_traj_plot_clustered_full_sample.jpeg",
-  plot = six_traj_plot_clustered_full_sample,
-  device = "jpeg",
-  path = paste0(graph_save_data_path, "LCGA/"),
-  width = 7,
-  height = 5
-)
-```
-
 # Rename and format for joint plot
 
 ```{r rename plots, include=FALSE}
-# rename all plot titles
 two_traj_plot_clustered_full_sample <- two_traj_plot_clustered_full_sample +
   labs(title = "Two class model", color = "") +
   theme(plot.title = element_text(size = 12,face = "bold"),
@@ -566,14 +498,12 @@ six_traj_plot_clustered_full_sample <- six_traj_plot_clustered_full_sample +
         legend.position="none")
 ```
 
-# Combined trajectory plot 
 
 ```{r combine trajectory plots}
 #combine all plots
 library(ggpubr) # Needed for combining plots
 library(gridExtra)
-combined_trajectories_plot_clustered_full_sample <- ggarrange( 
-                                        two_traj_plot_clustered_full_sample, 
+combined_trajectories_plot_clustered_full_sample <- ggarrange(two_traj_plot_clustered_full_sample, 
                                         three_traj_plot_clustered_full_sample, 
                                         four_traj_plot_clustered_full_sample, 
                                         five_traj_plot_clustered_full_sample,
@@ -585,12 +515,13 @@ combined_trajectories_plot_clustered_full_sample <- ggarrange(
                                         legend = "bottom")
 
 ggsave(
-  "LCGA_combined_trajectories_plot_clustered_full_sample.jpeg",
+  "combined_trajectories_plot_clustered_full_sample_MOTHER.jpeg",
   plot = combined_trajectories_plot_clustered_full_sample,
   device = "jpeg",
-  path = paste0(graph_save_data_path, "LCGA/"),
-  width = 9,
+  path = paste0(graph_save_data_path, "trajectories/"),
+  width = 8.5,
   height = 10
 )
 ```
-*****
+
+

@@ -96,9 +96,20 @@ Only reported mean significance of q for classes 2-3 as the 4-6 class models did
 quad.mean.two.class <- si.quad.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.quadratic..isolation_2traj_full_sample_clustered_QUAD.out$parameters$unstandardized %>%
   filter(paramHeader == "Means" & LatentClass < 7) # filter out the means for I, S and Q for each class 
 
+quad.variance.two.class <- si.quad.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.quadratic..isolation_2traj_full_sample_clustered_QUAD.out$parameters$unstandardized %>%
+  filter(paramHeader == "Variances" & LatentClass < 7) # filter out the means for I, S and Q for each class 
+
 # three class
 quad.mean.three.class <- si.quad.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.quadratic..isolation_3traj_full_sample_clustered_QUAD.out$parameters$unstandardized %>%
   filter(paramHeader == "Means" & LatentClass < 7) # filter out the means for I, S and Q for each class 
+
+quad.variance.three.class <- si.quad.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.quadratic..isolation_3traj_full_sample_clustered_QUAD.out$parameters$unstandardized %>%
+  filter(paramHeader == "Variances" & LatentClass < 7) # filter out the means for I, S and Q for each class 
+
+quad.mean.two.class
+quad.variance.two.class
+quad.mean.three.class
+quad.variance.three.class
 ```
 Significance values for 2 class model:
 - Q has significant mean for class 1 (0.044), although only just. 
@@ -114,7 +125,7 @@ Significance values for 3 class model:
 
 ```{r remove 4,5,6 class models, include=FALSE}
 # remove 4,5,6 class models
-si.two_three.summaries <- si_quad_summaries[-c(3,4),] 
+si.two_three.summaries <- si_quad_summaries[-c(3:5),] 
 ```
 
 ```{r create data frame with sumamary variables, include=FALSE}
