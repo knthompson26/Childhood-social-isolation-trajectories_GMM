@@ -21,7 +21,7 @@ Analyses for this project were conducted in MPlus version 8.4, STATA version 16 
  - 5 and 6 class models with slope fixed to zero
  - Quadratic models for 2-6 classes: 4-6 class models with slope fixed to zero
 
-**Antecedent_and_outcome_analysis (R):**
+**Antecedent_and_outcome_analysis (R and STATA):**
 
 Preprocessing:
 
