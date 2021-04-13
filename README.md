@@ -1,13 +1,13 @@
 # Childhood_social_isolation_trajectories-GMM
 
-## This repository holds code for growth mixture models (GMM) of social isolation variables at ages 5, 7, 10 and 12 and how the trajectories identified are associated with antecedents and outcomes in the E-Risk study. 
+## This repository holds code for growth mixture models (GMM) of social isolation variables at ages 5, 7, 10 and 12 years and how these trajectories are associated with antecedents and outcomes in the E-Risk study. 
 
 ### All code written by Katherine N Thompson (2021).
 
 Code for manuscript titled: "Antecedents and outcomes of social isolation across childhood".
-Analyses for this project were conducted in MPlus (Version 8.4) and R (version XXX). 
+Analyses for this project were conducted in MPlus version 8.4, STATA version 16 and R version 4.0.3 (All R code written in Rmd format). 
 
-**Trajectory_models (Mplus):** *(will be uploaded in a txt file once complete)*
+**Trajectory_models (Mplus):**
 
 1. LATENT GROWTH MODELS (LGCM):
  - Linear, log linear, quadratic and log quadratic growth models
