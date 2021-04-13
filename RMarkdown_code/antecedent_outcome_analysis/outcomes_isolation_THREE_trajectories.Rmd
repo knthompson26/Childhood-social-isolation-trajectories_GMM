@@ -906,7 +906,7 @@ library(patchwork)
 
 combined.linear.logistic <- outcome.linear.separate.plot.zscore + 
   outcome.logistic.separate.plot + 
-  plot_layout(ncol = 2, 
+  plot_layout(ncol = 1, 
               guides = 'collect') + 
   plot_annotation(tag_levels = 'A') &
   theme(legend.position='bottom')
@@ -917,8 +917,8 @@ ggsave(
   plot = combined.linear.logistic,
   device = "png",
   path = paste0(graph_save_data_path,"outcomes/final"),
-  width = 15,
-  height = 6
+  width = 9,
+  height = 13
 )
 ```
 
