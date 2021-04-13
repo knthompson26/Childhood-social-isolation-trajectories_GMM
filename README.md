@@ -9,34 +9,54 @@ Analyses for this project were conducted in MPlus (Version 8.4) and R (version X
 
 **Trajectory_models (Mplus):** *(will be uploaded in a txt file once complete)*
 
-1. GROWTH MIXTURE MODEL: 
- - Mplus code for linear models of 2-6 classes
- - OPTSEED checks on 3 and 4 class models
- - 5 and 6 class models fixed to zero
+1. LATENT GROWTH MODELS (LGCM):
+ - Linear, log linear, quadratic and log quadratic growth models
 
-2. LATENT CLASS GROWTH ANALYSIS: 
- - Mplus code for linear models 
-     
-3. LATENT GROWTH MODEL:
- - Mplus code for linear, log linear, quadratic and log quadratic growth models
+2. LATENT CLASS GROWTH ANALYSIS (LCGA): 
+ - Linear models of 2-6 classes, includes clustering 
+
+1. GROWTH MIXTURE MODELS (GMM): 
+ - Linear models of 2-6 classes, includes clustering
+ - OPTSEED checks on 3 and 4 class models
+ - 5 and 6 class models with slope fixed to zero
+ - Quadratic models for 2-6 classes: 4-6 class models with slope fixed to zero
 
 **Antecedent_and_outcome_analysis (R):**
 
+Preprocessing:
+
 1. preprocessing_isolation_trajectories.Rmd 
- - Script to clean, rename, and prepare variables for subsequent analysis
+ - Cleans, renames, and prepares variables for subsequent analysis
 
-2. descriptives_of_isolation.Rmd
- - Script to provide sample descriptives 
+Descriptives:
 
-3. trajectory_statistics_and_figures_FULL.Rmd 
- - Script which imports Mplus data and creates tables and figures of growht models and GMM results
+1. preliminary_desriptives_of_social_isolation.Rmd
+ - provides simple sample descriptives 
 
-4. regression_variable_prepararation_THREE_traj.Rmd
- - Edits to variables to be used in subsequent regression analyses
- - *This is likely to be combined with the preprocessing script once all variable edits have been decided
+2. trajectory_descriptives_THREE_CLASS.Rmd
+ - gives decriptives for class specific variables
 
-5. regressions_isolation_THREE_trajectories.Rmd - Need to RENAME
- - Script containing all antecedent regressions with output statistics and graphs
+Trajectory_analysis:
 
-6. outcomes_isolation_THREE_trajectories.Rmd
- - Script containing all outcome regressions with output and graphs     
+1. trajectory_statistics_and_figures_GMM_&_LGCM.Rmd 
+ - Imports Mplus data and creates tables and figures for linear/log-linear LGCM and Linear GMM results for 2-6 classes
+
+2. trajectory_statistics_and_figures_GMM_QUADRATIC.Rmd
+ - Imports Mplus data and creates tables and figures for Quadratic GMM for 2-6 classes
+
+3. trajectory_statistics_and_figures_LCGA.Rmd 
+ - Imports Mplus data and creates tables and figures for Linear LCGA for 2-6 classes
+
+Antecedent_outcome_analysis:
+
+1. antecedent_isolation_THREE_trajectories.Rmd
+ - Antecedent multinomial regressions in R with output and graphs - not including clustering for twin sample  
+
+2. antecedent_multinomial_regression.do
+ - STATA do file containing antecedent regressions with clustering
+
+3. stata_antecedent_isolation_THREE_trajectories.Rmd
+ - R script adapting output from STATA into tables and graphs  
+
+4. outcomes_isolation_THREE_trajectories.Rmd
+ - Outcome linear and logistic regressions with output and graphs - with clustering
