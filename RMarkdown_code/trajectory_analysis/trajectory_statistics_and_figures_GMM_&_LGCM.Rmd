@@ -263,7 +263,8 @@ isolation_growth_curve_single_clustered_full_sample <- ggplot() +
   geom_line(data = dat_si_single,
         aes(x = timepoint, 
             y = social.isolation_score, 
-            colour = Class), 
+            colour = Class,
+            shape = Class), 
         size = 1.5) +
   geom_point(data = dat_si_single,
         aes(x = timepoint, 
@@ -373,7 +374,7 @@ si_summaries <- do.call("rbind.fill",
                                "summaries"))
 
 # have a look at the summary data for all files
-si_summaries <- si_summaries[-c(2,3,5,6,9,11),]  # remove rows that are output from OPTSEED tests and keep 5 and 6 trajectory models that fix S to zero
+si_summaries <- si_summaries[-c(2,3,4,5,7,8,11,13),]  # remove rows that are output from OPTSEED tests and keep 5 and 6 trajectory models that fix S to zero
 ```
 
 ```{r create data frame with sumamary variables, include=FALSE}
@@ -500,7 +501,8 @@ two_class_si
 two_traj_plot_clustered_full_sample <- ggplot(two_class_si,
         aes(x = timepoint, 
             y = social.isolation_score, 
-            colour = Class)) +
+            colour = Class,
+            shape = Class)) +
           geom_line(size = 1.5) +
   geom_point(aes(#shape = class, 
                  size = 1)) +
@@ -557,7 +559,8 @@ three_class_si
 three_traj_plot_clustered_full_sample <- ggplot(three_class_si,
         aes(x = timepoint, 
             y = social.isolation_score, 
-            colour = Class)) +
+            colour = Class,
+            shape = Class)) +
           geom_line(size = 1.5) +
   geom_point(aes(size = 1)) +
   scale_fill_manual(values = palette3) +
@@ -613,7 +616,8 @@ four_class_si
 four_traj_plot_clustered_full_sample <- ggplot(four_class_si,
         aes(x = timepoint, 
             y = social.isolation_score, 
-            colour = Class)) +
+            colour = Class,
+            shape = Class)) +
           geom_line(size = 1.5) +
   geom_point(aes(size = 1)) +
   scale_fill_manual(values = palette4) +
@@ -669,7 +673,8 @@ five_class_si
 five_traj_plot_clustered_full_sample <- ggplot(five_class_si,
         aes(x = timepoint, 
             y = social.isolation_score, 
-            colour = Class)) +
+            colour = Class,
+            shape = Class)) +
           geom_line(size = 1.5) +
   geom_point(aes(size = 1)) +
   scale_fill_manual(values = palette5) +
@@ -725,7 +730,8 @@ six_class_si
 six_traj_plot_clustered_full_sample <- ggplot(six_class_si,
         aes(x = timepoint, 
             y = social.isolation_score, 
-            colour = Class)) +
+            colour = Class,
+            shape = Class)) +
           geom_line(size = 1.5) +
   geom_point(aes(size = 1)) +
   scale_fill_manual(values = palette6) +
@@ -880,7 +886,8 @@ combined_trajectories_plot_clustered_full_sample <- ggarrange(isolation_growth_c
                                         widths = c(2.7,2.7,2.7,2.7), 
                                         heights = c(3,3,3,3),
                                         labels = c("A", "B", "C", "D", "E", "F"),
-                                        legend = "bottom")
+                                        legend = "none"
+                                        )
 
 ggsave(
   "combined_trajectories_plot_clustered_full_sample.jpeg",

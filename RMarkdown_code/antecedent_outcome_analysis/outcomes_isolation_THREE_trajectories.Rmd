@@ -547,7 +547,7 @@ data.outcome.logistic <- data.table::rbindlist(logistic.stats.outcome) %>%
 ```
 
 ```{r table for combined logistic dataframes}
-kable(data.outcome.logistic)
+kable(data.outcome.logistic, digits = c(2,2,2,2,2,3,2,2))
 ```
 
 ```{r bind and order rows stata}
@@ -706,7 +706,7 @@ data.outcome.linear <- data.table::rbindlist(linear.stats.outcome) %>%
 ```
 
 ```{r table for combines linear dataframes}
-kable(data.outcome.linear)
+kable(data.outcome.linear, digits = c(2,2,2,2,2,3,2,2))
 ```
 
 # Linear regression using  scores
@@ -791,6 +791,57 @@ data.outcome.linear.zscore <- data.table::rbindlist(linear.stats.outcome.zscore)
 kable(data.outcome.linear.zscore)
 ```
 
+### Getting multiple testing correction (BH FDR) p values
+
+```{r multiple testing correction for linear models}
+data.outcome.linear.zscore.decreasing <- data.outcome.linear.zscore %>%
+  filter(Class == "Decreasing") %>%
+  mutate(
+    p.value.adjusted = 
+           stats::p.adjust(p.value, 
+                    method = "BH",
+                    n = 20) 
+  ) %>%
+  mutate(Significance.adjusted = 
+           if_else(
+            p.value.adjusted < 0.05, 
+            1,
+            0
+      ) %>%
+        recode_factor(
+          `1` = "Significant",
+          `0` = "Non-significant")
+         )
+
+data.outcome.linear.zscore.increasing <- data.outcome.linear.zscore %>%
+  filter(Class == "Increasing") %>%
+  mutate(
+    p.value.adjusted = 
+           p.adjust(p.value, 
+                    method = "BH",
+                    n = 20) 
+  ) %>%
+  mutate(Significance.adjusted = 
+           if_else(
+            p.value.adjusted < 0.05, 
+            1,
+            0
+      ) %>%
+        recode_factor(
+          `1` = "Significant",
+          `0` = "Non-significant")
+         )
+
+data.outcome.linear.zscore.fdr <- rbind(
+  data.outcome.linear.zscore.decreasing,
+  data.outcome.linear.zscore.increasing
+)
+```
+
+```{r table for multiple corrected }
+kable(data.outcome.linear.zscore.fdr, digits = 2)
+```
+
 ```{r bind and order rows stata}
 # mental health
 data.outcome.linear.mental <- filter(data.outcome.linear.zscore, block == "Mental health block") %>% 
@@ -833,25 +884,33 @@ outcome.linear.separate.plot.zscore <- ggplot(
   aes(x = `Dependent variable`,
       y = estimate,
       ymin = conf.low,
-      ymax = conf.high,
-      color = Class)
+      ymax = conf.high)
   ) +
-  scale_fill_manual(values = palette2b) +
-  scale_color_manual(values = palette2b) +
-  scale_shape_manual(values = c(21, 19)) +
-  geom_pointrange(aes(shape = Significance), position = position_dodge(width = 0.7)) +
-  facet_grid(block ~ Class, drop = TRUE, scales = "free_y", space = "free") +
-  labs(y = "Standardised Estimate (95% CI)",
-       x = "names",
-       title = "Association between childhood social isolation class membership and outcomes at age 18",
-       # subtitle = paste("N(Total) = ", length(dat$sex),
-       #                  "; N(Increasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Increasing"])),
-       #                  "; N(Decreasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Decreasing"])), sep = ""),
-       color = "",
-       shape = "") +
+  scale_fill_manual(values = c("black")) +
+  scale_color_manual(values = c("black")) +
+  scale_shape_manual(values = c(19)) +
+  geom_pointrange(position = position_dodge(width = 0.7)) +
+  facet_grid(block ~ Class, 
+             drop = TRUE, 
+             scales = "free_y", 
+             space = "free") +
+  labs(y = "Standardised Beta Estimate (95% CI)",
+       x = "names") +
   theme.outcome +
+  theme(
+    strip.text.x = element_text(
+        size = 10, color = "black", face = "bold", 
+        ),
+    strip.background = element_rect(
+     color = "black", fill = "white", size = 0.5, linetype = "solid"
+     ),
+    plot.title = element_text(size = 12,face = "bold"),
+        axis.title.x = element_text(size = 10, face = "bold"),
+        axis.text.x = element_text(size = 8, colour = "black"),
+        axis.text.y = element_text(size = 10)
+  ) +
   geom_hline(linetype = "dashed", yintercept = 0) +
- scale_y_continuous(breaks=c(-1.5, -1, -0.75, -0.5, -0.25, 0, 0.25, 0.5, 0.75, 1, 1.5, 2)) + # log10_trans() has been removed here
+  scale_y_continuous(breaks=c(-1.5, -1, -0.75, -0.5, -0.25, 0, 0.25, 0.5, 0.75, 1, 1.5, 2)) + 
   coord_flip()
 
 outcome.linear.separate.plot.zscore
@@ -864,9 +923,9 @@ ggsave(
   "linear_outcome_individual_regressions_zscore.png",
   plot = outcome.linear.separate.plot.zscore,
   device = "png",
-  path = paste0(graph_save_data_path, "outcomes/analysis_interpretation"),
-  width = 12,
-  height = 9
+  path = paste0(graph_save_data_path, "outcomes/final"),
+  width = 8,
+  height = 6
 )
 }
 ```
@@ -1373,7 +1432,8 @@ outcome.logistic.separate.plot.ant_control <- ggplot(
                         "; N(Increasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Increasing"])),
                         "; N(Decreasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Decreasing"])), sep = ""),
        color = "",
-       shape = "") +
+       shape = ""
+       ) +
   theme.outcome +
   geom_hline(linetype = "dashed", yintercept = 1) +
   scale_y_continuous(trans = scales::log10_trans(), breaks=c(0.2,0.4,0.6,0.8, 1, 1.5, 2, 2.5, 3, 4, 5)) +
