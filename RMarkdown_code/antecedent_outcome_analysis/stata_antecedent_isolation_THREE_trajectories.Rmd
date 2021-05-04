@@ -39,20 +39,9 @@ palette2b <- c("#78D9C5","#EEB6E9")
 ```
 
 ```{r Load packages}
-library(knitr)
 library(summarytools)
-library(psych)
-library(skimr)
-library(ggpubr)
-library(tidyr)
-library(gplots)
-library(Rmisc)
 library(MplusAutomation)
-library(stringr)
-library(stringi)
 library(filesstrings)
-library(texreg)
-library(relimp)
 library(nnet)
 library(ggplot2)
 library(tidyverse)
@@ -567,6 +556,10 @@ dat.stata.all.siguni <- dat.stata.all.siguni.raw[c(112:215,221:324),] %>%
 ```{r stata all table}
 multivariate.siguni.reg.table <- paper.table(dat.stata.all.siguni)
 multivariate.siguni.reg.table
+
+
+dat.stata.all.siguni %>%
+  filter(Significance == "Significant")
 ```
 
 ## Reformat univariate and multivariate data to create a graph containing both information 
@@ -582,7 +575,7 @@ dat.stata.all.siguni.sig <- dat.stata.all.siguni %>%
 dfs <- list(dat.stata.individual,
             dat.stata.all.siguni.sig)
 
-individual.and.multi.sig <- join_all(dfs, by = c("Variable", 
+individual.and.multi.sig <- plyr::join_all(dfs, by = c("Variable", 
                                                  "Class"))
 
 individual.and.multi.sig <- individual.and.multi.sig %>%

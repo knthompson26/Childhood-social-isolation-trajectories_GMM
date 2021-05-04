@@ -431,13 +431,13 @@ reorder_cor_matrix <- function(cor_matrix){
 }
 
 # robust standard error estimation - account for non-independence of twin sample
-huber.white.cluster.linear <- function(regression.outcome){
+huber.white.cluster.linear <- function(regression.outcome, rows.remove){
   outcome.full <- broom::tidy(coeftest(regression.outcome,                          # reports coefficients for new covariance matrix
                                        vcov = vcovHC(regression.outcome,            # estimates a robust covariance matrix
                                                      type = "HC0",                  # gives White's estimator 
                                                      cluster = "familyid")),        # clusters by familyid
                               conf.int = TRUE,   
-                              conf.level = 0.95)[-c(1,4:6),] %>%
+                              conf.level = 0.95)[rows.remove,] %>%
     dplyr::rename(robust.std.error = std.error) %>%
     mutate(Class = c("Increasing", "Decreasing")) # Create new formatted class variable
   return(outcome.full)
@@ -721,7 +721,8 @@ for (i in 1:length(outcome.dependent.linear.zscore))
   linear.reg.outcome.zscore <- lm(linear.formula.outcome.zscore, data = dat)
   
   # robust standard error estimation - account for non-independence of twin sample
-  linear.output.outcome.full.zscore <- huber.white.cluster.linear(linear.reg.outcome.zscore)
+  linear.output.outcome.full.zscore <- huber.white.cluster.linear(linear.reg.outcome.zscore, 
+                                                                  rows.remove = -c(1,4:6))
  
   if (i < 8) {
     linear.output.outcome.full.zscore <- linear.output.outcome.full.zscore %>%
@@ -784,11 +785,11 @@ paper.table(data.outcome.linear.zscore.fdr, model = "linear")
 # mental health
 data.outcome.linear.mental <- order.variables(data = data.outcome.linear.zscore, domain = "Mental health domain", model = "linear")
 # physical health
-data.outcome.linear.physical <- order.variables(data.outcome.linear.zscore, domain = "Physical health block", model = "linear") 
+data.outcome.linear.physical <- order.variables(data.outcome.linear.zscore, domain = "Physical health domain", model = "linear") 
 # coping and functioning
-data.outcome.linear.coping <- order.variables(data.outcome.linear.zscore, domain = "Coping and functioning block", model = "linear") 
+data.outcome.linear.coping <- order.variables(data.outcome.linear.zscore, domain = "Coping and functioning domain", model = "linear") 
 # employment prospects
-data.outcome.linear.employ <- order.variables(data.outcome.linear.zscore, domain = "Employment block", model = "linear")
+data.outcome.linear.employ <- order.variables(data.outcome.linear.zscore, domain = "Employment domain", model = "linear")
 
 # all
 dat.linear.ordered <- rbind(
@@ -804,7 +805,7 @@ dat.linear.ordered <- rbind(
 ```{r linear regression outcome plot zscores}
 outcome.linear.separate.plot.zscore <- ggplot(
   dat.linear.ordered, 
-  aes(x = `Dependent variable`,
+  aes(x = Variable,
       y = estimate,
       ymin = conf.low,
       ymax = conf.high)
@@ -813,7 +814,7 @@ outcome.linear.separate.plot.zscore <- ggplot(
   scale_color_manual(values = c("black")) +
   scale_shape_manual(values = c(19)) +
   geom_pointrange(position = position_dodge(width = 0.7)) +
-  facet_grid(block ~ Class, 
+  facet_grid(Domain ~ Class, 
              drop = TRUE, 
              scales = "free_y", 
              space = "free") +
@@ -853,13 +854,9 @@ ggsave(
 }
 ```
 
-***
-KT LEFT OFF HERE - create new script for interactions 
-***
-
 # Controlling for significant antecedents
 
-Rerun all regression models while controlling for antecedents that remained significant in the full antecedent model. Antecedents that remained significant in the full antecedent model:child prosocial behaviours, ADHD behaviours, internalising behaviours, and child executive function 
+Rerun all regression models while controlling for antecedents that remained significant in the full antecedent model. Antecedents that remained significant in the full antecedent model: child prosocial behaviours, ADHD behaviours, internalising behaviours, and matrnal personality openness. *Do we include child executive function as it was only just significant?*
 
 ## Logistic regression loop - controlling for antecedents
 
@@ -868,18 +865,11 @@ logistic.stats.outcome.ant_control <- list() #create empty list to store the inf
 
 for (i in 1:length(outcome.dependent.logistic))
 { cat(i)
-  logistic.formula.outcome.ant_control <- as.formula(sprintf("%s ~ class_reordered + prosocial_behaviours_combined_05 + ADHD_combined_05 + internalising_combined_excl_sis_05 + executive_function_05 + sex + SES_ordered", outcome.dependent.logistic[i]))
+  logistic.formula.outcome.ant_control <- as.formula(sprintf("%s ~ class_reordered + ADHD_combined_05 + internalising_combined_excl_sis_05 + prosocial_behaviours_combined_05 + maternal_personality_openness_05 + sex + SES_ordered", outcome.dependent.logistic[i]))
 
   logistic.reg.outcome.ant_control <- glm(logistic.formula.outcome.ant_control, data = dat, family = "binomial")
   
-  logistic.output.outcome.full.ant_control <- summ(logistic.reg.outcome.ant_control,
-                                       scale = FALSE,          # standardized regression coefficients
-                                       confint = TRUE,        # report confidence intervals over standard errors
-                                       ci.width = 0.95,       # desired confidence interval
-                                       robust = "HC0",        # heteroskedasticity-robust standard errors instead of conventional SEs
-                                       cluster = "familyid",  # for clustered standard errors, provide column name of cluster variable
-                                       exp = TRUE
-                                       )
+  logistic.output.outcome.full.ant_control <- huber.white.cluster.logistic(logistic.reg.outcome.ant_control)
   
   logistic.output.outcome.full.ant_control <- as.data.frame(logistic.output.outcome.full.ant_control$coeftable)[-c(1,4:10),] %>% # delete sex and SES coefficients
     dplyr::mutate(Class = c("Increasing", "Decreasing")) %>% # Create new formatted class variable
@@ -892,28 +882,15 @@ for (i in 1:length(outcome.dependent.logistic))
  
   if (i < 11) {
     logistic.output.outcome.full.ant_control <- logistic.output.outcome.full.ant_control %>%
-      mutate(block = "Mental health block") %>%
+      mutate(block = "Mental health domain") %>%
       mutate(Variable = outcome.dependent.logistic.name.list[[i]])
-                 # %>% mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 10)) # change depending if we combine a few variables 
   } else {
    logistic.output.outcome.full.ant_control <- logistic.output.outcome.full.ant_control %>%
-      mutate(block = "Employment block") %>%
+      mutate(block = "Employment domain") %>%
       mutate(Variable = outcome.dependent.logistic.name.list[[i]])
-                # %>%  mutate(p.value.adjusted = p.value)
   }
   
-   logistic.output.outcome.full.ant_control <- logistic.output.outcome.full.ant_control %>% 
-    mutate(
-    Significance = 
-      if_else(
-        p.value < 0.05, 
-        1,
-        0
-      ) %>%
-    recode_factor(
-        "0" = "Non-significant",
-        "1" = "Significant"
-      ))
+  logistic.output.outcome.full.ant_control <- add.significance.variable(logistic.output.outcome.full.ant_control)
     
   logistic.stats.outcome.ant_control[[i]] <- logistic.output.outcome.full.ant_control
 }
@@ -923,20 +900,13 @@ names(logistic.stats.outcome.ant_control) <- outcome.dependent.logistic
 ```
 
 ```{r combine logistic dataframes ant control}
-data.outcome.logistic.ant_control <- data.table::rbindlist(logistic.stats.outcome.ant_control) %>%
-  select(Class,
-         `Dependent variable` = Variable,
-         OR,
-         OR.conf.low,
-         OR.conf.high,
-         p.value, 
-      #   p.value.adjusted,
-         Significance,
-         block)
+data.outcome.logistic.ant_control <- create.dataset(logistic.stats.outcome.ant_control, model = "logistic") 
 ```
 
-```{r table for logistic dataframes ant control}
-kable(data.outcome.logistic.ant_control)
+### Table 
+
+```{r table for combined logistic dataframes}
+paper.table(data.outcome.logistic.ant_control, model = "logistic")
 ```
 
 ### Logistic regression plot - controlling for antecedents
@@ -944,17 +914,14 @@ kable(data.outcome.logistic.ant_control)
 ```{r logistic regression outcome plot ant control}
 outcome.logistic.separate.plot.ant_control <- ggplot(
   data.outcome.logistic.ant_control, 
-  aes(x = `Dependent variable`,
+  aes(x = Variable,
       y = OR,
       ymin = OR.conf.low,
-      ymax = OR.conf.high,
-      color = Class)
+      ymax = OR.conf.high)
   ) +
-  scale_fill_manual(values = palette2b) +
-  scale_color_manual(values = palette2b) +
   scale_shape_manual(values = c(21, 19)) +
   geom_pointrange(aes(shape = Significance), position = position_dodge(width = 0.7)) +
-  facet_grid(block ~ Class, drop = TRUE, scales = "free_y", space = "free") +
+  facet_grid(Domain ~ Class, drop = TRUE, scales = "free_y", space = "free") +
   labs(y = "OR (95% CI)",
        x = "names",
        title = "Association betweenclass membership and outcomes at age 18",
@@ -972,21 +939,6 @@ outcome.logistic.separate.plot.ant_control <- ggplot(
 outcome.logistic.separate.plot.ant_control
 ```
 
-```{r save logistic spearate plot ant control}
-if(posterior.cut == FALSE){
-# save
-ggsave(
-  "logistic_outcome_individual_regressions.ant_control.png",
-  plot = outcome.logistic.separate.plot.ant_control,
-  device = "png",
-  path = paste0(graph_save_data_path, "outcomes/analysis_interpretation"),
-  width = 12,
-  height = 9
-)
-}
-```
-
-
 ## Linear regression loop using z scores - controlling for antecedents
 
 ```{r linear regression loop zscore ant control}
@@ -994,55 +946,34 @@ linear.stats.outcome.zscore.ant_control <- list() #create empty list to store th
 
 for (i in 1:length(outcome.dependent.linear.zscore))
 { cat(i)
-  linear.formula.outcome.zscore.ant_control <- as.formula(sprintf("%s ~ class_reordered + prosocial_behaviours_combined_05 + ADHD_combined_05 + internalising_combined_excl_sis_05 + executive_function_05 + sex + SES_ordered", outcome.dependent.linear.zscore[i]))
+  linear.formula.outcome.zscore.ant_control <- as.formula(sprintf("%s ~ class_reordered + prosocial_behaviours_combined_05 + ADHD_combined_05 + internalising_combined_excl_sis_05 + maternal_personality_openness_05 + sex + SES_ordered", outcome.dependent.linear.zscore[i]))
 
   linear.reg.outcome.zscore.ant_control <- lm(linear.formula.outcome.zscore.ant_control, data = dat)
   
   # robust standard error estimation - account for non-independence of twin sample
-  linear.output.outcome.full.zscore.ant_control <- broom::tidy(coeftest(linear.reg.outcome.zscore.ant_control,      # reports coefficients for new covariance matrix
-                                    vcov = vcovHC(linear.reg.outcome.zscore.ant_control,             # estimates a robust covariance matrix
-                                             type = "HC0",                                           # gives White's estimator 
-                                             cluster = "familyid")),                                 # clusters by familyid
-                           conf.int = TRUE, 
-                           conf.level = 0.95)[-c(1,4:10),]  %>%
-    dplyr::rename(robust.std.error = std.error) %>%
-    mutate(Class = c("Increasing", "Decreasing")) # Create new formatted class variable
+  linear.output.outcome.full.zscore.ant_control <- huber.white.cluster.linear(regression.outcome = linear.reg.outcome.zscore.ant_control,
+                                                                              rows.remove = -c(1,4:10))
  
   if (i < 8) {
     linear.output.outcome.full.zscore.ant_control <- linear.output.outcome.full.zscore.ant_control %>%
-      mutate(block = "Mental health block") %>%
+      mutate(block = "Mental health domain") %>%
       mutate(Variable = outcome.dependent.linear.name.list[[i]]) 
-                # %>%  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 7))
   } else if (i < 12 ) {
    linear.output.outcome.full.zscore.ant_control <- linear.output.outcome.full.zscore.ant_control %>%
-      mutate(block = "Physical health block") %>%
+      mutate(block = "Physical health domain") %>%
       mutate(Variable = outcome.dependent.linear.name.list[[i]])
-                # %>%  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 4))
   } else if (i < 17) {
     linear.output.outcome.full.zscore.ant_control <- linear.output.outcome.full.zscore.ant_control %>%
-      mutate(block = "Coping and functioning block") %>%
+      mutate(block = "Coping and functioning domain") %>%
       mutate(Variable = outcome.dependent.linear.name.list[[i]])
-                # %>%  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 5))
   } else {
     linear.output.outcome.full.zscore.ant_control <- linear.output.outcome.full.zscore.ant_control %>%
-      mutate(block = "Employment block") %>%
+      mutate(block = "Employment domain") %>%
       mutate(Variable = outcome.dependent.linear.name.list[[i]])
-                # %>%  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 4))
   }
   
-   linear.output.outcome.full.zscore.ant_control <- linear.output.outcome.full.zscore.ant_control %>% 
-    mutate(
-    Significance = 
-      if_else(
-        p.value < 0.05, 
-        1,
-        0
-      ) %>%
-    recode_factor(
-        "0" = "Non-significant",
-        "1" = "Significant"
-      ))
-    
+  linear.output.outcome.full.zscore.ant_control <- add.significance.variable(linear.output.outcome.full.zscore.ant_control)
+  
   linear.stats.outcome.zscore.ant_control[[i]] <- linear.output.outcome.full.zscore.ant_control
 }
 # set the names of the list to match the variable names
@@ -1050,20 +981,11 @@ names(linear.stats.outcome.zscore.ant_control) <- outcome.dependent.linear.zscor
 ```
 
 ```{r combine linear dataframes zscore ant control}
-data.outcome.linear.zscore.ant_control <- data.table::rbindlist(linear.stats.outcome.zscore.ant_control) %>%
-  select(Class,
-         `Dependent variable` = Variable,
-         estimate,
-         conf.low,
-         conf.high,
-         p.value, 
-       #  p.value.adjusted,
-         Significance,
-         block)
+data.outcome.linear.zscore.ant_control <- create.dataset(linear.stats.outcome.zscore.ant_control, model = "linear")
 ```
 
-```{r table linear dataframes zscore ant control}
-kable(data.outcome.linear.zscore.ant_control)
+```{r table for combined linear dataframes zscore}
+linear.table.ant.control <- paper.table(data.outcome.linear.zscore.ant_control, model = "linear")
 ```
 
 ### Linear regression plot with z scores - controlling for antecedents
@@ -1071,17 +993,14 @@ kable(data.outcome.linear.zscore.ant_control)
 ```{r linear regression outcome plot zscore ant control}
 outcome.linear.separate.plot.zscore.ant_control <- ggplot(
   data.outcome.linear.zscore.ant_control, 
-  aes(x = `Dependent variable`,
+  aes(x = Variable,
       y = estimate,
       ymin = conf.low,
-      ymax = conf.high,
-      color = Class)
+      ymax = conf.high)
   ) +
-  scale_fill_manual(values = palette2b) +
-  scale_color_manual(values = palette2b) +
   scale_shape_manual(values = c(21, 19)) +
   geom_pointrange(aes(shape = Significance), position = position_dodge(width = 0.7)) +
-  facet_grid(block ~ Class, drop = TRUE, scales = "free_y", space = "free") +
+  facet_grid(Domain ~ Class, drop = TRUE, scales = "free_y", space = "free") +
   labs(y = "Standardised Estimate (95% CI)",
        x = "names",
        title = "Association between class membership and outcomes at age 18",
@@ -1097,22 +1016,5 @@ outcome.linear.separate.plot.zscore.ant_control <- ggplot(
 
 outcome.linear.separate.plot.zscore.ant_control
 ```
-
-```{r save linear individual regressions z score ant control}
-if(posterior.cut == FALSE){
-# save
-ggsave(
-  "linear_outcome_individual_regressions_zscore.ant_control.png",
-  plot = outcome.linear.separate.plot.zscore.ant_control,
-  device = "png",
-  path = paste0(graph_save_data_path, "outcomes/analysis_interpretation"),
-  width = 12,
-  height = 9
-)
-}
-```
-
-
-
 
 
