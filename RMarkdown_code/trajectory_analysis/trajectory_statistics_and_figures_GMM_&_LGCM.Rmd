@@ -65,6 +65,27 @@ library(plyr) #conflicts with tidyverse for e.g. rename and row_number
 citation("MplusAutomation")
 ```
 
+# Theme for plotting
+
+```{r rename plots, include=FALSE}
+combined.traj.theme <- theme(
+                        plot.title = element_text(size = 12, face = "bold", hjust=0.5),
+                        legend.position = "none",
+                        panel.grid.major.y = element_line(size = 0.5, linetype = 'dashed', colour = "gray"),
+                        axis.text = element_text(colour = "black", size = 10),
+                        axis.title = element_text(colour = "black", size = 10),
+                        panel.background = element_blank()
+                      )
+
+scale.y <- scale_y_continuous(expand = c(0.1,0.1),
+                              limits = c(0,12),
+                              breaks = seq(0, 12, 2))
+
+scale.x <- scale_x_continuous(expand = c(0.1,0.1),
+                              limits = c(5,12),
+                              breaks = c(5, 7, 10, 12))
+```
+
 # Longitudinal growth gurve models (LGCM)
 
 ## Model fit statistics
@@ -215,21 +236,14 @@ isolation_growth_curve_clustered_full_sample <- ggplot() + #change name of graph
             shape = Model), 
         show.legend = T) +
   scale_color_manual(values = palette3) +
-  labs(x = "Age (in years)", 
-       y ="Social isolation score",
+  labs(x = "Age (years)", 
+       y ="Social isolation",
        title = "Growth curves for social isolation") +
   scale_y_continuous(expand = c(0.01,0.01), 
                      limits = c(0.8,0.96), 
                      breaks=seq(0.8, 0.96, 0.02)) +
-  scale_x_continuous(expand = c(0.1,0.1), 
-                     limits = c(5,12), 
-                     breaks= c(5, 7, 10, 12)) +
-  theme(panel.grid.major.y = element_line(size = 0.5,
-                                        linetype = 'dashed',
-                                        colour = "gray"),
-        axis.text = element_text(colour="black", size = 12),
-        axis.title = element_text(colour="black", size = 12),
-        panel.background = element_blank()) 
+  scale.x +
+  combined.traj.theme
 
 isolation_growth_curve_clustered_full_sample
 ```
@@ -263,7 +277,8 @@ isolation_growth_curve_single_clustered_full_sample <- ggplot() +
   geom_line(data = dat_si_single,
         aes(x = timepoint, 
             y = social.isolation_score, 
-            colour = Class), 
+            colour = Class,
+            shape = Class), 
         size = 1.5) +
   geom_point(data = dat_si_single,
         aes(x = timepoint, 
@@ -272,24 +287,13 @@ isolation_growth_curve_single_clustered_full_sample <- ggplot() +
             size = 1), 
         show.legend = T) +
   scale_color_manual(values = palette1) +
-  labs(x = "Age (in years)", 
-       y ="Social isolation score",
-       title = "Growth curve for social isolation") +
-  scale_y_continuous(expand = c(0.1,0.1),
-                     limits = c(0,12),
-                     breaks = seq(0, 12, 2)) +
-  scale_x_continuous(expand = c(0.1,0.1),
-                     limits = c(5,12),
-                     breaks = c(5, 7, 10, 12)) +
-  theme(panel.grid.major.y = element_line(size = 0.5,
-                                        linetype = 'dashed',
-                                        colour = "gray"),
-        axis.text = element_text(colour="black", 
-                                 size = 12),
-        axis.title = element_text(colour="black", 
-                                  size = 12),
-        panel.background = element_blank(),
-        plot.title = element_text(size = 12, hjust=0.5)) + 
+  labs(x = "Age (years)", 
+       y ="Social isolation",
+       title = "Linear latent growth curve",
+       color = "") +
+  scale.y  +
+  scale.x +
+  combined.traj.theme +
   guides(shape = FALSE, size = FALSE)
 
 isolation_growth_curve_single_clustered_full_sample
@@ -337,8 +341,8 @@ isolation_growth_curve_log_scale_clustered_full_sample <- ggplot() +
             shape=Model), 
         show.legend = T) +
   scale_color_manual(values = palette3) +
-  labs(x = "Age (in years)", 
-       y ="Social isolation score",
+  labs(x = "Age (years)", 
+       y ="Social isolation",
        title = "Growth curves for log-social isolation") +
   scale_y_continuous(expand = c(0.01,0.01), 
                      limits = c(0.44,0.52), 
@@ -346,12 +350,7 @@ isolation_growth_curve_log_scale_clustered_full_sample <- ggplot() +
   scale_x_continuous(expand = c(0.1,0.1), 
                      limits = c(5,12), 
                      breaks= c(5, 7, 10, 12)) +
-  theme(panel.grid.major.y = element_line(size = 0.5,
-                                        linetype = 'dashed',
-                                        colour = "gray"),
-        axis.text = element_text(colour="black", size = 12),
-        axis.title = element_text(colour="black", size = 12),
-        panel.background = element_blank()) 
+  combined.traj.theme
 
 isolation_growth_curve_log_scale_clustered_full_sample
 ```
@@ -373,7 +372,7 @@ si_summaries <- do.call("rbind.fill",
                                "summaries"))
 
 # have a look at the summary data for all files
-si_summaries <- si_summaries[-c(2,3,5,6,9,11),]  # remove rows that are output from OPTSEED tests and keep 5 and 6 trajectory models that fix S to zero
+si_summaries <- si_summaries[-c(2,3,4,5,7,8,11,13),]  # remove rows that are output from OPTSEED tests and keep 5 and 6 trajectory models that fix S to zero
 ```
 
 ```{r create data frame with sumamary variables, include=FALSE}
@@ -500,31 +499,19 @@ two_class_si
 two_traj_plot_clustered_full_sample <- ggplot(two_class_si,
         aes(x = timepoint, 
             y = social.isolation_score, 
-            colour = Class)) +
+            colour = Class,
+            shape = Class)) +
           geom_line(size = 1.5) +
-  geom_point(aes(#shape = class, 
-                 size = 1)) +
+  geom_point(aes(size = 1)) +
   scale_fill_manual(values = palette2) +
   scale_color_manual(values = palette2) +
-  labs(x = "Age (in years)", 
-       title = "Two class model of social isolation in E-risk",
-       color = "Class",
-       y ="Social isolation score") +   
-  scale_y_continuous(expand = c(0.1,0.1),
-                     limits = c(0,12),
-                     breaks = seq(0, 12, 2)) +
-  scale_x_continuous(expand = c(0.1,0.1),
-                     limits = c(5,12),
-                     breaks = c(5, 7, 10, 12)) +
-  theme(panel.grid.major.y = element_line(size = 0.5,
-                                        linetype = 'dashed',
-                                        colour = "gray"),
-        axis.text = element_text(colour="black", 
-                                 size = 12),
-        axis.title = element_text(colour="black", 
-                                  size = 12),
-        panel.background = element_blank(),
-        plot.title = element_text(size = 16, hjust = 0.5)) + 
+  labs(x = "Age (years)", 
+       title = "Two class model",
+       color = "",
+       y = "Social isolation") +
+  scale.y +
+  scale.x +
+  combined.traj.theme + 
   guides(shape = FALSE, size = FALSE)
 
 two_traj_plot_clustered_full_sample
@@ -557,30 +544,19 @@ three_class_si
 three_traj_plot_clustered_full_sample <- ggplot(three_class_si,
         aes(x = timepoint, 
             y = social.isolation_score, 
-            colour = Class)) +
+            colour = Class,
+            shape = Class)) +
           geom_line(size = 1.5) +
   geom_point(aes(size = 1)) +
   scale_fill_manual(values = palette3) +
   scale_color_manual(values = palette3) +
-  labs(x = "Age (in years)", 
-       title = "Three class model of social isolation in E-risk",
-       color = "Class",
-       y ="Social isolation score") +   
-  scale_y_continuous(expand = c(0.1,0.1),
-                     limits = c(0,12),
-                     breaks = seq(0, 12, 2)) +
-  scale_x_continuous(expand = c(0.1,0.1),
-                     limits = c(5,12),
-                     breaks = c(5, 7, 10, 12)) +
-  theme(panel.grid.major.y = element_line(size = 0.5,
-                                        linetype = 'dashed',
-                                        colour = "gray"),
-        axis.text = element_text(colour="black", 
-                                 size = 12),
-        axis.title = element_text(colour="black", 
-                                  size = 12),
-        panel.background = element_blank(),
-        plot.title = element_text(size = 16, hjust=0.5)) + 
+  labs(x = "Age (years)", 
+       title = "Three class model",
+       color = "",
+       y ="Social isolation") + 
+  scale.y +
+  scale.x +
+  combined.traj.theme + 
   guides(shape = FALSE, size = FALSE)
 
 three_traj_plot_clustered_full_sample
@@ -613,30 +589,19 @@ four_class_si
 four_traj_plot_clustered_full_sample <- ggplot(four_class_si,
         aes(x = timepoint, 
             y = social.isolation_score, 
-            colour = Class)) +
+            colour = Class,
+            shape = Class)) +
           geom_line(size = 1.5) +
   geom_point(aes(size = 1)) +
   scale_fill_manual(values = palette4) +
   scale_color_manual(values = palette4) +
-  labs(x = "Age (in years)", 
-       title = "Four class model of social isolation in E-risk",
-       color = "Class",
-       y ="Social isolation score") +   
-  scale_y_continuous(expand = c(0.1,0.1),
-                     limits = c(0,12),
-                     breaks = seq(0, 12, 2)) +
-  scale_x_continuous(expand = c(0.1,0.1),
-                     limits = c(5,12),
-                     breaks = c(5, 7, 10, 12)) +
-  theme(panel.grid.major.y = element_line(size = 0.5,
-                                        linetype = 'dashed',
-                                        colour = "gray"),
-        axis.text = element_text(colour="black", 
-                                 size = 12),
-        axis.title = element_text(colour="black", 
-                                  size = 12),
-        panel.background = element_blank(),
-        plot.title = element_text(size = 16, hjust=0.5)) + 
+  labs(x = "Age (years)", 
+       title = "Four class model",
+       color = "",
+       y ="Social isolation") + 
+  scale.y +
+  scale.x +
+  combined.traj.theme + 
   guides(shape = FALSE, size = FALSE)
 
 four_traj_plot_clustered_full_sample
@@ -669,30 +634,19 @@ five_class_si
 five_traj_plot_clustered_full_sample <- ggplot(five_class_si,
         aes(x = timepoint, 
             y = social.isolation_score, 
-            colour = Class)) +
+            colour = Class,
+            shape = Class)) +
           geom_line(size = 1.5) +
   geom_point(aes(size = 1)) +
   scale_fill_manual(values = palette5) +
   scale_color_manual(values = palette5) +
-  labs(x = "Age (in years)", 
-       title = "Five class model of social isolation in E-risk",
-       color = "Class",
-       y ="Social isolation score") +   
-  scale_y_continuous(expand = c(0.1,0.1),
-                     limits = c(0,12),
-                     breaks = seq(0, 12, 2)) +
-  scale_x_continuous(expand = c(0.1,0.1),
-                     limits = c(5,12),
-                     breaks = c(5, 7, 10, 12)) +
-  theme(panel.grid.major.y = element_line(size = 0.5,
-                                        linetype = 'dashed',
-                                        colour = "gray"),
-        axis.text = element_text(colour="black", 
-                                 size = 12),
-        axis.title = element_text(colour="black", 
-                                  size = 12),
-        panel.background = element_blank(),
-        plot.title = element_text(size = 16, hjust=0.5)) + 
+  labs(x = "Age (years)", 
+       title = "Five class model",
+       color = "",
+       y ="Social isolation") + 
+  scale.y +
+  scale.x +
+  combined.traj.theme + 
   guides(shape = FALSE, size = FALSE)
 
 five_traj_plot_clustered_full_sample
@@ -725,30 +679,19 @@ six_class_si
 six_traj_plot_clustered_full_sample <- ggplot(six_class_si,
         aes(x = timepoint, 
             y = social.isolation_score, 
-            colour = Class)) +
+            colour = Class,
+            shape = Class)) +
           geom_line(size = 1.5) +
   geom_point(aes(size = 1)) +
   scale_fill_manual(values = palette6) +
   scale_color_manual(values = palette6) +
-  labs(x = "Age (in years)", 
-       title = "Six class model of social isolation in E-risk",
-       color = "Class",
-       y = "Social isolation score") +   
-  scale_y_continuous(expand = c(0.1,0.1),
-                     limits = c(0,12),
-                     breaks = seq(0, 12, 2)) +
-  scale_x_continuous(expand = c(0.1,0.1),
-                     limits = c(5,12),
-                     breaks = c(5, 7, 10, 12)) +
-  theme(panel.grid.major.y = element_line(size = 0.5,
-                                        linetype = 'dashed',
-                                        colour = "gray"),
-        axis.text = element_text(colour="black", 
-                                 size = 12),
-        axis.title = element_text(colour="black", 
-                                  size = 12),
-        panel.background = element_blank(),
-        plot.title = element_text(size = 16, hjust=0.5)) + 
+  labs(x = "Age (years)", 
+       title = "Six class model",
+       color = "",
+       y = "Social isolation") +   
+  scale.y +
+  scale.x +
+  combined.traj.theme + 
   guides(shape = FALSE, size = FALSE)
 
 six_traj_plot_clustered_full_sample
@@ -776,95 +719,9 @@ ggsave(
   width = 7,
   height = 5
 )
-# Two trajectories
-ggsave(
-  "two_traj_plot_clustered_full_sample.jpeg",
-  plot = two_traj_plot_clustered_full_sample,
-  device = "jpeg",
-  path = paste0(graph_save_data_path, "trajectories/"),
-  width = 7,
-  height = 5
-)
-# Three trajectories
-ggsave(
-  "three_traj_plot_clustered_full_sample.jpeg",
-  plot = three_traj_plot_clustered_full_sample,
-  device = "jpeg",
-  path = paste0(graph_save_data_path, "trajectories/"),
-  width = 7,
-  height = 5
-)
-# Four trajectories
-ggsave(
-  "four_traj_plot_clustered_full_sample.jpeg",
-  plot = four_traj_plot_clustered_full_sample,
-  device = "jpeg",
-  path = paste0(graph_save_data_path, "trajectories/"),
-  width = 7,
-  height = 5
-)
-# Five trajectories
-ggsave(
-  "five_traj_plot_clustered_full_sample.jpeg",
-  plot = five_traj_plot_clustered_full_sample,
-  device = "jpeg",
-  path = paste0(graph_save_data_path, "trajectories/"),
-  width = 7,
-  height = 5
-)
-# Six trajectories
-ggsave(
-  "six_traj_plot_clustered_full_sample.jpeg",
-  plot = six_traj_plot_clustered_full_sample,
-  device = "jpeg",
-  path = paste0(graph_save_data_path, "trajectories/"),
-  width = 7,
-  height = 5
-)
-# Can save all graphs as PNG and PDF if needed - only JPEG for now. 
 ```
 
 # Rename and format for joint plot
-
-```{r rename plots, include=FALSE}
-# rename all plot titles
-isolation_growth_curve_single_clustered_full_sample <- isolation_growth_curve_single_clustered_full_sample +
-  labs(title = "Linear latent growth curve", color = "") +
-  theme(plot.title = element_text(size = 12,face = "bold"),
-        axis.title.x = element_text(size = 10, face = "bold"),
-        legend.position="none")
-
-two_traj_plot_clustered_full_sample <- two_traj_plot_clustered_full_sample +
-  labs(title = "Two class model", color = "") +
-  theme(plot.title = element_text(size = 12,face = "bold"),
-        axis.title.x = element_text(size = 10, face = "bold"), 
-        legend.position="none")
-
-three_traj_plot_clustered_full_sample <- three_traj_plot_clustered_full_sample +
-  labs(title = "Three class model", color = "") +
-  theme(plot.title = element_text(size = 12,face = "bold"),
-        axis.title.x = element_text(size = 10, face = "bold"),
-        legend.position="none")
-
-four_traj_plot_clustered_full_sample <- four_traj_plot_clustered_full_sample +
-  labs(title = "Four class model", color = "") +
-  theme(plot.title = element_text(size = 12,face = "bold"),
-        axis.title.x = element_text(size = 10, face = "bold"),
-        legend.position="none")
-
-five_traj_plot_clustered_full_sample <- five_traj_plot_clustered_full_sample +
-  labs(title = "Five class model", color = "") +
-  theme(plot.title = element_text(size = 12,face = "bold"),
-        axis.title.x = element_text(size = 10, face = "bold"),
-        legend.position="none")
-
-six_traj_plot_clustered_full_sample <- six_traj_plot_clustered_full_sample +
-  labs(title = "Six class model", color = "") +
-  theme(plot.title = element_text(size = 12,face = "bold"),
-        axis.title.x = element_text(size = 10, face = "bold"),
-        legend.position="none")
-```
-
 
 ```{r combine trajectory plots}
 #combine all plots
@@ -880,20 +737,18 @@ combined_trajectories_plot_clustered_full_sample <- ggarrange(isolation_growth_c
                                         widths = c(2.7,2.7,2.7,2.7), 
                                         heights = c(3,3,3,3),
                                         labels = c("A", "B", "C", "D", "E", "F"),
-                                        legend = "bottom")
+                                        legend = "none"
+                                        )
+```
 
+```{r save trajectory plot}
 ggsave(
   "combined_trajectories_plot_clustered_full_sample.jpeg",
   plot = combined_trajectories_plot_clustered_full_sample,
   device = "jpeg",
-  path = paste0(graph_save_data_path, "trajectories/"),
+  path = paste0(graph_save_data_path, "trajectories/final/"),
   width = 8.5,
   height = 10
 )
 ```
-
-*****
-No need to export any data here. Now should have the saved trajectory graphs and tables. Will need to knit in word to access the trajectory table for the paper. 
-
-
 

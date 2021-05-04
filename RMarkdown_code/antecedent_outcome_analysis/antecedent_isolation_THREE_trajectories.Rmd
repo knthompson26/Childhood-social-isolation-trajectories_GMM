@@ -290,7 +290,7 @@ antececent_data_frame <- as.data.frame(dat[,antecedent.independent.numeric])
 colnames(antececent_data_frame) <- name.list.numeric
 
 # get correlation matrix
-isolation_cor_matrix <- cor(antececent_data_frame, method = "pearson", use = "complete.obs")
+isolation_cor_matrix <- cor(antececent_data_frame, method = "pearson", use = "pairwise.complete.obs")
 
 reorder_cor_matrix <- function(cor_matrix){
  dd <- as.dist((1-cor_matrix)/2) #Use correlation between variables as distance
