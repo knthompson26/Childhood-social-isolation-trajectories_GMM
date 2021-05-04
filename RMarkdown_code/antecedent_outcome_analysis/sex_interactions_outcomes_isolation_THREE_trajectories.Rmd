@@ -1,0 +1,831 @@
+---
+title: "Analyses for testing the association betwween isolation trajectories and outcomes - Three trajectories"
+author: "Katherine N Thompson"
+date: "19th Jan 2021"
+output:
+  word_document:
+    toc: yes
+    toc_depth: '2'
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_depth: 2
+    toc_float:
+      collapsed: no
+    number_sections: no
+    highlight: monochrome
+    theme: cerulean
+code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,
+                      comment = NA,
+                      prompt = FALSE,
+                      cache = FALSE,
+                      message = FALSE,
+                      warning = FALSE)
+
+options(bitmapType = 'quartz') # to render fonts better
+```
+
+```{r Clear global environment}
+remove(list = ls())
+```
+
+```{r colour palletes for graphs}
+palette2 <- c("#78D9C5","#F5BE5E")
+palette2b <- c("#78D9C5","#EEB6E9")
+```
+
+```{r Load packages}
+library(knitr)
+library(summarytools)
+library(psych)
+library(skimr)
+library(ggpubr)
+library(tidyr)
+library(gplots)
+library(Rmisc)
+library(MplusAutomation)
+library(stringr)
+library(stringi)
+library(filesstrings)
+library(texreg)
+library(relimp)
+library(nnet)
+library(ggplot2)
+# load necessary packages for importing the function
+library(lmtest) # linear models
+library(sandwich)
+library(jtools) # glm
+library(clusterSEs) #multinomial models
+
+library(tidyverse)
+library(dplyr) #conflicts with tidyverse for e.g. rename and row_number
+```
+
+```{r source the data file path}
+#source raw data directory: data_raw and data included
+source("../../../../../isolation_trajectories_data_path.R")
+```
+
+# Theme for plotting
+
+```{r theme for all plots}
+theme.outcome <- theme(panel.grid.major.x = element_line(size = 0.5,
+                                          linetype = 'dashed',
+                                          colour = "gray"),
+        plot.title = element_text(size = 15, face = "bold", hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5),
+        axis.title.x = element_text(size=12,face="bold"),
+        axis.title.y = element_blank(),
+        axis.text.x = element_text(colour = "black", size = 9),
+        axis.text.y = element_text(colour = "black", size = 12),
+        axis.ticks.x = element_blank(),
+        axis.ticks.y = element_blank(),
+        panel.background = element_blank(),
+        legend.position = "bottom",
+        strip.text.y = element_blank())
+```
+
+# Variable lists
+
+```{r lists for outcome regressions}
+outcome.dependent <- c( # mental health
+                      "depression_diagnosis_12mo_18", 
+                       "depression_current_scale_18",
+                       "anxiety_diagnosis_18", 
+                       "anxiety_current_scale_18",
+                       "ADHD_diagnosis_18", 
+                       "inattentive_hyperactive_symptoms_total_18",
+                       "conduct_disorder_moderate_18", 
+                       "conduct_disorder_symptoms_18", 
+                       "alcohol_dependence_18", 
+                    #   "alcohol_abuse_18", # using dependence as better representation of severity
+                       "alcohol_symptom_scale_18",
+                       "cannabis_dependence_18", 
+                       "cannabis_symptom_scale_18", 
+                       "PTSD_diagnosis_lifetime_18", 
+                       "PTSD_diagnosis_current_18", 
+                       "cat_psychosis_experiences_scale_18", 
+                       "suicide_attempt_selfharm_18", 
+                       "service_use_18", 
+                      # physical health
+                       "BMI_18", 
+                       "CRP_log_18",
+                       "physical_activity_18",
+                       "smoking_current_number_18",
+                      # coping and functioning
+                       "loneliness_18",
+                       "life_satisfaction_18",
+                       "technology_use_18",
+                       "coping_with_stress_18",
+                       "PSQI_global_score_18",
+                      # employment
+                       "not_in_employment_education_18", 
+                       "job_preparedness_skills_18",
+                       "job_preparedness_attributes_18",
+                       "optimism_18",
+                       "job_search_activities_count_18")
+
+outcome.dependent.numeric <- c( # mental health
+                               "depression_diagnosis_12mo_numeric_18", 
+                               "depression_current_scale_18",
+                               "anxiety_diagnosis_numeric_18", 
+                               "anxiety_current_scale_18",
+                               "ADHD_diagnosis_numeric_18", 
+                               "inattentive_hyperactive_symptoms_total_18",
+                               "conduct_disorder_moderate_numeric_18", 
+                               "conduct_disorder_symptoms_18", 
+                               "alcohol_dependence_numeric_18", 
+                            #   "alcohol_abuse_numeric_18", 
+                               "alcohol_symptom_scale_18",
+                               "cannabis_dependence_numeric_18", 
+                               "cannabis_symptom_scale_18", 
+                               "PTSD_diagnosis_lifetime_numeric_18", 
+                               "PTSD_diagnosis_current_numeric_18", 
+                               "cat_psychosis_experiences_scale_numeric_18", 
+                               "suicide_attempt_selfharm_numeric_18", 
+                               "service_use_numeric_18", 
+                               "BMI_18", # physical health
+                               "CRP_log_18",
+                               "physical_activity_18",
+                               "smoking_current_number_18",
+                               "loneliness_18", # coping and functioning
+                               "life_satisfaction_18",
+                               "technology_use_18",
+                               "coping_with_stress_18",
+                               "PSQI_global_score_18",
+                               "not_in_employment_education_numeric_18", # employment
+                               "job_preparedness_skills_18",
+                               "job_preparedness_attributes_18",
+                               "optimism_18",
+                               "job_search_activities_count_18")
+
+name.list <- c(
+              "Depression diagnosis: Yes",
+              "Depression symptoms",
+              "Anxiety diagnosis: Yes",
+              "Anxiety symptoms",
+              "ADHD diagnosis: Yes",
+              "Inattentive and hyperactive symptoms",
+              "Moderate conduct disorder: Yes",
+              "Conduct disorder symptoms",
+              "Alcohol dependence: Yes",
+            #  "Alcohol abuse: Yes",
+              "Alcohol dependence symptoms",
+              "Cannabis dependence: Yes",
+              "Canabis dependence symptoms",
+              "PTSD lifetime diagnosis: Yes",
+              "PTSD current diagnosis: Yes",
+              "Experiences of psychosis",
+              "Suicide attempt: Yes",
+              "Service use: Yes",
+              "BMI",
+              "Log CRP",
+              "Physical activity",
+              "Daily number of cigarettes smoked",
+              "Loneliness",
+              "Life satisfaction",
+              "Technology use",
+              "Coping with stress",
+              "PSQI score",
+              "Not in employment or education: Yes",
+              "Job preparedness: skills",
+              "Job preparedness: attributes",
+              "Job optimism",
+              "Job search activities")
+
+outcome.dependent.linear <- c(
+  "depression_current_scale_18", # mental health
+  "anxiety_current_scale_18",
+  "inattentive_hyperactive_symptoms_total_18",
+  "conduct_disorder_symptoms_18", 
+  "alcohol_symptom_scale_18",
+  "cannabis_symptom_scale_18", 
+  "cat_psychosis_experiences_scale_numeric_18", # can to be numeric to be in linear regression
+  "BMI_18", # physical health
+  "CRP_log_18",
+  "physical_activity_18",
+  "smoking_current_number_18",
+  "loneliness_18", #coping and functioning
+  "life_satisfaction_18",
+  "technology_use_18",
+  "coping_with_stress_18",
+  "PSQI_global_score_18",
+  "job_preparedness_skills_18", #employment
+  "job_preparedness_attributes_18",
+  "optimism_18",
+  "job_search_activities_count_18"
+)
+
+outcome.dependent.linear.zscore <- c(
+  "z_score.depression_current_scale_18", # mental health
+  "z_score.anxiety_current_scale_18",
+  "z_score.inattentive_hyperactive_symptoms_total_18",
+  "z_score.conduct_disorder_symptoms_18", 
+  "z_score.alcohol_symptom_scale_18",
+  "z_score.cannabis_symptom_scale_18", 
+  "z_score.cat_psychosis_experiences_scale_numeric_18", # can to be numeric to be in linear regression
+  "z_score.BMI_18", # physical health
+  "z_score.CRP_log_18",
+  "z_score.physical_activity_18",
+  "z_score.smoking_current_number_18",
+  "z_score.loneliness_18", #coping and functioning
+  "z_score.life_satisfaction_18",
+  "z_score.technology_use_18",
+  "z_score.coping_with_stress_18",
+  "z_score.PSQI_global_score_18",
+  "z_score.job_preparedness_skills_18", #employment
+  "z_score.job_preparedness_attributes_18",
+  "z_score.optimism_18",
+  "z_score.job_search_activities_count_18"     
+)
+
+outcome.dependent.linear.name.list <- c(
+                                        "Depression symptoms",
+                                        "Anxiety symptoms",
+                                        "Inattentive and hyperactive symptoms",
+                                        "Conduct disorder symptoms",
+                                        "Alcohol dependence symptoms",
+                                        "Cannabis dependence symptoms",
+                                        "Experiences of psychosis",
+                                        "BMI",
+                                        "Log CRP",
+                                        "Physical activity",
+                                        "Daily number of cigarettes smoked",
+                                        "Loneliness",
+                                        "Life satisfaction",
+                                        "Technology use",
+                                        "Coping with stress",
+                                        "PSQI score",
+                                        "Job preparedness: skills",
+                                        "Job preparedness: attributes",
+                                        "Job optimism",
+                                        "Job search activities")
+
+outcome.dependent.logistic <- c(
+  "depression_diagnosis_12mo_18", # mental health 
+  "anxiety_diagnosis_18", 
+  "ADHD_diagnosis_18",
+  "conduct_disorder_moderate_18",
+  "alcohol_dependence_18",
+ # "alcohol_abuse_18", 
+  "cannabis_dependence_18", 
+  "PTSD_diagnosis_lifetime_18", 
+  "PTSD_diagnosis_current_18", 
+  "suicide_attempt_selfharm_18", 
+  "service_use_18",
+  "not_in_employment_education_18" #employment
+)
+
+outcome.dependent.logistic.name.list <- c(
+  "Depression diagnosis",
+  "Anxiety diagnosis",
+  "ADHD diagnosis",
+  "Moderate conduct disorder",
+  "Alcohol dependence",
+ # "Alcohol abuse",
+  "Cannabis dependence",
+  "PTSD lifetime diagnosis",
+  "PTSD current diagnosis",
+  "Suicide attempt",
+  "Service use",
+  "Not in employment or education"
+)
+```
+
+# Script functions
+
+```{r script functions}
+multiple.testing <- function(data, class, method = "BH", n.tests){
+  data <- data %>%
+    filter(Class == class) %>%
+  mutate(
+    p.value.adjusted = 
+           stats::p.adjust(p.value, 
+                    method = method,
+                    n = n.tests) 
+  ) %>%
+  mutate(Significance.adjusted = 
+           if_else(
+            p.value.adjusted < 0.05, 
+            1,
+            0
+      ) %>%
+        recode_factor(
+          `1` = "Significant",
+          `0` = "Non-significant")
+         )  
+  return(data)
+}
+
+add.significance.variable <- function(data){
+  data <- data %>%
+    mutate(
+    Significance = 
+      if_else(
+        p.value < 0.05, 
+        1,
+        0
+      ) %>%
+    recode_factor(
+        "0" = "Non-significant",
+        "1" = "Significant"
+      ))
+  return(data)
+}
+
+paper.table <- function(data, model){
+  if (model == "logistic"){
+  table <- data %>%
+    select(
+    Class,
+    Variable,
+    OR,
+    `95% CI low` = OR.conf.low,
+    `95% CI high` = OR.conf.high,
+    `p value` = p.value,
+    Domain,
+    -Significance) %>%
+  kable(digits = 2)
+  return(table)}
+  
+  else if (model == "linear"){
+    table <- data %>%
+    select(
+    Class,
+    Variable,
+    `Beta estimate` = estimate,
+    `95% CI low` = conf.low,
+    `95% CI high` = conf.high,
+    `p value` = p.value,
+    Domain,
+    -Significance) %>%
+  kable(digits = 2)
+  return(table)
+  }
+}
+
+create.dataset <- function(data, model){
+  if (model == "logistic"){
+  data <- data.table::rbindlist(data) %>%
+  dplyr::select(Class,
+         Variable,
+         OR,
+         OR.conf.low,
+         OR.conf.high,
+         p.value, 
+         Significance,
+         Domain = block)
+  return(data)}
+  else if (model == "linear"){
+  data <- data.table::rbindlist(data) %>%
+  dplyr::select(Class,
+         Variable,
+         estimate,
+         robust.std.error,
+         conf.low,
+         conf.high,
+         p.value, 
+         Significance,
+         Domain = block)
+  return(data)
+  }
+}
+
+huber.white.cluster.logistic <- function(regression.outcome){
+   outcome.full <- summ(regression.outcome,
+                       scale = FALSE,          # standardized regression coefficients 
+                       confint = TRUE,        # report confidence intervals over standard errors
+                       ci.width = 0.95,       # desired confidence interval
+                       robust = "HC0",        # heteroskedasticity-robust standard errors instead of conventional SEs
+                       cluster = "familyid",  # for clustered standard errors, provide column name of cluster variable
+                       exp = TRUE)
+   return(outcome.full)
+}
+
+order.variables <- function(data, domain, model){
+  if (model == "logistic"){
+  data <- filter(data, Domain == domain) %>%
+    arrange(desc(OR))
+  
+  data$Variable <- factor(data$Variable, 
+                          levels = paste(unique(paste(data$Variable)), sep = ","))
+  return(data)}
+  else if (model == "linear"){
+    data <- filter(data, Domain == domain) %>%
+    arrange(desc(estimate))
+    
+    data$Variable <- factor(data$Variable, 
+                          levels = paste(unique(paste(data$Variable)), sep = ","))
+  return(data)
+  }
+}
+
+reorder_cor_matrix <- function(cor_matrix){
+ dd <- as.dist((1-cor_matrix)/2) #Use correlation between variables as distance
+ hc <- hclust(dd)
+ cormat <-cor_matrix[hc$order, hc$order]
+}
+
+# robust standard error estimation - account for non-independence of twin sample
+huber.white.cluster.linear <- function(regression.outcome){
+  outcome.full <- broom::tidy(coeftest(regression.outcome,                          # reports coefficients for new covariance matrix
+                                       vcov = vcovHC(regression.outcome,            # estimates a robust covariance matrix
+                                                     type = "HC0",                  # gives White's estimator 
+                                                     cluster = "familyid")),        # clusters by familyid
+                              conf.int = TRUE,   
+                              conf.level = 0.95)[-c(1,4:6),] %>%
+    dplyr::rename(robust.std.error = std.error) %>%
+    mutate(Class = c("Increasing", "Decreasing")) # Create new formatted class variable
+  return(outcome.full)
+}
+
+```
+
+# Read in data
+
+```{r read in prepped regression data and check variable names, include=FALSE}
+dat <- readRDS(file = paste0(data_path, "class_joined_preprocessed_isolation_data_full_sample.rds"))
+colnames(dat)
+```
+
+# Association with outcome variables at age 18
+
+ANALYSIS PLAN 
+
+**Individual outcome regressions**: single regressions are computed to see if the class can predict the the occurrence of each variable (variable ~ class). This is done through a loop. OR (Odds ratios) and their confidence intervals are calculated for binary variables (logistic regression). Standardized Beta values are calculated for continuous variables (linear regression). Continuous and binary variables are plotted separately. FDR multiple testing correction is accounted for independent tests in each block. Z scores are calculated for all continuous variables. All linear regressions are run with raw scores and z scores.
+
+A. Linear regressions (continuous variables):
+depression_current_scale_18, anxiety_current_scale_18, inattentive_hyperactive_symptoms_total_18, conduct_disorder_symptoms_18, alcohol_symptom_scale_18, cannabis_symptom_scale_18,   cat_psychosis_experiences_scale_18, BMI_18, CRP_log_18, physical_activity_18, smoking_current_number_18, loneliness_18, life_satisfaction_18, technology_use_18, coping_with_stress_18, PSQI_global_score_18, job_preparedness_skills_18, job_preparedness_attributes_18, optimism_18, job_search_activities_count_18
+
+B. Logistic regressions (binary variables):
+depression_diagnosis_12mo_18, anxiety_diagnosis_18, ADHD_diagnosis_18, conduct_disorder_moderate_18, alcohol_dependence_18, cannabis_dependence_18, PTSD_diagnosis_lifetime_18, PTSD_diagnosis_current_18,suicide_attempt_selfharm_18, service_use_18, not_in_employment_education_numeric_18
+
+alcohol_abuse_18 removed as using alcohol_dependence_18 instead as it captures more disordered drinking. 
+
+
+# Create *z scores* for all continuous variables
+
+```{r scale continuous variables and combine to main dataset}
+# create a scaled version of the continuous variables - z scores for all variables
+scaled_continuous_data <- as.data.frame(scale(dat[outcome.dependent.linear], center = TRUE, scale = TRUE))
+
+# rename variables to show that they are z scores 
+colnames(scaled_continuous_data) <- paste0("z_score.", colnames(scaled_continuous_data))
+
+# combine the scaled data to the main dataset 
+dat <- cbind(dat, scaled_continuous_data)
+
+colnames(dat)
+```
+
+# Sex interaction
+
+## Logistic regression loop  - sex interaction
+
+```{r logistic regression loop with sex diffs}
+logistic.stats.outcome.sex <- list() #create empty list to store the information in
+
+for (i in 1:length(outcome.dependent.logistic))
+{ cat(i)
+  logistic.formula.outcome.sex <- as.formula(sprintf("%s ~ class_reordered + sex + sex*class_reordered", outcome.dependent.logistic[i]))
+
+  logistic.reg.outcome.sex <- glm(logistic.formula.outcome.sex, data = dat, family = "binomial")
+  
+  # robust standard error estimation - account for non-independence of twin sample
+  logistic.output.outcome.full.sex <- summ(logistic.reg.outcome.sex,
+                                       scale = FALSE,          # standardized regression coefficients
+                                       confint = TRUE,        # report confidence intervals over standard errors
+                                       ci.width = 0.95,       # desired confidence interval
+                                       robust = "HC0",        # heteroskedasticity-robust standard errors instead of conventional SEs
+                                       cluster = "familyid",  # for clustered standard errors, provide column name of cluster variable
+                                       exp = TRUE
+                                       )
+  
+  logistic.output.outcome.full.sex <- as.data.frame(logistic.output.outcome.full.sex$coeftable)[-c(1:4),] %>% # delete sex and SES coefficients
+    mutate(Class = c("Increasing:sex", "Decreasing:sex")) %>% # Create new formatted class variable
+    dplyr::select(
+      Class,
+      OR = `exp(Est.)`,
+      OR.conf.low = `2.5%`,
+      OR.conf.high = `97.5%`,
+      p.value = p)
+    
+ 
+  if (i < 11) {
+    logistic.output.outcome.full.sex <- logistic.output.outcome.full.sex %>%
+      mutate(block = "Mental health block") %>%
+      mutate(Variable = outcome.dependent.logistic.name.list[[i]])
+                  # %>% mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 10)) # change depending if we combine a few variables 
+  } else {
+   logistic.output.outcome.full.sex <- logistic.output.outcome.full.sex %>%
+      mutate(block = "Employment block") %>%
+      mutate(Variable = outcome.dependent.logistic.name.list[[i]])
+               # %>%   mutate(p.value.adjusted = p.value)
+  }
+  
+   logistic.output.outcome.full.sex <- logistic.output.outcome.full.sex %>% 
+    mutate(
+    Significance = 
+      if_else(
+        p.value < 0.05, 
+        1,
+        0
+      ) %>%
+    recode_factor(
+        "0" = "Non-significant",
+        "1" = "Significant"
+      ))
+    
+  logistic.stats.outcome.sex[[i]] <- logistic.output.outcome.full.sex
+}
+
+# set the names of the list to match the variable names
+names(logistic.stats.outcome.sex) <- outcome.dependent.logistic
+```
+
+```{r combine logistic dataframes sex diffs}
+data.outcome.logistic.sex <- data.table::rbindlist(logistic.stats.outcome.sex) %>% 
+  dplyr::select(Class,
+         `Dependent variable` = Variable,
+         OR,
+         OR.conf.low,
+         OR.conf.high,
+         p.value, 
+       #  p.value.adjusted,
+         Significance,
+         block)
+
+# check for significant interaction effects between class and sex for each variable
+data.outcome.logistic.sex
+```
+Significant interaction between sex and class membership for "Not in employment or education", and "service use" - rerun model separately for males and females. 
+
+```{r table combined logistic dataframes sex diffs}
+kable(data.outcome.logistic.sex)
+```
+
+## Linear regression loop - sex interaction
+
+```{r linear regression loop sex diffs}
+linear.stats.outcome.sex <- list() #create empty list to store the information in
+
+for (i in 1:length(outcome.dependent.linear))
+{ cat(i)
+  linear.formula.outcome.sex <- as.formula(sprintf("%s ~ class_reordered + sex + sex*class_reordered", outcome.dependent.linear[i]))
+
+  linear.reg.outcome.sex <- lm(linear.formula.outcome.sex, data = dat)
+  
+  # robust standard error estimation - account for non-independence of twin sample
+  linear.output.outcome.full.sex <- broom::tidy(coeftest(linear.reg.outcome.sex,      # reports coefficients for new covariance matrix
+                                    vcov = vcovHC(linear.reg.outcome.sex,             # estimates a robust covariance matrix
+                                             type = "HC0",                            # gives White's estimator 
+                                             cluster = "familyid")),                  # clusters by familyid
+                           conf.int = TRUE, 
+                           conf.level = 0.95)[-c(1:4),] %>%
+    dplyr::rename(robust.std.error = std.error) %>%
+    mutate(Class = c("Increasing:sex", "Decreasing:sex")) # Create new formatted class variable
+ 
+  if (i < 8) {
+    linear.output.outcome.full.sex <- linear.output.outcome.full.sex %>%
+      mutate(block = "Mental health block") %>%
+      mutate(Variable = outcome.dependent.linear.name.list[[i]])
+                  # %>% mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 7))
+  } else if (i < 12 ) {
+   linear.output.outcome.full.sex <- linear.output.outcome.full.sex %>%
+      mutate(block = "Physical health block") %>%
+      mutate(Variable = outcome.dependent.linear.name.list[[i]])
+                 # %>% mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 4))
+  } else if (i < 17) {
+    linear.output.outcome.full.sex <- linear.output.outcome.full.sex %>%
+      mutate(block = "Coping and functioning block") %>%
+      mutate(Variable = outcome.dependent.linear.name.list[[i]])
+                 # %>% mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 5))
+  } else {
+    linear.output.outcome.full.sex <- linear.output.outcome.full.sex %>%
+      mutate(block = "Employment block") %>%
+      mutate(Variable = outcome.dependent.linear.name.list[[i]])
+                 # %>% mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 4))
+  }
+  
+   linear.output.outcome.full.sex <- linear.output.outcome.full.sex %>% 
+    mutate(
+    Significance = 
+      if_else(
+        p.value < 0.05, 
+        1,
+        0
+      ) %>%
+    recode_factor(
+        "0" = "Non-significant",
+        "1" = "Significant"
+      ))
+    
+  linear.stats.outcome.sex[[i]] <- linear.output.outcome.full.sex
+}
+# set the names of the list to match the variable names
+names(linear.stats.outcome.sex) <- outcome.dependent.linear
+```
+
+```{r combine linear dataframes sex diffs}
+data.outcome.linear.sex <- data.table::rbindlist(linear.stats.outcome.sex) %>%
+  select(Class,
+         `Dependent variable` = Variable,
+         estimate,
+         conf.low,
+         conf.high,
+         p.value, 
+      #   p.value.adjusted,
+         Significance,
+         block)
+
+# check for significant interactions between sex and class
+data.outcome.linear.sex
+```
+Interaction terms are set to "class_reordered:sexFemale", therefore OR>1 indicates association with being female. 
+Significant interaction between sex and class membership for "BMI". 
+
+```{r table combined linear dataframes sex diffs}
+kable(data.outcome.linear.sex)
+```
+
+## Run models separately for boys and girls
+
+```{r datasets for males and males}
+dat.female <- dat %>% filter(sex == "Female")
+dat.male <- dat %>% filter (sex == "Male")
+```
+
+### Not in emplyment/education
+```{r employment for boys}
+logistic.formula.outcome.employment.boys <- as.formula(not_in_employment_education_18 ~ class_reordered + SES_ordered)
+
+logistic.reg.outcome.employment.boys <- glm(logistic.formula.outcome.employment.boys, data = dat.male, family = "binomial")
+  
+# robust standard error estimation - account for non-independence of twin sample
+logistic.output.outcome.full.employment.boys <- summ(logistic.reg.outcome.employment.boys,
+                                       scale = FALSE,          # standardized regression coefficients
+                                       confint = TRUE,        # report confidence intervals over standard errors
+                                       ci.width = 0.95,       # desired confidence interval
+                                       robust = "HC0",        # heteroskedasticity-robust standard errors instead of conventional SEs
+                                       cluster = "familyid",  # for clustered standard errors, provide column name of cluster variable
+                                       exp = TRUE
+                                       )
+  
+logistic.output.outcome.full.employment.boys <- as.data.frame(logistic.output.outcome.full.employment.boys$coeftable)[-c(1,4,5),] %>% # delete SES coefficients
+  mutate(Class = c("Increasing", "Decreasing")) %>% # Create new formatted class variable
+  mutate(block = "Employment block") %>%
+  mutate(Variable = "Not in employment or education: Yes") %>%
+  mutate(p.value.adjusted = p.adjust(p, method = "fdr", n = 2)) %>%
+  mutate(Significance = if_else(
+    p.value.adjusted < 0.05,
+    1,
+    0) %>%
+      recode_factor(
+        "0" = "Non-significant",
+        "1" = "Significant")) %>%
+  dplyr::select(
+      Class,
+      `Dependent variable` = Variable,
+      OR = `exp(Est.)`,
+      OR.conf.low = `2.5%`,
+      OR.conf.high = `97.5%`,
+      p.value = p,
+      p.value.adjusted,
+      Significance,
+      block)
+
+# table
+kable(logistic.output.outcome.full.employment.boys)
+```
+
+```{r employment for girls}
+logistic.formula.outcome.employment.girls <- as.formula(not_in_employment_education_18 ~ class_reordered + SES_ordered)
+
+logistic.reg.outcome.employment.girls <- glm(logistic.formula.outcome.employment.girls, data = dat.female, family = "binomial")
+  
+# robust standard error estimation - account for non-independence of twin sample
+logistic.output.outcome.full.employment.girls <- summ(logistic.reg.outcome.employment.girls,
+                                       scale = FALSE,          # standardized regression coefficients
+                                       confint = TRUE,        # report confidence intervals over standard errors
+                                       ci.width = 0.95,       # desired confidence interval
+                                       robust = "HC0",        # heteroskedasticity-robust standard errors instead of conventional SEs
+                                       cluster = "familyid",  # for clustered standard errors, provide column name of cluster variable
+                                       exp = TRUE
+                                       )
+  
+logistic.output.outcome.full.employment.girls <- as.data.frame(logistic.output.outcome.full.employment.girls$coeftable)[-c(1,4,5),] %>% # delete SES coefficients
+  mutate(Class = c("Increasing", "Decreasing")) %>% # Create new formatted class variable
+  mutate(block = "Employment block") %>%
+  mutate(Variable = "Not in employment or education: Yes") %>%
+  mutate(p.value.adjusted = p.adjust(p, method = "fdr", n = 2)) %>%
+  mutate(Significance = if_else(
+    p.value.adjusted < 0.05,
+    1,
+    0) %>%
+      recode_factor(
+        "0" = "Non-significant",
+        "1" = "Significant")) %>%
+  dplyr::select(
+      Class,
+      `Dependent variable` = Variable,
+      OR = `exp(Est.)`,
+      OR.conf.low = `2.5%`,
+      OR.conf.high = `97.5%`,
+      p.value = p,
+      p.value.adjusted,
+      Significance,
+      block)
+
+# table
+kable(logistic.output.outcome.full.employment.girls)
+```
+
+### BMI
+```{r bmi model for boys}
+linear.formula.outcome.bmi.boys <- as.formula(BMI_18 ~ class_reordered)
+
+linear.reg.outcome.bmi.boys <- lm(linear.formula.outcome.bmi.boys, data = dat.male)
+
+# robust standard error estimation - account for non-independence of twin sample
+linear.output.outcome.full.bmi.boys <- broom::tidy(coeftest(linear.reg.outcome.bmi.boys,      # reports coefficients for new covariance matrix
+                                                                    vcov = vcovHC(linear.reg.outcome.bmi.boys,             # estimates a robust covariance matrix
+                                                                    type = "HC0",                            # gives White's estimator 
+                                                                    cluster = "familyid")),                  # clusters by familyid
+                                               conf.int = TRUE, 
+                                               conf.level = 0.95)[-c(1),] %>%
+  dplyr::rename(robust.std.error = std.error) %>%
+  mutate(Class = c("Increasing", "Decreasing")) %>% # Create new formatted class variable
+  mutate(block = "Physical health block") %>%
+  mutate(Variable = "BMI") %>%
+  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 2)) %>%
+  mutate(Significance = 
+             if_else(
+               p.value.adjusted < 0.05,
+               1,
+               0
+               ) %>%
+             recode_factor(
+               "0" = "Non-significant",
+               "1" = "Significant")) %>%
+  select(Class,
+         `Dependent variable` = Variable,
+         estimate,
+         conf.low,
+         conf.high,
+         p.value, 
+         p.value.adjusted,
+         Significance,
+         block)
+
+# table
+kable(linear.output.outcome.full.bmi.boys)
+```
+
+```{r bmi model for girls}
+linear.formula.outcome.bmi.girls <- as.formula(BMI_18 ~ class_reordered)
+
+linear.reg.outcome.bmi.girls <- lm(linear.formula.outcome.bmi.girls, data = dat.female)
+
+# robust standard error estimation - account for non-independence of twin sample
+linear.output.outcome.full.bmi.girls <- broom::tidy(coeftest(linear.reg.outcome.bmi.girls,      # reports coefficients for new covariance matrix
+                                                                    vcov = vcovHC(linear.reg.outcome.bmi.girls,             # estimates a robust covariance matrix
+                                                                    type = "HC0",                            # gives White's estimator 
+                                                                    cluster = "familyid")),                  # clusters by familyid
+                                               conf.int = TRUE, 
+                                               conf.level = 0.95)[-c(1),] %>%
+  dplyr::rename(robust.std.error = std.error) %>%
+  mutate(Class = c("Increasing", "Decreasing")) %>% # Create new formatted class variable
+  mutate(block = "Physical health block") %>%
+  mutate(Variable = "BMI") %>%
+  mutate(p.value.adjusted = p.adjust(p.value, method = "fdr", n = 2)) %>%
+  mutate(Significance = 
+             if_else(
+               p.value.adjusted < 0.05,
+               1,
+               0
+               ) %>%
+             recode_factor(
+               "0" = "Non-significant",
+               "1" = "Significant"))
+
+linear.output.outcome.full.bmi.girls <- linear.output.outcome.full.bmi.girls %>%
+  select(Class,
+         `Dependent variable` = Variable,
+         estimate,
+         conf.low,
+         conf.high,
+         p.value, 
+         p.value.adjusted,
+         Significance,
+         block)
+
+# table
+kable(linear.output.outcome.full.bmi.girls)
+```
+Significant association between BMI and Increasing class for girls only. 
+
+

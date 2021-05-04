@@ -101,35 +101,6 @@ antecedent.independent.numeric <- c("SES_binary_releveled_numeric",
                                     "ADHD_combined_05",
                                     "prosocial_behaviours_combined_05")
 
-name.list.numeric <- c("SES: Low",
-                       "ACORN", 
-                       "Vandalism", 
-                       "Problems with neighbours", 
-                       "Number of children in school", 
-                       "Number of children eligible for free school meals",
-                       "Child harm: Harmed",
-                       "Total siblings",
-                       "Social support", 
-                       "Total activities with mum",
-                       "Mum not lived with biological dad since birth: Yes", 
-                       "Any domestic violence: Yes",
-                       "Maternal warmth",
-                       "Maternal lifetime depression: Yes",
-                       "Maternal personality: Openness",
-                       "Maternal personality: Conscientiousness",
-                       "Maternal personality: Extroversion",
-                       "Maternal personality: Agreeableness",
-                       "Maternal personality: Neuroticism",
-                       "Parental antisocial behaviour",
-                       "Parental alcoholism", 
-                       "Child IQ",
-                       "Child executive function",
-                       "Child theory of mind",
-                       "Child externalising behaviours",
-                       "Child internalising behaviours",
-                       "Child ADHD behaviours",
-                       "Child prosocial behaviours")
-
 antecedent.independent.continuous <- c("acorn_continuous_05",
                                       "vandalism_05",
                                       "problems_neighbours_05",
@@ -184,26 +155,86 @@ name.list <- c("SES: Low",
                "Child prosocial behaviours")
 ```
 
+# Script functions 
+- multiple.testing()
+- paper.table()
+- order.variables()
+
+```{r script functions}
+multiple.testing <- function(data, class, method = "BH", n.tests){
+  data <- data %>%
+    filter(Class == class) %>%
+  mutate(
+    p.value.adjusted = 
+           stats::p.adjust(p.value, 
+                    method = method,
+                    n = n.tests) 
+  ) %>%
+  mutate(Significance.adjusted = 
+           if_else(
+            p.value.adjusted < 0.05, 
+            1,
+            0
+      ) %>%
+        recode_factor(
+          `1` = "Significant",
+          `0` = "Non-significant")
+         )  
+  return(data)
+}
+
+paper.table <- function(data){
+  
+  table <- data %>%
+  arrange(match(Domain, c("Social domain", "Home domain", "Parent domain", "Neuro domain", "Emo/behave domain"))) %>%
+  select(
+    Class,
+    Variable,
+    RRR,
+    `95% CI low` = RRR.conf.low,
+    `95% CI high` = RRR.conf.high,
+    `p value` = p.value,
+    Domain,
+    -Significance) %>%
+  kable(digits = 2)
+  
+  return(table)
+}
+
+order.variables <- function(data, domain){
+  data <- filter(data, Domain == domain) %>%
+    arrange(desc(RRR))
+  
+  data$Variable <- factor(data$Variable, 
+                          levels = paste(unique(paste(data$Variable)), sep = ","))
+  return(data)
+}
+```
+
 # Theme for plotting
 
 ```{r theme for all plots}
 theme.antecedent <- theme(panel.grid.major.x = element_line(size = 0.5,
                                           linetype = 'dashed',
                                           colour = "gray"),
-        plot.title = element_text(size = 15, face = "bold", hjust = 0.5),
-        plot.subtitle = element_text(hjust = 0.5),
-        axis.title.x = element_text(size=12,face="bold"),
-        axis.title.y = element_blank(),
-        axis.text.x = element_text(colour = "black", size = 9),
-        axis.text.y = element_text(colour = "black", size = 12),
-        axis.ticks.x = element_blank(),
-        axis.ticks.y = element_blank(),
-        panel.background = element_blank(),
-        legend.position = "bottom",
-        strip.text.y = element_blank())
+                          plot.title = element_text(size = 12,face = "bold"),
+                          plot.subtitle = element_text(hjust = 0.5),
+                          axis.title.x = element_text(size = 10, face = "bold"),
+                          axis.title.y = element_blank(),
+                          axis.text.x = element_text(size = 8, colour = "black"),
+                          axis.text.y = element_text(colour = "black", size = 10),
+                          axis.ticks.x = element_blank(),
+                          axis.ticks.y = element_blank(),
+                          panel.background = element_blank(),
+                          legend.position = "bottom",
+                          strip.text.y = element_blank(),
+                          strip.text.x = element_text(size = 10, color = "black", face = "bold"),
+                          strip.background = element_rect(color = "black", fill = "white", size = 0.5, linetype = "solid")                    
+  )
 ```
 
 # Test for multicollinearity 
+
 Create correlation matrix to look for variables that are highly correlated.
 On previous graph: parental antisocial behaviour and parental alcoholism have a correlation of 0.94 (Pearson).
 When rerunning the analyses - their correlation is 0.62 - therefore there must have been a previous error in deriving the parental alcoholism variable. 
@@ -212,7 +243,7 @@ When rerunning the analyses - their correlation is 0.62 - therefore there must h
 ```{r test for multicollinearity,}
 # create data frame with just numeric antecedent variables
 antececent_data_frame <- as.data.frame(dat[,antecedent.independent.numeric])
-colnames(antececent_data_frame) <- name.list.numeric
+colnames(antececent_data_frame) <- name.list
 
 # get correlation matrix
 isolation_cor_matrix <- cor(antececent_data_frame, method = "pearson", use = "pairwise.complete.obs")
@@ -248,8 +279,9 @@ correlation_heat_map <- ggplot(metled_cor_matrix, aes(X2, X1, fill = value))+
   geom_text(aes(X2, X1, label = round(value, digits = 2)), color = "black", size = 3)
 
 correlation_heat_map
+```
 
-#save
+```{r save heatmap}
 ggsave(
   "antecedent_correlation_heat_map.png",
   plot = correlation_heat_map,
@@ -340,7 +372,6 @@ write.dta(data.mlogit, "/Users/katiethompson/Documents/PhD/LISS-DTP_Louise_and_T
 The STATA file "antecedent_multinomial_regression.do" which is in the same folder has been run in STATA and the output has been saved in a txt file for all the regressions run. 
 
 ```{r run stata do file from r}
-# run stata do file
 library(RStata)
 
 # options("RStata.StataPath" = "/Applications/Stata/StataMP.app/Contents/MacOS/stata-mp")
@@ -363,7 +394,6 @@ dat.stata.all.raw <- read_tsv(paste0(data_path, "multinomial_results_si.allmodel
 # Reformat data frames
 
  - b/min95/max95/p is the layout from STATA
- - Have not included multiple testing correction here
 
 ## Univariate individual regressions 
 
@@ -392,16 +422,16 @@ dat.stata.individual <- dat.stata.individual.raw[c(120:231,237:348),-c(1)] %>%
         "1" = "Significant")) %>%
   mutate(
     block = 
-      case_when(row_number() < 7 ~ "Social block",
-                row_number() < 14 ~ "Home block",
-                row_number() < 22 ~ "Parent block",
-                row_number() < 25 ~ "Neuro block",
-                row_number() < 29 ~ "Emo/behave block",
-                row_number() < 35 ~ "Social block",
-                row_number() < 42 ~ "Home block",
-                row_number() < 50 ~ "Parent block",
-                row_number() < 53 ~ "Neuro block",
-                row_number() > 52 ~ "Emo/behave block")) %>%
+      case_when(row_number() < 7 ~ "Social domain",
+                row_number() < 14 ~ "Home domain",
+                row_number() < 22 ~ "Parent domain",
+                row_number() < 25 ~ "Neuro domain",
+                row_number() < 29 ~ "Emo/behave domain",
+                row_number() < 35 ~ "Social domain",
+                row_number() < 42 ~ "Home domain",
+                row_number() < 50 ~ "Parent domain",
+                row_number() < 53 ~ "Neuro domain",
+                row_number() > 52 ~ "Emo/behave domain")) %>%
   transmute(Class = Class,
             Variable = Variable,
             RRR = as.numeric(RRR),
@@ -409,55 +439,26 @@ dat.stata.individual <- dat.stata.individual.raw[c(120:231,237:348),-c(1)] %>%
             RRR.conf.high = as.numeric(RRR.conf.high),
             p.value = as.numeric(p.value),
             Significance = Significance,
-            block = block) 
+            Domain = block) 
 ```
 
 ```{r table for stata coefficients}
-univariate.reg.table <- kable(dat.stata.individual, digits = 2)
+univariate.reg.table <- paper.table(dat.stata.individual)
 univariate.reg.table
 ```
 
 ### Check associations applying multiple testing correction
 
 ```{r multiple testing correction for univariate associations}
-dat.stata.individual.decreasing <- dat.stata.individual %>%
-  filter(Class == "Decreasing") %>%
-  mutate(
-    p.value.adjusted = 
-           stats::p.adjust(p.value, 
-                    method = "BH",
-                    n = 28) 
-  ) %>%
-  mutate(Significance.adjusted = 
-           if_else(
-            p.value.adjusted < 0.05, 
-            1,
-            0
-      ) %>%
-        recode_factor(
-          `1` = "Significant",
-          `0` = "Non-significant")
-         )
+dat.stata.individual.decreasing <- multiple.testing(data = dat.stata.individual,
+                                                    class = "Decreasing",
+                                                    method = "BH",
+                                                    n.tests = 28)      
 
-dat.stata.individual.increasing <- dat.stata.individual %>%
-  filter(Class == "Increasing") %>%
-  mutate(
-    p.value.adjusted = 
-           p.adjust(p.value, 
-                    method = "BH",
-                    n = 28) 
-  ) %>%
-  mutate(Significance.adjusted = 
-           if_else(
-            p.value.adjusted < 0.05, 
-            1,
-            0
-      ) %>%
-        recode_factor(
-          `1` = "Significant",
-          `0` = "Non-significant")
-         )
-
+dat.stata.individual.increasing <- multiple.testing(data = dat.stata.individual,
+                                                    class = "Increasing",
+                                                    method = "BH",
+                                                    n.tests = 28)
 dat.stata.individual.fdr <- rbind(
   dat.stata.individual.decreasing,
   dat.stata.individual.increasing
@@ -532,16 +533,16 @@ dat.stata.all.siguni <- dat.stata.all.siguni.raw[c(112:215,221:324),] %>%
   select(-X1) %>%
   mutate(
     block = case_when(
-              row_number() < 17  ~ "Social block",
-              row_number() < 45 ~ "Home block",
-              row_number() < 77 ~ "Parent block",
-              row_number() < 89 ~ "Neuro block",
-              row_number() < 105 ~ "Emo/behave block",
-              row_number() < 121 ~ "Social block",
-              row_number() < 149 ~ "Home block",
-              row_number() < 181 ~ "Parent block",
-              row_number() < 193 ~ "Neuro block",
-              row_number() > 192 ~ "Emo/behave block")) %>%
+              row_number() < 17  ~ "Social domain",
+              row_number() < 45 ~ "Home domain",
+              row_number() < 77 ~ "Parent domain",
+              row_number() < 89 ~ "Neuro domain",
+              row_number() < 105 ~ "Emo/behave domain",
+              row_number() < 121 ~ "Social domain",
+              row_number() < 149 ~ "Home domain",
+              row_number() < 181 ~ "Parent domain",
+              row_number() < 193 ~ "Neuro domain",
+              row_number() > 192 ~ "Emo/behave domain")) %>%
   spread(key, allmodelsiguni) %>%
   mutate(
     Significance = 
@@ -560,11 +561,11 @@ dat.stata.all.siguni <- dat.stata.all.siguni.raw[c(112:215,221:324),] %>%
             RRR.conf.high = as.numeric(RRR.conf.high),
             p.value = as.numeric(p.value),
             Significance = Significance,
-            block = block) 
+            Domain = block)
 ```
 
 ```{r stata all table}
-multivariate.siguni.reg.table <- kable(dat.stata.all.siguni)
+multivariate.siguni.reg.table <- paper.table(dat.stata.all.siguni)
 multivariate.siguni.reg.table
 ```
 
@@ -596,50 +597,25 @@ individual.and.multi.sig <- individual.and.multi.sig %>%
          RRR.conf.high,
          p.value,
          Significance,
-         block,
+         Domain,
          full.significance,
          overall.significance)
 
 individual.and.multi.sig$overall.significance <- factor(individual.and.multi.sig$overall.significance, 
                                                         levels = c("Multivariate significant", 
-                                                                   "Univariate significant", 
                                                                    "Non-significant"))
 ```
 
-### bind *z score* trasformed values to order the graph according to block of variables
+### Bind *z score* trasformed values to order the graph according to block of variables
 
-```{r bind and order rows stata}
-# social
-individual.and.multi.sig.social <- filter(individual.and.multi.sig, block == "Social block") %>% 
-  arrange(desc(RRR)) 
+```{r bind and order rows for the plot}
+individual.and.multi.sig.social <- order.variables(data = individual.and.multi.sig, domain = "Social domain")
+individual.and.multi.sig.home <- order.variables(data = individual.and.multi.sig, domain = "Home domain")
+individual.and.multi.sig.parent <- order.variables(data = individual.and.multi.sig, domain = "Parent domain")
+individual.and.multi.sig.neuro <- order.variables(data = individual.and.multi.sig, domain = "Neuro domain")
+individual.and.multi.sig.emo <- order.variables(data = individual.and.multi.sig, domain = "Emo/behave domain")
 
-individual.and.multi.sig.social$Variable <- factor(individual.and.multi.sig.social$Variable, levels = paste(unique(paste(individual.and.multi.sig.social$Variable)), sep = ","))
-
-#home
-individual.and.multi.sig.home <- filter(individual.and.multi.sig, block == "Home block") %>% 
-  arrange(desc(RRR)) 
-
-individual.and.multi.sig.home$Variable <- factor(individual.and.multi.sig.home$Variable,levels = paste(unique(paste(individual.and.multi.sig.home$Variable)),sep = ","))
-
-#parent
-individual.and.multi.sig.parent <- filter(individual.and.multi.sig, block == "Parent block") %>% 
-  arrange(desc(RRR))
-
-individual.and.multi.sig.parent$Variable <- factor(individual.and.multi.sig.parent$Variable,levels = paste(unique(paste(individual.and.multi.sig.parent$Variable)),sep = ","))
-
-#neuro
-individual.and.multi.sig.neuro <- filter(individual.and.multi.sig, block == "Neuro block") %>% 
-  arrange(desc(RRR))
-
-individual.and.multi.sig.neuro$Variable <- factor(individual.and.multi.sig.neuro$Variable,levels = paste(unique(paste(individual.and.multi.sig.neuro$Variable)),sep = ","))
-
-#emo/behave
-individual.and.multi.sig.emo <- filter(individual.and.multi.sig, block == "Emo/behave block") %>% 
-  arrange(desc(RRR))
-
-individual.and.multi.sig.emo$Variable <- factor(individual.and.multi.sig.emo$Variable,levels = paste(unique(paste(individual.and.multi.sig.emo$Variable)),sep = ","))
-
-# all
+# join all
 dat.stata.individual.ordered <- rbind(
   individual.and.multi.sig.social,
   individual.and.multi.sig.home,
@@ -649,10 +625,12 @@ dat.stata.individual.ordered <- rbind(
 )
 ```
 
-# Plot for univariate regressions - with significant multivariate associations indicated
+# Plot for univariate regressions 
 
-```{r stata plot to be used for results}
-stata.plot.individual <- ggplot(
+## With significant multivariate associations indicated - OPTION 1
+
+```{r stata plot to be used for results OPTION 1}
+stata.plot.individual.OPTION1 <- ggplot(
   dat.stata.individual.ordered, 
   aes(x = Variable,
       y = RRR,
@@ -665,35 +643,50 @@ stata.plot.individual <- ggplot(
   geom_pointrange(aes(shape = overall.significance),position = position_dodge(width = 0.7), 
                   show.legend = FALSE, 
                   size = 0.5) +
- facet_grid(block ~ Class, drop = TRUE, scales = "free_y", space = "free") +
+ facet_grid(Domain ~ Class, drop = TRUE, scales = "free_y", space = "free") +
   labs(y = "RRR (95% CI)",
        x = "names",
        shape = "") +
   theme.antecedent +
-  theme(
-    strip.text.x = element_text(
-        size = 10, color = "black", face = "bold", 
-        ),
-    strip.background = element_rect(
-     color = "black", fill = "white", size = 0.5, linetype = "solid"
-     ),
-    plot.title = element_text(size = 12,face = "bold"),
-        axis.title.x = element_text(size = 10, face = "bold"),
-        axis.text.x = element_text(size = 8, colour = "black"),
-        axis.text.y = element_text(size = 10)
-  ) +
   geom_hline(linetype = "dashed", yintercept = 1) +
  scale_y_continuous(trans = scales::log10_trans(), breaks=c(0.4,0.6,0.8, 1, 1.5, 2, 2.5, 3, 3.5, 4)) +
   coord_flip() 
   
-stata.plot.individual
+stata.plot.individual.OPTION1
+```
+## No significance indicators - OPTION 2
+
+```{r stata plot to be used for results OPTION 2}
+stata.plot.individual.OPTION2 <- ggplot(
+  dat.stata.individual.ordered, 
+  aes(x = Variable,
+      y = RRR,
+      ymin = RRR.conf.low,
+      ymax = RRR.conf.high,)
+  ) +
+  scale_fill_manual(values = "black") +
+  scale_color_manual(values = "black") +
+  scale_shape_manual(values = c(19)) +
+  geom_pointrange(position = position_dodge(width = 0.7), 
+                  show.legend = FALSE, 
+                  size = 0.5) +
+ facet_grid(Domain ~ Class, drop = TRUE, scales = "free_y", space = "free") +
+  labs(y = "RRR (95% CI)",
+       x = "names",
+       shape = "") +
+  theme.antecedent +
+  geom_hline(linetype = "dashed", yintercept = 1) +
+ scale_y_continuous(trans = scales::log10_trans(), breaks=c(0.4,0.6,0.8, 1, 1.5, 2, 2.5, 3, 3.5, 4)) +
+  coord_flip() 
+  
+stata.plot.individual.OPTION2
 ```
 
 ```{r save final antecedent plot}
 #save
 ggsave(
   "STATA_All_antecedents_individual_regressions_using_zscores_final.png",
-  plot = stata.plot.individual,
+  plot = stata.plot.individual.OPTION2,
   device = "png",
   path = paste0(graph_save_data_path, "antecedents/final"),
   width = 11,
@@ -701,19 +694,18 @@ ggsave(
 )
 ```
 
-
 # Multivariate model with all variables included
 
 This was conducted as a sensitivity analyses to check there was no influence of adapting a minimal stepwise approach. 
 
 ```{r reformat stata data all model}
-dat.stata.all <- dat.stata.all.raw[c(116:223,229:336),] %>%
+dat.stata.all <- dat.stata.all.raw[c(120:231,237:348),] %>%
   mutate(Class =
     case_when(
-    row_number() < 109 ~ "Increasing",
-    row_number() > 108 ~ "Decreasing")) %>%
+    row_number() < 113 ~ "Increasing",
+    row_number() > 112 ~ "Decreasing")) %>%
   mutate(key = 
-           rep(c("RRR", "RRR.conf.low", "RRR.conf.high", "p.value"), 54)) %>%
+           rep(c("RRR", "RRR.conf.low", "RRR.conf.high", "p.value"), 56)) %>%
   mutate(Variable =
     case_when(row_number() < 5  ~ "SES: Low",
               row_number() < 9  ~ "ACORN",
@@ -735,53 +727,55 @@ dat.stata.all <- dat.stata.all.raw[c(116:223,229:336),] %>%
               row_number() < 73 ~ "Maternal personality: Agreeableness",
               row_number() < 77 ~ "Maternal personality: Neuroticism",
               row_number() < 81 ~ "Parental antisocial behaviour",
-              row_number() < 85 ~ "Child IQ",
-              row_number() < 89 ~ "Child executive function",
-              row_number() < 93 ~ "Child theory of mind",
-              row_number() < 97 ~ "Child externalising behaviours" ,
-              row_number() < 101 ~ "Child internalising behaviours",
-              row_number() < 105 ~ "Child ADHD behaviours",
-              row_number() < 109 ~ "Child prosocial behaviours",
-              row_number() < 113  ~ "SES: Low",
-              row_number() < 117  ~ "ACORN",
-              row_number() < 121 ~ "Vandalism",
-              row_number() < 125 ~ "Problems with neighbours",
-              row_number() < 129 ~ "Number of children in school",
-              row_number() < 133 ~ "Number of children eligible for free school meals",
-              row_number() < 137 ~ "Child harm: Harmed",
-              row_number() < 141 ~ "Total siblings",
-              row_number() < 145 ~ "Social support",
-              row_number() < 149 ~ "Total activities with mum",
-              row_number() < 153 ~ "Mum not lived with biological dad since birth: Yes",
-              row_number() < 157 ~ "Any domestic violence: Yes" ,
-              row_number() < 161 ~ "Maternal warmth",
-              row_number() < 165 ~ "Maternal lifetime depression: Yes",
-              row_number() < 169 ~ "Maternal personality: Openness",
-              row_number() < 173 ~ "Maternal personality: Conscientiousness",
-              row_number() < 177 ~ "Maternal personality: Extroversion",
-              row_number() < 181 ~ "Maternal personality: Agreeableness",
-              row_number() < 185 ~ "Maternal personality: Neuroticism",
-              row_number() < 189 ~ "Parental antisocial behaviour",
-              row_number() < 193 ~ "Child IQ",
-              row_number() < 197 ~ "Child executive function",
-              row_number() < 201 ~ "Child theory of mind",
-              row_number() < 205 ~ "Child externalising behaviours" ,
-              row_number() < 209 ~ "Child internalising behaviours",
-              row_number() < 213 ~ "Child ADHD behaviours",
-              row_number() > 212 ~ "Child prosocial behaviours")) %>%
+              row_number() < 85 ~ "Parental alcoholism",
+              row_number() < 89 ~ "Child IQ",
+              row_number() < 93 ~ "Child executive function",
+              row_number() < 97 ~ "Child theory of mind",
+              row_number() < 101 ~ "Child externalising behaviours" ,
+              row_number() < 105 ~ "Child internalising behaviours",
+              row_number() < 109 ~ "Child ADHD behaviours",
+              row_number() < 113 ~ "Child prosocial behaviours",
+              row_number() < 117  ~ "SES: Low",
+              row_number() < 121  ~ "ACORN",
+              row_number() < 125 ~ "Vandalism",
+              row_number() < 129 ~ "Problems with neighbours",
+              row_number() < 133 ~ "Number of children in school",
+              row_number() < 137 ~ "Number of children eligible for free school meals",
+              row_number() < 141 ~ "Child harm: Harmed",
+              row_number() < 145 ~ "Total siblings",
+              row_number() < 149 ~ "Social support",
+              row_number() < 153 ~ "Total activities with mum",
+              row_number() < 157 ~ "Mum not lived with biological dad since birth: Yes",
+              row_number() < 161 ~ "Any domestic violence: Yes" ,
+              row_number() < 165 ~ "Maternal warmth",
+              row_number() < 169 ~ "Maternal lifetime depression: Yes",
+              row_number() < 173 ~ "Maternal personality: Openness",
+              row_number() < 177 ~ "Maternal personality: Conscientiousness",
+              row_number() < 181 ~ "Maternal personality: Extroversion",
+              row_number() < 185 ~ "Maternal personality: Agreeableness",
+              row_number() < 189 ~ "Maternal personality: Neuroticism",
+              row_number() < 193 ~ "Parental antisocial behaviour",
+              row_number() < 197 ~ "Parental alcoholism",
+              row_number() < 201 ~ "Child IQ",
+              row_number() < 205 ~ "Child executive function",
+              row_number() < 209 ~ "Child theory of mind",
+              row_number() < 213 ~ "Child externalising behaviours" ,
+              row_number() < 217 ~ "Child internalising behaviours",
+              row_number() < 221 ~ "Child ADHD behaviours",
+              row_number() > 220 ~ "Child prosocial behaviours")) %>%
   select(-X1) %>%
   mutate(
     block = case_when(
               row_number() < 25  ~ "Social block",
               row_number() < 53 ~ "Home block",
-              row_number() < 81 ~ "Parent block",
-              row_number() < 93 ~ "Neuro block",
-              row_number() < 109 ~ "Emo/behave block",
-              row_number() < 133 ~ "Social block",
-              row_number() < 161 ~ "Home block",
-              row_number() < 189 ~ "Parent block",
-              row_number() < 201 ~ "Neuro block",
-              row_number() > 200 ~ "Emo/behave block")) %>%
+              row_number() < 85 ~ "Parent block",
+              row_number() < 97 ~ "Neuro block",
+              row_number() < 113 ~ "Emo/behave block",
+              row_number() < 137 ~ "Social block",
+              row_number() < 165 ~ "Home block",
+              row_number() < 197 ~ "Parent block",
+              row_number() < 209 ~ "Neuro block",
+              row_number() > 208 ~ "Emo/behave block")) %>%
   spread(key, allmodel) %>%
   mutate(
     Significance = 
@@ -800,12 +794,16 @@ dat.stata.all <- dat.stata.all.raw[c(116:223,229:336),] %>%
             RRR.conf.high = as.numeric(RRR.conf.high),
             p.value = as.numeric(p.value),
             Significance = Significance,
-            block = block) 
+            Domain = block) 
 ```
 
+## Table
+
 ```{r stata all table}
-kable(dat.stata.all)
+paper.table(dat.stata.all)
 ```
+
+## Plot
 
 ```{r stata plot full model}
 stata.plot.all_model <- ggplot(
@@ -813,14 +811,13 @@ stata.plot.all_model <- ggplot(
   aes(x = Variable,
       y = RRR,
       ymin = RRR.conf.low,
-      ymax = RRR.conf.high,
-      color = Class)
+      ymax = RRR.conf.high)
   ) +
   scale_fill_manual(values = palette2b) +
   scale_color_manual(values = palette2b) +
   scale_shape_manual(values = c(21, 19)) +
   geom_pointrange(aes(shape = Significance), position = position_dodge(width = 0.7)) +
-  facet_grid(block ~ Class, drop = TRUE, scales = "free_y", space = "free") +
+  facet_grid(Domain ~ Class, drop = TRUE, scales = "free_y", space = "free") +
   labs(y = "RRR (95% CI)",
        x = "names",
        title = "Association between antecedents and social isolation class membership",
