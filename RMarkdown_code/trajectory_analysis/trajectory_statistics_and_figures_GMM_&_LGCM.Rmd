@@ -34,12 +34,7 @@ remove(list = ls())
 ```
 
 ```{r colour palletes for graphs}
-palette1 <- c("#78D9C5")
-palette2 <- c("#78D9C5","#F5BE5E")
-palette3 <- c("#78D9C5","#F5BE5E","#EEB6E9")
-palette4 <- c("#78D9C5","#F5BE5E","#EEB6E9","#DBDB73")
-palette5 <- c("#78D9C5","#F5BE5E","#EEB6E9","#DBDB73","#FFED98")
-palette6 <- c("#78D9C5","#F5BE5E","#EEB6E9","#DBDB73","#FFED98","#BFD2EB")
+palette <- c("#78D9C5","#F5BE5E","#EEB6E9","#DBDB73","#FFED98","#BFD2EB")
 ```
  
 ```{r source the data file path}
@@ -235,7 +230,7 @@ isolation_growth_curve_clustered_full_sample <- ggplot() + #change name of graph
             colour = Model, 
             shape = Model), 
         show.legend = T) +
-  scale_color_manual(values = palette3) +
+  scale_color_manual(values = palette) +
   labs(x = "Age (years)", 
        y ="Social isolation",
        title = "Growth curves for social isolation") +
@@ -286,7 +281,7 @@ isolation_growth_curve_single_clustered_full_sample <- ggplot() +
             colour = Class, 
             size = 1), 
         show.legend = T) +
-  scale_color_manual(values = palette1) +
+  scale_color_manual(values = palette) +
   labs(x = "Age (years)", 
        y ="Social isolation",
        title = "Linear latent growth curve",
@@ -340,7 +335,7 @@ isolation_growth_curve_log_scale_clustered_full_sample <- ggplot() +
             colour = Model, 
             shape=Model), 
         show.legend = T) +
-  scale_color_manual(values = palette3) +
+  scale_color_manual(values = palette) +
   labs(x = "Age (years)", 
        y ="Social isolation",
        title = "Growth curves for log-social isolation") +
@@ -491,8 +486,11 @@ two_class_si <- two_class_si %>%
                names_to = "Class", 
                values_to = "social.isolation_score")
 
-#check
-two_class_si
+# create factor for Class variable
+two_class_si <- two_class_si %>%
+  mutate(Class = 
+              factor(Class, 
+                     levels = c("Class 1","Class 2")))
 ```
 
 ```{r plot 2 class GMM  model}
@@ -503,10 +501,10 @@ two_traj_plot_clustered_full_sample <- ggplot(two_class_si,
             shape = Class)) +
           geom_line(size = 1.5) +
   geom_point(aes(size = 1)) +
-  scale_fill_manual(values = palette2) +
-  scale_color_manual(values = palette2) +
+  scale_fill_manual(values = palette) +
+  scale_color_manual(values = palette) +
   labs(x = "Age (years)", 
-       title = "Two class model",
+       title = "Two trajectory model",
        color = "",
        y = "Social isolation") +
   scale.y +
@@ -536,8 +534,11 @@ three_class_si <- three_class_si %>%
                names_to = "Class", 
                values_to = "social.isolation_score")
 
-#check
-three_class_si
+# create factor for Class variable
+three_class_si <- three_class_si %>%
+  mutate(Class = 
+              factor(Class, 
+                     levels = c("Class 1","Class 2","Class 3")))
 ```
 
 ```{r plot 3 class GMM model}
@@ -548,10 +549,10 @@ three_traj_plot_clustered_full_sample <- ggplot(three_class_si,
             shape = Class)) +
           geom_line(size = 1.5) +
   geom_point(aes(size = 1)) +
-  scale_fill_manual(values = palette3) +
-  scale_color_manual(values = palette3) +
+  scale_fill_manual(values = palette) +
+  scale_color_manual(values = palette) +
   labs(x = "Age (years)", 
-       title = "Three class model",
+       title = "Three trajectory model",
        color = "",
        y ="Social isolation") + 
   scale.y +
@@ -561,6 +562,38 @@ three_traj_plot_clustered_full_sample <- ggplot(three_class_si,
 
 three_traj_plot_clustered_full_sample
 ```
+
+```{r plot 3 class GMM model}
+three_traj_plot_clustered_full_sample.SGDP<- ggplot(three_class_si,
+        aes(x = timepoint, 
+            y = social.isolation_score, 
+            colour = Class,
+            shape = Class)) +
+          geom_line(size = 1.5) +
+  geom_point(aes(size = 1)) +
+  scale_fill_manual(values = c("#F5BE5E","#EEB6E9","#78D9C5")) +
+  scale_color_manual(values = c("#F5BE5E","#EEB6E9","#78D9C5")) +
+  labs(x = "Age (years)", 
+       title = "Three trajectory model",
+       color = "",
+       y ="Social isolation") + 
+  scale.y +
+  scale.x +
+  combined.traj.theme + 
+  guides(shape = FALSE, size = FALSE)
+
+three_traj_plot_clustered_full_sample.SGDP
+
+ggsave(
+  "three_traj_plot_clustered_full_sample.SGDP.jpeg",
+  plot = three_traj_plot_clustered_full_sample.SGDP,
+  device = "jpeg",
+  path = paste0(graph_save_data_path, "trajectories/sgdp/"),
+  width = 5,
+  height = 4
+)
+```
+
 
 ### Four Class model
 
@@ -581,8 +614,14 @@ four_class_si <- four_class_si %>%
                names_to = "Class", 
                values_to = "social.isolation_score")
 
-#check
-four_class_si
+# create factor for Class variable to order the colour selection in the graph
+four_class_si <- four_class_si %>%
+  mutate(Class = 
+              factor(Class, 
+                     levels = c("Class 2", 
+                                "Class 4", 
+                                "Class 1",
+                                "Class 3")))
 ```
 
 ```{r plot 4 class GMM model}
@@ -593,10 +632,10 @@ four_traj_plot_clustered_full_sample <- ggplot(four_class_si,
             shape = Class)) +
           geom_line(size = 1.5) +
   geom_point(aes(size = 1)) +
-  scale_fill_manual(values = palette4) +
-  scale_color_manual(values = palette4) +
+  scale_fill_manual(values = palette) +
+  scale_color_manual(values = palette) +
   labs(x = "Age (years)", 
-       title = "Four class model",
+       title = "Four trajectory model",
        color = "",
        y ="Social isolation") + 
   scale.y +
@@ -626,8 +665,15 @@ five_class_si <- five_class_si %>%
                names_to = "Class", 
                values_to = "social.isolation_score")
 
-#check
-five_class_si
+# create factor for Class variable
+five_class_si <- five_class_si %>%
+  mutate(Class = 
+              factor(Class, 
+                     levels = c("Class 2",
+                                "Class 5",
+                                "Class 1",
+                                "Class 4",
+                                "Class 3")))
 ```
 
 ```{r plot 5 class GMM model}
@@ -638,10 +684,10 @@ five_traj_plot_clustered_full_sample <- ggplot(five_class_si,
             shape = Class)) +
           geom_line(size = 1.5) +
   geom_point(aes(size = 1)) +
-  scale_fill_manual(values = palette5) +
-  scale_color_manual(values = palette5) +
+  scale_fill_manual(values = palette) +
+  scale_color_manual(values = palette) +
   labs(x = "Age (years)", 
-       title = "Five class model",
+       title = "Five trajectory model",
        color = "",
        y ="Social isolation") + 
   scale.y +
@@ -671,8 +717,15 @@ six_class_si <- six_class_si %>%
                names_to = "Class", 
                values_to = "social.isolation_score")
 
-#check
-six_class_si
+six_class_si <- six_class_si %>%
+  mutate(Class = 
+              factor(Class, 
+                     levels = c("Class 4",
+                                "Class 3",
+                                "Class 6",
+                                "Class 2",
+                                "Class 1",
+                                "Class 5")))
 ```
 
 ```{r plot 6 class GMM model}
@@ -683,10 +736,10 @@ six_traj_plot_clustered_full_sample <- ggplot(six_class_si,
             shape = Class)) +
           geom_line(size = 1.5) +
   geom_point(aes(size = 1)) +
-  scale_fill_manual(values = palette6) +
-  scale_color_manual(values = palette6) +
+  scale_fill_manual(values = palette) +
+  scale_color_manual(values = palette) +
   labs(x = "Age (years)", 
-       title = "Six class model",
+       title = "Six trajectory model",
        color = "",
        y = "Social isolation") +   
   scale.y +
@@ -739,6 +792,19 @@ combined_trajectories_plot_clustered_full_sample <- ggarrange(isolation_growth_c
                                         labels = c("A", "B", "C", "D", "E", "F"),
                                         legend = "none"
                                         )
+
+combined_trajectories_plot_clustered_full_sample_CENTRE_PRES <- ggarrange(isolation_growth_curve_single_clustered_full_sample, 
+                                        two_traj_plot_clustered_full_sample, 
+                                        three_traj_plot_clustered_full_sample, 
+                                        four_traj_plot_clustered_full_sample, 
+                                        five_traj_plot_clustered_full_sample,
+                                        six_traj_plot_clustered_full_sample,
+                                        ncol = 3, nrow = 2,
+                                        widths = c(2.7,2.7,2.7,2.7), 
+                                        heights = c(3,3,3,3),
+                                        labels = c("A", "B", "C", "D", "E", "F"),
+                                        legend = "none"
+                                        )
 ```
 
 ```{r save trajectory plot}
@@ -749,6 +815,15 @@ ggsave(
   path = paste0(graph_save_data_path, "trajectories/final/"),
   width = 8.5,
   height = 10
+)
+
+ggsave(
+  "combined_trajectories_plot_clustered_full_sample_CENTRE_PRES.jpeg",
+  plot = combined_trajectories_plot_clustered_full_sample_CENTRE_PRES,
+  device = "jpeg",
+  path = paste0(graph_save_data_path, "trajectories/"),
+  width = 11,
+  height = 6
 )
 ```
 

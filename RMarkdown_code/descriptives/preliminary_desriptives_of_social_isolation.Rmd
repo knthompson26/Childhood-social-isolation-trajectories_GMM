@@ -168,8 +168,7 @@ dat.missing.3time <- dat.missing.3time %>%
   )
 ```
 
-What Tim found :
-There were no differences between those who did and did not take part at age 18 in terms of social isolation at age 5 (t = 0.71, p = 0.49), socioeconomic status (SES) assessed when the cohort was initially defined (χ2 = 0.86, p = 0.65), age-5 IQ scores (t = 0.98, p = 0.33), or age-5 emotional or behavioural problems (t = 0.40, p = 0.69 and t = 0.41, p = 0.68, respectively)
+
 ```{r check differences in missingness between the 4 groups}
 # Social isolation at age 5
 ttest_SI_3time <- t.test( 
@@ -227,6 +226,78 @@ ttest_ext_2time <- t.test( #nonsig
   alternative = "two.sided",
   conf.level = 0.95) 
 ```
+
+
+## Differences between those who did and did not take part at age 18
+What Matthews found :
+There were no differences between those who did and did not take part at age 18 in terms of  socioeconomic status (SES) assessed when the cohort was initially defined (χ2 = 0.86, p = 0.65), age-5 IQ scores (t = 0.98, p = 0.33), or age-5 emotional or behavioural problems (t = 0.40, p = 0.69 and t = 0.41, p = 0.68, respectively)
+ - Here I'm using not_in_employment_education_18 as the indicator variable for if they took part at age 18 or not (2066 complete responses)
+
+```{r took part age age 18 - social isolation}
+# check the freq 
+freq(dat$not_in_employment_education_18,
+     cumul = FALSE)
+
+# create data set for those who did and did not take part at age 18 
+## 166 participants
+dat_not_age_18 <- dat %>%
+  
+  filter(is.na(not_in_employment_education_18))
+## 2066 participants
+dat_age_18 <- dat %>%
+  filter(!is.na(not_in_employment_education_18))
+
+# create variable in original data set based on cut off
+dat <- dat %>%
+  mutate(
+    took_part_at_18 = 
+      if_else(
+        !is.na(not_in_employment_education_18), 
+        1,
+        0) %>%
+      recode_factor(
+        "0" = "No",
+        "1" = "Yes"
+      )
+  )
+
+# check
+table(dat$took_part_at_18)
+
+# Social isolation - t-test - nonsig
+ttest_SI_age18 <- t.test( 
+  isolation_combined_05 ~ took_part_at_18,
+  data = dat,
+  alternative = "two.sided",
+  conf.level = 0.95) 
+
+# IQ - t-test - nonsig
+ttest_IQ_age18 <- t.test( 
+  IQ_05 ~ took_part_at_18,
+  data = dat,
+  alternative = "two.sided",
+  conf.level = 0.95) 
+
+# externalising - t-test - nonsig
+ttest_ext_age18 <- t.test( 
+  externalising_combined_05 ~ took_part_at_18,
+  data = dat,
+  alternative = "two.sided",
+  conf.level = 0.95) 
+
+# internalising - t-test - nonsig
+ttest_int_age18 <- t.test( 
+  internalising_combined_excl_sis_05 ~ took_part_at_18,
+  data = dat,
+  alternative = "two.sided",
+  conf.level = 0.95) 
+
+# SES - chi square
+chisq_SES_age18 <- chisq.test(dat$SES,
+                              dat$took_part_at_18) # nonsig
+
+```
+
 
 # Convert data to long format
 

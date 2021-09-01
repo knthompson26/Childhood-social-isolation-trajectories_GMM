@@ -44,6 +44,7 @@ library(MplusAutomation)
 library(filesstrings)
 library(nnet)
 library(ggplot2)
+library(knitr)
 library(tidyverse)
 library(dplyr) #conflicts with tidyverse for e.g. rename and row_number
 ```
@@ -428,7 +429,7 @@ dat.stata.individual <- dat.stata.individual.raw[c(120:231,237:348),-c(1)] %>%
             RRR.conf.high = as.numeric(RRR.conf.high),
             p.value = as.numeric(p.value),
             Significance = Significance,
-            Domain = block) 
+            Domain = block)
 ```
 
 ```{r table for stata coefficients}
@@ -556,10 +557,6 @@ dat.stata.all.siguni <- dat.stata.all.siguni.raw[c(112:215,221:324),] %>%
 ```{r stata all table}
 multivariate.siguni.reg.table <- paper.table(dat.stata.all.siguni)
 multivariate.siguni.reg.table
-
-
-dat.stata.all.siguni %>%
-  filter(Significance == "Significant")
 ```
 
 ## Reformat univariate and multivariate data to create a graph containing both information 
@@ -689,8 +686,6 @@ ggsave(
 
 # Multivariate model with all variables included
 
-This was conducted as a sensitivity analyses to check there was no influence of adapting a minimal stepwise approach. 
-
 ```{r reformat stata data all model}
 dat.stata.all <- dat.stata.all.raw[c(120:231,237:348),] %>%
   mutate(Class =
@@ -759,16 +754,16 @@ dat.stata.all <- dat.stata.all.raw[c(120:231,237:348),] %>%
   select(-X1) %>%
   mutate(
     block = case_when(
-              row_number() < 25  ~ "Social block",
-              row_number() < 53 ~ "Home block",
-              row_number() < 85 ~ "Parent block",
-              row_number() < 97 ~ "Neuro block",
-              row_number() < 113 ~ "Emo/behave block",
-              row_number() < 137 ~ "Social block",
-              row_number() < 165 ~ "Home block",
-              row_number() < 197 ~ "Parent block",
-              row_number() < 209 ~ "Neuro block",
-              row_number() > 208 ~ "Emo/behave block")) %>%
+              row_number() < 25  ~ "Social domain",
+              row_number() < 53 ~ "Home domain",
+              row_number() < 85 ~ "Parent domain",
+              row_number() < 97 ~ "Neuro domain",
+              row_number() < 113 ~ "Emo/behave domain",
+              row_number() < 137 ~ "Social domain",
+              row_number() < 165 ~ "Home domain",
+              row_number() < 197 ~ "Parent domain",
+              row_number() < 209 ~ "Neuro domain",
+              row_number() > 208 ~ "Emo/behave domain")) %>%
   spread(key, allmodel) %>%
   mutate(
     Significance = 
@@ -793,36 +788,69 @@ dat.stata.all <- dat.stata.all.raw[c(120:231,237:348),] %>%
 ## Table
 
 ```{r stata all table}
-paper.table(dat.stata.all)
+paper.table.all.variables <- paper.table(dat.stata.all)
+```
+
+
+```{r bind and order rows for the sgdp centre plot}
+dat.stata.all.plot <- dat.stata.all %>% 
+  filter(Significance == "Significant",
+         Variable != "Child executive function")
+
+individual.and.multi.sig.social.plot <- order.variables(data = dat.stata.all.plot, domain = "Social domain")
+individual.and.multi.sig.parent.plot <- order.variables(data = dat.stata.all.plot, domain = "Parent domain")
+individual.and.multi.sig.emo.plot <- order.variables(data = dat.stata.all.plot, domain = "Emo/behave domain")
+
+# join all
+dat.stata.all.plot.ordered <- rbind(
+  individual.and.multi.sig.social.plot,
+  individual.and.multi.sig.parent.plot,
+  individual.and.multi.sig.emo.plot
+)
 ```
 
 ## Plot
 
 ```{r stata plot full model}
 stata.plot.all_model <- ggplot(
-  dat.stata.all, 
+  dat.stata.all.plot.ordered, 
   aes(x = Variable,
       y = RRR,
       ymin = RRR.conf.low,
-      ymax = RRR.conf.high)
+      ymax = RRR.conf.high,
+      color = Class)
   ) +
   scale_fill_manual(values = palette2b) +
   scale_color_manual(values = palette2b) +
-  scale_shape_manual(values = c(21, 19)) +
+  scale_shape_manual(values = c(19)) +
   geom_pointrange(aes(shape = Significance), position = position_dodge(width = 0.7)) +
   facet_grid(Domain ~ Class, drop = TRUE, scales = "free_y", space = "free") +
   labs(y = "RRR (95% CI)",
        x = "names",
-       title = "Association between antecedents and social isolation class membership",
+       title = "Association between antecedents and social isolation trajectories",
        subtitle = paste("N(Total) = ", length(dat$sex),
                         "; N(Increasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Increasing"])),
                         "; N(Decreasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Decreasing"])), sep = ""),
        color = "",
        shape = "") +
   theme.antecedent +
+  theme(legend.position = "none") +
   geom_hline(linetype = "dashed", yintercept = 1) +
- scale_y_continuous(trans = scales::log10_trans(), breaks=c(0.6,0.8, 1, 1.5, 2)) +
+ scale_y_continuous(trans = scales::log10_trans(), breaks=c(0.5, 0.6,0.8, 1, 1.5, 2, 2.5, 3, 4)) +
   coord_flip()
 
 stata.plot.all_model 
 ```
+
+```{r save multivariate plot}
+#save
+ggsave(
+  "multivariate_antecedent_STATA_SGDP_CENTRE.png",
+  plot = stata.plot.all_model,
+  device = "png",
+  path = paste0(graph_save_data_path, "antecedents/"),
+  width = 8,
+  height = 3
+)
+```
+

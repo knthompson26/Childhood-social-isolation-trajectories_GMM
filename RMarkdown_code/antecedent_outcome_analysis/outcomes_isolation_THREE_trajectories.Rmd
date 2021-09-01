@@ -705,6 +705,64 @@ outcome.logistic.separate.plot <- ggplot(
 outcome.logistic.separate.plot
 ```
 
+```{r logistic regression outcome plot}
+dat.logistic.ordered.sgdp.plot <- dat.logistic.ordered %>% 
+  filter(Significance == "Significant",
+         Domain != "Physical health domain")
+
+outcome.logistic.separate.plot.SGDP.CENTRE <- ggplot(
+  dat.logistic.ordered.sgdp.plot, 
+  aes(x = Variable,
+      y = OR,
+      ymin = OR.conf.low,
+      ymax = OR.conf.high,
+      color = Class)
+  ) +
+  scale_shape_manual(values = c(19)) +
+  scale_fill_manual(values = palette2b) +
+  scale_color_manual(values = palette2b) +
+  geom_pointrange(aes(shape = Significance), position = position_dodge(width = 0.7)) +
+  facet_grid(Domain ~ Class, drop = TRUE, scales = "free_y", space = "free") +
+  labs(y = "OR (95% CI)",
+       x = "names",
+       title = "Binary outcomes",
+       subtitle = paste("N(Total) = ", length(dat$sex),
+                        "; N(Increasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Increasing"])),
+                        "; N(Decreasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Decreasing"])), sep = ""),
+       color = "",
+       shape = "") +
+  scale_y_continuous(trans = scales::log10_trans(), breaks = c(0.2,0.4,0.6,0.8, 1, 1.5, 2, 3, 4), 
+                     limits = c(0.4,5)
+                     ) +
+  theme.outcome +theme(
+    strip.text.x = element_text(
+        size = 10, color = "black", face = "bold", 
+        ),
+    strip.background = element_rect(
+     color = "black", fill = "white", size = 0.5, linetype = "solid"
+     ),
+    plot.title = element_text(size = 12,face = "bold"),
+        axis.title.x = element_text(size = 10, face = "bold"),
+        axis.text.x = element_text(size = 8, colour = "black"),
+        axis.text.y = element_text(size = 10)
+  ) +
+  theme(legend.position = "none") +
+  geom_hline(linetype = "dashed", yintercept = 1) +
+  coord_flip()
+
+outcome.logistic.separate.plot.SGDP.CENTRE
+
+# save
+ggsave(
+  "outcome.logistic.separate.plot.SGDP.CENTRE.png",
+  plot = outcome.logistic.separate.plot.SGDP.CENTRE,
+  device = "png",
+  path = paste0(graph_save_data_path, "outcomes/"),
+  width = 8,
+  height = 2.5
+)
+```
+
 # Linear regression
 
 Using z-scores
@@ -854,6 +912,70 @@ ggsave(
 }
 ```
 
+```{r linear regression outcome plot zscores}
+dat.linear.ordered.sgdp.plot <- dat.linear.ordered %>% 
+  filter(Significance == "Significant",
+         Domain != "Physical health domain")
+
+outcome.linear.separate.plot.zscore.SGDP.CENTRE <- ggplot(
+  dat.linear.ordered.sgdp.plot, 
+  aes(x = Variable,
+      y = estimate,
+      ymin = conf.low,
+      ymax = conf.high,
+      color = Class)
+  ) +
+  scale_fill_manual(values = palette2b) +
+  scale_color_manual(values = palette2b) +
+  scale_shape_manual(values = c(19)) +
+  geom_pointrange(position = position_dodge(width = 0.7)) +
+  facet_grid(Domain ~ Class, 
+             drop = TRUE, 
+             scales = "free_y", 
+             space = "free") +
+   labs(y = "Standardised Beta Estimate (95% CI)",
+       x = "names",
+       title = "Continuous outcomes",
+       subtitle = paste("N(Total) = ", length(dat$sex),
+                        "; N(Increasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Increasing"])),
+                        "; N(Decreasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Decreasing"])), sep = ""),
+       color = "",
+       shape = "") +
+  theme.outcome +
+  theme(
+    strip.text.x = element_text(
+        size = 10, color = "black", face = "bold", 
+        ),
+    strip.background = element_rect(
+     color = "black", fill = "white", size = 0.5, linetype = "solid"
+     ),
+    plot.title = element_text(size = 12,face = "bold"),
+        axis.title.x = element_text(size = 10, face = "bold"),
+        axis.text.x = element_text(size = 8, colour = "black"),
+        axis.text.y = element_text(size = 10)
+  ) +
+  theme(legend.position = "none") +
+  geom_hline(linetype = "dashed", yintercept = 0) +
+  scale_y_continuous(breaks=c(-1.5, -1, -0.75, -0.5, -0.25, 0, 0.25, 0.5, 0.75, 1, 1.5, 2)) + 
+  coord_flip()
+
+outcome.linear.separate.plot.zscore.SGDP.CENTRE
+
+ggsave(
+  "outcome.linear.separate.plot.zscore.SGDP.CENTRE.png",
+  plot = outcome.linear.separate.plot.zscore.SGDP.CENTRE,
+  device = "png",
+  path = paste0(graph_save_data_path, "outcomes/"),
+  width = 8,
+  height = 3.5
+)
+```
+
+
+
+
+
+
 # Controlling for significant antecedents
 
 Rerun all regression models while controlling for antecedents that remained significant in the full antecedent model. Antecedents that remained significant in the full antecedent model: child prosocial behaviours, ADHD behaviours, internalising behaviours, and matrnal personality openness. *Do we include child executive function as it was only just significant?*
@@ -865,13 +987,13 @@ logistic.stats.outcome.ant_control <- list() #create empty list to store the inf
 
 for (i in 1:length(outcome.dependent.logistic))
 { cat(i)
-  logistic.formula.outcome.ant_control <- as.formula(sprintf("%s ~ class_reordered + ADHD_combined_05 + internalising_combined_excl_sis_05 + prosocial_behaviours_combined_05 + maternal_personality_openness_05 + sex + SES_ordered", outcome.dependent.logistic[i]))
+  logistic.formula.outcome.ant_control <- as.formula(sprintf("%s ~ class_reordered + ADHD_combined_05 + internalising_combined_excl_sis_05 + prosocial_behaviours_combined_05 + maternal_personality_openness_05 + number_children_school_05 + sex + SES_ordered", outcome.dependent.logistic[i]))
 
   logistic.reg.outcome.ant_control <- glm(logistic.formula.outcome.ant_control, data = dat, family = "binomial")
   
   logistic.output.outcome.full.ant_control <- huber.white.cluster.logistic(logistic.reg.outcome.ant_control)
   
-  logistic.output.outcome.full.ant_control <- as.data.frame(logistic.output.outcome.full.ant_control$coeftable)[-c(1,4:10),] %>% # delete sex and SES coefficients
+  logistic.output.outcome.full.ant_control <- as.data.frame(logistic.output.outcome.full.ant_control$coeftable)[-c(1,4:11),] %>% # delete sex and SES coefficients
     dplyr::mutate(Class = c("Increasing", "Decreasing")) %>% # Create new formatted class variable
     dplyr::select(
       Class,
@@ -946,13 +1068,13 @@ linear.stats.outcome.zscore.ant_control <- list() #create empty list to store th
 
 for (i in 1:length(outcome.dependent.linear.zscore))
 { cat(i)
-  linear.formula.outcome.zscore.ant_control <- as.formula(sprintf("%s ~ class_reordered + prosocial_behaviours_combined_05 + ADHD_combined_05 + internalising_combined_excl_sis_05 + maternal_personality_openness_05 + sex + SES_ordered", outcome.dependent.linear.zscore[i]))
+  linear.formula.outcome.zscore.ant_control <- as.formula(sprintf("%s ~ class_reordered + prosocial_behaviours_combined_05 + ADHD_combined_05 + internalising_combined_excl_sis_05 + maternal_personality_openness_05 + number_children_school_05 + sex + SES_ordered", outcome.dependent.linear.zscore[i]))
 
   linear.reg.outcome.zscore.ant_control <- lm(linear.formula.outcome.zscore.ant_control, data = dat)
   
   # robust standard error estimation - account for non-independence of twin sample
   linear.output.outcome.full.zscore.ant_control <- huber.white.cluster.linear(regression.outcome = linear.reg.outcome.zscore.ant_control,
-                                                                              rows.remove = -c(1,4:10))
+                                                                              rows.remove = -c(1,4:11))
  
   if (i < 8) {
     linear.output.outcome.full.zscore.ant_control <- linear.output.outcome.full.zscore.ant_control %>%
@@ -1017,4 +1139,60 @@ outcome.linear.separate.plot.zscore.ant_control <- ggplot(
 outcome.linear.separate.plot.zscore.ant_control
 ```
 
+```{r linear regression outcome plot zscore ant control for sgdp center talk}
+data.outcome.linear.zscore.ant_control.sgdp.plot <- data.outcome.linear.zscore.ant_control %>% 
+  filter(Significance == "Significant",
+         Domain != "Physical health domain",
+         Class == "Increasing")
+
+outcome.linear.separate.plot.zscore.ant_control.SGDP.centre <- ggplot(
+  data.outcome.linear.zscore.ant_control.sgdp.plot, 
+  aes(x = Variable,
+      y = estimate,
+      ymin = conf.low,
+      ymax = conf.high,
+      color = Class)
+  ) +
+  scale_shape_manual(values = c(19)) +
+  scale_fill_manual(values = "#EEB6E9") +
+  scale_color_manual(values = "#EEB6E9") +
+  geom_pointrange(aes(shape = Significance), position = position_dodge(width = 0.7)) +
+  facet_grid(Domain ~ Class, drop = TRUE, scales = "free_y", space = "free") +
+  labs(y = "Standardised Beta Estimate (95% CI)",
+       x = "names",
+       title = "Continuous outcomes whilst controlling for antecedents",
+       subtitle = paste("N(Total) = ", length(dat$sex),
+                        "; N(Increasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Increasing"])),
+                        "; N(Decreasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Decreasing"])), sep = ""),
+       color = "",
+       shape = "") +
+  theme.outcome +
+  theme(
+    strip.text.x = element_text(
+        size = 10, color = "black", face = "bold", 
+        ),
+    strip.background = element_rect(
+     color = "black", fill = "white", size = 0.5, linetype = "solid"
+     ),
+    plot.title = element_text(size = 12,face = "bold"),
+        axis.title.x = element_text(size = 10, face = "bold"),
+        axis.text.x = element_text(size = 8, colour = "black"),
+        axis.text.y = element_text(size = 10)
+  ) +
+  theme(legend.position = "none") +
+  geom_hline(linetype = "dashed", yintercept = 0) +
+ scale_y_continuous(breaks=c(-1.5, -1, -0.75, -0.5, -0.25, 0, 0.25, 0.5, 0.75, 1, 1.5, 2)) + # log10_trans() has been removed here
+  coord_flip()
+
+outcome.linear.separate.plot.zscore.ant_control.SGDP.centre
+
+ggsave(
+  "outcome.linear.separate.plot.zscore.ant_control.SGDP.centre.png",
+  plot = outcome.linear.separate.plot.zscore.ant_control.SGDP.centre,
+  device = "png",
+  path = paste0(graph_save_data_path, "outcomes/"),
+  width = 7,
+  height = 3
+)
+```
 
