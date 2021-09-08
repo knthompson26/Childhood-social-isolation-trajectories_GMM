@@ -236,7 +236,7 @@ two_traj_plot_clustered_full_sample <- ggplot(two_class_si,
   scale_fill_manual(values = palette2) +
   scale_color_manual(values = palette2) +
   labs(x = "Age (in years)", 
-       title = "Two class model of social isolation in E-risk",
+       title = "Two class model",
        color = "Class",
        y ="Social isolation score") +   
   scale_y_continuous(expand = c(0.1,0.1),
@@ -292,7 +292,7 @@ three_traj_plot_clustered_full_sample <- ggplot(three_class_si,
   scale_fill_manual(values = palette3) +
   scale_color_manual(values = palette3) +
   labs(x = "Age (in years)", 
-       title = "Three class model of social isolation in E-risk",
+       title = "Three class model",
        color = "Class",
        y ="Social isolation score") +   
   scale_y_continuous(expand = c(0.1,0.1),
@@ -337,6 +337,29 @@ ggsave(
   height = 5
 )
 ```
+
+```{r combine graphs into panel figure}
+library(ggpubr) # Needed for combining plots
+library(gridExtra)
+combined_trajectories_plot_clustered_full_sample_quadratic <- ggarrange(two_traj_plot_clustered_full_sample, 
+                                                                        three_traj_plot_clustered_full_sample, 
+                                                                        ncol = 2, nrow = 1,
+                                                                        widths = c(2.7,2.7), 
+                                                                        heights = c(3,3),
+                                                                        labels = c("A", "B"),
+                                                                        legend = "none"
+                                                                        )
+
+ggsave(
+  "combined_trajectories_plot_clustered_full_sample_quadratic.jpeg",
+  plot = combined_trajectories_plot_clustered_full_sample_quadratic,
+  device = "jpeg",
+  path = paste0(graph_save_data_path, "trajectories/"),
+  width = 9,
+  height = 4
+)
+```
+
 
 # Check to see how group allocation differs between linear and quadratic 3 class model
 
