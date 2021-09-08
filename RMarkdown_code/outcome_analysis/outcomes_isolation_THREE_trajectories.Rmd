@@ -534,7 +534,9 @@ dat <- cbind(dat, scaled_continuous_data)
 colnames(dat)
 ```
 
-## Sensitivity analysis chunk
+# Posterior sensitivity analysis 
+
+## Posterior probability indicator
 
 *IMPORTANT* 
 When posterior.cut is set to TRUE the following chunks will run for the data set that has those probability<0.8 dropped.  
@@ -610,6 +612,7 @@ decreasing.cut.stats
 Low stable: Dropped 42 people. Average probability = 0.66, minimum probability = 0.48. 
 Increasing: Dropped 24 people. Average probability = 0.64, minimum probability = 0.49.
 Decreasing: Dropped 25 people. Average probability = 0.63, minimum probability = 0.51.
+NEW N = 2141 
 
 # Logistic regression
 
@@ -751,7 +754,10 @@ outcome.logistic.separate.plot.SGDP.CENTRE <- ggplot(
   coord_flip()
 
 outcome.logistic.separate.plot.SGDP.CENTRE
+```
 
+```{r save logistic plot}
+if(posterior.cut == FALSE){
 # save
 ggsave(
   "outcome.logistic.separate.plot.SGDP.CENTRE.png",
@@ -761,6 +767,7 @@ ggsave(
   width = 8,
   height = 2.5
 )
+}
 ```
 
 # Linear regression
@@ -814,6 +821,7 @@ data.outcome.linear.zscore <- create.dataset(linear.stats.outcome.zscore, model 
 
 ```{r table for combined linear dataframes zscore}
 linear.table <- paper.table(data.outcome.linear.zscore, model = "linear")
+linear.table 
 ```
 
 ### Getting multiple testing correction (BH FDR) p values
@@ -961,6 +969,7 @@ outcome.linear.separate.plot.zscore.SGDP.CENTRE <- ggplot(
 
 outcome.linear.separate.plot.zscore.SGDP.CENTRE
 
+if(posterior.cut == FALSE){
 ggsave(
   "outcome.linear.separate.plot.zscore.SGDP.CENTRE.png",
   plot = outcome.linear.separate.plot.zscore.SGDP.CENTRE,
@@ -969,12 +978,8 @@ ggsave(
   width = 8,
   height = 3.5
 )
+}
 ```
-
-
-
-
-
 
 # Controlling for significant antecedents
 
@@ -1108,6 +1113,7 @@ data.outcome.linear.zscore.ant_control <- create.dataset(linear.stats.outcome.zs
 
 ```{r table for combined linear dataframes zscore}
 linear.table.ant.control <- paper.table(data.outcome.linear.zscore.ant_control, model = "linear")
+linear.table.ant.control
 ```
 
 ### Linear regression plot with z scores - controlling for antecedents
@@ -1185,7 +1191,10 @@ outcome.linear.separate.plot.zscore.ant_control.SGDP.centre <- ggplot(
   coord_flip()
 
 outcome.linear.separate.plot.zscore.ant_control.SGDP.centre
+```
 
+```{r save SGDP separate plot}
+if(posterior.cut == FALSE){
 ggsave(
   "outcome.linear.separate.plot.zscore.ant_control.SGDP.centre.png",
   plot = outcome.linear.separate.plot.zscore.ant_control.SGDP.centre,
@@ -1194,5 +1203,6 @@ ggsave(
   width = 7,
   height = 3
 )
+}
 ```
 

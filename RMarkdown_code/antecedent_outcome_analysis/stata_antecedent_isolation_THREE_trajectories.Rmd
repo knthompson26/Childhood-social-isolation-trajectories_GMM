@@ -282,6 +282,87 @@ ggsave(
 )
 ```
 
+# Posterior sensitivity analysis 
+
+## Posterior probability indicator
+
+*IMPORTANT* 
+When posterior.cut is set to TRUE the following chunks will run for the data set that has those probability<0.8 dropped.  
+*IMPORTANT* 
+
+```{r posterior probability indicator}
+posterior.cut = TRUE
+```
+
+```{r posterior probability code}
+if(posterior.cut == TRUE){
+
+# create new variable only with those who have a probability higher than 0.8 for each class
+dat <- dat %>%
+  mutate(class_renamed_cut =
+           factor(
+             case_when(
+             prob2 > 0.8 & class_renamed == "Increasing" ~ "Increasing",
+             prob3 > 0.8 & class_renamed == "Decreasing" ~ "Decreasing",
+             prob1 > 0.8 & class_renamed == "Low stable" ~ "Low stable"
+           ), 
+           ordered = FALSE))
+
+library(nnet)
+# check the biggest group in the class to be the reference group
+table(dat$class_renamed_cut)
+
+# relevel class_factor
+dat <- dat %>% 
+  mutate(
+    class_reordered_cut =
+      relevel(
+        class_renamed_cut,
+        ref = "Low stable",
+        first = TRUE, #levels in ref come first
+        collapse = "+", #String used when constructing names for combined factor levels
+        xlevels = TRUE #levels maintained even if not actually occurring
+        
+      )
+  )
+# check
+table(dat$class_reordered_cut)
+
+# create new data set with only these individuals
+dat_prob_cut_out <- dat %>% filter(is.na(class_reordered_cut))
+dat <- dat %>% filter(!is.na(class_reordered_cut))
+
+# check
+freq(dat$class_reordered)
+}
+```
+
+```{r descriptives for probabilites}
+if(posterior.cut == TRUE){
+low.stable.cut.stats <- dat_prob_cut_out %>%
+  filter(class_reordered == "Low stable") %>%
+  descr(prob1)
+
+increasing.cut.stats <- dat_prob_cut_out %>%
+  filter(class_reordered == "Increasing") %>%
+  descr(prob2)
+
+decreasing.cut.stats <- dat_prob_cut_out %>%
+  filter(class_reordered == "Decreasing") %>%
+  descr(prob3)
+
+low.stable.cut.stats
+increasing.cut.stats
+decreasing.cut.stats
+}
+```
+
+Low stable: Dropped 42 people. Average probability = 0.66, minimum probability = 0.48. 
+Increasing: Dropped 24 people. Average probability = 0.64, minimum probability = 0.49.
+Decreasing: Dropped 25 people. Average probability = 0.63, minimum probability = 0.51.
+NEW N = 2141 
+
+
 # Antecedent regression analyses
 
 Forty variables was con variables is too many to include. 
@@ -352,38 +433,67 @@ data.mlogit <- dat %>% # need to rename for stata format
          internalising = z_score.internalising_combined_excl_sis_05,
          adhd = z_score.ADHD_combined_05,
          prosocial = z_score.prosocial_behaviours_combined_05)
+```
 
+## Write data files for STATA to be used in multinomial regression
+
+Want to save two different files depending on if we've cut the sample or not. 
+
+```{r write STATA file for multinom}
 library(foreign)
-write.dta(data.mlogit, "/Users/katiethompson/Documents/PhD/LISS-DTP_Louise_and_Tim/Social isolation trajectories_Paper 1/data_analysis/data_full/data_raw/multinom.reg.stata.dta")
+if(posterior.cut == FALSE){
+  write.dta(data.mlogit, "/Users/katiethompson/Documents/PhD/LISS-DTP_Louise_and_Tim/Social isolation trajectories_Paper 1/data_analysis/data_full/data_raw/multinom.reg.stata.dta")
+}
+
+if(posterior.cut == TRUE){
+  write.dta(data.mlogit, "/Users/katiethompson/Documents/PhD/LISS-DTP_Louise_and_Tim/Social isolation trajectories_Paper 1/data_analysis/data_full/data_raw/multinom.reg.stata.POSTERIOR.dta")
+}
 ```
 
 # Run STATA file and save the txt output for each regression
 
-The STATA file "antecedent_multinomial_regression.do" which is in the same folder has been run in STATA and the output has been saved in a txt file for all the regressions run. 
+*Go into STATA and run the file "antecedent_multinomial_regression.do" or "antecedent_multinomial_regression_POSTERIOR.do"*. The output will then be saved in a txt file for all the regressions run. 
+
+Three models were run in STATA:
+1. Individual regressions. Each antecedent was regressed on class membership. 
+2. Significant only regressions. This is the full model of antecedents that only includes variables that were significant at the individual regression stage. 
+3. All model. This includes all antecedents in one model predicting class membership. 
+
+The below chunk includes code to move the txt files to the right place - once this has been done the code is hashed out. 
 
 ```{r run stata do file from r}
-library(RStata)
-
-# options("RStata.StataPath" = "/Applications/Stata/StataMP.app/Contents/MacOS/stata-mp")
-# options("RStata.StataVersion" = 16)
-# stata("antecedent_multinomial_regression.do", data.out = FALSE)
-
+if(posterior.cut == FALSE){
 # move txt file to data file 
 # file.move(paste0(stata_data_path, "multinomial_results_si.txt"), data_path, overwrite = TRUE)
 # file.move(paste0(stata_data_path,"multinomial_results_si.allmodel.SIGUNI.txt"), data_path, overwrite = TRUE)
 # file.move(paste0(stata_data_path,"multinomial_results_si.allmodel.txt"), data_path, overwrite = TRUE)
-
+  
 # individual regressions
 dat.stata.individual.raw <- read_tsv(paste0(data_path, "multinomial_results_si.txt")) 
 # all model with only univariate sig variables
 dat.stata.all.siguni.raw <- read_tsv(paste0(data_path, "multinomial_results_si.allmodel.SIGUNI.txt"))
 # all model
 dat.stata.all.raw <- read_tsv(paste0(data_path, "multinomial_results_si.allmodel.txt"))
+}
+
+if(posterior.cut == TRUE){
+# move txt file to data file 
+# file.move(paste0(stata_data_path, "multinomial_results_si_POSTERIOR.txt"), data_path, overwrite = TRUE)
+# file.move(paste0(stata_data_path,"multinomial_results_si.allmodel.SIGUNI_POSTERIOR.txt"), data_path, overwrite = TRUE)
+# file.move(paste0(stata_data_path,"multinomial_results_si.allmodel_POSTERIOR.txt"), data_path, overwrite = TRUE)
+
+# individual regressions
+dat.stata.individual.raw <- read_tsv(paste0(data_path, "multinomial_results_si_POSTERIOR.txt")) 
+# all model with only univariate sig variables
+dat.stata.all.siguni.raw <- read_tsv(paste0(data_path, "multinomial_results_si.allmodel.SIGUNI_POSTERIOR.txt"))
+# all model
+dat.stata.all.raw <- read_tsv(paste0(data_path, "multinomial_results_si.allmodel_POSTERIOR.txt"))
+}
 ```
 
-# Reformat data frames
+# Reformat STATA data frames 
 
- - b/min95/max95/p is the layout from STATA
+ - b/min95/max95/p is the layout from STATA. We will now rearrange this file to create the antecedent multinomial tables needed for the paper. 
 
 ## Univariate individual regressions 
 
@@ -533,7 +643,7 @@ dat.stata.all.siguni <- dat.stata.all.siguni.raw[c(112:215,221:324),] %>%
               row_number() < 181 ~ "Parent domain",
               row_number() < 193 ~ "Neuro domain",
               row_number() > 192 ~ "Emo/behave domain")) %>%
-  spread(key, allmodelsiguni) %>%
+  spread(key, pallmodelsiguni) %>%
   mutate(
     Significance = 
       if_else(
@@ -673,6 +783,7 @@ stata.plot.individual.OPTION2
 ```
 
 ```{r save final antecedent plot}
+if(posterior.cut == FALSE){
 #save
 ggsave(
   "STATA_All_antecedents_individual_regressions_using_zscores_final.png",
@@ -682,6 +793,7 @@ ggsave(
   width = 11,
   height = 6.5
 )
+}
 ```
 
 # Multivariate model with all variables included
@@ -764,7 +876,7 @@ dat.stata.all <- dat.stata.all.raw[c(120:231,237:348),] %>%
               row_number() < 197 ~ "Parent domain",
               row_number() < 209 ~ "Neuro domain",
               row_number() > 208 ~ "Emo/behave domain")) %>%
-  spread(key, allmodel) %>%
+  spread(key, pallmodel) %>%
   mutate(
     Significance = 
       if_else(
@@ -789,8 +901,8 @@ dat.stata.all <- dat.stata.all.raw[c(120:231,237:348),] %>%
 
 ```{r stata all table}
 paper.table.all.variables <- paper.table(dat.stata.all)
+paper.table.all.variables
 ```
-
 
 ```{r bind and order rows for the sgdp centre plot}
 dat.stata.all.plot <- dat.stata.all %>% 
@@ -843,6 +955,7 @@ stata.plot.all_model
 ```
 
 ```{r save multivariate plot}
+if(posterior.cut == FALSE){
 #save
 ggsave(
   "multivariate_antecedent_STATA_SGDP_CENTRE.png",
@@ -852,5 +965,6 @@ ggsave(
   width = 8,
   height = 3
 )
+}
 ```
 
