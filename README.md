@@ -1,10 +1,9 @@
 # Childhood_social_isolation_trajectories-GMM
 
-## This repository holds code for growth mixture models (GMM) of social isolation variables at ages 5, 7, 10 and 12 years and how these trajectories are associated with antecedents and outcomes in the E-Risk study. 
+## This repository holds code for the manuscript titled "Antecedents and outcomes of childhood social isolation" using data from the E-Risk study. 
 
-### All code written by Katherine N Thompson (2021).
+### All code written by Katherine N Thompson and checked by Antony Ambler. 
 
-Code for manuscript titled: "Antecedents and outcomes of social isolation across childhood".
 Analyses for this project were conducted in MPlus version 8.4, STATA version 16 and R version 4.0.3 (All R code written in Rmd format). 
 
 **Trajectory_models (Mplus):**
