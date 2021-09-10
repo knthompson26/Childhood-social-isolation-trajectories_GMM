@@ -41,7 +41,6 @@ date = Sys.Date()
 
 # Packages
 
-Load packages
 ```{r Load packages}
 library(knitr)
 library(summarytools)
@@ -50,24 +49,30 @@ library(foreign) # Needed to load spss data files
 library(tidyverse)
 ```
 
-Source the data file path
+Source the data file path - all data is saved under one path. If you need access to this data_path please contact Katherine N Thompson on katherine.n.thompson@kcl.ac.uk. 
+
 ```{r source data file path}
 #source raw data directory: data_raw and data included
 source("../../../../../isolation_trajectories_data_path.R")
 ```
 
 # Read in data
-Read in full spss file
+
+Read in full SPSS sav file.
+
 ```{r read in data (spss)}
 dat <- read.spss(file = paste0(data.raw_path, "Katie_18Dec20.sav"),
                   use.value.labels = FALSE, #convert value labels into factors with those labels
                   to.data.frame = TRUE) #return data frame 
 
-colnames(dat)
+colnames(dat) # check colnames
 ```
 
 # Item lists
-Only using elder twin variables as each twin is included in the data set as an individual. Without doing twin analyses, the elder and younger variables show the same information. 
+
+Only using elder twin variables as each twin is included in the data set as an individual. 
+Without doing twin analyses, the elder and younger variables show the same information. 
+
 ```{r prepare item lists}
 #All the items in numeric form
 combined_social_isolation <- c("sisoe5",
@@ -76,8 +81,10 @@ combined_social_isolation <- c("sisoe5",
                               "sisoe12")
 ```
 
-#Rename ID variable
-When doing non-twin analyses - the atwin and btwin id give the same information
+# Rename ID variable
+
+When doing non-twin analyses - the atwin and btwin id give the same information.
+
 ```{r rename ID}
 dat <- dat %>%
   mutate(
@@ -93,6 +100,8 @@ colnames(dat)
 ```
 
 # Demographic variables
+
+All variables below have been recoded into a factor for R purposes and renamed. Only the categorical variables need recoding to establish the levels of the variable. 
 
 ```{r twin order factor}
 # twin order
@@ -154,6 +163,8 @@ dat <- dat %>%
         "2" = "Middle", #this was missing in original SPSS file but still have 2s in the data set
         "3" = "High"))
 ```
+
+Need to create a variable that has ordered SES to show that there are order differences between the labels. 
 
 ```{r SES ordered variable}
 dat <- dat %>%
@@ -407,7 +418,7 @@ dat <- dat %>%
 ```
 
 # Physical health and health risks at age 18
-*Decided to keep as a continuous scale rather than categories - have hashed out*
+*We decided to keep this as a continuous scale rather than categories - have hashed out*
 ```{r physical activity}
 # physical_activity_18
 # dat <- dat %>%
@@ -451,11 +462,13 @@ dat <- dat %>%
 
 # Variable REcode based on analysis decisions
 
+Some variables were edited further dependent on power and other factors. 
+
 ```{r ACORN recode, include=FALSE}
 dat <- dat %>%
   mutate(acorn_recoded_05 =
            if_else(
-             acorn_05 == "Moderate Means" |
+             acorn_05 == "Moderate Means" | #Moderate Means and Hard Pressed were combined, Wealthy Achievers, Urban Prosperity, and Comfortably Off were combined
                acorn_05 == "Hard Pressed",
              1,
              0
@@ -478,6 +491,8 @@ dat <- dat %>%
   )
 ```
 
+To have a binary option for SES, middle and high SES were combined. 
+
 ```{r SES recode - combine middle and high, include=FALSE}
 dat <- dat %>%
   mutate(
@@ -495,6 +510,8 @@ dat <- dat %>%
   )
 table(dat$SES_binary_releveled)
 ```
+
+Possible harm and Definite harm were combined to give a binary variable of Harm VS No harm.
 
 ```{r child harm recode, include=FALSE}
 dat <- dat %>%
@@ -517,7 +534,8 @@ dat <- dat %>%
 table(dat$child_harm_recoded_05)
 ```
 
-Originally maternal warmth was condensed - this resulted in a large reduction in power. Therefore maternal warmth has been recoded to be continuous. 
+Originally maternal warmth was condensed - this resulted in a large reduction in power. Therefore, maternal warmth was recoded to be continuous. 
+
 ```{r maternal warmth recode, include=FALSE}
 # dat <- dat %>%
 #   mutate(
@@ -543,6 +561,8 @@ dat <- dat %>%
   )
 ```
 
+GSCE grades were collapsed: No qualification and Level 1 (GCSE at grades D-G) were combined. Level 2 (GCSE at grades A*-C) and Level 3 (A Level) were combined. 
+
 ```{r highest education recode, include=FALSE}
 dat <- dat %>%
   mutate(
@@ -555,6 +575,8 @@ dat <- dat %>%
   ))
 table(dat$highest_education_recode_18)
 ```
+
+We combined maternal and paternal reports to form parental report for antisocial behaviour and alcoholism. 
 
 ```{r recode antisocial behaviour for parent}
 # create total score for mum and data to make parent
@@ -572,7 +594,8 @@ dat <- dat %>%
 
 # Numeric versions for categorical variables
 
-Create numeric versions of all categorical antecedent variables for the correlation matrix
+Create numeric versions of all categorical antecedent and outcome variables. This is done purely for the correlation matrix to calculate multicollinearity between variables. 
+
 ```{r numreic varions of categorical antecedent variables}
 dat <- dat %>%
   mutate(SES_binary_releveled_numeric = as.numeric(SES_binary_releveled)) %>%
@@ -582,7 +605,6 @@ dat <- dat %>%
   mutate(maternal_depression_lifetime_numeric_05 = as.numeric(maternal_depression_lifetime_05))
 ```
 
-Create numeric versions of all categorical outcome variables for the correlation matrix
 ```{r numreic varions of categorical outcome variables}
 dat <- dat %>%
   mutate(depression_diagnosis_12mo_numeric_18 = as.numeric(depression_diagnosis_12mo_18)) %>%
@@ -601,6 +623,10 @@ dat <- dat %>%
 ```
 
 # Social isolation 
+
+We needed to create several forms of the social isolation variables. 
+
+## Log transformed social isolation
 
 ```{r log transform social isolation combined variables}
 colnames(dat)
@@ -665,6 +691,7 @@ table(dat$isolation.categorical.12)
 # Missing values
 
 Make sue that any values coded as -9, -999 , -8, -7 or -1 are coded as NA
+
 ```{r recode missing values}
 # Recode missing values to NAs in numeric variables
 dat <- dat %>%
@@ -686,7 +713,6 @@ dat <- dat %>%
         is.na(dat[,colnames(dat) %in% combined_social_isolation])
       )
   )
-
 ```
 
 # Create data set exluding those with 3 isolation data points missing 
@@ -722,6 +748,8 @@ Not using the following variables in analysis:
        isolation_teacher_10,
        isolation_teacher_12
        
+## Data with those missing 3 time points excluded
+
 ```{r rename social isolation variables for 3 missing dataset}
 # variables split by blocks
 # those with an "=" are just renamed with no other coding needed. Coding all done above. 
@@ -879,6 +907,8 @@ dat.renamed.3missing <- dat.3missing %>%
 colnames(dat.renamed.3missing)
 ```
 
+## Full data set
+
 ```{r rename social isolation variables for full dataset}
 # same order as the variable list for the concept paper
 # those with an "=" are just renamed with no other coding needed. Coding all done above. 
@@ -1035,9 +1065,9 @@ colnames(dat.renamed.full)
 ```
 
 # Select variables to be exported into rds and csv files 
-Have hashed out the trajectory file - as each time you need to manually edit the NAs and header for Mplus. So just use this one export and no need to run the whole chunk again. 
 
-	
+Have hashed out the trajectory file - each time you run this line, you need to then manually change the the NAs to be . and remove the header so that Mplus can read the file. I have been using only one export and not rerunning this line 
+
 ```{r selct variables to export files}
 #select variables for rds file
 dat_rds.3missing <- dat.renamed.3missing 
@@ -1141,7 +1171,8 @@ dat_csv.full.teacher <- dat %>%
     sisoet12)
 ```
 
-Export the data as rds and csv (for Mplus) files 
+# Export the data as rds and csv (for Mplus) files 
+
 ```{r export new data files}
 # save R data file
 saveRDS(object = dat_rds.3missing, file = paste0(data_path, "preprocessed_isolation_trajectories_Jan2021_3missing.rds"))
@@ -1166,6 +1197,4 @@ saveRDS(object = dat_rds.full, file = paste0(data_path, "preprocessed_isolation_
 
 #remember to delete the headings. There will be no NAs as they have been removed for the isolation variables but in future Mplus files need NA to be a fullstop (.)
 ```
-
-
 

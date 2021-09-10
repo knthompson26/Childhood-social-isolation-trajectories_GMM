@@ -52,7 +52,6 @@ library(dplyr) #conflicts with tidyverse for e.g. rename and row_number
 palette3 <- c("#78D9C5","#F5BE5E","#EEB6E9")
 ```
 
-
 ```{r source the data file path}
 #source raw data directory: data_raw and data included
 source("../../../../../isolation_trajectories_data_path.R")
@@ -88,6 +87,8 @@ dat.tra.prob.full <- read.table(paste0(mplus_GMM_clustered_full_output_data_path
 #check 
 dat.tra.prob.full
 ```
+
+## Select the variables needed from the Mplus output file 
 
 ```{r select relevant variables, include=FALSE}
 dat.tra.prob <- dat.tra.prob.full %>%
@@ -255,6 +256,8 @@ ethnicity_descriptives <- ethnicity_descriptives %>%
 ethnicity_descriptives
 ```
 
+## SES descriptives stratified by class 
+
 ```{r SES descriptives by class, include=FALSE}
 SES_descriptives_stable <- dat %>% 
   dplyr::count(class_renamed, SES) %>%
@@ -294,6 +297,8 @@ SES_descriptives <- SES_descriptives %>%
     "% Total" = Prop_total)
 SES_descriptives
 ```
+
+## Zygosity descriptives stratified by class 
 
 ```{r zygosity descriptives by class, include=FALSE}
 zygosity_binary_descriptives_stable <- dat %>% 
@@ -335,6 +340,8 @@ zygosity_binary_descriptives <- zygosity_binary_descriptives %>%
 zygosity_binary_descriptives
 ```
 
+## Sex descriptives stratified by class 
+
 ```{r sex descriptives by class, include=FALSE}
 sex_descriptives_stable <- dat %>% 
   dplyr::count(class_renamed, sex) %>%
@@ -375,6 +382,8 @@ sex_descriptives <- sex_descriptives %>%
 sex_descriptives
 ```
 
+## Combine all descriptives into one table
+
 ```{r combine descriptives, include=FALSE}
 class.descriptives <- bind_rows(
   sex_descriptives,
@@ -409,7 +418,9 @@ class.descriptives <- class.descriptives %>%
 kable(class.descriptives)
 ```
 
-# Adapt variables for regression analysis
+# *Adapt variables for regression analysis*
+
+Need to relevel the class variable to use the Low Stable class as the reference group in all regressions. 
 
 ```{r relevel class, include=FALSE}
 library(nnet)
@@ -502,7 +513,8 @@ kable(class.means)
 ctable(dat$class_renamed, dat$na.per.person.si)
 ```
 
-Export the data
+# Export the joined preprocessed and class data
+
 ```{r export new data files}
 # save R data file
 saveRDS(object = dat, file = paste0(data_path, "class_joined_preprocessed_isolation_data_full_sample.rds"))

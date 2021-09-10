@@ -80,6 +80,7 @@ si_quad_summaries <- do.call("rbind.fill",
                                "[", 
                                "summaries"))
 ```
+
 Only reported mean significance of q for classes 2-3 as the 4-6 class models did not converge. 
 
 4th class originally had problems with negative S variances - set S@0 for this model. 
@@ -111,6 +112,7 @@ quad.variance.two.class
 quad.mean.three.class
 quad.variance.three.class
 ```
+
 Significance values for 2 class model:
 - Q has significant mean for class 1 (0.044), although only just. 
 - Q has non significant mean for class 2 (0.085). 
@@ -119,7 +121,6 @@ Significance values for 3 class model:
 - Q has significant mean for class 1 (0.001).
 - Q has significant mean for class 2 (0.002). 
 - Q has significant mean for class 3 (0.008). 
-
 
 ## Model fit statistics for two and three class models
 
@@ -360,7 +361,6 @@ ggsave(
 )
 ```
 
-
 # Check to see how group allocation differs between linear and quadratic 3 class model
 
 ## Read in descriptives output file
@@ -554,10 +554,4 @@ table(dat.non.match$direction.match)
 11 people moved from the low stable to the decreasing class.
 19 people moved from the low stable to the increasing class.
 == 78 non matching. 
-
-
-
-
-
-
 
