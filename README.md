@@ -4,6 +4,10 @@
 
 ### All code written by Katherine N Thompson and checked by Antony Ambler. 
 
+Authors: Katherine N. Thompson, Candice L. Odgers, Bridget T. Bryan, Andrea Danese, Lily Strange, Timothy Matthews*, and Louise Arseneault*
+
+*Joint senior author
+
 Analyses for this project were conducted in MPlus version 8.4, STATA version 16, and R version 4.0.3 (All R code written in Rmd format). Scripts are ordered here in the same order they should be run to replicate findings. Folders are listed in the brackets of each header. 
 
 
