@@ -520,4 +520,132 @@ ctable(dat$class_renamed, dat$na.per.person.si)
 saveRDS(object = dat, file = paste0(data_path, "class_joined_preprocessed_isolation_data_full_sample.rds"))
 ```
 
+# Export file for 3STEP method sensitivity analysis
+
+This 3STEP method that will be conducted in Mplus uses the ID variable, the class membership variable. 
+
+*Remember to manually delete the headers in the csv file and replace NA to . so that Mplus can read the file*
+
+Will need to combine the raw data file (to get numeric values and short names to the class statistics)
+
+```{r read in raw data and combine with classes}
+library(foreign)
+dat.raw <- read.spss(file = paste0(data.raw_path, "Katie_18Dec20.sav"),
+                  use.value.labels = FALSE, #convert value labels into factors with those labels
+                  to.data.frame = TRUE) #return data frame 
+
+colnames(dat.raw) # check colnames
+
+dat.tra.prob.3step <- dat.tra.prob %>%
+  select(atwinid = id,
+         prob1,
+         prob2,
+         prob3,
+         class)
+
+colnames(dat.tra.prob.3step) # check colnames
+
+#create list of data frames to merge
+dataframe_list <- list(
+  dat.raw,
+  dat.tra.prob.3step
+)
+
+#merge data frames
+dat.3step <- plyr::join_all(
+  dataframe_list,
+  by = "atwinid" # Alternatively you can join by several columns
+  )
+
+#check
+colnames(dat.3step)
+```
+
+## Variable REcode based on analysis decisions
+
+Some variables were edited further dependent on power and other factors. 
+
+```{r ACORN recode, include=FALSE}
+dat.3step <- dat.3step %>%
+  mutate(P5CACORNCategoryrecoded =
+           if_else(
+             P5CACORNCategory == 4 | #Moderate Means and Hard Pressed were combined, Wealthy Achievers, Urban Prosperity, and Comfortably Off were combined
+               P5CACORNCategory == 5,
+             1, # Deprived
+             0  # Relatively affluent
+           ))
+table(dat.3step$P5CACORNCategoryrecoded)
+```
+
+Possible harm and Definite harm were combined to give a binary variable of Harm VS No harm.
+
+```{r child harm recode, include=FALSE}
+dat.3step <- dat.3step %>%
+  mutate(harm3em5recoded =
+           if_else(
+             harm3em5 == 1 |
+               harm3em5 == 2,
+             1,
+             0
+           ))
+         
+table(dat.3step$harm3em5recoded)
+```
+
+GSCE grades were collapsed: No qualification and Level 1 (GCSE at grades D-G) were combined. Level 2 (GCSE at grades A*-C) and Level 3 (A Level) were combined. 
+
+```{r highest education recode, include=FALSE}
+dat.3step <- dat.3step %>%
+  mutate(educachve18recoded =
+           if_else(
+             educachve18 == 2 |
+               educachve18 == 3,
+             1,
+             0
+           ))
+         
+table(dat.3step$educachve18recoded)
+```
+
+We combined maternal and paternal reports to form parental report for antisocial behaviour and alcoholism. 
+
+```{r recode antisocial behaviour for parent}
+# create total score for mum and data to make parent
+dat.3step <- dat.3step %>%
+  mutate(antisocialparent =
+           asbmm5 + asbfm5) # mum plus dad scores
+```
+
+```{r recode alcoholism for parent}
+# create total score for mum and data to make parent
+dat.3step <- dat.3step %>%
+  mutate(alcoholismparent =
+           alcmm5 + alcfm5) # mum plus dad scores
+```
+
+```{r check column names}
+colnames(dat.3step)
+```
+
+```{r export files for 3step sensitivity analysis}
+# save csv file 
+write_csv(x = dat.3step, path = paste0(data_path, "FOR_MPLUS_preprocessed_isolation_trajectories_Sep2021_3STEP.csv")) # save data in data file
+write_csv(x = dat.3step, path = "/Users/katiethompson/Desktop/FOR_MPLUS_preprocessed_isolation_trajectories_Sep2021_3STEP.csv") # save data on desktop for Mplus 
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

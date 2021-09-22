@@ -1,0 +1,291 @@
+---
+title: "Mplus manual 3step sensitivity analysis"
+author: "Katherine N Thompson"
+date: "20th Sep 2021"
+output:
+  word_document:
+    toc: yes
+    toc_depth: '2'
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_depth: 2
+    toc_float:
+      collapsed: no
+    number_sections: no
+    highlight: monochrome
+    theme: cerulean
+code_folding: hide
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,
+                      comment = NA,
+                      prompt = FALSE,
+                      cache = FALSE,
+                      message = FALSE,
+                      warning = FALSE)
+
+
+options(bitmapType = 'quartz') # to render fonts better
+```
+
+```{r Clear global environment}
+remove(list = ls())
+```
+
+```{r colour palletes for graphs}
+palette <- c("#78D9C5","#F5BE5E","#EEB6E9","#DBDB73","#FFED98","#BFD2EB")
+```
+ 
+```{r source the data file path}
+#source raw data directory: data_raw and data included
+source("../../../../../isolation_trajectories_data_path.R")
+```
+
+```{r Mplus packages}
+library(MplusAutomation)
+library(stringr)
+library(stringi)
+library(filesstrings)
+library(texreg)
+library(relimp)
+library(rhdf5)
+library(knitr)
+library(ggplot2)
+library(tidyverse)
+library(plyr) #conflicts with tidyverse for e.g. rename and row_number
+```
+
+```{r MplusAutomation citation}
+citation("MplusAutomation") # need the citation for the paper
+```
+# Functions
+
+```{r functions}
+add.significance.variable <- function(data){
+  data <- data %>%
+    mutate(
+    Significance = 
+      if_else(
+        p < 0.05, 
+        1,
+        0
+      ) %>%
+    recode_factor(
+        "0" = "Non-significant",
+        "1" = "Significant"
+      ))
+  return(data)
+}
+```
+
+
+# Antecedents
+
+Regression fit statistics: OR for "categorical latent variable regression" using Reference Class 1 (Low stable)
+*Remember to check if you are reading in the full data set or for the one excluding the three missing*
+
+## Read in the model
+
+```{r read in data for regression model, include=FALSE}
+antecedent.model <- readModels(target = paste0(mplus_antecedent_output_3step), recursive = TRUE)
+```
+
+*READING IN THE DATA IN R DOES NOT PROVIDE THE RIGHT INFORMATION FOR THE ANTECEDENTS - need to look in .out file*
+This only gives the unstandardised paratimisations - need the "ODDS RATIO FOR THE ALTERNATIVE PARAMETERIZATIONS FOR THE CATEGORICAL LATENT VARIABLE REGRESSION: Parameterization using Reference Class 1" and this is not available using MplusAutomation. For now I have manually copied over the correct table needed. 
+
+```{r extract summary stats for regression model, include=FALSE}
+# extract the summary variables from the mplus output file
+antecedent.model_summaries <- antecedent.model[["summaries"]]
+
+antecedent.model_parameters <- antecedent.model[["parameters"]]
+```
+
+# Outcomes
+
+## Read in the model
+
+```{r read in data for outcome results}
+outcome.model <- readModels(target = paste0(mplus_outcome_output_3step), recursive = TRUE)
+```
+
+```{r extract overall class means per variable}
+# extract overall means for each class per variable
+outcome.model_overall_means <- outcome.model[["X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.3step.output.outcomes..isolation_3traj_full_sample_clustered_3STEP_outcomes.out"]][["lcCondMeans"]][["overall"]]
+
+colnames(outcome.model_overall_means) <- c("Variable",
+                                           "Low stable class mean",
+                                           "Low stable class standard error",
+                                           "Increasing class mean",
+                                           "Increasing class standard error",
+                                           "Decreasing class mean",
+                                           "Decreasing class standard error",
+                                           "Chi square",
+                                           "df",
+                                           "p value") 
+outcome.model_overall_means
+```
+
+We are not interested in comparison from class 2 to 3. We are only interested in the comparisons to the low stable class (class 1). 
+
+```{r extract pairwise comparisons - auxiliary}
+outcome.model_all_pairwise_tests <- outcome.model[["X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.3step.output.outcomes..isolation_3traj_full_sample_clustered_3STEP_outcomes.out"]][["lcCondMeans"]][["pairwise"]]
+
+# Overall table
+outcome.model_pairwise_tests <- outcome.model_all_pairwise_tests %>% 
+  filter(classA == 1) %>%    # only get low stable comparisons
+  select(!df) %>%            # remove df column (it was empty)
+  add.significance.variable 
+        
+
+# Increasing comparisons - significant only
+outcome.model_pairwise_tests_significant_increasing <- outcome.model_pairwise_tests %>%
+  filter(classB == 2 & Significance == "Significant") %>%
+  mutate(`Class comparison` = c("Increasing")) %>%
+  select(Variable = var,
+         `Class comparison`,
+         `Chi square` = chisq,
+         p)
+outcome.model_pairwise_tests_significant_increasing
+        
+# Decreasing comparisons - significant only
+outcome.model_pairwise_tests_significant_decreasing <- outcome.model_pairwise_tests %>%
+  filter(classB == 3 & Significance == "Significant") %>%
+  mutate(`Class comparison` = c("Decreasing")) %>%
+  select(Variable = var,
+         `Class comparison`,
+         `Chi square` = chisq,
+         p)
+outcome.model_pairwise_tests_significant_decreasing
+
+# All significant results
+outcome.model_pairwise_tests_significant <- rbind(outcome.model_pairwise_tests_significant_increasing, 
+                                                  outcome.model_pairwise_tests_significant_decreasing)
+outcome.model_pairwise_tests_significant
+```
+*Variables that are significant using pairwise t-tests: Using "DE3STEP" in Mplus* (Y=same as original analysis)
+
+Increasing:
+- Moderate conduct disorder diagnosis Y
+- Not in employment or education Y
+- ADHD symptoms Y
+- Conduct disorder symptoms Y
+- Loneliness Y
+- Technology use Y
+- Coping with stress Y 
+- Sleep Y
+- Job preparedness: attributes Y
+
+Decreasing:
+- Depression symptoms Y
+
+Both:
+- Psychotic experiences Y
+- Physical activity Y
+- Life satisfaction Y (but only for increasing)
+- Job optimism Y
+
+Missing but reported in original analysis:
+- Self harm or suicide attempt
+- Cannabis dependence - DUE TO ERROR ACCOUNTED IN MPLUS
+- ADHD diagnosis 
+- Service use
+
+*Variables that are significant using pairwise t-tests: Using "DU3STEP" in Mplus* (Y=same as original analysis; X=same as DE3STEP)
+This DU3STEP option throws errors such as: PROBLEMS OCCURRED DURING THE ESTIMATION FOR THE DISTAL OUTCOME NEETE18. THE VARIANCE OF THE DISTAL OUTCOME IN CLASS 1 IS ZERO. THE PROBLEM CAN BE RESOLVED BY USING THE DE3STEP OPTION. **Therefore the DE3STEP option was used**
+
+Increasing:
+- Self harm or suicide attempt Y
+- ADHD symptoms Y X
+- Conduct disorder symptoms Y X
+- BMI
+- Loneliness  Y X
+- Coping with stress Y X
+- Sleep  Y X
+- Job preparedness: attributes Y X
+- Job optimism Y (but for both)
+
+Decreasing:
+- Depression symptoms Y X
+- Alcohol symptoms 
+- Physical activity Y (but for both) 
+
+Both:
+- Life satisfaction Y (but only for increasing) X
+
+
+# BCH approach
+
+Similar to the auxilary DE3STEP approach, the BCH approach:
+
+The BCH method, BCH for short, described in Vermunt (2010) and also in Bakk et al. (2013). For the distal outcome model that evaluates the means across classes for a continuous auxiliary variable these simulations show that the BCH method substantially outperforms Lanza’s method and the 3-step method. The BCH method avoids shifts in latent class in the final stage that the 3-step method is susceptible to. In its final stage the BCH method uses a weighted multiple group analysis, where the groups correspond to the latent classes, and thus the class shift is not possible because the classes are known. In addition, the BCH method performs well when the variance of the auxiliary variable differs substantially across classes, i.e., resolving the problems that Lanza’s method is susceptible to. The BCH method uses weights wij which reflect the measurement error of the latent class variable. In the estimation of the auxiliary model, the i-th observation in class/group j is assigned a weight of wij and the auxiliary model is estimated as a multiple group model using these weights. 
+
+```{r extract pairwise comparisons - BCH}
+outcome.model_all_pairwise_tests_bch <- outcome.model[["X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.3step.output.outcomes..isolation_3traj_full_sample_clustered_3STEP_BCH_outcomes.out"]][["lcCondMeans"]][["pairwise"]]
+
+# Overall table
+outcome.model_pairwise_tests_bch <- outcome.model_all_pairwise_tests_bch %>% 
+  filter(classA == 1) %>%    # only get low stable comparisons
+  select(!df) %>%            # remove df column (it was empty)
+  add.significance.variable 
+
+
+# Increasing comparisons - significant only
+outcome.model_pairwise_tests_increasing_bch <- outcome.model_pairwise_tests_bch %>%
+  filter(classB == 2) %>%
+  mutate(`Class comparison` = c("Increasing")) %>%
+  select(Variable = var,
+         `Class comparison`,
+         `Chi square` = chisq,
+         p)
+        
+# Decreasing comparisons - significant only
+outcome.model_pairwise_tests_decreasing_bch <- outcome.model_pairwise_tests_bch %>%
+  filter(classB == 3) %>%
+  mutate(`Class comparison` = c("Decreasing")) %>%
+  select(Variable = var,
+         `Class comparison`,
+         `Chi square` = chisq,
+         p)
+
+# All significant results
+outcome.model_pairwise_tests_bch_full <- rbind(outcome.model_pairwise_tests_increasing_bch, 
+                                                  outcome.model_pairwise_tests_decreasing_bch)
+
+
+kable(outcome.model_pairwise_tests_bch_full) # compare to auxilary 
+# kable(outcome.model_pairwise_tests_significant)
+```
+
+No errors were thrown when running this BCH model - all variables were thus included in the analyses. 
+
+*Variables that are significant using pairwise t-tests: Using "BCH" in Mplus* (Y=same as original analysis)
+
+Increasing:
+- ADHD diagnosis Y
+- Moderate conduct disorder diagnosis Y
+- Cannabis dependence Y (both in original)
+- Self harm or suicide attempt Y (both in original)
+- Not in employment or education Y
+- ADHD symptoms Y
+- Conduct disorder symptoms Y
+- Loneliness Y
+- Technology use Y
+- Coping with stress Y 
+- Sleep Y
+- Job preparedness: attributes Y
+
+Decreasing:
+- Depression symptoms Y
+- Cannabis symptoms (diagnosis in original analysis)
+
+Both:
+- Psychotic experiences Y
+- Physical activity Y
+- Life satisfaction Y (but only for increasing)
+- Job optimism Y
+- Smoking (increasing in original)
+
+Missing here but included in original:
+- Service use (increasing)
+

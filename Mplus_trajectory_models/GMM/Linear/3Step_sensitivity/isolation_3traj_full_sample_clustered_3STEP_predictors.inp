@@ -1,0 +1,84 @@
+! MPLUS CODE FOR GROWTH MIXTURE MODEL FOR ERISK SOCIAL ISOLATION TRAJECTORIES
+! Authors: K N Thompson
+ 
+TITLE: GMM 3 class social isolation in full sample with clustering: 3STEP predictors
+
+
+DATA:
+   FILE IS "/Users/katiethompson/Desktop/
+   FOR_MPLUS_preprocessed_isolation_trajectories_Sep2021_3STEP.csv";
+   ! using file saved on desktop as doesn't like long paths 
+   ! this is the full file with class membership and covariates
+
+VARIABLE: 
+	NAMES =  familyid atwinid btwinid rorderp5 torder risks cohort sampsex 
+	zygosity sethnic seswq35 P5CACORNCategory	nchildren00e5 schmeals00e5 
+	classsize00e5 vndngdm5 socprbm5 sisoe5 sisoy5 sisoet5 sisoyt5	sisoem5 
+	sisoym5 harm3em5 warme5 totproe5 iqe5 exfunce5 tomtote5 totexte5 
+	intisoe5 totadde5 irre5 impe5 appe5 slue5	ware5 unce5 inhe5 shye5 nmovel5 
+	nobiodl5 tsibl5 anyviom5 tssupm5 actvm5 fdepmm5 bfiom5 bficm5 bfiem5 bfiam5 
+	bfinm5 asbmm5 asbfm5 alcmm5 alcfm5 sisoe7	 sisoy7 sisoet7 sisoyt7 sisoem7 
+	sisoym7 sisoe10 sisoy10 sisoet10 sisoyt10	 sisoem10 sisoym10 sisoe12 sisoy12	
+	sisoet12 sisoyt12 sisoem12 sisoym12 dxmdee18 mdesxe18 dxgade18 gadsxe18 
+	dxadhd5_18e SR_symtot18e cdmode18 cdsxe18 dxalcdepe18 dxalcabue18 alcsxe18 
+	dxmarje18 marjsxe18 dxptsd5lfe18 dxptsd5cue18 psysympe18 psysymp01e18 psyexpe18 
+	psyexpce18	sharmsuice18 bmie18 phyacte18 smkcnume18 lnCRP_E18_4SD lonelye18 
+	lifsate18 teche18 psqie18 neete18 educachve18 jprepse18 jprepae18 jbschacte18 
+	optime18 srvusemhe18 copstrse18 prob1 prob2 prob3 class P5CACORNCategoryrecoded 
+	harm3em5recoded educachve18recoded antisocialparent alcoholismparent ; 
+	! variable names are from original file
+
+	USEVARIABLES = class seswq35 P5CACORNCategoryrecoded vndngdm5 socprbm5 nchildren00e5 
+	schmeals00e5 harm3em5recoded tsibl5 tssupm5 actvm5 nobiodl5 anyviom5 warme5 fdepmm5 
+	bfiom5 bficm5 bfiem5 bfiam5 bfinm5 antisocialparent alcoholismparent iqe5 exfunce5 
+	tomtote5 totexte5 intisoe5 totadde5 totproe5 ;
+	! all predictor/antecdent variables
+	
+	NOMINAL = class ;
+
+	MISSING = .; ! . are missing values
+
+! To restrict to a specific variable only (eg for girls only USEOBSERVATIONS sex EQ 2;)  
+
+	IDVARIABLE = atwinid ;
+	
+	CLUSTER = familyid ; !control for twins in sample
+
+! Change the number of classes here 
+  	CLASSES = C(3);
+
+ANALYSIS:
+	TYPE = MIXTURE COMPLEX ; ! growth mixture model - have removed complex structure
+      	STARTS = 500 20 ; ! number of random sets of starting values 
+    	STITERATIONS = 10 ; ! number of final optimizations
+
+MODEL:
+! This model iis using class three as the reference class (decreasing) 
+! Not sure how to change this to be the low stable as the reference
+! These numbers are from the traj3 output: Logits for the Classification Probabilities
+
+    %OVERALL%
+    
+    C ON seswq35 P5CACORNCategoryrecoded vndngdm5 socprbm5 nchildren00e5 
+	schmeals00e5 harm3em5recoded tsibl5 tssupm5 actvm5 nobiodl5 anyviom5 warme5 fdepmm5 
+	bfiom5 bficm5 bfiem5 bfiam5 bfinm5 antisocialparent alcoholismparent iqe5 exfunce5 
+	tomtote5 totexte5 intisoe5 totadde5 totproe5 ;
+     
+    %C#1%
+     [class#1@5.092]; [class#2@-0.194];
+     
+    %C#2%
+     [class#1@2.193]; [class#2@4.204];
+     
+    %C#3%
+     [class#1@-2.233]; [class#2@-5.270];
+     	     
+  
+OUTPUT:	
+	sampstat TECH7
+
+Savedata: 
+	! save = cprob FSCORES; 
+	! file = GMM_SI_3Cl_full_sample_clustered.txt;
+
+	
