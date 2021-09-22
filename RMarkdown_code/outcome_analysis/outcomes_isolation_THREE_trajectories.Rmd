@@ -508,15 +508,18 @@ ggsave(
 
 ANALYSIS PLAN 
 
-**Individual outcome regressions**: single regressions are computed to see if the class can predict the the occurrence of each variable (variable ~ class). This is done through a loop. OR (Odds ratios) and their confidence intervals are calculated for binary variables (logistic regression). Standardized Beta values are calculated for continuous variables (linear regression). Continuous and binary variables are plotted separately. FDR multiple testing correction is accounted for independent tests in each block. Z scores are calculated for all continuous variables. All linear regressions are run with raw scores and z scores.
+**Individual outcome regressions**: single regressions are computed to see if the class can predict the the occurrence of each variable (variable ~ class). This is done through a loop. OR (Odds ratios) and their confidence intervals are calculated for binary variables (logistic regression). Standardized Beta values are calculated for continuous variables (linear regression). Continuous and binary variables are plotted separately. Z scores are calculated for all continuous variables. All linear regressions are run with raw scores and z scores.
 
-A. Linear regressions (continuous variables):
+A. *Linear regressions* (continuous variables):
 depression_current_scale_18, anxiety_current_scale_18, inattentive_hyperactive_symptoms_total_18, conduct_disorder_symptoms_18, alcohol_symptom_scale_18, cannabis_symptom_scale_18,   cat_psychosis_experiences_scale_18, BMI_18, CRP_log_18, physical_activity_18, smoking_current_number_18, loneliness_18, life_satisfaction_18, technology_use_18, coping_with_stress_18, PSQI_global_score_18, job_preparedness_skills_18, job_preparedness_attributes_18, optimism_18, job_search_activities_count_18
 
-B. Logistic regressions (binary variables):
+B. *Logistic regressions* (binary variables):
 depression_diagnosis_12mo_18, anxiety_diagnosis_18, ADHD_diagnosis_18, conduct_disorder_moderate_18, alcohol_dependence_18, cannabis_dependence_18, PTSD_diagnosis_lifetime_18, PTSD_diagnosis_current_18,suicide_attempt_selfharm_18, service_use_18, not_in_employment_education_numeric_18
 
 alcohol_abuse_18 removed as using alcohol_dependence_18 instead as it captures more disordered drinking. 
+
+C. *Regressions rerun whilst controlling for antecedents* (both continuous and binary are rerun):
+antecedents controlled for include: prosocial_behaviours_combined_05 + ADHD_combined_05 + internalising_combined_excl_sis_05 + maternal_personality_openness_05 + number_children_school_05
 
 
 # Create *z scores* for all continuous variables
@@ -535,6 +538,8 @@ colnames(dat)
 ```
 
 # Posterior sensitivity analysis 
+
+The below few chunks are used to run the same analysis again in a reduced sample (only individuals who had a posterior probability of above 0.8 in all classes). 
 
 ## Posterior probability indicator
 
@@ -609,6 +614,7 @@ decreasing.cut.stats
 }
 ```
 
+STATS
 Low stable: Dropped 42 people. Average probability = 0.66, minimum probability = 0.48. 
 Increasing: Dropped 24 people. Average probability = 0.64, minimum probability = 0.49.
 Decreasing: Dropped 25 people. Average probability = 0.63, minimum probability = 0.51.
@@ -708,6 +714,8 @@ outcome.logistic.separate.plot <- ggplot(
 outcome.logistic.separate.plot
 ```
 
+### Plot made for the SGDP presentation
+
 ```{r logistic regression outcome plot}
 dat.logistic.ordered.sgdp.plot <- dat.logistic.ordered %>% 
   filter(Significance == "Significant",
@@ -772,7 +780,7 @@ ggsave(
 
 # Linear regression
 
-Using z-scores
+Using z-scores in all below calculations. 
 
 ## Loop
 
@@ -824,7 +832,7 @@ linear.table <- paper.table(data.outcome.linear.zscore, model = "linear")
 linear.table 
 ```
 
-### Getting multiple testing correction (BH FDR) p values
+### Getting multiple testing correction (BH FDR) p values -- IGNORE -- **FDR correction not applied here.** 
 
 ```{r multiple testing correction for linear models}
 data.outcome.linear.zscore.decreasing <- multiple.testing(data = data.outcome.linear.zscore,
@@ -846,6 +854,8 @@ data.outcome.linear.zscore.fdr <- rbind(
 ```{r table for multiple corrected }
 paper.table(data.outcome.linear.zscore.fdr, model = "linear")
 ```
+
+Separate out data frames for each domain (this is done to order the plot later on by domain)
 
 ```{r bind and order rows stata}
 # mental health
@@ -920,6 +930,8 @@ ggsave(
 }
 ```
 
+### Plot made for the SGDP presentation
+
 ```{r linear regression outcome plot zscores}
 dat.linear.ordered.sgdp.plot <- dat.linear.ordered %>% 
   filter(Significance == "Significant",
@@ -983,7 +995,8 @@ ggsave(
 
 # Controlling for significant antecedents
 
-Rerun all regression models while controlling for antecedents that remained significant in the full antecedent model. Antecedents that remained significant in the full antecedent model: child prosocial behaviours, ADHD behaviours, internalising behaviours, and matrnal personality openness. *Do we include child executive function as it was only just significant?*
+We have rerun all regression models while controlling for antecedents that remained significant in the full antecedent model. Antecedents that remained significant in the full antecedent model: child prosocial behaviours, child ADHD behaviours, child internalising behaviours, maternal personality openness, number of children in school. 
+All regressions controlled for sex and SES. 
 
 ## Logistic regression loop - controlling for antecedents
 
@@ -1144,6 +1157,8 @@ outcome.linear.separate.plot.zscore.ant_control <- ggplot(
 
 outcome.linear.separate.plot.zscore.ant_control
 ```
+
+### Plot made for the SGDP presentation
 
 ```{r linear regression outcome plot zscore ant control for sgdp center talk}
 data.outcome.linear.zscore.ant_control.sgdp.plot <- data.outcome.linear.zscore.ant_control %>% 

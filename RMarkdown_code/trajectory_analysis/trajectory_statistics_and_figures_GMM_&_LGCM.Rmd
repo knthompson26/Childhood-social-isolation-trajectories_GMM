@@ -57,7 +57,7 @@ library(plyr) #conflicts with tidyverse for e.g. rename and row_number
 ```
 
 ```{r MplusAutomation citation}
-citation("MplusAutomation")
+citation("MplusAutomation") # need the citation for the paper
 ```
 
 # Theme for plotting
@@ -155,6 +155,7 @@ si.growth.summaries
 ```{r growth curve model fit table}
 knitr::kable(si.growth.summaries) #table for Word
 ```
+
 Cut offs and best fitting models are:
 
 * lowest aBIC - linear

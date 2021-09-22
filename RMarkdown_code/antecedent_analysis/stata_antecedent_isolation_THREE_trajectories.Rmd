@@ -49,10 +49,14 @@ library(tidyverse)
 library(dplyr) #conflicts with tidyverse for e.g. rename and row_number
 ```
 
+# Source path 
+
 ```{r source the data file path}
 #source raw data directory: data_raw and data included
 source("../../../../../isolation_trajectories_data_path.R")
 ```
+
+# Read in data - class_joined
 
 ```{r read in prepped regression data and check variable names, include=FALSE}
 dat <- readRDS(file = paste0(data_path, "class_joined_preprocessed_isolation_data_full_sample.rds"))
@@ -226,9 +230,6 @@ theme.antecedent <- theme(panel.grid.major.x = element_line(size = 0.5,
 # Test for multicollinearity 
 
 Create correlation matrix to look for variables that are highly correlated.
-On previous graph: parental antisocial behaviour and parental alcoholism have a correlation of 0.94 (Pearson).
-When rerunning the analyses - their correlation is 0.62 - therefore there must have been a previous error in deriving the parental alcoholism variable. 
-*parental alcoholism has been reentered into the regressions*
 
 ```{r test for multicollinearity,}
 # create data frame with just numeric antecedent variables
@@ -284,7 +285,7 @@ ggsave(
 
 # Posterior sensitivity analysis 
 
-## Posterior probability indicator
+The below few chunks are used to run the same analysis again in a reduced sample (only individuals who had a posterior probability of above 0.8 in all classes). 
 
 *IMPORTANT* 
 When posterior.cut is set to TRUE the following chunks will run for the data set that has those probability<0.8 dropped.  
@@ -357,6 +358,7 @@ decreasing.cut.stats
 }
 ```
 
+STATS
 Low stable: Dropped 42 people. Average probability = 0.66, minimum probability = 0.48. 
 Increasing: Dropped 24 people. Average probability = 0.64, minimum probability = 0.49.
 Decreasing: Dropped 25 people. Average probability = 0.63, minimum probability = 0.51.
@@ -365,16 +367,16 @@ NEW N = 2141
 
 # Antecedent regression analyses
 
-Forty variables was con variables is too many to include. 
-Variables that have been dropped for the 3 class analysis:
+Forty variables was con variables is too many to include. Variables that have been dropped for the 3 class analysis:
 multinom.class_size_average_05, multinom.resident_moves_05, multinom.temp_negative_affect_05, multinom.temp_impulsivity_05, multinom.temp_approach_05, multinom.temp_sluggishness_05, multinom.temp_wariness_05, multinom.temp_undercontrolled_05, multinom.temp_inhibited_05, multinom.temp_shy_05. 
-Combining separate mum and dad variables into "parent": alcoholism, antisocial behaviour - this has been done in regression_variable_preparation script. 
 
 ANALYSIS PLAN 
 
-1. **Individual antecedent regressions**: single regressions are computed for each variable (class ~ variable). This is done through a loop. Relative Risk Ratios (RRR) and their confidence intervals are calculated. Statistics for all variables are combined and RRR (95% CI) are plotted for the Increasing and Decreasing class. 
+1. *Individual antecedent regressions*: single regressions are computed for each variable (class ~ variable). This is done through a loop. Relative Risk Ratios (RRR) and their confidence intervals are calculated. Statistics for all variables are combined and RRR (95% CI) are plotted for the Increasing and Decreasing class. 
 
-2. **Full model**: All variables that significantly predict class membership are controlled for. E.g. (class ~ social_variable_1 + home_variable_2 + neuro_variable_3 + emo_variable_4). RRR (95% CI) are calculated. Z scores for continuous variables are used. No multiple testing correction is applied at this step.
+2. *Full model*: All variables that significantly predict class membership are controlled for. E.g. (class ~ social_variable_1 + home_variable_2 + neuro_variable_3 + emo_variable_4). RRR (95% CI) are calculated. Z scores for continuous variables are used. No multiple testing correction is applied at this step.
+
+All regressions are first computed in STATA - multinomial regression with clustering is not currently doable in R. The coefficients are then imported into R to be interpreted. 
 
 
 ## Antecedent regression loop for ALL variables - variables are either treated as continuous or binary
@@ -398,6 +400,8 @@ colnames(scaled_continuous_data) <- paste0("z_score.", colnames(scaled_continuou
 # combine the scaled data to the main dataset 
 dat <- cbind(dat, scaled_continuous_data)
 ```
+
+# Create STATA file 
 
 ```{r create mlogit STATA file}
 data.mlogit <- dat %>% # need to rename for stata format
@@ -456,7 +460,7 @@ if(posterior.cut == TRUE){
 
 Three models were run in STATA:
 1. Individual regressions. Each antecedent was regressed on class membership. 
-2. Significant only regressions. This is the full model of antecedents that only includes variables that were significant at the individual regression stage. 
+2. Significant only regressions. This is the full model of antecedents that only includes variables that were significant at the individual regression stage. (**THIS IS NOT USED IN THE PAPER**)
 3. All model. This includes all antecedents in one model predicting class membership. 
 
 The below chunk includes code to move the txt files to the right place - once this has been done the code is hashed out. 
@@ -567,7 +571,7 @@ dat.stata.individual.fdr <- rbind(
 kable(dat.stata.individual.fdr, digits = 2)
 ```
 
-## Multivariate model including variables that were significant in univariate models 
+## Multivariate model including variables that were significant in univariate models (**THIS IS NOT USED IN THE PAPER**)
 
 ```{r reformat stata data all model uni sig}
 dat.stata.all.siguni <- dat.stata.all.siguni.raw[c(112:215,221:324),] %>%
@@ -754,6 +758,7 @@ stata.plot.individual.OPTION1 <- ggplot(
   
 stata.plot.individual.OPTION1
 ```
+
 ## No significance indicators - OPTION 2
 
 ```{r stata plot to be used for results OPTION 2}

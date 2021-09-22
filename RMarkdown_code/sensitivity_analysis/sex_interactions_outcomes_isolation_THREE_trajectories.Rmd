@@ -454,7 +454,7 @@ colnames(dat)
 
 # Association with outcome variables at age 18
 
-ANALYSIS PLAN 
+ANALYSIS PLAN - SAME AS THE OUTCOME SCRIPT
 
 **Individual outcome regressions**: single regressions are computed to see if the class can predict the the occurrence of each variable (variable ~ class). This is done through a loop. OR (Odds ratios) and their confidence intervals are calculated for binary variables (logistic regression). Standardized Beta values are calculated for continuous variables (linear regression). Continuous and binary variables are plotted separately. FDR multiple testing correction is accounted for independent tests in each block. Z scores are calculated for all continuous variables. All linear regressions are run with raw scores and z scores.
 
@@ -562,6 +562,7 @@ data.outcome.logistic.sex <- data.table::rbindlist(logistic.stats.outcome.sex) %
 # check for significant interaction effects between class and sex for each variable
 data.outcome.logistic.sex
 ```
+
 Significant interaction between sex and class membership for "Not in employment or education", and "service use" - rerun model separately for males and females. 
 
 ```{r table combined logistic dataframes sex diffs}
@@ -645,6 +646,7 @@ data.outcome.linear.sex <- data.table::rbindlist(linear.stats.outcome.sex) %>%
 # check for significant interactions between sex and class
 data.outcome.linear.sex
 ```
+
 Interaction terms are set to "class_reordered:sexFemale", therefore OR>1 indicates association with being female. 
 Significant interaction between sex and class membership for "Cannabis dependence symptoms", "BMI", "Log CRP", "PSQI score". 
 
@@ -914,6 +916,7 @@ linear.output.outcome.full.bmi.girls <- linear.output.outcome.full.bmi.girls %>%
 # table
 kable(linear.output.outcome.full.bmi.girls)
 ```
+
 Significant association between BMI and Increasing class for girls only. 
 
 ### Log CRP
