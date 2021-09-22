@@ -77,7 +77,7 @@ These models are run in Mplus and interpreted in Rmd.
 1. outcomes_isolation_THREE_trajectories.Rmd
  - Outcome linear and logistic regressions with output and graphs - with clustering
 
-**Sensitivity analysis: sex interactions for outcomes** (RMarkdown_code/sensitivity_analysis)
+**Sensitivity analysis: sex interactions for outcomes and mplus 3step** (RMarkdown_code/sensitivity_analysis)
 
 1. sex_interactions_outcomes_isolation_THREE_trajectories.Rmd
  - Sex interaction terms are added to outcome regressions
