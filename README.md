@@ -39,6 +39,7 @@ These models are run in Mplus and interpreted in Rmd.
  - OPTSEED checks on 3 and 4 class models
  - 5 and 6 class models with slope fixed to zero
  - Quadratic models for 2-6 classes: 4-6 class models with slope fixed to zero
+ - 3-Step sensitivity analyses: antecedents (manual) and outcomes (BCH)
 
 
 **Trajectory descriptives:** (RMarkdown_code/descriptives)
@@ -81,6 +82,9 @@ These models are run in Mplus and interpreted in Rmd.
 1. sex_interactions_outcomes_isolation_THREE_trajectories.Rmd
  - Sex interaction terms are added to outcome regressions
  - Where significant interactions occur, regressions are rerun for males and females separately
+
+2. mplus_3step_sensitivity.Rmd
+ - Outcome tables were imported from Mplus BCH approach and prepared for manuscript
 
 
 If you have any queries with the above, please contact katherine.n.thompson@kcl.ac.uk
