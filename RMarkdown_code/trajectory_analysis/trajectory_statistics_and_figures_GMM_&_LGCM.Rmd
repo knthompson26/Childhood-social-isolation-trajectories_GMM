@@ -273,13 +273,13 @@ isolation_growth_curve_single_clustered_full_sample <- ggplot() +
   geom_line(data = dat_si_single,
         aes(x = timepoint, 
             y = social.isolation_score, 
-            colour = Class,
+          #  colour = Class,
             shape = Class), 
         size = 1.5) +
   geom_point(data = dat_si_single,
         aes(x = timepoint, 
             y = social.isolation_score, 
-            colour = Class, 
+           # colour = Class, 
             size = 1), 
         show.legend = T) +
   scale_color_manual(values = palette) +
@@ -498,7 +498,7 @@ two_class_si <- two_class_si %>%
 two_traj_plot_clustered_full_sample <- ggplot(two_class_si,
         aes(x = timepoint, 
             y = social.isolation_score, 
-            colour = Class,
+          #  colour = Class,
             shape = Class)) +
           geom_line(size = 1.5) +
   geom_point(aes(size = 1)) +
@@ -546,7 +546,7 @@ three_class_si <- three_class_si %>%
 three_traj_plot_clustered_full_sample <- ggplot(three_class_si,
         aes(x = timepoint, 
             y = social.isolation_score, 
-            colour = Class,
+          #  colour = Class,
             shape = Class)) +
           geom_line(size = 1.5) +
   geom_point(aes(size = 1)) +
@@ -568,7 +568,7 @@ three_traj_plot_clustered_full_sample
 three_traj_plot_clustered_full_sample.SGDP<- ggplot(three_class_si,
         aes(x = timepoint, 
             y = social.isolation_score, 
-            colour = Class,
+          #  colour = Class,
             shape = Class)) +
           geom_line(size = 1.5) +
   geom_point(aes(size = 1)) +
@@ -629,7 +629,7 @@ four_class_si <- four_class_si %>%
 four_traj_plot_clustered_full_sample <- ggplot(four_class_si,
         aes(x = timepoint, 
             y = social.isolation_score, 
-            colour = Class,
+          #  colour = Class,
             shape = Class)) +
           geom_line(size = 1.5) +
   geom_point(aes(size = 1)) +
@@ -681,7 +681,7 @@ five_class_si <- five_class_si %>%
 five_traj_plot_clustered_full_sample <- ggplot(five_class_si,
         aes(x = timepoint, 
             y = social.isolation_score, 
-            colour = Class,
+           # colour = Class,
             shape = Class)) +
           geom_line(size = 1.5) +
   geom_point(aes(size = 1)) +
@@ -733,7 +733,7 @@ six_class_si <- six_class_si %>%
 six_traj_plot_clustered_full_sample <- ggplot(six_class_si,
         aes(x = timepoint, 
             y = social.isolation_score, 
-            colour = Class,
+           # colour = Class,
             shape = Class)) +
           geom_line(size = 1.5) +
   geom_point(aes(size = 1)) +
@@ -794,23 +794,23 @@ combined_trajectories_plot_clustered_full_sample <- ggarrange(isolation_growth_c
                                         legend = "none"
                                         )
 
-combined_trajectories_plot_clustered_full_sample_CENTRE_PRES <- ggarrange(isolation_growth_curve_single_clustered_full_sample, 
-                                        two_traj_plot_clustered_full_sample, 
-                                        three_traj_plot_clustered_full_sample, 
-                                        four_traj_plot_clustered_full_sample, 
-                                        five_traj_plot_clustered_full_sample,
-                                        six_traj_plot_clustered_full_sample,
-                                        ncol = 3, nrow = 2,
-                                        widths = c(2.7,2.7,2.7,2.7), 
-                                        heights = c(3,3,3,3),
-                                        labels = c("A", "B", "C", "D", "E", "F"),
-                                        legend = "none"
-                                        )
+# combined_trajectories_plot_clustered_full_sample_CENTRE_PRES <- ggarrange(isolation_growth_curve_single_clustered_full_sample, 
+#                                         two_traj_plot_clustered_full_sample, 
+#                                         three_traj_plot_clustered_full_sample, 
+#                                         four_traj_plot_clustered_full_sample, 
+#                                         five_traj_plot_clustered_full_sample,
+#                                         six_traj_plot_clustered_full_sample,
+#                                         ncol = 3, nrow = 2,
+#                                         widths = c(2.7,2.7,2.7,2.7), 
+#                                         heights = c(3,3,3,3),
+#                                         labels = c("A", "B", "C", "D", "E", "F"),
+#                                         legend = "none"
+#                                         )
 ```
 
 ```{r save trajectory plot}
 ggsave(
-  "combined_trajectories_plot_clustered_full_sample.jpeg",
+  "combined_trajectories_plot_clustered_full_sample_BW.jpeg",
   plot = combined_trajectories_plot_clustered_full_sample,
   device = "jpeg",
   path = paste0(graph_save_data_path, "trajectories/final/"),
@@ -818,13 +818,13 @@ ggsave(
   height = 10
 )
 
-ggsave(
-  "combined_trajectories_plot_clustered_full_sample_CENTRE_PRES.jpeg",
-  plot = combined_trajectories_plot_clustered_full_sample_CENTRE_PRES,
-  device = "jpeg",
-  path = paste0(graph_save_data_path, "trajectories/"),
-  width = 11,
-  height = 6
-)
+# ggsave(
+#   "combined_trajectories_plot_clustered_full_sample_CENTRE_PRES.jpeg",
+#   plot = combined_trajectories_plot_clustered_full_sample_CENTRE_PRES,
+#   device = "jpeg",
+#   path = paste0(graph_save_data_path, "trajectories/"),
+#   width = 11,
+#   height = 6
+# )
 ```
 
