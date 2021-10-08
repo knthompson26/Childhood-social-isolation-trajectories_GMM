@@ -2,7 +2,7 @@
 
 ## This repository holds code for the manuscript titled "Antecedents and outcomes of childhood social isolation" using data from the E-Risk study. 
 
-### All code written by Katherine N Thompson and checked by Antony Ambler. 
+### All code written by Katherine N Thompson and reviewed by XX.
 
 Authors: Katherine N. Thompson, Candice L. Odgers, Bridget T. Bryan, Andrea Danese, Lily Strange, Timothy Matthews*, and Louise Arseneault*
 
