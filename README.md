@@ -1,6 +1,6 @@
 # Childhood_social_isolation_trajectories-GMM
 
-## This repository holds code for the manuscript titled "Antecedents and outcomes of childhood social isolation" using data from the E-Risk study. 
+## This repository holds code for the manuscript titled "Trajectories of childhood social isolation in a nationally representative cohort: Associations with antecedents and early adulthood outcomes"
 
 ### All code written by Katherine N Thompson and reviewed by XX.
 
@@ -9,6 +9,8 @@ Authors: Katherine N. Thompson, Candice L. Odgers, Bridget T. Bryan, Andrea Dane
 *Joint senior author
 
 Analyses for this project were conducted in MPlus version 8.4, STATA version 16, and R version 4.0.3 (All R code written in Rmd format). Scripts are ordered here in the same order they should be run to replicate findings. Folders are listed in the brackets of each header. 
+
+All data provided by the Environmental Risk Longitudinal Twin (E-Risk) Study. 
 
 
 **Preprocessing (Rmd):** (RMarkdown_code/preprocessing)
