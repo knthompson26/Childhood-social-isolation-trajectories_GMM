@@ -50,6 +50,7 @@ library(dplyr) #conflicts with tidyverse for e.g. rename and row_number
 
 ```{r palette}
 palette3 <- c("#78D9C5","#F5BE5E","#EEB6E9")
+palette_spag <- c(`Low stable` = "#78D9C5", Increasing = "#F5BE5E", Decreasing ="#EEB6E9", `Class 1` = "#19A487", `Class 2` = "#DE9310", `Class 3` = "#E570DA")
 ```
 
 ```{r source the data file path}
@@ -174,7 +175,7 @@ dat_long <- dat_long %>%
 head(dat_long)
 ```
 
-```{r spaghetti plot}
+```{r spaghetti plot A}
 spaghetti_plot <- ggplot(data = dat_long,
        aes(x = time_point,
            y = social_isolation,
@@ -194,10 +195,61 @@ spaghetti_plot <- ggplot(data = dat_long,
         axis.text.y = element_text(colour = "black", size = 10),
         panel.background = element_blank(),
         legend.position = "bottom")
+```
 
+```{r spaghetti plot B prep}
+#For class models, read in all output files within your folder that you have all your class models
+si.classes.all <- readModels(paste0(mplus_GMM_clustered_full_output_data_path), recursive = TRUE) #Recursive means it reads data in sub-folders too
+
+#create three class data frame with means and variances
+three_class_si <- as.data.frame(
+  si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.output..isolation_3traj_full_sample_clustered.out$gh5$means_and_variances_data$y_estimated_means)
+
+#name the variables
+names(three_class_si) <- c("Class 1","Class 2","Class 3")
+
+#create time point column 
+three_class_si$time_point <- factor(c("5","7","10","12"))
+
+#convert data to long format 
+three_class_si <- three_class_si %>%
+  pivot_longer(-time_point, 
+               names_to = "class_renamed", 
+               values_to = "social_isolation")
+
+# create factor for Class variable
+three_class_si <- three_class_si %>%
+  mutate(class_renamed = 
+              factor(class_renamed, 
+                     levels = c("Class 1","Class 2","Class 3"))) 
+```
+
+```{r spaghetti plot B}
+spaghetti_plotB <- ggplot(data = dat_long,
+                         aes(x = time_point,
+                             y = social_isolation,
+                             color = class_renamed)) +
+                    geom_line(aes(group = factor(id)), alpha = 0.9, size = 0.5) +
+                    geom_line(data = three_class_si, aes(group = class_renamed), size = 1, alpha = 1) +
+                    scale_color_manual(name = "class_renamed", values = palette_spag) +
+                    labs(y = "Social isolation score",
+                         x = "Age (years)") +
+                    scale_x_discrete(expand = c(0.05,0.05), breaks = c("5", "7", "10", "12")) +
+                    scale_y_continuous(expand = c(0.05,0.05), breaks = c(0,2,4,6,8,10,12)) +
+                    theme(
+                          panel.grid.major.y = element_line(size = 0.2,linetype = 'dashed',colour = "gray"),
+                          axis.title.x = element_text(size = 12,face="bold"),
+                          axis.title.y = element_text(size = 12,face="bold"),
+                          axis.text.x = element_text(colour = "black", size = 10),
+                          axis.text.y = element_text(colour = "black", size = 10),
+                          panel.background = element_blank(),
+                          legend.position = "none") 
+```
+
+```{r save spag plot}
 ggsave(
   "spaghetti_plot_three_class_colour_coded.jpeg",
-  plot = spaghetti_plot,
+  plot = spaghetti_plotB,
   device = "jpeg",
   path = paste0(graph_save_data_path, "trajectories/"),
   width = 7,
