@@ -1,4 +1,4 @@
-# Childhood_social_isolation_trajectories-GMM
+# Childhood-social-isolation-trajectories_GMM
 
 ## This repository holds code for the manuscript titled "Trajectories of childhood social isolation in a nationally representative cohort: Associations with antecedents and early adulthood outcomes"
 
