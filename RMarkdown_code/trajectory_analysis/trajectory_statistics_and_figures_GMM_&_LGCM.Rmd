@@ -467,6 +467,54 @@ kable(si.class.summaries)
  
 *The five class model in these statistics is fixing the variance of S (slope) to zero - as the original model produces negative variances.*
 
+## Means and variances
+
+```{r GMM means and variances for class 1}
+gmm.linear.means.1 <- si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.output..isolation_3traj_full_sample_clustered.out$parameters$unstandardized %>%
+  filter(paramHeader == "Means" & LatentClass == 1) # filter out the means for I and S
+
+gmm.linear.variances.1 <- si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.output..isolation_3traj_full_sample_clustered.out$parameters$unstandardized %>%
+  filter(paramHeader == "Variances" & LatentClass == 1) # filter out the variance for I and S
+
+gmm.linear.means.1
+gmm.linear.variances.1
+```
+
+```{r GMM means and variances for class 2}
+gmm.linear.means.2 <- si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.output..isolation_3traj_full_sample_clustered.out$parameters$unstandardized %>%
+  filter(paramHeader == "Means" & LatentClass == 2) # filter out the means for I and S
+
+gmm.linear.variances.2 <- si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.output..isolation_3traj_full_sample_clustered.out$parameters$unstandardized %>%
+  filter(paramHeader == "Variances" & LatentClass == 2) # filter out the variance for I and S
+
+gmm.linear.means.2
+gmm.linear.variances.2
+```
+
+```{r GMM means and variances for class 3}
+gmm.linear.means.3 <- si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.output..isolation_3traj_full_sample_clustered.out$parameters$unstandardized %>%
+  filter(paramHeader == "Means" & LatentClass == 3) # filter out the means for I and S
+  
+gmm.linear.variances.3 <- si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.output..isolation_3traj_full_sample_clustered.out$parameters$unstandardized %>%
+  filter(paramHeader == "Variances" & LatentClass == 3) # filter out the variance for I and S
+
+gmm.linear.means.3
+gmm.linear.variances.3
+```
+
+```{r table for GMM means and variances}
+gmm.linear.means.variances <- rbind(gmm.linear.means.1, gmm.linear.variances.1, gmm.linear.means.2, gmm.linear.variances.2, gmm.linear.means.3, gmm.linear.variances.3)%>%
+  select(Class = LatentClass,
+         paramHeader,
+         Parameter = param,
+         Estimate = est,
+         `Standard error` = se,
+         `p value` = pval)
+
+kable(gmm.linear.means.variances)
+```
+
+
 ## Plots {.tabset .tabset-fade}
 
 ### Two Class model
@@ -564,7 +612,7 @@ three_traj_plot_clustered_full_sample <- ggplot(three_class_si,
 three_traj_plot_clustered_full_sample
 ```
 
-```{r plot 3 class GMM model}
+```{r plot 3 class GMM model for presentation}
 three_traj_plot_clustered_full_sample.SGDP<- ggplot(three_class_si,
         aes(x = timepoint, 
             y = social.isolation_score, 
