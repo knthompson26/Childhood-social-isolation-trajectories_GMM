@@ -1,0 +1,107 @@
+---
+title: "Childhood-social-isolation-trajectories_GMM Header"
+author: "Katherine N Thompson"
+output:  
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+    number_sections: false
+    highlight: monochrome
+    theme: cerulean
+code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,
+                      comment = NA,
+                      prompt = FALSE,
+                      cache = FALSE,
+                      message = FALSE,
+                      warning = FALSE)
+
+
+options(bitmapType = 'quartz') # to render fonts better
+```
+
+***
+
+This websites holds analysis code and results for the manuscript titled "Trajectories of childhood social isolation in a nationally representative cohort: Associations with antecedents and early adulthood outcomes". 
+
+***
+
+Authors: Katherine N. Thompson, Candice L. Odgers, Bridget T. Bryan, Andrea Danese, Lily Strange, Timothy Matthews, and Louise Arseneault
+
+All code written by Katherine N Thompson and reviewed by Jessica Agnew-Blais. Analyses for this project were conducted in MPlus version 8.4, STATA version 16, and R version 4.0.3 (All R code written in Rmd format). 
+
+All data provided by the Environmental Risk Longitudinal Twin (E-Risk) Study.
+
+***
+
+All following links are displayed in the order that the code was run for these analyses. For all Mplus, STATA and R raw code files, please see the github repository by clicking the Github icon in the top right corner.
+
+* [Preprocessing and formatting](preprocessing_isolation_trajectories.html)
+* [Preliminary descriptives](preliminary_desriptives_of_social_isolation.html)
+* [Descriptives for the three class growth mixture model](trajectory_descriptives_THREE_CLASS.html)
+* []
+
+
+Preliminary descriptives: (RMarkdown_code/descriptives)
+
+preliminary_desriptives_of_social_isolation.Rmd
+provides simple sample descriptives: missingness statistics, differences in those who had missing data, and means for combined, teacher, and parent report
+uses preprocessing script
+Trajectory_models (Mplus): (Mplus_trajectory_models)
+
+These models are run in Mplus and interpreted in Rmd.
+
+LATENT GROWTH MODELS (LGCM):
+Linear, log linear, quadratic and log quadratic growth models
+LATENT CLASS GROWTH ANALYSIS (LCGA):
+Linear models of 2-6 classes, includes clustering
+GROWTH MIXTURE MODELS (GMM):
+Linear models of 2-6 classes, includes clustering
+OPTSEED checks on 3 and 4 class models
+5 and 6 class models with slope fixed to zero
+Quadratic models for 2-6 classes: 4-6 class models with slope fixed to zero
+3-Step sensitivity analyses: antecedents (manual) and outcomes (BCH)
+Trajectory descriptives: (RMarkdown_code/descriptives)
+
+trajectory_descriptives_THREE_CLASS.Rmd
+combines the preprocessed data with the data from Mplus - needed for all other scripts
+gives decriptives for class specific variables
+Trajectory interpretation: (RMarkdown_code/trajectory_analysis)
+
+trajectory_statistics_and_figures_GMM_&_LGCM.Rmd
+Imports Mplus data and creates tables and figures for linear/log-linear LGCM and Linear GMM results for 2-6 classes
+trajectory_statistics_and_figures_GMM_QUADRATIC.Rmd
+Imports Mplus data and creates tables and figures for Quadratic GMM for 2-6 classes
+trajectory_statistics_and_figures_LCGA.Rmd
+Imports Mplus data and creates tables and figures for Linear LCGA for 2-6 classes
+Antecedent analysis: (RMarkdown_code/antecedent_analysis)
+
+antecedent_multinomial_regression.do
+STATA do file containing univariate and multivariate antecedent regressions with clustering
+antecedent_multinomial_regression_POSTERIOR.do
+STATA do file containing univariate and multivariate antecedent regressions with clustering: posterior probabilities sensitvity analysis
+Only includes data with people who had a posterior probability >0.8 (the R script for this is enbedded in the no. 3 R script here)
+stata_antecedent_isolation_THREE_trajectories.Rmd
+R script adapting output from STATA into tables and graphs
+Outcome analysis: (RMarkdown_code/outcome_analysis)
+
+outcomes_isolation_THREE_trajectories.Rmd
+Outcome linear and logistic regressions with output and graphs - with clustering
+Sensitivity analysis: sex interactions for outcomes and mplus 3step (RMarkdown_code/sensitivity_analysis)
+
+sex_interactions_outcomes_isolation_THREE_trajectories.Rmd
+Sex interaction terms are added to outcome regressions
+Where significant interactions occur, regressions are rerun for males and females separately
+mplus_3step_sensitivity.Rmd
+Outcome tables were imported from Mplus BCH approach and prepared for manuscript
+If you have any queries with the above, please contact katherine.n.thompson@kcl.ac.uk
+
+Please note that all analyses have not yet undergone peer review. Once published, the reference and DOI will be provided
+
+
