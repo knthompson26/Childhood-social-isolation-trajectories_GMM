@@ -1,7 +1,5 @@
 ---
 title: "Preliminary descriptives for social isolation in E-Risk"
-author: "Katherine N Thompson"
-date: "13th Jan 2021"
 output:  
   html_document:
     df_print: paged
