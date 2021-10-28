@@ -1,5 +1,5 @@
 ---
-title: "Preliminary descriptives of E-risk social isolation"
+title: "Preliminary descriptives for social isolation in E-Risk"
 author: "Katherine N Thompson"
 date: "13th Jan 2021"
 output:  
@@ -11,7 +11,7 @@ output:
       collapsed: false
     number_sections: false
     highlight: monochrome
-    theme: cerulean
+    theme: flatly
 code_folding: hide
 ---
 
@@ -21,9 +21,10 @@ knitr::opts_chunk$set(echo = FALSE,
                       prompt = FALSE,
                       cache = FALSE,
                       message = FALSE,
-                      warning = FALSE)
+                      warning = FALSE,
+                      results = 'asis')
 
-
+#st_options(plain.ascii = FALSE, style = "rmarkdown")
 options(bitmapType = 'quartz') # to render fonts better
 ```
 
@@ -43,8 +44,6 @@ palette5 <- c("#78D9C5","#F5BE5E","#EEB6E9","#DBDB73","#FFED98")
 palette6 <- c("#78D9C5","#F5BE5E","#EEB6E9","#DBDB73","#FFED98","#BFD2EB")
 ```
 
-# Packages 
-
 ```{r Load packages}
 library(knitr)
 library(summarytools)
@@ -58,14 +57,10 @@ library(Rmisc)
 library(tidyverse)
 ```
 
-# Source data path
-
 ```{r source the data file path}
 #source raw data directory: data_raw and data included
 source("../../../../../isolation_trajectories_data_path.R")
 ```
-
-# Read in data - preprocessed 
 
 ```{r read in data and check variable names, include=FALSE}
 dat <- readRDS(file = paste0(data_path, "preprocessed_isolation_trajectories_Jan2021_full_sample.rds"))
@@ -91,7 +86,7 @@ mother_social_isolation <- c("isolation_mother_05",
                               "isolation_mother_12")
 ```
 
-```{r Half-violin plot}
+```{r Half-violin plot theme}
 #source the half/flat function for the violin plot
 source("https://raw.githubusercontent.com/datavizpyr/data/master/half_flat_violinplot.R")
 
@@ -116,31 +111,69 @@ theme_personal <-  theme(
 
 # Missingness descriptives
 
-```{r social isolation missingness}
-#look at the frequency of missingness
-freq(dat$na.per.person.si,
-     cumul = FALSE)
+## Frequency tables social isolation {.tabset .tabset-fade}
 
-#look at the frequency at 5 years only
-freq(dat$isolation_combined_05,
-     cumul = FALSE)
-
-#look at the frequency at 7 years only
-freq(dat$isolation_combined_07,
-     cumul = FALSE)
-
-#look at the frequency at 10 years only
-freq(dat$isolation_combined_10,
-     cumul = FALSE)
-
-#look at the frequency at 12 years only
-freq(dat$isolation_combined_12,
-     cumul = FALSE)
+### NAs per person
+```{r missingness Nas per person}
+dat %>%
+  rename(`Social isolation NAs per person` = na.per.person.si) %>%
+  freq(`Social isolation NAs per person`, 
+       cumul = FALSE, 
+       display.type = FALSE, 
+       headings = FALSE,
+       style = "rmarkdown",
+       report.nas = FALSE)
 ```
 
-## Create groups for those missing 3 time points or 2 time points. 
+### Frequencies at age 5
+```{r NAs at age 5}
+dat %>%
+  rename(`Social isolation age 5` = isolation_combined_05) %>%
+  freq(`Social isolation age 5`, 
+       cumul = FALSE, 
+       display.type = FALSE, 
+       headings = FALSE, 
+       style = "rmarkdown")
+```
+Zero NAs at age 5. 
 
-```{r create variables for different group combinations}
+### Frequencies at age 7
+```{r NAs at age 7}
+dat %>%
+  rename(`Social isolation age 7` = isolation_combined_07) %>%
+  freq(`Social isolation age 7`, 
+       cumul = FALSE, 
+       display.type = FALSE, 
+       headings = FALSE, 
+       style = "rmarkdown")
+```
+54 NAs at age 7. 
+
+### Frequencies at age 10
+```{r NAs at age 10}
+dat %>%
+  rename(`Social isolation age 10` = isolation_combined_10) %>%
+  freq(`Social isolation age 10`, 
+       cumul = FALSE, 
+       display.type = FALSE, 
+       headings = FALSE, 
+       style = "rmarkdown")
+```
+94 NAs at age 10. 
+
+### Frequencies at age 12
+```{r NAs at age 12}
+freq(dat$isolation_combined_12, 
+       cumul = FALSE, 
+       display.type = FALSE, 
+       headings = FALSE, 
+       style = "rmarkdown")
+```
+87 NAs at age 12. 
+
+## Groups for participants missing 2 or 3 time points
+
+```{r create variables for different group combinations, echo=TRUE}
 # group with 18 missing 3 time points vs everyone else
 dat <- dat %>%
   mutate(
@@ -176,80 +209,111 @@ dat.missing.3time <- dat.missing.3time %>%
   )
 ```
 
-# Differences on social isolation, SES, IQ, internalising problems, behavioural problems for those who had data missing and those who didn't.
+# Differences for those who have missing social isolation data {.tabset .tabset-fade}
 
-```{r check differences in missingness between the 4 groups}
-# Social isolation at age 5
+Results from t-tests and Chi square tests assessing significant group differences for those who were missing three time points, and for those who were missing two time pionts. 46 people were missing two of the four time points. 18 people were missing three out of four time points. 
+
+```{r functions}
+# This function creates a results sentence for all t-tests and cho square tests to follow. 
+test.sentence <- function(test="t"|"X-squared", test.data, time.point.missing = "two"|"three", variable){
+  part1 <- cat(paste0(variable, " at age five was not significantly different for those missing ", time.point.missing, " time points, compared to everyone else (", test, " =", round(test.data$statistic, 3), ", df=", round(test.data$parameter, 3), ", p=", round(test.data$p.value, 3), "). "))
+  if (test== "X-squared"){print(part1)}
+  if (test=="t"){
+  part1
+  cat(paste0(part1, " Mean for group **not** missing ", time.point.missing, " time points = ", round(test.data$estimate[1], 3), ", mean for group missing ",time.point.missing, " three time points = ", round(test.data$estimate[2], 3), ". "))
+  }
+}
+```
+
+## Social isolation at age 5
+```{r differences in isolation based on missingness, results='asis'}
 ttest_SI_3time <- t.test( 
   isolation_combined_05 ~ missing_3_time_points,
   data = dat,
   alternative = "two.sided",
   conf.level = 0.95)
+test.sentence(test = "t", test.data = ttest_SI_3time, time.point.missing = "three", variable = "Social isolation")
 
 ttest_SI_2time <- t.test( 
   isolation_combined_05 ~ missing_2_time_points,
   data = dat.missing.3time,
   alternative = "two.sided",
-  conf.level = 0.95) 
+  conf.level = 0.95)
+test.sentence(test = "t", test.data = ttest_SI_2time, time.point.missing = "two", variable = "Social isolation")
+```
 
-# SES - chi square
+## SES at age 5
+```{r differences in SES based on missingness}
 chisq_SES_3time <- chisq.test(dat$SES,dat$missing_3_time_points) # nonsig
-chisq_SES_2time <- chisq.test(dat.missing.3time$SES, dat.missing.3time$missing_2_time_points) # nonsig
+test.sentence(test = "X-squared", test.data = chisq_SES_3time, time.point.missing = "three", variable = "Socioeconomic status")
 
-# IQ - t-test
+chisq_SES_2time <- chisq.test(dat.missing.3time$SES, dat.missing.3time$missing_2_time_points) # nonsig
+test.sentence(test = "X-squared", test.data = chisq_SES_2time, time.point.missing = "two", variable = "Socioeconomic status")
+```
+
+## IQ at age 5
+```{r differences in IQ based on missingness}
 ttest_IQ_3time <- t.test( #nonsig
   IQ_05 ~ missing_3_time_points,
   data = dat,
   alternative = "two.sided",
   conf.level = 0.95) 
+test.sentence(test = "t", test.data = ttest_IQ_3time, time.point.missing = "three", variable = "IQ")
 
 ttest_IQ_2time <- t.test( #SIGNIFICANT - missing two time points has lower IQ
   IQ_05 ~ missing_2_time_points,
   data = dat.missing.3time,
   alternative = "two.sided",
   conf.level = 0.95) 
+paste0("IQ at age five was **significantly** different for those missing two time points, compared to everyone else (t=", round(ttest_IQ_2time$statistic, 3), ", df=", round(ttest_IQ_2time$parameter, 3), ", p=", round(ttest_IQ_2time$p.value, 3), "). Mean for group **not** missing two time points = ", round(ttest_IQ_2time$estimate[1], 3), ", mean for group missing two time points = ", round(ttest_IQ_2time$estimate[2], 3))
+```
 
-# internalizing problems - t-test
+## Internalising problems at age 5
+```{r differences in internalising problems at age 5 based on missingness}
 ttest_int_3time <- t.test( #nonsig
   internalising_combined_excl_sis_05 ~ missing_3_time_points,
   data = dat,
   alternative = "two.sided",
   conf.level = 0.95) 
+test.sentence(test = "t", test.data = ttest_int_3time, time.point.missing = "three", variable = "Internalising behaviours")
 
 ttest_int_2time <- t.test( #nonsig
   internalising_combined_excl_sis_05 ~ missing_2_time_points,
   data = dat.missing.3time,
   alternative = "two.sided",
   conf.level = 0.95) 
+test.sentence(test = "t", test.data = ttest_int_2time, time.point.missing = "two", variable = "Internalising behaviours")
+```
 
-# Behavioural problems - externalising?? - t-test
+## Externalising problems at age 5
+```{r differences in externalising problems at age 5 based on missingness}
 ttest_ext_3time <- t.test( #nonsig
   externalising_combined_05 ~ missing_3_time_points,
   data = dat,
   alternative = "two.sided",
   conf.level = 0.95) 
+test.sentence(test = "t", test.data = ttest_ext_3time, time.point.missing = "three", variable = "Externalising behaviours")
 
 ttest_ext_2time <- t.test( #nonsig
   externalising_combined_05 ~ missing_2_time_points,
   data = dat.missing.3time,
   alternative = "two.sided",
   conf.level = 0.95) 
+test.sentence(test = "t", test.data = ttest_ext_2time, time.point.missing = "two", variable = "Externalising behaviours")
 ```
 
 # Missingness differences at age 18
 
-What Matthews found for differences between those who did and did not take part at age 18: There were no differences between those who did and did not take part at age 18 in terms of  socioeconomic status (SES) assessed when the cohort was initially defined (χ2 = 0.86, p = 0.65), age-5 IQ scores (t = 0.98, p = 0.33), or age-5 emotional or behavioural problems (t = 0.40, p = 0.69 and t = 0.41, p = 0.68, respectively)
- - Here I'm using not_in_employment_education_18 as the indicator variable for if they took part at age 18 or not (2066 complete responses)
-
+We found no differences between those who did and did not take part at age 18 in terms of socioeconomic status (SES) assessed when the cohort was initially defined (χ2 = 0.86, p = 0.65), age-5 IQ scores (t = 0.98, p = 0.33), or age-5 emotional or behavioural problems (t = 0.40, p = 0.69 and t = 0.41, p = 0.68, respectively). There were 2066 complete responses at age 18 (92.56% retention). 
+ 
 ```{r took part age age 18 - social isolation}
 # check the freq 
-freq(dat$not_in_employment_education_18,
+employment.freq <- freq(dat$not_in_employment_education_18,
      cumul = FALSE)
 
 # create data set for those who did and did not take part at age 18 
 ## 166 participants
 dat_not_age_18 <- dat %>%
-  
   filter(is.na(not_in_employment_education_18))
 ## 2066 participants
 dat_age_18 <- dat %>%
@@ -270,7 +334,7 @@ dat <- dat %>%
   )
 
 # check
-table(dat$took_part_at_18)
+# table(dat$took_part_at_18)
 
 # Social isolation - t-test - nonsig
 ttest_SI_age18 <- t.test( 
@@ -306,11 +370,10 @@ chisq_SES_age18 <- chisq.test(dat$SES,
 
 ```
 
-
-# Convert data to long format
+# Means across all time points {.tabset .tabset-fade}
 
 ```{r convert data to long format, include=FALSE}
-#convert to long format 
+#convert data to long format for graphs
 dat_long<- dat %>%
   gather(
     key = "time_point_raw",
@@ -347,8 +410,6 @@ dat_long <- dat_long %>%
 head(dat_long)
 ```
 
-# Means across all time points {.tabset .tabset-fade}
-
 ```{r means across time plot}
 #summarize the data fir the plot 
 dat_summary.isolation <- summarySE(dat_long, 
@@ -376,7 +437,6 @@ diff.plot <- ggplot(dat_summary.isolation,
                      limits = c(0,12),
                      breaks = seq(0, 12, 2)) +
   theme_bw()
-diff.plot
 
 #create scaled plot
 diff.plot.scaled <- diff.plot+ 
@@ -387,28 +447,43 @@ diff.plot.scaled <- diff.plot+
 diff.plot.scaled
 ```
 
-## Combined report
-```{r means for social isolation combined}
-descr(x = dat[,combined_social_isolation], 
+## Combined mother/teacher report of social isolation
+```{r means for social isolation combined, message=FALSE, warning=FALSE}
+dat %>%
+  select(`Age five` = isolation_combined_05,
+         `Age seven` = isolation_combined_07,
+         `Age ten` = isolation_combined_10,
+         `Age twelve` = isolation_combined_12) %>%
+  descr( 
       headings = FALSE,
-      stats =  c("mean", "sd", "min", "med", "max", "skewness", "kurtosis", "n.valid", "pct.valid")) %>%
-  print(method = "render")
+      stats =  c("mean", "sd", "min", "max", "skewness", "kurtosis", "n.valid", "pct.valid"), 
+      style = "rmarkdown") 
 ```
 
-## Mother report
-```{r means for social isolation mother report}
-descr(x = dat[,mother_social_isolation], 
+## Mother report of social isolation
+```{r means for social isolation mother report, message=FALSE, warning=FALSE}
+dat %>%
+  select(`Age five` = isolation_mother_05,
+         `Age seven` = isolation_mother_07,
+         `Age ten` = isolation_mother_10,
+         `Age twelve` = isolation_mother_12) %>%
+  descr( 
       headings = FALSE,
-      stats =  c("mean", "sd", "min", "med", "max", "skewness", "kurtosis", "n.valid", "pct.valid")) %>%
-  print(method = "render") 
+      stats =  c("mean", "sd", "min", "max", "skewness", "kurtosis", "n.valid", "pct.valid"), 
+      style = "rmarkdown") 
 ```
 
 ## Teacher report
-```{r means for social isolation teacher report}
-descr(x = dat[,teacher_social_isolation], 
+```{r means for social isolation teacher report, message=FALSE}
+dat %>%
+  select(`Age five` = isolation_teacher_05,
+         `Age seven` = isolation_teacher_07,
+         `Age ten` = isolation_teacher_10,
+         `Age twelve` = isolation_teacher_12) %>%
+  descr( 
       headings = FALSE,
-      stats =  c("mean", "sd", "min", "med", "max", "skewness", "kurtosis", "n.valid", "pct.valid")) %>%
-  print(method = "render")
+      stats =  c("mean", "sd", "min", "max", "skewness", "kurtosis", "n.valid", "pct.valid"), 
+      style = "rmarkdown") 
 ```
 
 
