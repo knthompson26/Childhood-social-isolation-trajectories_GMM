@@ -42,7 +42,7 @@ All following links are displayed in the order that the code was run for these a
 ### Preliminary 
 
 * [Preprocessing and formatting](preprocessing_isolation_trajectories.html)
-* [Preliminary descriptives](preliminary_desriptives_of_social_isolation.html)
+* [Preliminary descriptives](/Users/katiethompson/Documents/PhD/LISS-DTP_Louise_and_Tim/Social isolation trajectories_Paper 1/data_analysis/scripts/isolation_trajectories/scripts_github/Childhood_social_isolation_trajectories-GMM/RMarkdown_code/descriptives/preliminary_desriptives_of_social_isolation.html)
 
 ### Growth models
 
