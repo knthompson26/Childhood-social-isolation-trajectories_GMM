@@ -41,7 +41,6 @@ All following links are displayed in the order that the code was run for these a
 
 ### Preliminary 
 
-* [Preprocessing and formatting](preprocessing_isolation_trajectories.html)
 * [Preliminary descriptives](preliminary_desriptives_of_social_isolation.html)
 
 ### Growth models
