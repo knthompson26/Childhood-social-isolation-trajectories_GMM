@@ -45,7 +45,7 @@ library(tidyverse)
 
 ```{r source data file path, include=FALSE}
 #source raw data directory: data_raw and data included
-source("../../../../../isolation_trajectories_data_path.R") 
+source("../../../isolation_trajectories_data_path.R") 
 ```
 
 ***
