@@ -16,13 +16,13 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE,
+knitr::opts_chunk$set(echo = TRUE,
                       comment = NA,
                       prompt = FALSE,
                       cache = FALSE,
                       message = FALSE,
-                      warning = FALSE)
-
+                      warning = FALSE,
+                      results = 'asis')
 
 options(bitmapType = 'quartz') # to render fonts better
 ```

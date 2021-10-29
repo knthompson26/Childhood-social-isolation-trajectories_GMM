@@ -1,0 +1,2088 @@
+---
+title: "Mplus model code"
+output:  
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+    number_sections: false
+    highlight: monochrome
+    theme: flatly
+    code_folding: hide
+    includes:
+      after_body: footer.html
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      comment = NA,
+                      prompt = FALSE,
+                      cache = FALSE,
+                      message = FALSE,
+                      warning = FALSE,
+                      results = 'asis')
+
+options(bitmapType = 'quartz') # to render fonts better
+```
+
+***
+
+This page includes the raw Mplus code used in Mplus input files used to create latent growth curve models, latent class growth analysis, and growth mixture models. The results of these models has been interpreted on other pages. All models cluster for familyid to account for the non-independence in the E-Risk sample, as participants are twins. The entire sample was used for model estimation (N=2232).
+
+***
+
+# Latent growth curve models (LGCM) {.tabset .tabset-fade}
+
+## Non-adjusted {.tabset .tabset-fade}
+
+### Linear
+```{bash, eval=FALSE, class.source = 'fold-show'}
+! MPLUS CODE FOR GROWTH CURVE MODEL FOR SOCIAL ISOLATION IN ERISK
+! Authors: K N Thompson 2021
+ 
+TITLE: Single-class linear growth curve model in full sample with clustering
+
+
+DATA:
+   FILE IS "/Users/katiethompson/Desktop/
+   mplusisolationtrajectoriesJan2021_full_sample.csv";
+   ! using file saved on desktop as doesn't like long paths
+
+VARIABLE: 
+	NAMES = 
+	id familyid rorderp5 torder 
+	risks cohort sampsex zygosity seswq35 
+	sisoe5 sisoe7 sisoe10 sisoe12 
+	log_5 log_7 log_10 log_12 ;
+
+	USEVARIABLES = sisoe5 sisoe7 sisoe10 sisoe12;
+
+	MISSING = .; ! . are missing values
+
+! To restrict to specific variable only, eg for girls only USEOBSERVATIONS sampsex EQ 2;  
+
+	IDVARIABLE = id ;
+	
+	CLUSTER = familyid ; !control for twins in sample
+	
+ANALYSIS:
+	TYPE = COMPLEX ; ! to account for complex twin structure
+
+MODEL:
+! This model includes an intercept (i) and linear slope (s). Add (q) for quadratic
+
+     i s | sisoe5@0 sisoe7@2 sisoe10@5 sisoe12@7 ; 
+     
+PLOT:
+	SERIES = sisoe5-sisoe12(S);
+	TYPE = PLOT3 ;
+OUTPUT:	
+	sampstat standardized
+```
+
+### Quadratic
+```{bash, eval=FALSE, class.source = 'fold-show'}
+! MPLUS CODE FOR GROWTH MODEL FOR ERISK SOCIAL ISOLATION 
+! Authors: K N Thompson
+ 
+TITLE: Single-class quadratic growth curve model full sample with clustering
+
+
+DATA:
+   FILE IS "/Users/katiethompson/Desktop/
+   mplusisolationtrajectoriesJan2021_full_sample.csv";
+   ! using file saved on desktop as doesn't like long paths
+
+VARIABLE: 
+	NAMES = 
+	id familyid rorderp5 torder 
+	risks cohort sampsex zygosity seswq35 
+	sisoe5 sisoe7 sisoe10 sisoe12 
+	log_5 log_7 log_10 log_12 ;
+
+	USEVARIABLES = sisoe5 sisoe7 sisoe10 sisoe12;
+
+	MISSING = .; ! . are missing values
+
+! To restrict analysis to specific variable only (eg girls only USEOBSERVATIONS sex EQ 2;)  
+
+	IDVARIABLE = id ;
+	
+	CLUSTER = familyid ; !control for twins in sample
+
+ANALYSIS:
+	TYPE = COMPLEX ; ! to account for complex twin structure 
+
+MODEL:
+! This model includes includes an intercept (i), linear slope (s) and (q) quadratic
+
+     i s q | sisoe5@0 sisoe7@2 sisoe10@5 sisoe12@7 ; 
+ 
+PLOT:
+	SERIES = sisoe5-sisoe12(S);
+	TYPE = PLOT3 ;
+OUTPUT:	
+	sampstat standardized 
+```
+
+## Logarithum adjusted {.tabset .tabset-fade}
+
+### Linear
+
+```{bash, eval=FALSE, class.source = 'fold-show'}
+! MPLUS CODE FOR GROWTH MIXTURE MODEL FOR ERISK SOCIAL ISOLATION TRAJECTORIES
+! Authors: K N Thompson
+ 
+TITLE: Single-class log-linear growth curve model full sample with clustering
+
+
+DATA:
+   FILE IS "/Users/katiethompson/Desktop/
+   mplusisolationtrajectoriesJan2021_full_sample.csv";
+   ! using file saved on desktop as doesn't like long paths
+
+VARIABLE: 
+	NAMES = 
+	id familyid rorderp5 torder 
+	risks cohort sampsex zygosity seswq35 
+	sisoe5 sisoe7 sisoe10 sisoe12 
+	log_5 log_7 log_10 log_12 ;
+
+	USEVARIABLES = log_5 log_7 log_10 log_12 ;
+
+	MISSING = .; ! . are missing values
+
+! To restrict analysis to a specific variable only (eg girls only USEOBSERVATIONS sex EQ 2;)  
+
+	IDVARIABLE = id ;
+	
+	CLUSTER = familyid ; !control for twins in sample
+
+ANALYSIS:
+	TYPE = COMPLEX ; ! to account for complex twin structure 
+
+MODEL:
+! This model includes an intercept (i) and linear slope (s). Add (q) for quadratic
+
+     i s | log_5@0 log_7@2 log_10@5 log_12@7 ;
+      
+ 
+PLOT:
+	SERIES = log_5-log_12(S);
+	TYPE = PLOT3 ;
+OUTPUT:	
+	sampstat standardized 
+```
+
+### Quadratic
+
+```{bash, eval=FALSE, class.source = 'fold-show'}
+! MPLUS CODE FOR GROWTH MODEL FOR ERISK SOCIAL ISOLATION
+! Authors: K N Thompson
+ 
+TITLE: Single-class log-quadratic growth curve model full sample with clustering
+
+
+DATA:
+   FILE IS "/Users/katiethompson/Desktop/
+   mplusisolationtrajectoriesJan2021_full_sample.csv";
+   ! using file saved on desktop as doesn't like long paths
+
+VARIABLE: 
+	NAMES = 
+	id familyid rorderp5 torder 
+	risks cohort sampsex zygosity seswq35 
+	sisoe5 sisoe7 sisoe10 sisoe12 
+	log_5 log_7 log_10 log_12 ;
+
+	USEVARIABLES = log_5 log_7 log_10 log_12 ;
+
+	MISSING = .; ! . are missing values
+
+! To restrict analysis to a specific variable (eg for girls USEOBSERVATIONS sex EQ 2;)  
+
+	IDVARIABLE = id ;
+	
+	CLUSTER = familyid ; !control for twins in sample
+
+ANALYSIS:
+	TYPE = COMPLEX ; ! to account for complex twin structure
+
+MODEL:
+! This model includes includes an intercept (i), linear slope (s) and (q) for quadratic
+
+     i s q | log_5@0 log_7@2 log_10@5 log_12@7 ;  
+ 
+PLOT:
+	SERIES = log_5-log_12(S);
+	TYPE = PLOT3 ;
+OUTPUT:	
+	sampstat standardized
+
+```
+
+# Latent class growth analysis (LCGA) {.tabset .tabset-fade}
+
+LCGA is an initial modeling step before specifying growth mixture models. LCGA specifies models similar to GMM but assumes all individuals within a class share exactly the same trajectory (no within-class individual variation). We fitted LCGA for two to six class (trajectory) models. 
+
+## 2 class model
+
+```{bash, eval=FALSE, class.source = 'fold-show'}
+! MPLUS CODE FOR LCGA FOR ERISK SOCIAL ISOLATION TRAJECTORIES
+! Authors: K N Thompson 2021
+ 
+TITLE: LCGA 2 class social isolation in full sample with clustering
+
+DATA:
+   FILE IS "/Users/katiethompson/Desktop/
+   mplusisolationtrajectoriesJan2021_full_sample.csv";
+   ! using file saved on desktop as doesn't like long paths
+
+VARIABLE: 
+	NAMES = 
+	id familyid rorderp5 torder 
+	risks cohort sampsex zygosity seswq35 
+	sisoe5 sisoe7 sisoe10 sisoe12 
+	log_5 log_7 log_10 log_12 ;
+
+	USEVARIABLES = sisoe5 sisoe7 sisoe10 sisoe12;
+
+	MISSING = .; ! . are missing values
+
+! To restrict to a specific variable only, eg for girls only USEOBSERVATIONS sex EQ 2;
+
+	IDVARIABLE = id ;
+	
+	CLUSTER = familyid ; !control for twins in sample
+
+! Change the number of classes here 
+  	CLASSES= C(2);
+
+ANALYSIS:
+	TYPE = COMPLEX MIXTURE ; ! growth mixture model with complex structure
+      	STARTS = 500 20; ! number of random sets of starting values 
+    	STITERATIONS = 10 ; ! number of final optimizations
+
+MODEL:
+! This model includes includes an intercept (i) and linear slope (s)
+
+    %OVERALL%
+     i s | sisoe5@0 sisoe7@2 sisoe10@5 sisoe12@7 ; ! need to check time points here 
+     
+! LCGA constrains variance in each class to 0 
+	i-s@0
+ 
+PLOT:
+	SERIES = sisoe5-sisoe12(S);
+	TYPE = PLOT3 ;
+OUTPUT:	
+	sampstat standardized TECH7
+	TECH8 TECH11 TECH14 ! model fit tests
+```
+
+## 3 class model
+
+```{bash, eval=FALSE, class.source = 'fold-show'}
+! MPLUS CODE FOR LCGA FOR ERISK SOCIAL ISOLATION TRAJECTORIES
+! Authors: K N Thompson
+ 
+TITLE: LCGA 3 class social isolation in full sample with clustering
+
+
+DATA:
+   FILE IS "/Users/katiethompson/Desktop/
+   mplusisolationtrajectoriesJan2021_full_sample.csv";
+   ! using file saved on desktop as doesn't like long paths
+
+VARIABLE: 
+	NAMES = 
+	id familyid rorderp5 torder 
+	risks cohort sampsex zygosity seswq35 
+	sisoe5 sisoe7 sisoe10 sisoe12 
+	log_5 log_7 log_10 log_12 ;
+
+	USEVARIABLES = sisoe5 sisoe7 sisoe10 sisoe12;
+
+	MISSING = .; ! . are missing values
+
+! To restrict to a specific variable only (eg for girls only USEOBSERVATIONS sex EQ 2;)  
+
+	IDVARIABLE = id ;
+	
+	CLUSTER = familyid ; !control for twins in sample
+
+! Change the number of classes here 
+  	CLASSES = C(3);
+
+ANALYSIS:
+	TYPE = COMPLEX MIXTURE ; ! growth mixture model with complex structure
+      	STARTS = 500 20; ! number of random sets of starting values 
+    	STITERATIONS = 10 ; ! number of final optimizations
+
+MODEL:
+! This model includes includes an intercept (i) and linear slope (s)
+
+    %OVERALL%
+     i s | sisoe5@0 sisoe7@2 sisoe10@5 sisoe12@7 ; ! need to check time points here 
+     
+! LCGA constrains variance in each class to 0 
+	i-s@0
+ 
+PLOT:
+	SERIES = sisoe5-sisoe12(S);
+	TYPE = PLOT3 ;
+OUTPUT:	
+	sampstat standardized TECH7
+	TECH8 TECH11 TECH14 ! model fit tests
+
+Savedata: 
+	save = cprob FSCORES; 
+	file = LCGA_SI_3Cl_full_sample_clustered.txt;
+```
+
+## 4 class model 
+
+```{bash, eval=FALSE, class.source = 'fold-show'}
+! MPLUS CODE FOR LCGA FOR ERISK SOCIAL ISOLATION TRAJECTORIES
+! Authors: K N Thompson 2021
+ 
+TITLE: LCGA 4 class social isolation in full sample with clustering
+
+
+DATA:
+   FILE IS "/Users/katiethompson/Desktop/
+   mplusisolationtrajectoriesJan2021_full_sample.csv";
+   ! using file saved on desktop as doesn't like long paths
+
+VARIABLE: 
+	NAMES = 
+	id familyid rorderp5 torder 
+	risks cohort sampsex zygosity seswq35 
+	sisoe5 sisoe7 sisoe10 sisoe12 
+	log_5 log_7 log_10 log_12 ;
+
+	USEVARIABLES = sisoe5 sisoe7 sisoe10 sisoe12;
+
+	MISSING = .; ! . are missing values
+
+! To restrict to specific variable only, eg for girls only USEOBSERVATIONS sex EQ 2;  
+
+	IDVARIABLE = id ;
+	
+	CLUSTER = familyid ; !control for twins in sample
+
+! Change the number of classes here 
+  	CLASSES= C(4);
+
+ANALYSIS:
+	TYPE = COMPLEX MIXTURE ; ! growth mixture model with complex structure
+      	STARTS = 500 20; ! number of random sets of starting values 
+    	STITERATIONS = 10 ; ! number of final optimizations
+
+
+MODEL:
+! This model includes an intercept (i) and linear slope (s)
+
+    %OVERALL%
+     i s | sisoe5@0 sisoe7@2 sisoe10@5 sisoe12@7 ; ! need to check time points here 
+     
+! LCGA constrains variance in each class to 0 
+	i-s@0
+ 
+PLOT:
+	SERIES = sisoe5-sisoe12(S);
+	TYPE = PLOT3 ;
+OUTPUT:	
+	sampstat standardized TECH7
+	TECH8 TECH11 TECH14 ! model fit tests
+
+! Save the class probabilities per participant 
+  
+Savedata: 
+	save = cprob FSCORES; 
+	file = LCGA_SI_4Cl_full_sample_clustered.txt;
+```
+
+## 5 class model 
+
+```{bash, eval=FALSE, class.source = 'fold-show'}
+! MPLUS CODE FOR LCGA FOR ERISK SOCIAL ISOLATION TRAJECTORIES
+! Authors: K N Thompson
+ 
+TITLE: LCGA 5 class social isolation in full sample with clustering
+
+
+DATA:
+   FILE IS "/Users/katiethompson/Desktop/
+   mplusisolationtrajectoriesJan2021_full_sample.csv";
+   ! using file saved on desktop as doesn't like long paths
+
+VARIABLE: 
+	NAMES = 
+	id familyid rorderp5 torder 
+	risks cohort sampsex zygosity seswq35 
+	sisoe5 sisoe7 sisoe10 sisoe12 
+	log_5 log_7 log_10 log_12 ;
+
+	USEVARIABLES = sisoe5 sisoe7 sisoe10 sisoe12;
+
+	MISSING = .; ! . are missing values
+
+! To restrict analysis to a specific variable only (example for girls only USEOBSERVATIONS sex EQ 2;)  
+
+	IDVARIABLE = id ;
+	
+	CLUSTER = familyid ; !control for twins in sample
+
+! Change the number of classes here 
+  	CLASSES= C(5);
+
+ANALYSIS:
+	TYPE = COMPLEX MIXTURE ; ! growth mixture model with complex structure
+      	STARTS = 500 125; ! number of random sets of starting values 
+    	STITERATIONS = 10 ; ! number of final optimizations
+
+MODEL:
+! This model includes includes an intercept (i) and linear slope (s)
+
+    %OVERALL%
+     i s | sisoe5@0 sisoe7@2 sisoe10@5 sisoe12@7 ; ! need to check time points here 
+     
+! LCGA constrains variance in each class to 0 
+	i-s@0
+ 
+PLOT:
+	SERIES = sisoe5-sisoe12(S);
+	TYPE = PLOT3 ;
+OUTPUT:	
+	sampstat standardized TECH4 TECH7
+	TECH8 TECH11 TECH14 ! model fit tests
+```
+
+## 6 class model 
+
+```{bash, eval=FALSE, class.source = 'fold-show'}
+! MPLUS CODE FOR LCGA FOR ERISK SOCIAL ISOLATION TRAJECTORIES
+! Authors: K N Thompson
+ 
+TITLE: LCGA 6 class social isolation in full sample with clustering
+
+
+DATA:
+   FILE IS "/Users/katiethompson/Desktop/
+   mplusisolationtrajectoriesJan2021_full_sample.csv";
+   ! using file saved on desktop as doesn't like long paths
+
+VARIABLE: 
+	NAMES = 
+	id familyid rorderp5 torder 
+	risks cohort sampsex zygosity seswq35 
+	sisoe5 sisoe7 sisoe10 sisoe12 
+	log_5 log_7 log_10 log_12 ;
+
+	USEVARIABLES = sisoe5 sisoe7 sisoe10 sisoe12;
+
+	MISSING = .; ! . are missing values
+
+! To restrict analysis to a specific variable only (example for girls only USEOBSERVATIONS sex EQ 2;)  
+
+	IDVARIABLE = id ;
+	
+	CLUSTER = familyid ; !control for twins in sample
+
+! Change the number of classes here 
+  	CLASSES= C(6);
+
+ANALYSIS:
+	TYPE = COMPLEX MIXTURE ; ! growth mixture model with complex structure
+      	STARTS = 500 125; ! number of random sets of starting values 
+    	STITERATIONS = 10 ; ! number of final optimizations
+
+MODEL:
+! This model includes includes an intercept (i) and linear slope (s)
+
+    %OVERALL%
+     i s | sisoe5@0 sisoe7@2 sisoe10@5 sisoe12@7 ; ! need to check time points here 
+     
+! LCGA constrains variance in each class to 0 
+	i-s@0
+ 
+PLOT:
+	SERIES = sisoe5-sisoe12(S);
+	TYPE = PLOT3 ;
+OUTPUT:	
+	sampstat standardized TECH4 TECH7
+	TECH8 TECH11 TECH13 TECH14 ! model fit tests
+```
+
+# Growth mixture models (GMM) {.tabset .tabset-fade}
+
+Clustering was used for familyid. Residual variances were estimated freely as is the default setting in Mplus. 
+
+## 2 class model 
+
+```{bash, eval=FALSE, class.source = 'fold-show'}
+! MPLUS CODE FOR GROWTH MIXTURE MODEL FOR ERISK SOCIAL ISOLATION TRAJECTORIES
+! Authors: K N Thompson 2021
+ 
+TITLE: GMM 2 class social isolation in full sample with clustering
+
+DATA:
+   FILE IS "/Users/katiethompson/Desktop/
+   mplusisolationtrajectoriesJan2021_full_sample.csv";
+   ! using file saved on desktop as doesn't like long paths
+
+VARIABLE: 
+	NAMES = 
+	id familyid rorderp5 torder 
+	risks cohort sampsex zygosity seswq35 
+	sisoe5 sisoe7 sisoe10 sisoe12 
+	log_5 log_7 log_10 log_12 ;
+
+	USEVARIABLES = sisoe5 sisoe7 sisoe10 sisoe12;
+
+	MISSING = .; ! . are missing values
+
+! To restrict to a specific variable only, eg for girls only USEOBSERVATIONS sex EQ 2;
+
+	IDVARIABLE = id ;
+	
+	CLUSTER = familyid ; !control for twins in sample
+
+! Change the number of classes here 
+  	CLASSES= C(2);
+
+ANALYSIS:
+	TYPE = COMPLEX MIXTURE ; ! growth mixture model with complex structure
+      	STARTS = 500 20; ! number of random sets of starting values 
+    	STITERATIONS = 10 ; ! number of final optimizations
+
+MODEL:
+! This model includes includes an intercept (i) and linear slope (s)
+
+    %OVERALL%
+     i s | sisoe5@0 sisoe7@2 sisoe10@5 sisoe12@7 ; ! need to check time points here 
+     
+     i-s ; ! Allows class-spcific random effects (for intercept and linear slope)
+ 
+PLOT:
+	SERIES = sisoe5-sisoe12(S);
+	TYPE = PLOT3 ;
+OUTPUT:	
+	sampstat standardized TECH7
+	TECH8 TECH11 TECH14 ! model fit tests
+```
+
+## 3 class model {.tabset .tabset-fade}
+
+**This model was chosen as the best fitting GMM model, with a low stable, increasing, and decreasing class.** To check the three class model did not converge on a local solution, the *OPTSEED* funtion was used in Mplus. Whereby,  XXXXXXXXX. The probability of correct classification was high for the low stable (0.99), increasing (0.87), and decreasing (0.90) trajectory groups. 
+
+### Original model
+
+```{bash, eval=FALSE, class.source = 'fold-show'}
+! MPLUS CODE FOR GROWTH MIXTURE MODEL FOR ERISK SOCIAL ISOLATION TRAJECTORIES
+! Authors: K N Thompson
+ 
+TITLE: GMM 3 class social isolation in full sample with clustering
+
+
+DATA:
+   FILE IS "/Users/katiethompson/Desktop/
+   mplusisolationtrajectoriesJan2021_full_sample.csv";
+   ! using file saved on desktop as doesn't like long paths
+
+VARIABLE: 
+	NAMES = 
+	id familyid rorderp5 torder 
+	risks cohort sampsex zygosity seswq35 
+	sisoe5 sisoe7 sisoe10 sisoe12 
+	log_5 log_7 log_10 log_12 ;
+
+	USEVARIABLES = sisoe5 sisoe7 sisoe10 sisoe12;
+
+	MISSING = .; ! . are missing values
+
+! To restrict to a specific variable only (eg for girls only USEOBSERVATIONS sex EQ 2;)  
+
+	IDVARIABLE = id ;
+	
+	CLUSTER = familyid ; !control for twins in sample
+
+! Change the number of classes here 
+  	CLASSES = C(3);
+
+ANALYSIS:
+	TYPE = COMPLEX MIXTURE ; ! growth mixture model with complex structure
+      	STARTS = 500 20; ! number of random sets of starting values 
+    	STITERATIONS = 10 ; ! number of final optimizations
+
+MODEL:
+! This model includes includes an intercept (i) and linear slope (s)
+
+    %OVERALL%
+     i s | sisoe5@0 sisoe7@2 sisoe10@5 sisoe12@7 ; ! need to check time points here 
+     
+     i-s ; ! Allows class-spcific random effects (for intercept and linear slope)
+ 
+PLOT:
+	SERIES = sisoe5-sisoe12(S);
+	TYPE = PLOT3 ;
+OUTPUT:	
+	sampstat standardized TECH7
+	TECH8 TECH11 TECH14 ! model fit tests
+
+Savedata: 
+	save = cprob FSCORES; 
+	file = GMM_SI_3Cl_full_sample_clustered.txt;
+```
+
+### OPTSEED check 1
+
+```{bash, eval=FALSE, class.source = 'fold-show'}
+! MPLUS CODE FOR GROWTH MIXTURE MODEL FOR ERISK SOCIAL ISOLATION TRAJECTORIES
+! Authors: K N Thompson
+ 
+TITLE: GMM 3 class social isolation in full sample with clustering OPTSEED 1
+
+
+DATA:
+   FILE IS "/Users/katiethompson/Desktop/
+   mplusisolationtrajectoriesJan2021_full_sample.csv";
+   ! using file saved on desktop as doesn't like long paths
+
+VARIABLE: 
+	NAMES = 
+	id familyid rorderp5 torder 
+	risks cohort sampsex zygosity seswq35 
+	sisoe5 sisoe7 sisoe10 sisoe12 
+	log_5 log_7 log_10 log_12 ;
+
+	USEVARIABLES = sisoe5 sisoe7 sisoe10 sisoe12;
+
+	MISSING = .; ! . are missing values
+
+! To restrict to a specific variable only (eg for girls only USEOBSERVATIONS sex EQ 2;)  
+
+	IDVARIABLE = id ;
+	
+	CLUSTER = familyid ; !control for twins in sample
+
+! Change the number of classes here 
+  	CLASSES = C(3);
+
+ANALYSIS:
+	TYPE = COMPLEX MIXTURE ; ! growth mixture model with complex structure
+      	OPTSEED = 320494 ;
+
+MODEL:
+! This model includes includes an intercept (i) and linear slope (s)
+
+    %OVERALL%
+     i s | sisoe5@0 sisoe7@2 sisoe10@5 sisoe12@7 ; ! need to check time points here 
+     
+     i-s ; ! Allows class-spcific random effects (for intercept and linear slope)
+ 
+PLOT:
+	SERIES = sisoe5-sisoe12(S);
+	TYPE = PLOT3 ;
+OUTPUT:	
+	sampstat standardized TECH7
+	TECH8 TECH11 TECH14 ! model fit tests
+```
+
+### OPTSEED check 2
+
+```{bash, eval=FALSE, class.source = 'fold-show'}
+! MPLUS CODE FOR GROWTH MIXTURE MODEL FOR ERISK SOCIAL ISOLATION TRAJECTORIES
+! Authors: K N Thompson
+ 
+TITLE: GMM 3 class social isolation in full sample with clustering OPTSEED 2
+
+
+DATA:
+   FILE IS "/Users/katiethompson/Desktop/
+   mplusisolationtrajectoriesJan2021_full_sample.csv";
+   ! using file saved on desktop as doesn't like long paths
+
+VARIABLE: 
+	NAMES = 
+	id familyid rorderp5 torder 
+	risks cohort sampsex zygosity seswq35 
+	sisoe5 sisoe7 sisoe10 sisoe12 
+	log_5 log_7 log_10 log_12 ;
+
+	USEVARIABLES = sisoe5 sisoe7 sisoe10 sisoe12;
+
+	MISSING = .; ! . are missing values
+
+! To restrict to a specific variable only (eg for girls only USEOBSERVATIONS sex EQ 2;)  
+
+	IDVARIABLE = id ;
+	
+	CLUSTER = familyid ; !control for twins in sample
+
+! Change the number of classes here 
+  	CLASSES = C(3);
+
+ANALYSIS:
+	TYPE = COMPLEX MIXTURE ; ! growth mixture model with complex structure
+      	OPTSEED = 992389 ;
+
+MODEL:
+! This model includes includes an intercept (i) and linear slope (s)
+
+    %OVERALL%
+     i s | sisoe5@0 sisoe7@2 sisoe10@5 sisoe12@7 ; ! need to check time points here 
+     
+     i-s ; ! Allows class-spcific random effects (for intercept and linear slope)
+ 
+PLOT:
+	SERIES = sisoe5-sisoe12(S);
+	TYPE = PLOT3 ;
+OUTPUT:	
+	sampstat standardized TECH7
+	TECH8 TECH11 TECH14 ! model fit tests
+```
+
+## 4 class model {.tabset .tabset-fade}
+
+To check the four class model did not converge on a local solution, the **OPTSEED** funtion was used in Mplus. Whereby,  XXXXXXXXX. 
+
+### Original model
+
+```{bash, eval=FALSE, class.source = 'fold-show'}
+! MPLUS CODE FOR GROWTH MIXTURE MODEL FOR ERISK SOCIAL ISOLATION TRAJECTORIES
+! Authors: K N Thompson 2021
+ 
+TITLE: GMM 4 class social isolation in full sample with clustering
+
+
+DATA:
+   FILE IS "/Users/katiethompson/Desktop/
+   mplusisolationtrajectoriesJan2021_full_sample.csv";
+   ! using file saved on desktop as doesn't like long paths
+
+VARIABLE: 
+	NAMES = 
+	id familyid rorderp5 torder 
+	risks cohort sampsex zygosity seswq35 
+	sisoe5 sisoe7 sisoe10 sisoe12 
+	log_5 log_7 log_10 log_12 ;
+
+	USEVARIABLES = sisoe5 sisoe7 sisoe10 sisoe12;
+
+	MISSING = .; ! . are missing values
+
+! To restrict to specific variable only, eg for girls only USEOBSERVATIONS sex EQ 2;  
+
+	IDVARIABLE = id ;
+	
+	CLUSTER = familyid ; !control for twins in sample
+
+! Change the number of classes here 
+  	CLASSES= C(4);
+
+ANALYSIS:
+	TYPE = COMPLEX MIXTURE ; ! growth mixture model with complex structure
+      	STARTS = 500 20; ! number of random sets of starting values 
+    	STITERATIONS = 10 ; ! number of final optimizations
+
+
+MODEL:
+! This model includes an intercept (i) and linear slope (s)
+
+    %OVERALL%
+     i s | sisoe5@0 sisoe7@2 sisoe10@5 sisoe12@7 ; ! need to check time points here 
+     
+     i-s ; ! Allows class-specific random effects (for intercept and linear slope)
+ 
+PLOT:
+	SERIES = sisoe5-sisoe12(S);
+	TYPE = PLOT3 ;
+OUTPUT:	
+	sampstat standardized TECH7
+	TECH8 TECH11 TECH14 ! model fit tests
+
+! Save the class probabilities per participant 
+  
+Savedata: 
+	save = cprob FSCORES; 
+	file = GMM_SI_4Cl_full_sample_clustered.txt;
+```
+
+### OPTSEED check 1
+
+```{bash, eval=FALSE, class.source = 'fold-show'}
+! MPLUS CODE FOR GROWTH MIXTURE MODEL FOR ERISK SOCIAL ISOLATION TRAJECTORIES
+! Authors: K N Thompson 2021
+ 
+TITLE: GMM 4 class social isolation in full sample with clustering OPTSEED 1
+
+
+DATA:
+   FILE IS "/Users/katiethompson/Desktop/
+   mplusisolationtrajectoriesJan2021_full_sample.csv";
+   ! using file saved on desktop as doesn't like long paths
+
+VARIABLE: 
+	NAMES = 
+	id familyid rorderp5 torder 
+	risks cohort sampsex zygosity seswq35 
+	sisoe5 sisoe7 sisoe10 sisoe12 
+	log_5 log_7 log_10 log_12 ;
+
+	USEVARIABLES = sisoe5 sisoe7 sisoe10 sisoe12;
+
+	MISSING = .; ! . are missing values
+
+! To restrict to specific variable only, eg for girls only USEOBSERVATIONS sex EQ 2;  
+
+	IDVARIABLE = id ;
+	
+	CLUSTER = familyid ; !control for twins in sample
+
+! Change the number of classes here 
+  	CLASSES= C(4);
+
+ANALYSIS:
+	TYPE = COMPLEX MIXTURE ; ! growth mixture model with complex structure
+      	OPTSEED = 648555 ;
+
+
+MODEL:
+! This model includes an intercept (i) and linear slope (s)
+
+    %OVERALL%
+     i s | sisoe5@0 sisoe7@2 sisoe10@5 sisoe12@7 ; ! need to check time points here 
+     
+     i-s ; ! Allows class-specific random effects (for intercept and linear slope)
+ 
+PLOT:
+	SERIES = sisoe5-sisoe12(S);
+	TYPE = PLOT3 ;
+OUTPUT:	
+	sampstat standardized TECH7
+	TECH8 TECH11 TECH14 ! model fit tests
+
+! Save the class probabilities per participant 
+```
+
+### OPTSEED check 2
+
+```{bash, eval=FALSE, class.source = 'fold-show'}
+! MPLUS CODE FOR GROWTH MIXTURE MODEL FOR ERISK SOCIAL ISOLATION TRAJECTORIES
+! Authors: K N Thompson 2021
+ 
+TITLE: GMM 4 class social isolation in full sample with clustering OPTSEED 2
+
+
+DATA:
+   FILE IS "/Users/katiethompson/Desktop/
+   mplusisolationtrajectoriesJan2021_full_sample.csv";
+   ! using file saved on desktop as doesn't like long paths
+
+VARIABLE: 
+	NAMES = 
+	id familyid rorderp5 torder 
+	risks cohort sampsex zygosity seswq35 
+	sisoe5 sisoe7 sisoe10 sisoe12 
+	log_5 log_7 log_10 log_12 ;
+
+	USEVARIABLES = sisoe5 sisoe7 sisoe10 sisoe12;
+
+	MISSING = .; ! . are missing values
+
+! To restrict to specific variable only, eg for girls only USEOBSERVATIONS sex EQ 2;  
+
+	IDVARIABLE = id ;
+	
+	CLUSTER = familyid ; !control for twins in sample
+
+! Change the number of classes here 
+  	CLASSES= C(4);
+
+ANALYSIS:
+	TYPE = COMPLEX MIXTURE ; ! growth mixture model with complex structure
+      	OPTSEED = 481835 ;
+
+
+MODEL:
+! This model includes an intercept (i) and linear slope (s)
+
+    %OVERALL%
+     i s | sisoe5@0 sisoe7@2 sisoe10@5 sisoe12@7 ; ! need to check time points here 
+     
+     i-s ; ! Allows class-specific random effects (for intercept and linear slope)
+ 
+PLOT:
+	SERIES = sisoe5-sisoe12(S);
+	TYPE = PLOT3 ;
+OUTPUT:	
+	sampstat standardized TECH7
+	TECH8 TECH11 TECH14 ! model fit tests
+```
+
+## 5 class model {.tabset .tabset-fade}
+
+Five and six class model solutions reported negative slope variance, thus, for these models slope variance was manually fixed to zero in a partially constrained GMM. 
+
+### Original model 
+
+```{bash, eval=FALSE, class.source = 'fold-show'}
+! MPLUS CODE FOR GROWTH MIXTURE MODEL FOR ERISK SOCIAL ISOLATION TRAJECTORIES
+! Authors: K N Thompson
+ 
+TITLE: GMM 5 class social isolation in full sample with clustering
+
+
+DATA:
+   FILE IS "/Users/katiethompson/Desktop/
+   mplusisolationtrajectoriesJan2021_full_sample.csv";
+   ! using file saved on desktop as doesn't like long paths
+
+VARIABLE: 
+	NAMES = 
+	id familyid rorderp5 torder 
+	risks cohort sampsex zygosity seswq35 
+	sisoe5 sisoe7 sisoe10 sisoe12 
+	log_5 log_7 log_10 log_12 ;
+
+	USEVARIABLES = sisoe5 sisoe7 sisoe10 sisoe12;
+
+	MISSING = .; ! . are missing values
+
+! To restrict analysis to a specific variable only (example for girls only USEOBSERVATIONS sex EQ 2;)  
+
+	IDVARIABLE = id ;
+	
+	CLUSTER = familyid ; !control for twins in sample
+
+! Change the number of classes here 
+  	CLASSES= C(5);
+
+ANALYSIS:
+	TYPE = COMPLEX MIXTURE ; ! growth mixture model with complex structure
+      	STARTS = 500 125; ! number of random sets of starting values 
+    	STITERATIONS = 10 ; ! number of final optimizations
+
+MODEL:
+! This model includes includes an intercept (i) and linear slope (s)
+
+    %OVERALL%
+     i s | sisoe5@0 sisoe7@2 sisoe10@5 sisoe12@7 ; ! need to check time points here 
+     
+     i-s ; ! Allows class-spcific random effects (for intercept and linear slope)
+ 
+PLOT:
+	SERIES = sisoe5-sisoe12(S);
+	TYPE = PLOT3 ;
+OUTPUT:	
+	sampstat standardized TECH4 TECH7
+	TECH8 TECH11 TECH14 ! model fit tests
+```
+
+### Slope fixed to zero
+
+```{bash, eval=FALSE, class.source = 'fold-show'}
+! MPLUS CODE FOR GROWTH MIXTURE MODEL FOR ERISK SOCIAL ISOLATION TRAJECTORIES
+! Authors: K N Thompson
+ 
+TITLE: GMM 5 class social isolation in full sample with clustering S fixed to zero
+
+
+DATA:
+   FILE IS "/Users/katiethompson/Desktop/
+   mplusisolationtrajectoriesJan2021_full_sample.csv";
+   ! using file saved on desktop as doesn't like long paths
+
+VARIABLE: 
+	NAMES = 
+	id familyid rorderp5 torder 
+	risks cohort sampsex zygosity seswq35 
+	sisoe5 sisoe7 sisoe10 sisoe12 
+	log_5 log_7 log_10 log_12 ;
+
+	USEVARIABLES = sisoe5 sisoe7 sisoe10 sisoe12;
+
+	MISSING = .; ! . are missing values
+
+! To restrict analysis to a specific variable only (example for girls only USEOBSERVATIONS sex EQ 2;)  
+
+	IDVARIABLE = id ;
+	
+	CLUSTER = familyid ; !control for twins in sample
+
+! Change the number of classes here 
+  	CLASSES= C(5);
+
+ANALYSIS:
+	TYPE = COMPLEX MIXTURE ; ! growth mixture model with complex structure
+      	STARTS = 500 125; ! number of random sets of starting values 
+    	STITERATIONS = 10 ; ! number of final optimizations
+
+MODEL:
+! This model includes includes an intercept (i) and linear slope (s)
+
+    %OVERALL%
+     i s | sisoe5@0 sisoe7@2 sisoe10@5 sisoe12@7 ; ! need to check time points here 
+     
+     i-s ; ! Allows class-spcific random effects (for intercept and linear slope)
+     
+     s@0 ;
+ 
+PLOT:
+	SERIES = sisoe5-sisoe12(S);
+	TYPE = PLOT3 ;
+OUTPUT:	
+	sampstat standardized TECH4 TECH7
+	TECH8 TECH11 TECH13 TECH14 ! model fit tests
+```
+
+## 6 class model {.tabset .tabset-fade}
+
+Five and six class model solutions reported negative slope variance, thus, for these models slope variance was manually fixed to zero in a partially constrained GMM. 
+
+### Original model 
+
+```{bash, eval=FALSE, class.source = 'fold-show'}
+! MPLUS CODE FOR GROWTH MIXTURE MODEL FOR ERISK SOCIAL ISOLATION TRAJECTORIES
+! Authors: K N Thompson
+ 
+TITLE: GMM 6 class social isolation in full sample with clustering
+
+
+DATA:
+   FILE IS "/Users/katiethompson/Desktop/
+   mplusisolationtrajectoriesJan2021_full_sample.csv";
+   ! using file saved on desktop as doesn't like long paths
+
+VARIABLE: 
+	NAMES = 
+	id familyid rorderp5 torder 
+	risks cohort sampsex zygosity seswq35 
+	sisoe5 sisoe7 sisoe10 sisoe12 
+	log_5 log_7 log_10 log_12 ;
+
+	USEVARIABLES = sisoe5 sisoe7 sisoe10 sisoe12;
+
+	MISSING = .; ! . are missing values
+
+! To restrict analysis to a specific variable only (example for girls only USEOBSERVATIONS sex EQ 2;)  
+
+	IDVARIABLE = id ;
+	
+	CLUSTER = familyid ; !control for twins in sample
+
+! Change the number of classes here 
+  	CLASSES= C(6);
+
+ANALYSIS:
+	TYPE = COMPLEX MIXTURE ; ! growth mixture model with complex structure
+      	STARTS = 500 125; ! number of random sets of starting values 
+    	STITERATIONS = 10 ; ! number of final optimizations
+
+MODEL:
+! This model includes includes an intercept (i) and linear slope (s)
+
+    %OVERALL%
+     i s | sisoe5@0 sisoe7@2 sisoe10@5 sisoe12@7 ; ! need to check time points here 
+     
+     i-s ; ! Allows class-spcific random effects (for intercept and linear slope)
+ 
+PLOT:
+	SERIES = sisoe5-sisoe12(S);
+	TYPE = PLOT3 ;
+OUTPUT:	
+	sampstat standardized TECH4 TECH7
+	TECH8 TECH11 TECH13 TECH14 ! model fit tests
+```
+
+### Slope fixed to zero 
+
+```{bash, eval=FALSE, class.source = 'fold-show'}
+! MPLUS CODE FOR GROWTH MIXTURE MODEL FOR ERISK SOCIAL ISOLATION TRAJECTORIES
+! Authors: K N Thompson
+ 
+TITLE: GMM 6 class social isolation in full sample with clustering S fixed to zero
+
+
+DATA:
+   FILE IS "/Users/katiethompson/Desktop/
+   mplusisolationtrajectoriesJan2021_full_sample.csv";
+   ! using file saved on desktop as doesn't like long paths
+
+VARIABLE: 
+	NAMES = 
+	id familyid rorderp5 torder 
+	risks cohort sampsex zygosity seswq35 
+	sisoe5 sisoe7 sisoe10 sisoe12 
+	log_5 log_7 log_10 log_12 ;
+
+	USEVARIABLES = sisoe5 sisoe7 sisoe10 sisoe12;
+
+	MISSING = .; ! . are missing values
+
+! To restrict analysis to a specific variable only (example for girls only USEOBSERVATIONS sex EQ 2;)  
+
+	IDVARIABLE = id ;
+	
+	CLUSTER = familyid ; !control for twins in sample
+
+! Change the number of classes here 
+  	CLASSES= C(6);
+
+ANALYSIS:
+	TYPE = COMPLEX MIXTURE ; ! growth mixture model with complex structure
+      	STARTS = 600 200; ! number of random sets of starting values 
+    	STITERATIONS = 10 ; ! number of final optimizations
+
+MODEL:
+! This model includes includes an intercept (i) and linear slope (s)
+
+    %OVERALL%
+     i s | sisoe5@0 sisoe7@2 sisoe10@5 sisoe12@7 ; ! need to check time points here 
+     
+     i-s ; ! Allows class-spcific random effects (for intercept and linear slope)
+     
+     s@0 ;
+ 
+PLOT:
+	SERIES = sisoe5-sisoe12(S);
+	TYPE = PLOT3 ;
+OUTPUT:	
+	sampstat standardized TECH4 TECH7
+	TECH8 TECH11 TECH13 TECH14 ! model fit tests
+```
+
+# Supplementary growth mixture models {.tabset .tabset-fade}
+
+## 3-Step  {.tabset .tabset-fade}
+
+To check the class classification did not interfere with the associations with outcomes and antecedents. The 3-step method was computed in Mplus. All results were replicated. 
+
+### Antecedents
+
+```{bash, eval=FALSE, class.source = 'fold-show'}
+! MPLUS CODE FOR GROWTH MIXTURE MODEL FOR ERISK SOCIAL ISOLATION TRAJECTORIES
+! Authors: K N Thompson
+ 
+TITLE: GMM 3 class social isolation in full sample with clustering: 3STEP predictors
+
+
+DATA:
+   FILE IS "/Users/katiethompson/Desktop/
+   FOR_MPLUS_preprocessed_isolation_trajectories_Sep2021_3STEP.csv";
+   ! using file saved on desktop as doesn't like long paths 
+   ! this is the full file with class membership and covariates
+
+VARIABLE: 
+	NAMES =  familyid atwinid btwinid rorderp5 torder risks cohort sampsex 
+	zygosity sethnic seswq35 P5CACORNCategory	nchildren00e5 schmeals00e5 
+	classsize00e5 vndngdm5 socprbm5 sisoe5 sisoy5 sisoet5 sisoyt5	sisoem5 
+	sisoym5 harm3em5 warme5 totproe5 iqe5 exfunce5 tomtote5 totexte5 
+	intisoe5 totadde5 irre5 impe5 appe5 slue5	ware5 unce5 inhe5 shye5 nmovel5 
+	nobiodl5 tsibl5 anyviom5 tssupm5 actvm5 fdepmm5 bfiom5 bficm5 bfiem5 bfiam5 
+	bfinm5 asbmm5 asbfm5 alcmm5 alcfm5 sisoe7	 sisoy7 sisoet7 sisoyt7 sisoem7 
+	sisoym7 sisoe10 sisoy10 sisoet10 sisoyt10	 sisoem10 sisoym10 sisoe12 sisoy12	
+	sisoet12 sisoyt12 sisoem12 sisoym12 dxmdee18 mdesxe18 dxgade18 gadsxe18 
+	dxadhd5_18e SR_symtot18e cdmode18 cdsxe18 dxalcdepe18 dxalcabue18 alcsxe18 
+	dxmarje18 marjsxe18 dxptsd5lfe18 dxptsd5cue18 psysympe18 psysymp01e18 psyexpe18 
+	psyexpce18	sharmsuice18 bmie18 phyacte18 smkcnume18 lnCRP_E18_4SD lonelye18 
+	lifsate18 teche18 psqie18 neete18 educachve18 jprepse18 jprepae18 jbschacte18 
+	optime18 srvusemhe18 copstrse18 prob1 prob2 prob3 class P5CACORNCategoryrecoded 
+	harm3em5recoded educachve18recoded antisocialparent alcoholismparent ; 
+	! variable names are from original file
+
+	USEVARIABLES = class seswq35 P5CACORNCategoryrecoded vndngdm5 socprbm5 nchildren00e5 
+	schmeals00e5 harm3em5recoded tsibl5 tssupm5 actvm5 nobiodl5 anyviom5 warme5 fdepmm5 
+	bfiom5 bficm5 bfiem5 bfiam5 bfinm5 antisocialparent alcoholismparent iqe5 exfunce5 
+	tomtote5 totexte5 intisoe5 totadde5 totproe5 ;
+	! all predictor/antecdent variables
+	
+	NOMINAL = class ;
+
+	MISSING = .; ! . are missing values
+
+! To restrict to a specific variable only (eg for girls only USEOBSERVATIONS sex EQ 2;)  
+
+	IDVARIABLE = atwinid ;
+	
+	CLUSTER = familyid ; !control for twins in sample
+
+! Change the number of classes here 
+  	CLASSES = C(3);
+
+ANALYSIS:
+	TYPE = MIXTURE COMPLEX ; ! growth mixture model - have removed complex structure
+      	STARTS = 500 20 ; ! number of random sets of starting values 
+    	STITERATIONS = 10 ; ! number of final optimizations
+
+MODEL:
+! This model iis using class three as the reference class (decreasing) 
+! Not sure how to change this to be the low stable as the reference
+! These numbers are from the traj3 output: Logits for the Classification Probabilities
+
+    %OVERALL%
+    
+    C ON seswq35 P5CACORNCategoryrecoded vndngdm5 socprbm5 nchildren00e5 
+	schmeals00e5 harm3em5recoded tsibl5 tssupm5 actvm5 nobiodl5 anyviom5 warme5 fdepmm5 
+	bfiom5 bficm5 bfiem5 bfiam5 bfinm5 antisocialparent alcoholismparent iqe5 exfunce5 
+	tomtote5 totexte5 intisoe5 totadde5 totproe5 ;
+     
+    %C#1%
+     [class#1@5.092]; [class#2@-0.194];
+     
+    %C#2%
+     [class#1@2.193]; [class#2@4.204];
+     
+    %C#3%
+     [class#1@-2.233]; [class#2@-5.270];
+     	     
+  
+OUTPUT:	
+	sampstat TECH7
+
+Savedata: 
+	! save = cprob FSCORES; 
+	! file = GMM_SI_3Cl_full_sample_clustered.txt;
+
+```
+
+### Outcomes: BCH method
+
+ADD INFO ABOUT THIS METHOD
+
+```{bash, eval=FALSE, class.source = 'fold-show'}
+! MPLUS CODE FOR GROWTH MIXTURE MODEL FOR ERISK SOCIAL ISOLATION TRAJECTORIES
+! Authors: K N Thompson
+ 
+TITLE: GMM 3 class social isolation in full sample with clustering: 3STEP outcomes
+
+
+DATA:
+   FILE IS "/Users/katiethompson/Desktop/
+   FOR_MPLUS_preprocessed_isolation_trajectories_Sep2021_3STEP.csv";
+   ! using file saved on desktop as doesn't like long paths 
+   ! this is the full file with class membership and covariates
+
+VARIABLE: 
+	NAMES =  familyid atwinid btwinid rorderp5 torder risks cohort sampsex 
+	zygosity sethnic seswq35 P5CACORNCategory	nchildren00e5 schmeals00e5 
+	classsize00e5 vndngdm5 socprbm5 sisoe5 sisoy5 sisoet5 sisoyt5	sisoem5 
+	sisoym5 harm3em5 warme5 totproe5 iqe5 exfunce5 tomtote5 totexte5 
+	intisoe5 totadde5 irre5 impe5 appe5 slue5	ware5 unce5 inhe5 shye5 nmovel5 
+	nobiodl5 tsibl5 anyviom5 tssupm5 actvm5 fdepmm5 bfiom5 bficm5 bfiem5 bfiam5 
+	bfinm5 asbmm5 asbfm5 alcmm5 alcfm5 sisoe7	 sisoy7 sisoet7 sisoyt7 sisoem7 
+	sisoym7 sisoe10 sisoy10 sisoet10 sisoyt10	 sisoem10 sisoym10 sisoe12 sisoy12	
+	sisoet12 sisoyt12 sisoem12 sisoym12 dxmdee18 mdesxe18 dxgade18 gadsxe18 
+	dxadhd5_18e SR_symtot18e cdmode18 cdsxe18 dxalcdepe18 dxalcabue18 alcsxe18 
+	dxmarje18 marjsxe18 dxptsd5lfe18 dxptsd5cue18 psysympe18 psysymp01e18 psyexpe18 
+	psyexpce18	sharmsuice18 bmie18 phyacte18 smkcnume18 lnCRP_E18_4SD lonelye18 
+	lifsate18 teche18 psqie18 neete18 educachve18 jprepse18 jprepae18 jbschacte18 
+	optime18 srvusemhe18 copstrse18 prob1 prob2 prob3 class P5CACORNCategoryrecoded 
+	harm3em5recoded educachve18recoded antisocialparent alcoholismparent ; 
+	! variable names are from original file
+
+	USEVARIABLES = sisoe5 sisoe7 sisoe10 sisoe12;
+	! social isolation variables
+	
+	AUXILIARY = (BCH)
+	dxmdee18 dxgade18 dxadhd5_18e cdmode18 dxalcdepe18 dxmarje18 dxptsd5lfe18 
+	dxptsd5cue18 psyexpce18 sharmsuice18 srvusemhe18 neete18 
+	mdesxe18 gadsxe18 SR_symtot18e cdsxe18 alcsxe18 marjsxe18 psysympe18 bmie18 
+	lnCRP_E18_4SD phyacte18 smkcnume18 lonelye18 lifsate18 teche18 copstrse18
+	psqie18 jprepse18 jprepae18 optime18 jbschacte18 ;
+
+	MISSING = .; ! . are missing values
+
+! To restrict to a specific variable only (eg for girls only USEOBSERVATIONS sex EQ 2;)  
+
+	IDVARIABLE = atwinid ;
+	
+	CLUSTER = familyid ; !control for twins in sample
+
+! Change the number of classes here 
+  	CLASSES = C(3);
+
+ANALYSIS:
+	TYPE = MIXTURE COMPLEX ; ! growth mixture model - have removed complex structure
+      	STARTS = 500 20 ; ! number of random sets of starting values 
+    	STITERATIONS = 10 ; ! number of final optimizations
+
+MODEL:
+! This model includes includes an intercept (i) and linear slope (s)
+
+      %OVERALL%
+       i s | sisoe5@0 sisoe7@2 sisoe10@5 sisoe12@7 ; ! need to check time points here
+
+       i-s ; ! Allows class-spcific random effects (for intercept and linear slope)
+     	     
+  
+OUTPUT:	
+	sampstat TECH7
+
+Savedata: 
+	! save = cprob FSCORES; 
+	! file = GMM_SI_3Cl_full_sample_clustered.txt;
+```
+
+### DE3STEP method
+
+ADD INFO ABOUT THIS METHOD
+
+```{bash, eval=FALSE, class.source = 'fold-show'}
+! MPLUS CODE FOR GROWTH MIXTURE MODEL FOR ERISK SOCIAL ISOLATION TRAJECTORIES
+! Authors: K N Thompson
+ 
+TITLE: GMM 3 class social isolation in full sample with clustering: 3STEP outcomes
+
+
+DATA:
+   FILE IS "/Users/katiethompson/Desktop/
+   FOR_MPLUS_preprocessed_isolation_trajectories_Sep2021_3STEP.csv";
+   ! using file saved on desktop as doesn't like long paths 
+   ! this is the full file with class membership and covariates
+
+VARIABLE: 
+	NAMES =  familyid atwinid btwinid rorderp5 torder risks cohort sampsex 
+	zygosity sethnic seswq35 P5CACORNCategory	nchildren00e5 schmeals00e5 
+	classsize00e5 vndngdm5 socprbm5 sisoe5 sisoy5 sisoet5 sisoyt5	sisoem5 
+	sisoym5 harm3em5 warme5 totproe5 iqe5 exfunce5 tomtote5 totexte5 
+	intisoe5 totadde5 irre5 impe5 appe5 slue5	ware5 unce5 inhe5 shye5 nmovel5 
+	nobiodl5 tsibl5 anyviom5 tssupm5 actvm5 fdepmm5 bfiom5 bficm5 bfiem5 bfiam5 
+	bfinm5 asbmm5 asbfm5 alcmm5 alcfm5 sisoe7	 sisoy7 sisoet7 sisoyt7 sisoem7 
+	sisoym7 sisoe10 sisoy10 sisoet10 sisoyt10	 sisoem10 sisoym10 sisoe12 sisoy12	
+	sisoet12 sisoyt12 sisoem12 sisoym12 dxmdee18 mdesxe18 dxgade18 gadsxe18 
+	dxadhd5_18e SR_symtot18e cdmode18 cdsxe18 dxalcdepe18 dxalcabue18 alcsxe18 
+	dxmarje18 marjsxe18 dxptsd5lfe18 dxptsd5cue18 psysympe18 psysymp01e18 psyexpe18 
+	psyexpce18	sharmsuice18 bmie18 phyacte18 smkcnume18 lnCRP_E18_4SD lonelye18 
+	lifsate18 teche18 psqie18 neete18 educachve18 jprepse18 jprepae18 jbschacte18 
+	optime18 srvusemhe18 copstrse18 prob1 prob2 prob3 class P5CACORNCategoryrecoded 
+	harm3em5recoded educachve18recoded antisocialparent alcoholismparent ; 
+	! variable names are from original file
+
+	USEVARIABLES = sisoe5 sisoe7 sisoe10 sisoe12;
+	! social isolation variables
+	
+	AUXILIARY = (DE3STEP)
+	dxmdee18 dxgade18 dxadhd5_18e cdmode18 dxalcdepe18 dxmarje18 dxptsd5lfe18 
+	dxptsd5cue18 psyexpce18 sharmsuice18 srvusemhe18 neete18 
+	mdesxe18 gadsxe18 SR_symtot18e cdsxe18 alcsxe18 marjsxe18 psysympe18 bmie18 
+	lnCRP_E18_4SD phyacte18 smkcnume18 lonelye18 lifsate18 teche18 copstrse18
+	psqie18 jprepse18 jprepae18 optime18 jbschacte18 ;
+
+	MISSING = .; ! . are missing values
+
+! To restrict to a specific variable only (eg for girls only USEOBSERVATIONS sex EQ 2;)  
+
+	IDVARIABLE = atwinid ;
+	
+	CLUSTER = familyid ; !control for twins in sample
+
+! Change the number of classes here 
+  	CLASSES = C(3);
+
+ANALYSIS:
+	TYPE = MIXTURE COMPLEX ; ! growth mixture model - have removed complex structure
+      	STARTS = 500 20 ; ! number of random sets of starting values 
+    	STITERATIONS = 10 ; ! number of final optimizations
+
+MODEL:
+! This model includes includes an intercept (i) and linear slope (s)
+
+      %OVERALL%
+       i s | sisoe5@0 sisoe7@2 sisoe10@5 sisoe12@7 ; ! need to check time points here
+
+       i-s ; ! Allows class-spcific random effects (for intercept and linear slope)
+     	     
+  
+OUTPUT:	
+	sampstat TECH7
+
+Savedata: 
+	! save = cprob FSCORES; 
+	! file = GMM_SI_3Cl_full_sample_clustered.txt;
+```
+
+## Mother report {.tabset .tabset-fade}
+
+### 2 class model
+
+```{bash,  eval=FALSE, class.source = 'fold-show'}
+! MPLUS CODE FOR GROWTH MIXTURE MODEL FOR ERISK SOCIAL ISOLATION TRAJECTORIES
+! Authors: K N Thompson 2021
+ 
+TITLE: GMM 2 class social isolation in full sample with clustering MOTHER ONLY
+
+DATA:
+   FILE IS "/Users/katiethompson/Desktop/
+   mplusisolationtrajectoriesJan2021_full_sample_MOTHER.csv";
+   ! using file saved on desktop as doesn't like long paths
+
+VARIABLE: 
+	NAMES = 
+	id familyid rorderp5 torder 
+	risks cohort sampsex zygosity seswq35 
+	sisoem5 sisoem7 sisoem10 sisoem12 ;
+
+	USEVARIABLES = sisoem5 sisoem7 sisoem10 sisoem12;
+
+	MISSING = .; ! . are missing values
+
+! To restrict to a specific variable only, eg for girls only USEOBSERVATIONS sex EQ 2;
+
+	IDVARIABLE = id ;
+	
+	CLUSTER = familyid ; !control for twins in sample
+
+! Change the number of classes here 
+  	CLASSES= C(2);
+
+ANALYSIS:
+	TYPE = COMPLEX MIXTURE ; ! growth mixture model with complex structure
+      	STARTS = 500 20; ! number of random sets of starting values 
+    	STITERATIONS = 10 ; ! number of final optimizations
+
+MODEL:
+! This model includes includes an intercept (i) and linear slope (s)
+
+    %OVERALL%
+     i s | sisoem5@0 sisoem7@2 sisoem10@5 sisoem12@7 ; ! need to check time points here 
+     
+     i-s ; ! Allows class-spcific random effects (for intercept and linear slope)
+ 
+PLOT:
+	SERIES = sisoem5-sisoem12(S);
+	TYPE = PLOT3 ;
+OUTPUT:	
+	sampstat standardized TECH7
+	TECH8 TECH11 TECH14 ! model fit tests
+```
+
+### 3 class model
+
+```{bash,  eval=FALSE, class.source = 'fold-show'}
+! MPLUS CODE FOR GROWTH MIXTURE MODEL FOR ERISK SOCIAL ISOLATION TRAJECTORIES
+! Authors: K N Thompson 2021
+ 
+TITLE: GMM 3 class social isolation in full sample with clustering MOTHER ONLY
+
+DATA:
+   FILE IS "/Users/katiethompson/Desktop/
+   mplusisolationtrajectoriesJan2021_full_sample_MOTHER.csv";
+   ! using file saved on desktop as doesn't like long paths
+
+VARIABLE: 
+	NAMES = 
+	id familyid rorderp5 torder 
+	risks cohort sampsex zygosity seswq35 
+	sisoem5 sisoem7 sisoem10 sisoem12 ;
+
+	USEVARIABLES = sisoem5 sisoem7 sisoem10 sisoem12;
+
+	MISSING = .; ! . are missing values
+
+! To restrict to a specific variable only, eg for girls only USEOBSERVATIONS sex EQ 2;
+
+	IDVARIABLE = id ;
+	
+	CLUSTER = familyid ; !control for twins in sample
+
+! Change the number of classes here 
+  	CLASSES= C(3);
+
+ANALYSIS:
+	TYPE = COMPLEX MIXTURE ; ! growth mixture model with complex structure
+      	STARTS = 500 20; ! number of random sets of starting values 
+    	STITERATIONS = 10 ; ! number of final optimizations
+
+MODEL:
+! This model includes includes an intercept (i) and linear slope (s)
+
+    %OVERALL%
+     i s | sisoem5@0 sisoem7@2 sisoem10@5 sisoem12@7 ; ! need to check time points here 
+     
+     i-s ; ! Allows class-spcific random effects (for intercept and linear slope)
+ 
+PLOT:
+	SERIES = sisoem5-sisoem12(S);
+	TYPE = PLOT3 ;
+OUTPUT:	
+	sampstat standardized TECH7
+	TECH8 TECH11 TECH14 ! model fit tests
+```
+
+### 4 class model
+
+```{bash,  eval=FALSE, class.source = 'fold-show'}
+! MPLUS CODE FOR GROWTH MIXTURE MODEL FOR ERISK SOCIAL ISOLATION TRAJECTORIES
+! Authors: K N Thompson 2021
+ 
+TITLE: GMM 4 class social isolation in full sample with clustering MOTHER ONLY
+
+DATA:
+   FILE IS "/Users/katiethompson/Desktop/
+   mplusisolationtrajectoriesJan2021_full_sample_MOTHER.csv";
+   ! using file saved on desktop as doesn't like long paths
+
+VARIABLE: 
+	NAMES = 
+	id familyid rorderp5 torder 
+	risks cohort sampsex zygosity seswq35 
+	sisoem5 sisoem7 sisoem10 sisoem12 ;
+
+	USEVARIABLES = sisoem5 sisoem7 sisoem10 sisoem12;
+
+	MISSING = .; ! . are missing values
+
+! To restrict to a specific variable only, eg for girls only USEOBSERVATIONS sex EQ 2;
+
+	IDVARIABLE = id ;
+	
+	CLUSTER = familyid ; !control for twins in sample
+
+! Change the number of classes here 
+  	CLASSES= C(4);
+
+ANALYSIS:
+	TYPE = COMPLEX MIXTURE ; ! growth mixture model with complex structure
+      	STARTS = 500 20; ! number of random sets of starting values 
+    	STITERATIONS = 10 ; ! number of final optimizations
+
+MODEL:
+! This model includes includes an intercept (i) and linear slope (s)
+
+    %OVERALL%
+     i s | sisoem5@0 sisoem7@2 sisoem10@5 sisoem12@7 ; ! need to check time points here 
+     
+     i-s ; ! Allows class-spcific random effects (for intercept and linear slope)
+ 
+PLOT:
+	SERIES = sisoem5-sisoem12(S);
+	TYPE = PLOT3 ;
+OUTPUT:	
+	sampstat standardized TECH7
+	TECH8 TECH11 TECH14 ! model fit tests
+```
+
+### 5 class model
+
+Slope variance was set to zero. 
+
+```{bash,  eval=FALSE, class.source = 'fold-show'}
+! MPLUS CODE FOR GROWTH MIXTURE MODEL FOR ERISK SOCIAL ISOLATION TRAJECTORIES
+! Authors: K N Thompson 2021
+ 
+TITLE: GMM 5 class social isolation in full sample with clustering MOTHER ONLY, S fixed
+
+DATA:
+   FILE IS "/Users/katiethompson/Desktop/
+   mplusisolationtrajectoriesJan2021_full_sample_MOTHER.csv";
+   ! using file saved on desktop as doesn't like long paths
+
+VARIABLE: 
+	NAMES = 
+	id familyid rorderp5 torder 
+	risks cohort sampsex zygosity seswq35 
+	sisoem5 sisoem7 sisoem10 sisoem12 ;
+
+	USEVARIABLES = sisoem5 sisoem7 sisoem10 sisoem12;
+
+	MISSING = .; ! . are missing values
+
+! To restrict to a specific variable only, eg for girls only USEOBSERVATIONS sex EQ 2;
+
+	IDVARIABLE = id ;
+	
+	CLUSTER = familyid ; !control for twins in sample
+
+! Change the number of classes here 
+  	CLASSES= C(5);
+
+ANALYSIS:
+	TYPE = COMPLEX MIXTURE ; ! growth mixture model with complex structure
+      	STARTS = 500 20; ! number of random sets of starting values 
+    	STITERATIONS = 10 ; ! number of final optimizations
+
+MODEL:
+! This model includes includes an intercept (i) and linear slope (s)
+
+    %OVERALL%
+     i s | sisoem5@0 sisoem7@2 sisoem10@5 sisoem12@7 ; ! need to check time points here 
+     
+     i-s ; ! Allows class-spcific random effects (for intercept and linear slope)
+     
+     s@0 ;
+ 
+PLOT:
+	SERIES = sisoem5-sisoem12(S);
+	TYPE = PLOT3 ;
+OUTPUT:	
+	sampstat standardized TECH7
+	TECH8 TECH11 TECH14 ! model fit tests
+```
+
+### 6 class model
+
+Slope variance was set to zero. 
+
+```{bash,  eval=FALSE, class.source = 'fold-show'}
+! MPLUS CODE FOR GROWTH MIXTURE MODEL FOR ERISK SOCIAL ISOLATION TRAJECTORIES
+! Authors: K N Thompson 2021
+ 
+TITLE: GMM 6 class social isolation in full sample with clustering MOTHER ONLY, S fixed
+
+DATA:
+   FILE IS "/Users/katiethompson/Desktop/
+   mplusisolationtrajectoriesJan2021_full_sample_MOTHER.csv";
+   ! using file saved on desktop as doesn't like long paths
+
+VARIABLE: 
+	NAMES = 
+	id familyid rorderp5 torder 
+	risks cohort sampsex zygosity seswq35 
+	sisoem5 sisoem7 sisoem10 sisoem12 ;
+
+	USEVARIABLES = sisoem5 sisoem7 sisoem10 sisoem12;
+
+	MISSING = .; ! . are missing values
+
+! To restrict to a specific variable only, eg for girls only USEOBSERVATIONS sex EQ 2;
+
+	IDVARIABLE = id ;
+	
+	CLUSTER = familyid ; !control for twins in sample
+
+! Change the number of classes here 
+  	CLASSES= C(6);
+
+ANALYSIS:
+	TYPE = COMPLEX MIXTURE ; ! growth mixture model with complex structure
+      	STARTS = 500 20; ! number of random sets of starting values 
+    	STITERATIONS = 10 ; ! number of final optimizations
+
+MODEL:
+! This model includes includes an intercept (i) and linear slope (s)
+
+    %OVERALL%
+     i s | sisoem5@0 sisoem7@2 sisoem10@5 sisoem12@7 ; ! need to check time points here 
+     
+     i-s ; ! Allows class-spcific random effects (for intercept and linear slope)
+     
+     s@0 ;
+ 
+PLOT:
+	SERIES = sisoem5-sisoem12(S);
+	TYPE = PLOT3 ;
+OUTPUT:	
+	sampstat standardized TECH7
+	TECH8 TECH11 TECH14 ! model fit tests
+```
+
+## Teacher report {.tabset .tabset-fade}
+
+### 2 class model
+
+Slope variance was fixed to zero. 
+
+```{bash, eval=FALSE, class.source = 'fold-show'}
+! MPLUS CODE FOR GROWTH MIXTURE MODEL FOR ERISK SOCIAL ISOLATION TRAJECTORIES
+! Authors: K N Thompson 2021
+ 
+TITLE: GMM 2 class social isolation in full sample with clustering TEACHER ONLY S fixed
+
+DATA:
+   FILE IS "/Users/katiethompson/Desktop/
+   mplusisolationtrajectoriesJan2021_full_sample_TEACHER.csv";
+   ! using file saved on desktop as doesn't like long paths
+
+VARIABLE: 
+	NAMES = 
+	id familyid rorderp5 torder 
+	risks cohort sampsex zygosity seswq35 
+	sisoet5 sisoet7 sisoet10 sisoet12 ;
+
+	USEVARIABLES = sisoet5 sisoet7 sisoet10 sisoet12;
+
+	MISSING = .; ! . are missing values
+
+! To restrict to a specific variable only, eg for girls only USEOBSERVATIONS sex EQ 2;
+
+	IDVARIABLE = id ;
+	
+	CLUSTER = familyid ; !control for twins in sample
+
+! Change the number of classes here 
+  	CLASSES= C(2);
+
+ANALYSIS:
+	TYPE = COMPLEX MIXTURE ; ! growth mixture model with complex structure
+      	STARTS = 500 20; ! number of random sets of starting values 
+    	STITERATIONS = 10 ; ! number of final optimizations
+
+MODEL:
+! This model includes includes an intercept (i) and linear slope (s)
+
+    %OVERALL%
+     i s | sisoet5@0 sisoet7@2 sisoet10@5 sisoet12@7 ; ! need to check time points here 
+     
+     i-s ; ! Allows class-spcific random effects (for intercept and linear slope)
+     
+     s@0 ; ! fixes variances of S to zero
+
+ 
+PLOT:
+	SERIES = sisoet5-sisoet12(S);
+	TYPE = PLOT3 ;
+OUTPUT:	
+	sampstat standardized TECH7
+	TECH8 TECH11 TECH14 ! model fit tests
+```
+
+### 3 class model
+
+Intercept variance was fixed to zero. 
+
+```{bash, eval=FALSE, class.source = 'fold-show'}
+! MPLUS CODE FOR GROWTH MIXTURE MODEL FOR ERISK SOCIAL ISOLATION TRAJECTORIES
+! Authors: K N Thompson 2021
+ 
+TITLE: GMM 3 class social isolation in full sample with clustering TEACHER ONLY I fixed to zero
+
+DATA:
+   FILE IS "/Users/katiethompson/Desktop/
+   mplusisolationtrajectoriesJan2021_full_sample_TEACHER.csv";
+   ! using file saved on desktop as doesn't like long paths
+
+VARIABLE: 
+	NAMES = 
+	id familyid rorderp5 torder 
+	risks cohort sampsex zygosity seswq35 
+	sisoet5 sisoet7 sisoet10 sisoet12 ;
+
+	USEVARIABLES = sisoet5 sisoet7 sisoet10 sisoet12;
+
+	MISSING = .; ! . are missing values
+
+! To restrict to a specific variable only, eg for girls only USEOBSERVATIONS sex EQ 2;
+
+	IDVARIABLE = id ;
+	
+	CLUSTER = familyid ; !control for twins in sample
+
+! Change the number of classes here 
+  	CLASSES= C(3);
+
+ANALYSIS:
+	TYPE = COMPLEX MIXTURE ; ! growth mixture model with complex structure
+      	STARTS = 500 20; ! number of random sets of starting values 
+    	STITERATIONS = 10 ; ! number of final optimizations
+
+MODEL:
+! This model includes includes an intercept (i) and linear slope (s)
+
+    %OVERALL%
+     i s | sisoet5@0 sisoet7@2 sisoet10@5 sisoet12@7 ; ! need to check time points here 
+     
+     i-s ; ! Allows class-spcific random effects (for intercept and linear slope)
+     
+     i@0 ;
+ 
+PLOT:
+	SERIES = sisoet5-sisoet12(S);
+	TYPE = PLOT3 ;
+OUTPUT:	
+	sampstat standardized TECH7
+	TECH8 TECH11 TECH14 ! model fit tests
+```
+
+### 4 class model
+
+Intercept variance was fixed to zero. 
+
+```{bash, eval=FALSE, class.source = 'fold-show'}
+! MPLUS CODE FOR GROWTH MIXTURE MODEL FOR ERISK SOCIAL ISOLATION TRAJECTORIES
+! Authors: K N Thompson 2021
+ 
+TITLE: GMM 4 class social isolation in full sample with clustering TEACHER ONLY, I fixed to zero
+
+DATA:
+   FILE IS "/Users/katiethompson/Desktop/
+   mplusisolationtrajectoriesJan2021_full_sample_TEACHER.csv";
+   ! using file saved on desktop as doesn't like long paths
+
+VARIABLE: 
+	NAMES = 
+	id familyid rorderp5 torder 
+	risks cohort sampsex zygosity seswq35 
+	sisoet5 sisoet7 sisoet10 sisoet12 ;
+
+	USEVARIABLES = sisoet5 sisoet7 sisoet10 sisoet12;
+
+	MISSING = .; ! . are missing values
+
+! To restrict to a specific variable only, eg for girls only USEOBSERVATIONS sex EQ 2;
+
+	IDVARIABLE = id ;
+	
+	CLUSTER = familyid ; !control for twins in sample
+
+! Change the number of classes here 
+  	CLASSES= C(4);
+
+ANALYSIS:
+	TYPE = COMPLEX MIXTURE ; ! growth mixture model with complex structure
+      	STARTS = 500 20; ! number of random sets of starting values 
+    	STITERATIONS = 10 ; ! number of final optimizations
+
+MODEL:
+! This model includes includes an intercept (i) and linear slope (s)
+
+    %OVERALL%
+     i s | sisoet5@0 sisoet7@2 sisoet10@5 sisoet12@7 ; ! need to check time points here 
+     
+     i-s ; ! Allows class-spcific random effects (for intercept and linear slope)
+     
+     i@0 ;
+ 
+PLOT:
+	SERIES = sisoet5-sisoet12(S);
+	TYPE = PLOT3 ;
+OUTPUT:	
+	sampstat standardized TECH7
+	TECH8 TECH11 TECH14 ! model fit tests
+```
+
+### 5 class model
+
+Intercept variance was fixed to zero
+
+```{bash, eval=FALSE, class.source = 'fold-show'}
+! MPLUS CODE FOR GROWTH MIXTURE MODEL FOR ERISK SOCIAL ISOLATION TRAJECTORIES
+! Authors: K N Thompson 2021
+ 
+TITLE: GMM 5 class social isolation in full sample with clustering TEACHER ONLY, I fixed
+
+DATA:
+   FILE IS "/Users/katiethompson/Desktop/
+   mplusisolationtrajectoriesJan2021_full_sample_TEACHER.csv";
+   ! using file saved on desktop as doesn't like long paths
+
+VARIABLE: 
+	NAMES = 
+	id familyid rorderp5 torder 
+	risks cohort sampsex zygosity seswq35 
+	sisoet5 sisoet7 sisoet10 sisoet12 ;
+
+	USEVARIABLES = sisoet5 sisoet7 sisoet10 sisoet12;
+
+	MISSING = .; ! . are missing values
+
+! To restrict to a specific variable only, eg for girls only USEOBSERVATIONS sex EQ 2;
+
+	IDVARIABLE = id ;
+	
+	CLUSTER = familyid ; !control for twins in sample
+
+! Change the number of classes here 
+  	CLASSES= C(5);
+
+ANALYSIS:
+	TYPE = COMPLEX MIXTURE ; ! growth mixture model with complex structure
+      	STARTS = 500 20; ! number of random sets of starting values 
+    	STITERATIONS = 10 ; ! number of final optimizations
+
+MODEL:
+! This model includes includes an intercept (i) and linear slope (s)
+
+    %OVERALL%
+     i s | sisoet5@0 sisoet7@2 sisoet10@5 sisoet12@7 ; ! need to check time points here 
+     
+     i-s ; ! Allows class-spcific random effects (for intercept and linear slope)
+     
+     i@0 ;
+ 
+PLOT:
+	SERIES = sisoet5-sisoet12(S);
+	TYPE = PLOT3 ;
+OUTPUT:	
+	sampstat standardized TECH7
+	TECH8 TECH11 TECH14 ! model fit tests
+```
+
+### 6 class model
+
+Intercept variance was fixed to zero.
+
+```{bash, eval=FALSE, class.source = 'fold-show'}
+! MPLUS CODE FOR GROWTH MIXTURE MODEL FOR ERISK SOCIAL ISOLATION TRAJECTORIES
+! Authors: K N Thompson 2021
+ 
+TITLE: GMM 6 class social isolation in full sample with clustering TEACHER ONLY, I fixed
+
+DATA:
+   FILE IS "/Users/katiethompson/Desktop/
+   mplusisolationtrajectoriesJan2021_full_sample_TEACHER.csv";
+   ! using file saved on desktop as doesn't like long paths
+
+VARIABLE: 
+	NAMES = 
+	id familyid rorderp5 torder 
+	risks cohort sampsex zygosity seswq35 
+	sisoet5 sisoet7 sisoet10 sisoet12 ;
+
+	USEVARIABLES = sisoet5 sisoet7 sisoet10 sisoet12;
+
+	MISSING = .; ! . are missing values
+
+! To restrict to a specific variable only, eg for girls only USEOBSERVATIONS sex EQ 2;
+
+	IDVARIABLE = id ;
+	
+	CLUSTER = familyid ; !control for twins in sample
+
+! Change the number of classes here 
+  	CLASSES= C(6);
+
+ANALYSIS:
+	TYPE = COMPLEX MIXTURE ; ! growth mixture model with complex structure
+      	STARTS = 500 20; ! number of random sets of starting values 
+    	STITERATIONS = 10 ; ! number of final optimizations
+
+MODEL:
+! This model includes includes an intercept (i) and linear slope (s)
+
+    %OVERALL%
+     i s | sisoet5@0 sisoet7@2 sisoet10@5 sisoet12@7 ; ! need to check time points here 
+     
+     i-s ; ! Allows class-spcific random effects (for intercept and linear slope)
+     
+     i@0 ;
+ 
+PLOT:
+	SERIES = sisoet5-sisoet12(S);
+	TYPE = PLOT3 ;
+OUTPUT:	
+	sampstat standardized TECH7
+	TECH8 TECH11 TECH14 ! model fit tests
+```
+
+## Quadratic growth term {.tabset .tabset-fade}
+
+We re-computed the 2-6 class models with a quadratic growth term. The two and three class models converged with significant quadratic term means and variances, However, the 4-6 class models had negative slope variance. When the slope variance was constrained to zero, the 4-6 class models resulted in non-convergence.
+
+### 2 class model
+
+```{bash, eval=FALSE, class.source = 'fold-show'}
+! MPLUS CODE FOR GROWTH MIXTURE MODEL FOR ERISK SOCIAL ISOLATION TRAJECTORIES
+! Authors: K N Thompson 2021
+ 
+TITLE: GMM 2 class social isolation in full sample with clustering
+
+DATA:
+   FILE IS "/Users/katiethompson/Desktop/
+   mplusisolationtrajectoriesJan2021_full_sample.csv";
+   ! using file saved on desktop as doesn't like long paths
+
+VARIABLE: 
+	NAMES = 
+	id familyid rorderp5 torder 
+	risks cohort sampsex zygosity seswq35 
+	sisoe5 sisoe7 sisoe10 sisoe12 
+	log_5 log_7 log_10 log_12 ;
+
+	USEVARIABLES = sisoe5 sisoe7 sisoe10 sisoe12;
+
+	MISSING = .; ! . are missing values
+
+! To restrict to a specific variable only, eg for girls only USEOBSERVATIONS sex EQ 2;
+
+	IDVARIABLE = id ;
+	
+	CLUSTER = familyid ; !control for twins in sample
+
+! Change the number of classes here 
+  	CLASSES= C(2);
+
+ANALYSIS:
+	TYPE = COMPLEX MIXTURE ; ! growth mixture model with complex structure
+      	STARTS = 500 20; ! number of random sets of starting values 
+    	STITERATIONS = 10 ; ! number of final optimizations
+
+MODEL:
+! This model includes includes an intercept (i) and linear slope (s) and quadratic (q)
+
+    %OVERALL%
+     i s q | sisoe5@0 sisoe7@2 sisoe10@5 sisoe12@7 ; ! need to check time points here 
+     
+     i-q ; ! Allows class-spcific random effects 
+ 
+PLOT:
+	SERIES = sisoe5-sisoe12(S);
+	TYPE = PLOT3 ;
+OUTPUT:	
+	sampstat standardized TECH7
+	TECH8 TECH11 TECH14 ! model fit tests
+```
+
+### 3 class model 
+
+```{bash, eval=FALSE, class.source = 'fold-show'}
+! MPLUS CODE FOR GROWTH MIXTURE MODEL FOR ERISK SOCIAL ISOLATION TRAJECTORIES
+! Authors: K N Thompson
+ 
+TITLE: GMM 3 class social isolation in full sample with clustering
+
+
+DATA:
+   FILE IS "/Users/katiethompson/Desktop/
+   mplusisolationtrajectoriesJan2021_full_sample.csv";
+   ! using file saved on desktop as doesn't like long paths
+
+VARIABLE: 
+	NAMES = 
+	id familyid rorderp5 torder 
+	risks cohort sampsex zygosity seswq35 
+	sisoe5 sisoe7 sisoe10 sisoe12 
+	log_5 log_7 log_10 log_12 ;
+
+	USEVARIABLES = sisoe5 sisoe7 sisoe10 sisoe12;
+
+	MISSING = .; ! . are missing values
+
+! To restrict to a specific variable only (eg for girls only USEOBSERVATIONS sex EQ 2;)  
+
+	IDVARIABLE = id ;
+	
+	CLUSTER = familyid ; !control for twins in sample
+
+! Change the number of classes here 
+  	CLASSES = C(3);
+
+ANALYSIS:
+	TYPE = COMPLEX MIXTURE ; ! growth mixture model with complex structure
+      	STARTS = 500 20; ! number of random sets of starting values 
+    	STITERATIONS = 10 ; ! number of final optimizations
+
+MODEL:
+! This model includes includes an intercept (i) and linear slope (s) and quadratic (q)
+
+    %OVERALL%
+     i s q | sisoe5@0 sisoe7@2 sisoe10@5 sisoe12@7 ; ! need to check time points here 
+     
+     i-q ; ! Allows class-spcific random effects (for intercept, linear slope and quadratic slope)
+ 
+PLOT:
+	SERIES = sisoe5-sisoe12(S);
+	TYPE = PLOT3 ;
+OUTPUT:	
+	sampstat standardized TECH7
+	TECH8 TECH11 TECH14 ! model fit tests
+
+Savedata: 
+	save = cprob FSCORES; 
+	file = GMM_SI_3Cl_full_sample_clustered_QUAD.txt;
+```
+

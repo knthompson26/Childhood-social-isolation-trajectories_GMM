@@ -24,7 +24,6 @@ knitr::opts_chunk$set(echo = TRUE,
                       warning = FALSE,
                       results = 'asis')
 
-#st_options(plain.ascii = FALSE, style = "rmarkdown")
 options(bitmapType = 'quartz') # to render fonts better
 ```
 
