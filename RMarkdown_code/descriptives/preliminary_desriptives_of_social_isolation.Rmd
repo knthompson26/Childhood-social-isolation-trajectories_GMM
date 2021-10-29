@@ -11,6 +11,8 @@ output:
     highlight: monochrome
     theme: flatly
     code_folding: hide
+    includes:
+      after_body: footer.html
 ---
 
 ```{r setup, include=FALSE}
