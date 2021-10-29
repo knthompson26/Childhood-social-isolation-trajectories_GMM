@@ -1,7 +1,5 @@
 ---
-title: "Data preprosessing script for social isolation trajectories"
-author: "K N Thompson"
-date: Sys.Date()
+title: "Data prosessing"
 output:  
   html_document:
     df_print: paged
@@ -11,37 +9,34 @@ output:
       collapsed: false
     number_sections: false
     highlight: monochrome
-    theme: cerulean
-code_folding: show
-
-html_notebook:
-  theme: cerulean
-toc: yes
+    theme: flatly
+    code_folding: hide
+    includes:
+      after_body: footer.html
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE,
+knitr::opts_chunk$set(echo = TRUE,
                       comment = NA,
                       prompt = FALSE,
-                      cache = FALSE)
+                      cache = FALSE,
+                      message = FALSE,
+                      warning = FALSE,
+                      results = 'asis')
 
-
+#st_options(plain.ascii = FALSE, style = "rmarkdown")
 options(bitmapType = 'quartz') # to render fonts better
 ```
 
-Clear global environment
-```{r Clear global environment}
+```{r Clear global environment, include=FALSE}
 remove(list = ls())
 ```
 
-Retrieve the current date to use it for file endings to not overwrite files when one exports files
-```{r Recent date}
+```{r Recent date, include=FALSE}
 date = Sys.Date()
 ```
 
-# Packages
-
-```{r Load packages}
+```{r Load packages, include=FALSE}
 library(knitr)
 library(summarytools)
 library(psych)
@@ -49,31 +44,24 @@ library(foreign) # Needed to load spss data files
 library(tidyverse)
 ```
 
-Source the data file path - all data is saved under one path. If you need access to this data_path please contact Katherine N Thompson on katherine.n.thompson@kcl.ac.uk. 
-
-```{r source data file path}
+```{r source data file path, include=FALSE}
 #source raw data directory: data_raw and data included
-source("../../../../../isolation_trajectories_data_path.R")
+source("../../../../../isolation_trajectories_data_path.R") 
 ```
 
-# Read in data
+***
 
-Read in full SPSS sav file.
+Data was provided in SPSS format (.sav) file. Here, I have converted it to an R data file, saving all SPSS labels as factors. 
 
 ```{r read in data (spss)}
-dat <- read.spss(file = paste0(data.raw_path, "Katie_18Dec20.sav"),
+dat <- read.spss(file = paste0(data.raw_path, "Katie_18Dec20.sav"), # Read in full SPSS sav file.
                   use.value.labels = FALSE, #convert value labels into factors with those labels
                   to.data.frame = TRUE) #return data frame 
 
-colnames(dat) # check colnames
+#colnames(dat) # check colnames
 ```
 
-# Item lists
-
-Only using elder twin variables as each twin is included in the data set as an individual. 
-Without doing twin analyses, the elder and younger variables show the same information. 
-
-```{r prepare item lists}
+```{r prepare item lists, include=FALSE}
 #All the items in numeric form
 combined_social_isolation <- c("sisoe5",
                               "sisoe7",
@@ -81,12 +69,14 @@ combined_social_isolation <- c("sisoe5",
                               "sisoe12")
 ```
 
-# Rename ID variable
+# Formatting existing variables {.tabset .tabset-fade}
 
-When doing non-twin analyses - the atwin and btwin id give the same information.
+## ID
 
-```{r rename ID}
-dat <- dat %>%
+Here I will only be using "elder" twin variables as each twin is included in the data set as an individual. Without doing twin analyses, the elder and younger variable IDs show the same information. I have transformed "atwinid" to just "id". 
+
+```{r rename ID variable}
+dat <- dat %>%  # When doing non-twin analyses - the atwin and btwin id give the same information.
   mutate(
     id = atwinid
   )
@@ -95,14 +85,15 @@ dat <- dat %>%
   mutate(
     randomised_order = rorderp5
   )
-#check
-colnames(dat)
+# check
+# colnames(dat)
 ```
 
-# Demographic variables
+## Demographic variables
 
-All variables below have been recoded into a factor for R purposes and renamed. Only the categorical variables need recoding to establish the levels of the variable. 
+Twin order, sample group, cohort, sex, zygosity, SES, and ethnicity variables below have been recoded into a factor for use in R and renamed to something familiar. Only the categorical variables need recoding to establish the levels of the variable. To see the code for this, click the "code" button on the right hand side. 
 
+Twin order
 ```{r twin order factor}
 # twin order
 dat <- dat %>%
@@ -113,6 +104,7 @@ dat <- dat %>%
         "2" = "Younger"))
 ```
 
+Sample group (Low/high risk)
 ```{r sample group factor}
 # sample groups
 dat <- dat %>%
@@ -123,6 +115,7 @@ dat <- dat %>%
         "1" = "High risk"))
 ```
 
+Cohort 
 ```{r cohort factor}
 # cohort
 dat <- dat %>%
@@ -133,6 +126,7 @@ dat <- dat %>%
         "95" = "Born in 1995"))
 ```
 
+Sex
 ```{r sex factor}
 # sex
 dat <- dat %>%
@@ -143,6 +137,7 @@ dat <- dat %>%
         "2" = "Female"))
 ```
 
+Zygosity
 ```{r zygosity factor}
 # zygosity
 dat <- dat %>%
@@ -153,6 +148,7 @@ dat <- dat %>%
         "2" = "DZ"))
 ```
 
+SES
 ```{r SES factor}
 # SES
 dat <- dat %>%
@@ -164,20 +160,7 @@ dat <- dat %>%
         "3" = "High"))
 ```
 
-Need to create a variable that has ordered SES to show that there are order differences between the labels. 
-
-```{r SES ordered variable}
-dat <- dat %>%
-  mutate(
-    SES_ordered = 
-      ordered(SES,
-              levels = c("Low",
-                         "Middle",
-                         "High")
-      )
-  )
-```
-
+Ethnicity
 ```{r ethnicity factor}
 # ethnicity
 dat <- dat %>%
@@ -191,7 +174,23 @@ dat <- dat %>%
         "5" = "Other"))
 ```
 
-# Social factors at age 5
+A new variable was created for SES. SES_ordered has ordered SES to show that there are order differences between the labels "low", "middle", and "high". 
+
+```{r SES ordered variable, class.source = 'fold-show'}
+dat <- dat %>%
+  mutate(
+    SES_ordered = 
+      ordered(SES,
+              levels = c("Low",
+                         "Middle",
+                         "High")
+      )
+  )
+```
+
+## Social factors at age 5
+
+ACORN variable was recoded into a factor. 
 
 ```{r acorn factor}
 # acorn_05
@@ -206,8 +205,11 @@ dat <- dat %>%
         "5" = "Hard Pressed"))
 ```
 
-# Home environment at age 5
+## Home environment at age 5
 
+Mother not lived with biological father since birth, experience of any domestic violence, child harm, and maternal warmth were recoded as factors. 
+
+Mother not lived with biological father since birth
 ```{r mother not lived with biodad coding}
 # mum_notlived_biodad_sincebirth_05
 dat <- dat %>%
@@ -219,6 +221,7 @@ dat <- dat %>%
   )
 ```
 
+Domestic violence
 ```{r any domestic violence coding}
 # any_domestic_violence_05
 dat <- dat %>%
@@ -230,6 +233,7 @@ dat <- dat %>%
   )
 ```
 
+Child harm
 ```{r child harm coding}
 # child_harm_05
 dat <- dat %>%
@@ -242,6 +246,7 @@ dat <- dat %>%
   )
 ```
 
+Maternal warmth
 ```{r maternal warmth coding}
 # maternal_warmth_05
 dat <- dat %>%
@@ -257,7 +262,9 @@ dat <- dat %>%
   )
 ```
 
-# Parent characterisrics at age 5
+## Parent characterisrics at age 5
+
+Maternal depression was recoded as a factor. 
 
 ```{r maternal depression lifetime}
 # maternal_depression_lifetime_05
@@ -270,8 +277,11 @@ dat <- dat %>%
   )
 ```
 
-# Mental health and service use at age 18
+## Mental health and service use at age 18
 
+Depression, anxiety, ADHD, conduct disorder, alcohol dependence, alcohol abuse, cannabis dependence, PTSD lifetime, PTSD current, psychosis binary, psychosis categorical, suicide attempt, and service use were all coded as factors. 
+
+Depression
 ```{r depression diagnosis in last 12 months}
 # depression_diagnosis_12mo_18
 dat <- dat %>%
@@ -283,6 +293,7 @@ dat <- dat %>%
   )
 ```
 
+Anxiety
 ```{r anxiety diagnosis}
 # anxiety_diagnosis_12mo_18
 dat <- dat %>%
@@ -294,6 +305,7 @@ dat <- dat %>%
   )
 ```
 
+ADHD
 ```{r ADHD diagnosis}
 # ADHD_diagnosis_12mo_18
 dat <- dat %>%
@@ -305,7 +317,8 @@ dat <- dat %>%
   )
 ```
 
-```{r conduct disorder diagnosis(???)}
+Conduct disorder
+```{r conduct disorder diagnosis}
 # conduct_disorder_moderate_18
 dat <- dat %>%
   mutate(
@@ -316,6 +329,7 @@ dat <- dat %>%
   )
 ```
 
+Alcohol dependence
 ```{r alcohol dependence}
 # alcohol_dependence_18
 dat <- dat %>%
@@ -327,6 +341,7 @@ dat <- dat %>%
   )
 ```
 
+Alcohol abuse
 ```{r alcohol abuse}
 # alcohol_abuse_18
 dat <- dat %>%
@@ -338,6 +353,7 @@ dat <- dat %>%
   )
 ```
 
+Cannabis dependence
 ```{r cannabis dependence}
 # cannabis_dependence_18
 dat <- dat %>%
@@ -349,6 +365,7 @@ dat <- dat %>%
   )
 ```
 
+PTSD lifetime 
 ```{r PTSD diagnosis lifetime}
 # PTSD_diagnosis_lifetime_18
 dat <- dat %>%
@@ -360,6 +377,7 @@ dat <- dat %>%
   )
 ```
 
+PTSD current
 ```{r PTSD diagnosis current}
 # PTSD_diagnosis_current_18
 dat <- dat %>%
@@ -371,6 +389,7 @@ dat <- dat %>%
   )
 ```
 
+Psychosis binary
 ```{r pychosis symptom count categorical}
 # cat_psychosis_symptom_count_18
 dat <- dat %>%
@@ -382,6 +401,7 @@ dat <- dat %>%
   )
 ```
 
+Psychosis categorical
 ```{r categorical pychosis symptom count categorical}
 # cat_psychosis_experiences_scale_18
 dat <- dat %>%
@@ -395,6 +415,7 @@ dat <- dat %>%
   )
 ```
 
+Suicide attempt or self-harm
 ```{r suicide attempt or self harm}
 # suicide_attempt_selfharm_18
 dat <- dat %>%
@@ -406,6 +427,7 @@ dat <- dat %>%
   )
 ```
 
+Service use
 ```{r service use}
 # service_use_18
 dat <- dat %>%
@@ -417,24 +439,11 @@ dat <- dat %>%
   )
 ```
 
-# Physical health and health risks at age 18
-*We decided to keep this as a continuous scale rather than categories - have hashed out*
-```{r physical activity}
-# physical_activity_18
-# dat <- dat %>%
-#   mutate(
-#     physical_activity_18 =
-#       recode_factor(phyacte18,
-#                     "1" = "Inactive",
-#                     "2" = "Light intensity",
-#                     "3" = "Moderate intensity",
-#                     "4" = "Hard intensity",
-#                     "5" = "Very hard intensity")
-#   )
-```
+## Employment prospects
 
-# Employment prospects
+Not in employment or education (NEET) and highest level of education were coded as factors. 
 
+NEET
 ```{r not in education, employment or training}
 # not_in_employment_education_18
 dat <- dat %>%
@@ -446,6 +455,7 @@ dat <- dat %>%
   )
 ```
 
+Highest education
 ```{r highest level of education}
 # highest_education_18
 dat <- dat %>%
@@ -460,11 +470,15 @@ dat <- dat %>%
   )
 ```
 
-# Variable REcode based on analysis decisions
+# New variable REcode based on analysis decisions {.tabset .tabset-fade}
 
-Some variables were edited further dependent on power and other factors. 
+New variables were created based on edits fro the original variables. These decisions were based on power and logical use. 
 
-```{r ACORN recode, include=FALSE}
+## ACORN
+
+Moderate Means and Hard Pressed were combined into "Deprived". Wealthy Achievers, Urban Prosperity, and Comfortably Off were combined into "Relatively affluent". A continuous version of the original variable was also created where scored ranged from 1-5. 
+
+```{r ACORN recode, class.source = 'fold-show'}
 dat <- dat %>%
   mutate(acorn_recoded_05 =
            if_else(
@@ -491,9 +505,11 @@ dat <- dat %>%
   )
 ```
 
-To have a binary option for SES, middle and high SES were combined. 
+## SES
 
-```{r SES recode - combine middle and high, include=FALSE}
+We created a binary option for SES, whereby middle and high SES were combined. 
+
+```{r SES recode - combine middle and high, class.source = 'fold-show'}
 dat <- dat %>%
   mutate(
     SES_binary_releveled =
@@ -511,9 +527,11 @@ dat <- dat %>%
 table(dat$SES_binary_releveled)
 ```
 
-Possible harm and Definite harm were combined to give a binary variable of Harm VS No harm.
+## Child harm
 
-```{r child harm recode, include=FALSE}
+Possible harm and Definite harm were combined to give a binary variable of "Harm" VS "No harm".
+
+```{r child harm recode, class.source = 'fold-show'}
 dat <- dat %>%
   mutate(child_harm_recoded_05 =
            if_else(
@@ -534,26 +552,11 @@ dat <- dat %>%
 table(dat$child_harm_recoded_05)
 ```
 
-Originally maternal warmth was condensed - this resulted in a large reduction in power. Therefore, maternal warmth was recoded to be continuous. 
+## Maternal warmth
 
-```{r maternal warmth recode, include=FALSE}
-# dat <- dat %>%
-#   mutate(
-#     maternal_warmth_recoded_05 =
-#       as.factor(fct_collapse(
-#         maternal_warmth_05,
-#         "Little warmth" = c("No warmth","Very little warmth"),
-#         "Some warmth" = c("Some warmth","Moderate warmth"),
-#         "High warmth" = c("Moderately high warmth","High warmth")
-#       )
-#   ) %>%
-#     relevel(ref = "Some warmth",
-#         first = TRUE, #levels in ref come first
-#         collapse = "+", #String used when constructing names for combined factor levels
-#         xlevels = TRUE #levels maintained even if not actually occurring
-#   ))
-# table(dat$maternal_warmth_recoded_05)
+Maternal warmth was recoded to be continuous. 
 
+```{r maternal warmth recode, class.source = 'fold-show'}
 dat <- dat %>%
   mutate(
     maternal_warmth_continuous_05 = 
@@ -561,9 +564,11 @@ dat <- dat %>%
   )
 ```
 
+## Highest education
+
 GSCE grades were collapsed: No qualification and Level 1 (GCSE at grades D-G) were combined. Level 2 (GCSE at grades A*-C) and Level 3 (A Level) were combined. 
 
-```{r highest education recode, include=FALSE}
+```{r highest education recode, class.source = 'fold-show'}
 dat <- dat %>%
   mutate(
     highest_education_recode_18 =
@@ -576,16 +581,18 @@ dat <- dat %>%
 table(dat$highest_education_recode_18)
 ```
 
+## Parental antisocial behaviour and parental alcoholism
+
 We combined maternal and paternal reports to form parental report for antisocial behaviour and alcoholism. 
 
-```{r recode antisocial behaviour for parent}
+```{r recode antisocial behaviour for parent, class.source = 'fold-show'}
 # create total score for mum and data to make parent
 dat <- dat %>%
   mutate(antisocial_behaviour_parent_05 =
            asbmm5 + asbfm5) # mum plus dad scores
 ```
 
-```{r recode alcoholism for parent}
+```{r recode alcoholism for parent, class.source = 'fold-show'}
 # create total score for mum and data to make parent
 dat <- dat %>%
   mutate(alcoholism_parent_05 =
@@ -594,8 +601,9 @@ dat <- dat %>%
 
 # Numeric versions for categorical variables
 
-Create numeric versions of all categorical antecedent and outcome variables. This is done purely for the correlation matrix to calculate multicollinearity between variables. 
+We created numeric versions of all categorical antecedent and outcome variables. This is done purely to compute the correlation matrix to calculate multicollinearity between variables. 
 
+Antecedent variables
 ```{r numreic varions of categorical antecedent variables}
 dat <- dat %>%
   mutate(SES_binary_releveled_numeric = as.numeric(SES_binary_releveled)) %>%
@@ -605,6 +613,7 @@ dat <- dat %>%
   mutate(maternal_depression_lifetime_numeric_05 = as.numeric(maternal_depression_lifetime_05))
 ```
 
+Outcome variables
 ```{r numreic varions of categorical outcome variables}
 dat <- dat %>%
   mutate(depression_diagnosis_12mo_numeric_18 = as.numeric(depression_diagnosis_12mo_18)) %>%
@@ -622,14 +631,14 @@ dat <- dat %>%
   mutate(not_in_employment_education_numeric_18 = as.numeric(not_in_employment_education_18)) 
 ```
 
-# Social isolation 
+# Social isolation {.tabset .tabset-fade}
 
 We needed to create several forms of the social isolation variables. 
 
 ## Log transformed social isolation
 
 ```{r log transform social isolation combined variables}
-colnames(dat)
+#colnames(dat)
 dat <- dat %>%
   mutate(log_sisoe5 =
            log1p(sisoe5))
@@ -644,15 +653,15 @@ dat <- dat %>%
            log1p(sisoe12))
 
 #check
-colnames(dat)
+#colnames(dat)
 ```
 
 ## Binary social isolation
 
-Using the same categorical cut offs as previously used in E-risk:
-- social isolation <= to 1, give it a 0.
-- social isolation > 1 and <= 2, give it a 1
-- social isolation > 2, give it a 2. 
+Using the same categorical group cut offs as previously used in E-risk:
+* social isolation <= to 1, give it a 0.
+* social isolation > 1 and <= 2, give it a 1
+* social isolation > 2, give it a 2. 
 
 ```{r binary social isolation variable}
 dat <- dat %>%
@@ -682,17 +691,19 @@ dat <- dat %>%
   ) 
 
 # check
-table(dat$isolation.categorical.5)
-table(dat$isolation.categorical.7)
-table(dat$isolation.categorical.10)
-table(dat$isolation.categorical.12)
+# table(dat$isolation.categorical.5)
+# table(dat$isolation.categorical.7)
+# table(dat$isolation.categorical.10)
+# table(dat$isolation.categorical.12)
 ```
 
-# Missing values
+# Missing values {.tabset .tabset-fade}
+
+## Check coding 
 
 Make sue that any values coded as -9, -999 , -8, -7 or -1 are coded as NA
 
-```{r recode missing values}
+```{r recode missing values, class.source = 'fold-show'}
 # Recode missing values to NAs in numeric variables
 dat <- dat %>%
   mutate_if(is.numeric, ~na_if(., -9)) %>% # missing
@@ -702,9 +713,9 @@ dat <- dat %>%
   mutate_if(is.numeric, ~na_if(., -7)) # missing specific to the question
 ```
 
-## Missingness for social isolation variables
+## Create missingness for social isolation variables per person
 
-```{r social isolation missingness}
+```{r social isolation missingness, class.source = 'fold-show'}
 # create the NA per person variable
 dat <- dat %>%
   mutate(
@@ -713,11 +724,12 @@ dat <- dat %>%
         is.na(dat[,colnames(dat) %in% combined_social_isolation])
       )
   )
+table(dat$na.per.person.si)
 ```
 
-# Create data set exluding those with 3 isolation data points missing 
+## Create data set exluding those with 3 isolation data points missing 
 
-```{r remove those that have 3 missing data points on combined isolation}
+```{r remove those that have 3 missing data points on combined isolation, class.source = 'fold-show'}
 # only select those who who have less than 3 combined isolation variables missing
 dat.3missing <- dat %>%
   filter(
@@ -728,27 +740,31 @@ dat.3missing <- dat %>%
 nrow(dat.3missing)
 ```
 
-# Select all renamed variables
-Remember to select which data set you want exported - dat (full sample), or dat.3missing (those with 3 missing time points excluded)
+# Select all variables to be used in analyses
 
-Not using the following variables in analysis:
-       acorn_05,
-       child_harm_05,
-       maternal_warmth_05,
-       highest_education_18,
-       psychosis_symptom_count_18, 
-       cat_psychosis_symptom_count_18,
-       psychosis_experiences_scale_18,
-       isolation_mother_05,
-       isolation_mother_07,
-       isolation_mother_10,
-       isolation_mother_12,
-       isolation_teacher_05,
-       isolation_teacher_07,
-       isolation_teacher_10,
-       isolation_teacher_12
+Here I will export the full data set using dat (full sample). But you also have the option to export the dta set exluding those with three time points missing (dat.3missing). 
+
+*Not* using the following variables in analysis:
+
+* acorn_05,
+* child_harm_05,
+* maternal_warmth_05,
+* highest_education_18,
+* psychosis_symptom_count_18, 
+* cat_psychosis_symptom_count_18,
+* psychosis_experiences_scale_18,
+* isolation_mother_05,
+* isolation_mother_07,
+* isolation_mother_10,
+* isolation_mother_12,
+* isolation_teacher_05,
+* isolation_teacher_07,
+* isolation_teacher_10,
+* isolation_teacher_12
        
 ## Data with those missing 3 time points excluded
+
+This code is long, so has been hidden, to view the code, select the "code" button to the right. 
 
 ```{r rename social isolation variables for 3 missing dataset}
 # variables split by blocks
@@ -904,10 +920,12 @@ dat.renamed.3missing <- dat.3missing %>%
     na.per.person.si
   )
 # check
-colnames(dat.renamed.3missing)
+# colnames(dat.renamed.3missing)
 ```
 
 ## Full data set
+
+This code is long, so has been hidden, to view the code, select the "code" button to the right. Final column names have been printed below. 
 
 ```{r rename social isolation variables for full dataset}
 # same order as the variable list for the concept paper
@@ -1064,11 +1082,9 @@ dat.renamed.full <- dat %>%
 colnames(dat.renamed.full)
 ```
 
-# Select variables to be exported into rds and csv files 
+Have then selected the variables for Mplus datasets and R datasets for future analyses. 
 
-Have hashed out the trajectory file - each time you run this line, you need to then manually change the the NAs to be . and remove the header so that Mplus can read the file. I have been using only one export and not rerunning this line 
-
-```{r selct variables to export files}
+```{r selct variables to export files - rds and csv for Mplus}
 #select variables for rds file
 dat_rds.3missing <- dat.renamed.3missing 
 dat_rds.full <- dat.renamed.full
@@ -1171,9 +1187,10 @@ dat_csv.full.teacher <- dat %>%
     sisoet12)
 ```
 
-# Export the data as rds and csv (for Mplus) files 
+Export data
 
-```{r export new data files}
+I have hashed out the trajectory csv file - each time you run this line, you need to then manually change the the NAs to be . and remove the header so that Mplus can read the file. I have been using only one export and not rerunning this line. 
+```{r export new data files rds and csv (for Mplus) files}
 # save R data file
 saveRDS(object = dat_rds.3missing, file = paste0(data_path, "preprocessed_isolation_trajectories_Jan2021_3missing.rds"))
 saveRDS(object = dat_rds.full, file = paste0(data_path, "preprocessed_isolation_trajectories_Jan2021_full_sample.rds"))
