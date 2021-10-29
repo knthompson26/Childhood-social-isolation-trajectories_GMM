@@ -5,5 +5,3 @@ navbar:
   right:
     - icon: fa-github fa-lg
       href: https://github.com/knthompson26/Childhood-social-isolation-trajectories_GMM
-html_document:
-code_folding: hide

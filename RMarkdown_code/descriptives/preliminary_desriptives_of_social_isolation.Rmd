@@ -10,11 +10,11 @@ output:
     number_sections: false
     highlight: monochrome
     theme: flatly
-code_folding: hide
+    code_folding: hide
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE,
+knitr::opts_chunk$set(echo = TRUE,
                       comment = NA,
                       prompt = FALSE,
                       cache = FALSE,
@@ -26,15 +26,15 @@ knitr::opts_chunk$set(echo = FALSE,
 options(bitmapType = 'quartz') # to render fonts better
 ```
 
-```{r Clear global environment}
+```{r Clear global environment, include=FALSE}
 remove(list = ls())
 ```
 
-```{r Current date}
+```{r Current date, include=FALSE}
 date = Sys.Date()
 ```
 
-```{r palletes}
+```{r palletes, include=FALSE}
 palette2 <- c("#78D9C5","#F5BE5E")
 palette3 <- c("#78D9C5","#F5BE5E","#EEB6E9")
 palette4 <- c("#78D9C5","#F5BE5E","#EEB6E9","#DBDB73")
@@ -42,7 +42,7 @@ palette5 <- c("#78D9C5","#F5BE5E","#EEB6E9","#DBDB73","#FFED98")
 palette6 <- c("#78D9C5","#F5BE5E","#EEB6E9","#DBDB73","#FFED98","#BFD2EB")
 ```
 
-```{r Load packages}
+```{r Load packages, include=FALSE}
 library(knitr)
 library(summarytools)
 library(psych)
@@ -55,7 +55,7 @@ library(Rmisc)
 library(tidyverse)
 ```
 
-```{r source the data file path}
+```{r source the data file path, include=FALSE}
 #source raw data directory: data_raw and data included
 source("../../../../../isolation_trajectories_data_path.R")
 ```
@@ -65,7 +65,7 @@ dat <- readRDS(file = paste0(data_path, "preprocessed_isolation_trajectories_Jan
 colnames(dat)
 ```
 
-```{r prepare item lists}
+```{r prepare item lists, include=FALSE}
 #All lists for isolation and grouping variables
 #Only using elder twin variables as each twin is included in the data set as an individual. Without doing twin analyses, the elder and younger variables show the same information.
 combined_social_isolation <- c("isolation_combined_05",
@@ -84,7 +84,7 @@ mother_social_isolation <- c("isolation_mother_05",
                               "isolation_mother_12")
 ```
 
-```{r Half-violin plot theme}
+```{r Half-violin plot theme, include=FALSE}
 #source the half/flat function for the violin plot
 source("https://raw.githubusercontent.com/datavizpyr/data/master/half_flat_violinplot.R")
 
@@ -107,11 +107,22 @@ theme_personal <-  theme(
     )
 ```
 
+This page dispays preliminary descriptive statistics for social isolation variables in E-Risk. The contents are  listed on the left hand side of the page. Social isolation was measured using items from the Children's Behaviour Checklist (CBCL), responses were scored 0 (not true), 1 (somewhat true) and 2 (often true) were summed to make a total score and then were averaged from both parents and teachers:
+
+* “complains of loneliness” 
+* “doesn’t get along with other children [pupils]” 
+* “feels or complains that no-one loves him/her” 
+* “would rather be alone than with others” 
+* “not liked by other children [pupils]” 
+* “withdrawn, doesn’t get involved with others” 
+
 # Missingness descriptives
+
+Visits were conducted when the children were aged 5 (100% participation), 7 (98%), 10 (96%), 12 (96%), and 18 years (93%). Rates of missingness for social isolation items is reported below. First, the number of time points missing per person is reported, then social isolation item frequencies are displayed for each age. 
 
 ## Frequency tables social isolation {.tabset .tabset-fade}
 
-### NAs per person
+### Time points missing per person
 ```{r missingness Nas per person}
 dat %>%
   rename(`Social isolation NAs per person` = na.per.person.si) %>%
@@ -169,9 +180,12 @@ freq(dat$isolation_combined_12,
 ```
 87 NAs at age 12. 
 
+
 ## Groups for participants missing 2 or 3 time points
 
-```{r create variables for different group combinations, echo=TRUE}
+To check that data is missing at random (MAR), we created two variables that indicate group membershop based on missingness. The first variable split those that were missing three time points (N=18) into one group, and everyone else in another group. The second variable split those that were missing two time points (N=46) into one group (exluding those missing three time points), and those missing 1 or zero into the other group. We then tested for differences in social isolation, SES, IQ, internalising behaviours, and extermalising behaviours at age 5, dependednt on the two mimssingness group variables created. 
+
+```{r create variables for different group combinations, class.source = 'fold-show'}
 # group with 18 missing 3 time points vs everyone else
 dat <- dat %>%
   mutate(
@@ -209,7 +223,7 @@ dat.missing.3time <- dat.missing.3time %>%
 
 # Differences for those who have missing social isolation data {.tabset .tabset-fade}
 
-Results from t-tests and Chi square tests assessing significant group differences for those who were missing three time points, and for those who were missing two time pionts. 46 people were missing two of the four time points. 18 people were missing three out of four time points. 
+Results from t-tests and Chi square tests assessing significant group differences for those who were missing three time points, and for those who were missing two time pionts. 46 people were missing two of the four time points. 18 people were missing three out of four time points. Results are reported under each tab separately. 
 
 ```{r functions}
 # This function creates a results sentence for all t-tests and cho square tests to follow. 
@@ -370,6 +384,8 @@ chisq_SES_age18 <- chisq.test(dat$SES,
 
 # Means across all time points {.tabset .tabset-fade}
 
+Below are the mean social isolation scores plotted for each time point. Underneath are the descriptives for social isolation stratified by combined report (mother and teacher), mother report, and teacher report. 
+
 ```{r convert data to long format, include=FALSE}
 #convert data to long format for graphs
 dat_long<- dat %>%
@@ -484,4 +500,203 @@ dat %>%
       style = "rmarkdown") 
 ```
 
+## Social isolation split by sex {.tabset .tabset-fade}
+
+Below are violin plots showing social isolation combined report scores stratified by sex. 
+
+### Age 5
+```{r violin plot for sex diffs at age 5}
+dat %>%
+  ggplot(
+    mapping = aes(
+    x = sex,
+    y = isolation_combined_05,
+    fill = sex)) +
+  geom_hline(yintercept = 5, linetype = "dashed", color = "gray") +
+  geom_hline(yintercept = 10, linetype = "dashed", color = "gray") +
+  geom_hline(yintercept = 15, linetype = "dashed", color = "gray") +
+  geom_flat_violin(
+    position = position_nudge(x = .2, y = 0),
+    trim = FALSE,
+    alpha = 0.5
+    ) +
+  geom_point(
+    aes(
+      y = isolation_combined_05,
+      color = sex),
+    position = position_jitter(width = .15),
+    size = .5,
+    alpha = 0.8) +
+ stat_summary(fun = mean,
+              fun.min = function(x) mean(x)* sd(x),
+              fun.max = function(x) mean(x) + sd(x),
+              geom = "pointrange"
+              ) +
+  labs(
+    title = "Social isolation in males and females at age 5",
+    y = "Social isolation",
+    fill = "Sex") +
+  theme_personal +
+  theme(
+    axis.text.y = element_blank()
+  ) +
+  scale_fill_manual(
+    values = palette2,
+    breaks = c("Male", "Female")
+) +
+  scale_alpha(guide = 'none') +
+  scale_size(guide = 'none') +
+  scale_color_manual(
+    values = palette2,
+    breaks = c("Male", "Female"),
+    guide = "none") +
+  coord_flip()
+```
+
+### Age 7
+```{r violin plot for sex diffs at age 7}
+dat %>%
+  ggplot(
+    mapping = aes(
+    x = sex,
+    y = isolation_combined_07,
+    fill = sex)) +
+  geom_hline(yintercept = 5, linetype = "dashed", color = "gray") +
+  geom_hline(yintercept = 10, linetype = "dashed", color = "gray") +
+  geom_hline(yintercept = 15, linetype = "dashed", color = "gray") +
+  geom_flat_violin(
+    position = position_nudge(x = .2, y = 0),
+    trim = FALSE,
+    alpha = 0.5
+    ) +
+  geom_point(
+    aes(
+      y = isolation_combined_05,
+      color = sex),
+    position = position_jitter(width = .15),
+    size = .5,
+    alpha = 0.8) +
+ stat_summary(fun = mean,
+              fun.min = function(x) mean(x)* sd(x),
+              fun.max = function(x) mean(x) + sd(x),
+              geom = "pointrange"
+              ) +
+  labs(
+    title = "Social isolation in males and females at age 7",
+    y = "Social isolation",
+    fill = "Sex") +
+  theme_personal +
+  theme(
+    axis.text.y = element_blank()
+  ) +
+  scale_fill_manual(
+    values = palette2,
+    breaks = c("Male", "Female")
+) +
+  scale_alpha(guide = 'none') +
+  scale_size(guide = 'none') +
+  scale_color_manual(
+    values = palette2,
+    breaks = c("Male", "Female"),
+    guide = "none") +
+  coord_flip()
+```
+
+### Age 10
+```{r violin plot for sex diffs at age 10}
+dat %>%
+  ggplot(
+    mapping = aes(
+    x = sex,
+    y = isolation_combined_10,
+    fill = sex)) +
+  geom_hline(yintercept = 5, linetype = "dashed", color = "gray") +
+  geom_hline(yintercept = 10, linetype = "dashed", color = "gray") +
+  geom_hline(yintercept = 15, linetype = "dashed", color = "gray") +
+  geom_flat_violin(
+    position = position_nudge(x = .2, y = 0),
+    trim = FALSE,
+    alpha = 0.5
+    ) +
+  geom_point(
+    aes(
+      y = isolation_combined_05,
+      color = sex),
+    position = position_jitter(width = .15),
+    size = .5,
+    alpha = 0.8) +
+ stat_summary(fun = mean,
+              fun.min = function(x) mean(x)* sd(x),
+              fun.max = function(x) mean(x) + sd(x),
+              geom = "pointrange"
+              ) +
+  labs(
+    title = "Social isolation in males and females at age 10",
+    y = "Social isolation",
+    fill = "Sex") +
+  theme_personal +
+  theme(
+    axis.text.y = element_blank()
+  ) +
+  scale_fill_manual(
+    values = palette2,
+    breaks = c("Male", "Female")
+) +
+  scale_alpha(guide = 'none') +
+  scale_size(guide = 'none') +
+  scale_color_manual(
+    values = palette2,
+    breaks = c("Male", "Female"),
+    guide = "none") +
+  coord_flip()
+```
+
+### Age 12
+```{r violin plot for sex diffs at age 12}
+dat %>%
+  ggplot(
+    mapping = aes(
+    x = sex,
+    y = isolation_combined_12,
+    fill = sex)) +
+  geom_hline(yintercept = 5, linetype = "dashed", color = "gray") +
+  geom_hline(yintercept = 10, linetype = "dashed", color = "gray") +
+  geom_hline(yintercept = 15, linetype = "dashed", color = "gray") +
+  geom_flat_violin(
+    position = position_nudge(x = .2, y = 0),
+    trim = FALSE,
+    alpha = 0.5
+    ) +
+  geom_point(
+    aes(
+      y = isolation_combined_05,
+      color = sex),
+    position = position_jitter(width = .15),
+    size = .5,
+    alpha = 0.8) +
+ stat_summary(fun = mean,
+              fun.min = function(x) mean(x)* sd(x),
+              fun.max = function(x) mean(x) + sd(x),
+              geom = "pointrange"
+              ) +
+  labs(
+    title = "Social isolation in males and females at age 12",
+    y = "Social isolation",
+    fill = "Sex") +
+  theme_personal +
+  theme(
+    axis.text.y = element_blank()
+  ) +
+  scale_fill_manual(
+    values = palette2,
+    breaks = c("Male", "Female")
+) +
+  scale_alpha(guide = 'none') +
+  scale_size(guide = 'none') +
+  scale_color_manual(
+    values = palette2,
+    breaks = c("Male", "Female"),
+    guide = "none") +
+  coord_flip()
+```
 
