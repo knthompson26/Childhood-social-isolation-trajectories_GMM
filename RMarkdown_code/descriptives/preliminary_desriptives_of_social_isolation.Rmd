@@ -11,6 +11,8 @@ output:
     highlight: monochrome
     theme: flatly
     code_folding: hide
+    includes:
+      after_body: footer.html
 ---
 
 ```{r setup, include=FALSE}
@@ -500,11 +502,11 @@ dat %>%
       style = "rmarkdown") 
 ```
 
-## Social isolation split by sex {.tabset .tabset-fade}
+# Social isolation split by sex {.tabset .tabset-fade}
 
 Below are violin plots showing social isolation combined report scores stratified by sex. 
 
-### Age 5
+## Age 5
 ```{r violin plot for sex diffs at age 5}
 dat %>%
   ggplot(
@@ -553,7 +555,7 @@ dat %>%
   coord_flip()
 ```
 
-### Age 7
+## Age 7
 ```{r violin plot for sex diffs at age 7}
 dat %>%
   ggplot(
@@ -602,7 +604,7 @@ dat %>%
   coord_flip()
 ```
 
-### Age 10
+## Age 10
 ```{r violin plot for sex diffs at age 10}
 dat %>%
   ggplot(
@@ -651,7 +653,7 @@ dat %>%
   coord_flip()
 ```
 
-### Age 12
+## Age 12
 ```{r violin plot for sex diffs at age 12}
 dat %>%
   ggplot(
