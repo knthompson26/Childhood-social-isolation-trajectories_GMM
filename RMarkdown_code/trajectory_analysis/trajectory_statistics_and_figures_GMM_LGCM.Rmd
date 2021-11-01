@@ -1,48 +1,46 @@
 ---
 title: "GMM trajectory statistics and figures"
-author: "Katherine N Thompson"
-date: "13th Jan 2021"
-output:
-  word_document:
-    toc: yes
-    toc_depth: '2'
+output:  
   html_document:
     df_print: paged
     toc: yes
     toc_depth: 2
     toc_float:
-      collapsed: no
-    number_sections: no
+      collapsed: false
+    number_sections: false
     highlight: monochrome
-    theme: cerulean
-code_folding: hide
+    theme: flatly
+    code_folding: hide
+    includes:
+      after_body: footer.html
 ---
+
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE,
+knitr::opts_chunk$set(echo = TRUE,
                       comment = NA,
                       prompt = FALSE,
                       cache = FALSE,
                       message = FALSE,
-                      warning = FALSE)
-
+                      warning = FALSE,
+                      results = 'asis')
 
 options(bitmapType = 'quartz') # to render fonts better
 ```
 
-```{r Clear global environment}
+```{r Clear global environment, include=FALSE}
 remove(list = ls())
 ```
 
-```{r colour palletes for graphs}
+```{r colour palletes for graphs, include=FALSE}
 palette <- c("#78D9C5","#F5BE5E","#EEB6E9","#DBDB73","#FFED98","#BFD2EB")
 ```
  
-```{r source the data file path}
+```{r source the data file path, include=FALSE}
 #source raw data directory: data_raw and data included
-source("../../../../../isolation_trajectories_data_path.R")
+source("../../../isolation_trajectories_data_path.R")
 ```
 
-```{r Mplus packages}
+```{r Mplus packages, include=FALSE}
 library(MplusAutomation)
 library(stringr)
 library(stringi)
@@ -56,13 +54,17 @@ library(tidyverse)
 library(plyr) #conflicts with tidyverse for e.g. rename and row_number
 ```
 
-```{r MplusAutomation citation}
+*** 
+
+This page displays the analysis results for latent growth curve models (LGCM) and growth mixture models (GMM) run in Mplus. To do this, we have imported output files from Mplus and formatted the statistics and figures in R, using the MplusAutomation package.
+
+```{r MplusAutomation citation, echo=FALSE}
 citation("MplusAutomation") # need the citation for the paper
 ```
 
-# Theme for plotting
+*** 
 
-```{r rename plots, include=FALSE}
+```{r theme for plotting, include=FALSE}
 combined.traj.theme <- theme(
                         plot.title = element_text(size = 12, face = "bold", hjust=0.5),
                         legend.position = "none",
@@ -81,24 +83,35 @@ scale.x <- scale_x_continuous(expand = c(0.1,0.1),
                               breaks = c(5, 7, 10, 12))
 ```
 
-# Longitudinal growth gurve models (LGCM)
+# Latent growth curve models (LGCM)
 
 ## Model fit statistics
-*Remember to check if you are reading in the full data set or for the one excluding the three missing*
 
-```{r read in data for growth curves, include=FALSE}
+First read in the Mplus models, remember to check which data set you are reading in. 
+
+```{r read in data for growth curves, results='hide', message=FALSE}
 si.growth.all <- readModels(paste0(mplus_growth_traj_clustered_full_output_data_path), recursive = TRUE)
 ```
 
-```{r extract summary stats for growth curves, include=FALSE}
-#extract the summary variables from the mplus output files. Assuming there are multiple files in the above directory, model summaries could be retained as a data.frame as follows:
+Extract the summary variables from the mplus output files. Assuming there are multiple files in the directory, model summaries could be retained as a data.frame as we have done here. 
+
+```{r extract summary stats for growth curves}
 si_growth_summaries <- do.call("rbind.fill",
                         sapply(si.growth.all,
                                "[", 
                                "summaries"))
 ```
 
-```{r create table of fit statistics for growth curve models, include=FALSE}
+Cut offs and best fitting models are:
+
+* lowest aBIC 
+* TLI > 0.95 
+* CFI > 0.95  
+* RMSEA  < 0.05 indicates close fit, and  < 0.08 indicates reasonable fit 
+
+We chose the **Linear model** as the best fitting and most parsimonious model.
+
+```{r create table of fit statistics for growth curve models}
 #social isolation summaries 
 si.growth.summaries <- data.frame(matrix(nrow = 4,ncol = 8)) 
 
@@ -122,7 +135,7 @@ si.growth.summaries <- si.growth.summaries %>%
                 "Log quadratic growth model")))
 
 #check 
-si.growth.summaries
+# si.growth.summaries
 
 #add summary information into data frame 
 si.growth.summaries <- si.growth.summaries %>%
@@ -149,21 +162,14 @@ si.growth.summaries <- si.growth.summaries %>%
       si_growth_summaries$RMSEA_Estimate) #RMSEA
   
 #check
-si.growth.summaries
+# si.growth.summaries
 ```
 
 ```{r growth curve model fit table}
 knitr::kable(si.growth.summaries) #table for Word
 ```
 
-Cut offs and best fitting models are:
-
-* lowest aBIC - linear
-* TLI > 0.95 - linear
-* CFI > 0.95 - quadratic  
-* RMSEA  < 0.05 indicates close fit, and  < 0.08 indicates reasonable fit - log linear
-
-*Linear model* is chosen as the best fitting and most parsimonious model.
+## Means and variances {.tabset .tabset-fade}
 
 ```{r extract significance values of I, S and Q}
 # linear
@@ -173,25 +179,43 @@ linear.mean <- si.growth.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise
 linear.variance <- si.growth.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.growth_trajectories.clustered.full_sample.output..isolation_1traj_linear_full_sample_clustered.out$parameters$unstandardized %>%
   filter(paramHeader == "Variances") # filter out the variance for I and S
 
-linear.mean
-linear.variance
-
 # quadratic
 quad.mean <- si.growth.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.growth_trajectories.clustered.full_sample.output..isolation_1traj_quad_full_sample_clustered.out$parameters$unstandardized %>%
   filter(paramHeader == "Means") # filter out the means for I, S and Q 
 
 quad.variance <- si.growth.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.growth_trajectories.clustered.full_sample.output..isolation_1traj_quad_full_sample_clustered.out$parameters$unstandardized %>%
   filter(paramHeader == "Variances") # filter out the variance for I, S and Q 
+```
 
-quad.mean
-quad.variance
+### Linear LCGM means and variances 
+
+```{r combine linear means and variances into table}
+linear.mean.var <- rbind(linear.mean, linear.variance) %>%
+  select(`Mean/variance` = paramHeader, 
+         `Intercept/slope` = param, 
+         `estimate` = est, 
+         `standard error` = se, 
+         `p value` = pval)
+kable(linear.mean.var)
+```
+
+### Quadratic LCGM means and variances 
+
+```{r combine quad means and variances into table}
+quad.mean.var <- rbind(quad.mean, quad.variance) %>%
+  select(`Mean/variance` = paramHeader, 
+         `Intercept/slope/quadratic` = param, 
+         `estimate` = est, 
+         `standard error` = se, 
+         `p value` = pval)
+kable(quad.mean.var)
 ```
 
 ## Plots {.tabset .tabset-fade}
 
-### Social isolation linear and quadratic growth curves 
+### Linear and quadratic growth curves 
 
-```{r Growth curves for social isolation - linear and quadratic, include=FALSE}
+```{r Growth curves for social isolation - linear and quadratic}
 #create empty dataset 
 dat_si <- data.frame(matrix(nrow = 4, ncol = 3))
 
@@ -215,7 +239,7 @@ dat_si <- dat_si %>%
                names_to = "Model", 
                values_to = "score")
 #check
-dat_si
+# dat_si
 ```
 
 ```{r Plot groth curves for social isolation}
@@ -244,9 +268,9 @@ isolation_growth_curve_clustered_full_sample <- ggplot() + #change name of graph
 isolation_growth_curve_clustered_full_sample
 ```
 
-### Single growth curve only
+### Linear growth curve only
 
-```{r Single growth curve for social isolation - linear, include=FALSE}
+```{r Single growth curve for social isolation - linear}
 #create empty dataset 
 dat_si_single <- data.frame(matrix(nrow = 4, ncol = 1))
 
@@ -265,7 +289,7 @@ dat_si_single <- dat_si_single %>%
                names_to = "Class", 
                values_to = "social.isolation_score")
 #check
-dat_si_single
+#dat_si_single
 ```
 
 ```{r Plot groth curves for social isolation - single trajectory}
@@ -295,9 +319,9 @@ isolation_growth_curve_single_clustered_full_sample <- ggplot() +
 isolation_growth_curve_single_clustered_full_sample
 ```
 
-### Log-transformed social isolation linear and quadratic growth curves 
+### Log-transformed linear and quadratic growth curves 
 
-```{r Growth curves for log transformed social isolation - linear and quadratic, include=FALSE}
+```{r Growth curves for log transformed social isolation - linear and quadratic}
 #create empty dataset 
 dat_si_log <- data.frame(matrix(nrow = 4, ncol = 3))
 
@@ -320,7 +344,7 @@ dat_si_log <- dat_si_log %>%
                names_to = "Model", 
                values_to = "score")
 #check
-dat_si_log
+#dat_si_log
 ```
 
 ```{r Plot groth curves for log-transformed social isolation}
@@ -351,16 +375,18 @@ isolation_growth_curve_log_scale_clustered_full_sample <- ggplot() +
 isolation_growth_curve_log_scale_clustered_full_sample
 ```
 
-# Linear growth mixture models (GMM)
+# Growth mixture models (GMM)
+
+As the linear curve was the best fit when running a single latent growth curve, all GMM models are lienar form. 
 
 ## Model fit statistics
 
-```{r read in social isolation model data, include=FALSE}
+```{r read in social isolation model data, results='hide', message=FALSE}
 #For class models, read in all output files within your folder that you have all your class models
 si.classes.all <- readModels(paste0(mplus_GMM_clustered_full_output_data_path), recursive = TRUE) #Recursive means it reads data in sub-folders too
 ```
 
-```{r read in trajectoriesectory summary vairables, include=FALSE}
+```{r read in trajectoriesectory summary vairables}
 #extract the summary variables from the mplus output files. Assuming there are multiple files in the above directory, model summaries could be retained as a data.frame as follows:
 si_summaries <- do.call("rbind.fill",
                         sapply(si.classes.all,
@@ -371,7 +397,7 @@ si_summaries <- do.call("rbind.fill",
 si_summaries <- si_summaries[-c(2,3,4,5,7,8,11,13),]  # remove rows that are output from OPTSEED tests and keep 5 and 6 trajectory models that fix S to zero
 ```
 
-```{r create data frame with sumamary variables, include=FALSE}
+```{r create data frame with sumamary variables}
 #social isolation summaries 
 si.class.summaries <- data.frame(matrix(nrow = 5, 
                                          ncol = 8)) 
@@ -387,7 +413,7 @@ colnames(si.class.summaries) <- c("Model",
                                   "Class Proportions") #or whichever indices you want to compare; do si_summaries$ to see what's in there
 
 #check colnames
-si.class.summaries
+#si.class.summaries
 
 #create "Model" variable
 si.class.summaries <- si.class.summaries %>%
@@ -421,7 +447,7 @@ si.class.summaries <- si.class.summaries %>%
       si_summaries$T11_VLMR_PValue) #T11_VLMR_PValue col from original summaries data set
 
 #check
-si.class.summaries
+#si.class.summaries
 ```
 
 ```{r create class proportions % for each model}
@@ -460,13 +486,13 @@ si.class.summaries$`Class N`[si.class.summaries$Model == "Five Class"] <- list(c
 si.class.summaries$`Class N`[si.class.summaries$Model == "Six Class"] <- list(c(sprintf("%.0f", si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.output..isolation_6traj_full_sample_clustered_S_fixed_to_zero.out$class_counts$posteriorProb$count)))
 ```
 
+The *three class model* is chosen as the best fitting model according to fit statistics and logical evaluation The five and six class models here have fixed the variance of S (the slope) to zero, as the original model produces negative variances and is not interpretable. 
+
 ```{r load summary table for GMM models}
 #Look at summary table 
 kable(si.class.summaries)
 ```
  
-*The five class model in these statistics is fixing the variance of S (slope) to zero - as the original model produces negative variances.*
-
 ## Means and variances
 
 ```{r GMM means and variances for class 1}
@@ -475,9 +501,6 @@ gmm.linear.means.1 <- si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DT
 
 gmm.linear.variances.1 <- si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.output..isolation_3traj_full_sample_clustered.out$parameters$unstandardized %>%
   filter(paramHeader == "Variances" & LatentClass == 1) # filter out the variance for I and S
-
-gmm.linear.means.1
-gmm.linear.variances.1
 ```
 
 ```{r GMM means and variances for class 2}
@@ -486,9 +509,6 @@ gmm.linear.means.2 <- si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DT
 
 gmm.linear.variances.2 <- si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.output..isolation_3traj_full_sample_clustered.out$parameters$unstandardized %>%
   filter(paramHeader == "Variances" & LatentClass == 2) # filter out the variance for I and S
-
-gmm.linear.means.2
-gmm.linear.variances.2
 ```
 
 ```{r GMM means and variances for class 3}
@@ -497,28 +517,25 @@ gmm.linear.means.3 <- si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DT
   
 gmm.linear.variances.3 <- si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.output..isolation_3traj_full_sample_clustered.out$parameters$unstandardized %>%
   filter(paramHeader == "Variances" & LatentClass == 3) # filter out the variance for I and S
-
-gmm.linear.means.3
-gmm.linear.variances.3
 ```
 
 ```{r table for GMM means and variances}
 gmm.linear.means.variances <- rbind(gmm.linear.means.1, gmm.linear.variances.1, gmm.linear.means.2, gmm.linear.variances.2, gmm.linear.means.3, gmm.linear.variances.3)%>%
   select(Class = LatentClass,
-         paramHeader,
-         Parameter = param,
-         Estimate = est,
-         `Standard error` = se,
+         `Means/variances` = paramHeader,
+         `Intercept/slope` = param,
+         estimate = est,
+         `standard error` = se,
          `p value` = pval)
 
 kable(gmm.linear.means.variances)
 ```
 
-
 ## Plots {.tabset .tabset-fade}
 
 ### Two Class model
-```{r two class GMM model preparation, include=FALSE}
+
+```{r two class GMM model preparation}
 #create two class data frame with means and variances
 two_class_si <- as.data.frame(
   si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.output..isolation_2traj_full_sample_clustered.out$gh5$means_and_variances_data$y_estimated_means)
@@ -566,7 +583,7 @@ two_traj_plot_clustered_full_sample
 
 ### Three Class model
 
-```{r three class GMM model preparation, include=FALSE}
+```{r three class GMM model preparation}
 #create three class data frame with means and variances
 three_class_si <- as.data.frame(
   si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.output..isolation_3traj_full_sample_clustered.out$gh5$means_and_variances_data$y_estimated_means)
@@ -612,41 +629,40 @@ three_traj_plot_clustered_full_sample <- ggplot(three_class_si,
 three_traj_plot_clustered_full_sample
 ```
 
-```{r plot 3 class GMM model for presentation}
-three_traj_plot_clustered_full_sample.SGDP<- ggplot(three_class_si,
-        aes(x = timepoint, 
-            y = social.isolation_score, 
-          #  colour = Class,
-            shape = Class)) +
-          geom_line(size = 1.5) +
-  geom_point(aes(size = 1)) +
-  scale_fill_manual(values = c("#F5BE5E","#EEB6E9","#78D9C5")) +
-  scale_color_manual(values = c("#F5BE5E","#EEB6E9","#78D9C5")) +
-  labs(x = "Age (years)", 
-       title = "Three trajectory model",
-       color = "",
-       y ="Social isolation") + 
-  scale.y +
-  scale.x +
-  combined.traj.theme + 
-  guides(shape = FALSE, size = FALSE)
-
-three_traj_plot_clustered_full_sample.SGDP
-
-ggsave(
-  "three_traj_plot_clustered_full_sample.SGDP.jpeg",
-  plot = three_traj_plot_clustered_full_sample.SGDP,
-  device = "jpeg",
-  path = paste0(graph_save_data_path, "trajectories/sgdp/"),
-  width = 5,
-  height = 4
-)
+```{r plot 3 class GMM model for presentation, include=FALSE}
+# three_traj_plot_clustered_full_sample.SGDP<- ggplot(three_class_si,
+#         aes(x = timepoint, 
+#             y = social.isolation_score, 
+#           #  colour = Class,
+#             shape = Class)) +
+#           geom_line(size = 1.5) +
+#   geom_point(aes(size = 1)) +
+#   scale_fill_manual(values = c("#F5BE5E","#EEB6E9","#78D9C5")) +
+#   scale_color_manual(values = c("#F5BE5E","#EEB6E9","#78D9C5")) +
+#   labs(x = "Age (years)", 
+#        title = "Three trajectory model",
+#        color = "",
+#        y ="Social isolation") + 
+#   scale.y +
+#   scale.x +
+#   combined.traj.theme + 
+#   guides(shape = FALSE, size = FALSE)
+# 
+# three_traj_plot_clustered_full_sample.SGDP
+# 
+# ggsave(
+#   "three_traj_plot_clustered_full_sample.SGDP.jpeg",
+#   plot = three_traj_plot_clustered_full_sample.SGDP,
+#   device = "jpeg",
+#   path = paste0(graph_save_data_path, "trajectories/sgdp/"),
+#   width = 5,
+#   height = 4
+# )
 ```
-
 
 ### Four Class model
 
-```{r four class GMM model preparation, include=FALSE}
+```{r four class GMM model preparation}
 #create four class data frame with means and variances
 four_class_si <- as.data.frame(
   si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.output..isolation_4traj_full_sample_clustered.out$gh5$means_and_variances_data$y_estimated_means)
@@ -697,7 +713,7 @@ four_traj_plot_clustered_full_sample
 
 ### Five Class model
 
-```{r five class GMM  model preparation, include=FALSE}
+```{r five class GMM  model preparation}
 #create five class data frame with means and variances
 five_class_si <- as.data.frame(
   si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.output..isolation_5traj_full_sample_clustered_S_fixed_to_zero.out$gh5$means_and_variances_data$y_estimated_means)
@@ -749,7 +765,7 @@ five_traj_plot_clustered_full_sample
 
 ### Six Class model
 
-```{r six class GMM  model preparation, include=FALSE}
+```{r six class GMM  model preparation}
 #create five class data frame with means and variances
 six_class_si <- as.data.frame(
   si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.output..isolation_6traj_full_sample_clustered_S_fixed_to_zero.out$gh5$means_and_variances_data$y_estimated_means)
@@ -799,31 +815,29 @@ six_traj_plot_clustered_full_sample <- ggplot(six_class_si,
 six_traj_plot_clustered_full_sample
 ```
 
-# Save all graphs as images into folder "plots"
-
 ```{r save as JPEG, include=FALSE}
 # Growth curve graphs will likely be needed in supplementary to show why we chose the linear model. 
 #growth curve
-ggsave(
-  "isolation_growth_curve_clustered_full_sample.jpeg",
-  plot = isolation_growth_curve_clustered_full_sample,
-  device = "jpeg",
-  path = paste0(graph_save_data_path, "growth_models/"),
-  width = 7,
-  height = 5
-)
-#growth curve log scale
-ggsave(
-  "isolation_growth_curve_log_scale_clustered_full_sample.jpeg",
-  plot = isolation_growth_curve_log_scale_clustered_full_sample,
-  device = "jpeg",
-  path = paste0(graph_save_data_path, "growth_models/"),
-  width = 7,
-  height = 5
-)
+# ggsave(
+#   "isolation_growth_curve_clustered_full_sample.jpeg",
+#   plot = isolation_growth_curve_clustered_full_sample,
+#   device = "jpeg",
+#   path = paste0(graph_save_data_path, "growth_models/"),
+#   width = 7,
+#   height = 5
+# )
+# #growth curve log scale
+# ggsave(
+#   "isolation_growth_curve_log_scale_clustered_full_sample.jpeg",
+#   plot = isolation_growth_curve_log_scale_clustered_full_sample,
+#   device = "jpeg",
+#   path = paste0(graph_save_data_path, "growth_models/"),
+#   width = 7,
+#   height = 5
+# )
 ```
 
-# Rename and format for joint plot
+# Plot for all models 
 
 ```{r combine trajectory plots}
 #combine all plots
@@ -856,15 +870,19 @@ combined_trajectories_plot_clustered_full_sample <- ggarrange(isolation_growth_c
 #                                         )
 ```
 
-```{r save trajectory plot}
-ggsave(
-  "combined_trajectories_plot_clustered_full_sample_BW.jpeg",
-  plot = combined_trajectories_plot_clustered_full_sample,
-  device = "jpeg",
-  path = paste0(graph_save_data_path, "trajectories/final/"),
-  width = 8.5,
-  height = 10
-)
+```{r combined plot, fig.height=10, fig.width=8.5}
+combined_trajectories_plot_clustered_full_sample
+```
+
+```{r save trajectory plot, include=FALSE}
+# ggsave(
+#   "combined_trajectories_plot_clustered_full_sample_BW.jpeg",
+#   plot = combined_trajectories_plot_clustered_full_sample,
+#   device = "jpeg",
+#   path = paste0(graph_save_data_path, "trajectories/final/"),
+#   width = 8.5,
+#   height = 10
+# )
 
 # ggsave(
 #   "combined_trajectories_plot_clustered_full_sample_CENTRE_PRES.jpeg",

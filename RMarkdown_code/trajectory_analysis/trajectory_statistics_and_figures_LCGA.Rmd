@@ -1,39 +1,37 @@
 ---
-title: "LCGA trajectory statistics and figures"
-author: "Katherine N Thompson"
-date: "13th Jan 2021"
-output:
-  word_document:
-    toc: yes
-    toc_depth: '2'
+title: "LCGA statistics and figures"
+output:  
   html_document:
     df_print: paged
     toc: yes
     toc_depth: 2
     toc_float:
-      collapsed: no
-    number_sections: no
+      collapsed: false
+    number_sections: false
     highlight: monochrome
-    theme: cerulean
-code_folding: hide
+    theme: flatly
+    code_folding: hide
+    includes:
+      after_body: footer.html
 ---
+
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE,
+knitr::opts_chunk$set(echo = TRUE,
                       comment = NA,
                       prompt = FALSE,
                       cache = FALSE,
                       message = FALSE,
-                      warning = FALSE)
-
+                      warning = FALSE,
+                      results = 'asis')
 
 options(bitmapType = 'quartz') # to render fonts better
 ```
 
-```{r Clear global environment}
+```{r Clear global environment, include=FALSE}
 remove(list = ls())
 ```
 
-```{r colour palletes for graphs}
+```{r colour palletes for graphs, include=FALSE}
 palette1 <- c("#78D9C5")
 palette2 <- c("#78D9C5","#F5BE5E")
 palette3 <- c("#78D9C5","#F5BE5E","#EEB6E9")
@@ -42,12 +40,12 @@ palette5 <- c("#78D9C5","#F5BE5E","#EEB6E9","#DBDB73","#FFED98")
 palette6 <- c("#78D9C5","#F5BE5E","#EEB6E9","#DBDB73","#FFED98","#BFD2EB")
 ```
  
-```{r source the data file path}
+```{r source the data file path, include=FALSE}
 #source raw data directory: data_raw and data included
-source("../../../../../isolation_trajectories_data_path.R")
+source("../../../isolation_trajectories_data_path.R")
 ```
 
-```{r Mplus packages}
+```{r Mplus packages, include=FALSE}
 library(MplusAutomation)
 library(stringr)
 library(stringi)
@@ -61,16 +59,24 @@ library(tidyverse)
 library(plyr) #conflicts with tidyverse for e.g. rename and row_number
 ```
 
-# Linear Latent Class Growth Analysis
+***
+
+This page displays results from the Latent class growth analysis, which we used as a preliminary analysis step before conducting GMM. LCGA constrains the variance within each class, meaning that the classes that are estimated are trying to account for more variance in the data - thus more classes are often idenfified. 
+
+***
+
+# Linear Latent Class Growth Analysis 
 
 ## Model fit statistics
 
-```{r read in social isolation model data, include=FALSE}
+We selected the **four class LCGA model** as the best fitting model. 
+
+```{r read in social isolation model data, results='hide', message=FALSE}
 #For class models, read in all output files within your folder that you have all your class models
 si.classes.all <- readModels(paste0(mplus_LCGA_clustered_full_output_data_path), recursive = TRUE) #Recursive means it reads data in sub-folders too
 ```
 
-```{r read in trajectoriesectory summary vairables, include=FALSE}
+```{r read in trajectoriesectory summary vairables}
 #extract the summary variables from the mplus output files. Assuming there are multiple files in the above directory, model summaries could be retained as a data.frame as follows:
 si_summaries <- do.call("rbind.fill",
                         sapply(si.classes.all,
@@ -78,7 +84,7 @@ si_summaries <- do.call("rbind.fill",
                                "summaries"))
 ```
 
-```{r create data frame with sumamary variables, include=FALSE}
+```{r create data frame with sumamary variables}
 #social isolation summaries 
 si.class.summaries <- data.frame(matrix(nrow = 5, 
                                          ncol = 8)) 
@@ -94,7 +100,7 @@ colnames(si.class.summaries) <- c("Model",
                                   "Class Proportions") #or whichever indices you want to compare; do si_summaries$ to see what's in there
 
 #check colnames
-si.class.summaries
+#si.class.summaries
 
 #create "Model" variable
 si.class.summaries <- si.class.summaries %>%
@@ -128,7 +134,7 @@ si.class.summaries <- si.class.summaries %>%
       si_summaries$T11_VLMR_PValue) #T11_VLMR_PValue col from original summaries data set
 
 #check
-si.class.summaries
+# si.class.summaries
 ```
 
 ```{r create class proportions % for each model}
@@ -172,11 +178,11 @@ si.class.summaries$`Class N`[si.class.summaries$Model == "Six Class"] <- list(c(
 kable(si.class.summaries)
 ```
  
-*The five class model in these statistics is fixing the variance of S (slope) to zero - as the original model produces negative variances.*
+*Reminder that LCGA constrains the variance in each class to zero.*
 
 ## Classification probabilities 
 
-```{r extract classification probs for 3 class model, include=FALSE}
+```{r extract classification probs for 3 class model}
 # extract the classification probabilities for the most likely class memberships (column) by latent class (row). This shows the uncertainty rate of the probabilities. If it was perfect - the diagonal would be 1. E.g. for Class 1 - 98.3% of individuals fit that category. 
 class.probs <- data.frame(si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.LCGA.clustered.full_sample.output..LCGA_isolation_4traj_full_sample_clustered.out$class_counts$classificationProbs.mostLikely)
 
@@ -185,7 +191,7 @@ colnames(class.probs) <- c("Low stable","Decreasing","Low increasing", "High inc
 
 class.probs$Class <- c("Low stable","Decreasing","Low increasing", "High increasing")
 
-as.tibble(class.probs)
+#as.tibble(class.probs)
 
 class.probs <- class.probs %>%
   tidyr::pivot_longer(-Class, 
@@ -195,14 +201,14 @@ class.probs <- class.probs %>%
 class.probs <- class.probs[-c(2:5,7:10,12:15),-c(2)]
 ```
 
-```{r classification probabilities table, include=FALSE}
+```{r classification probabilities table}
 kable(class.probs)
 ```
 
 ## Plots {.tabset .tabset-fade}
 
 ### Two Class model
-```{r two class GMM model preparation, include=FALSE}
+```{r two class GMM model preparation}
 #create two class data frame with means and variances
 two_class_si <- as.data.frame(
   si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.LCGA.clustered.full_sample.output..LCGA_isolation_2traj_full_sample_clustered.out$gh5$means_and_variances_data$y_estimated_means)
@@ -220,7 +226,7 @@ two_class_si <- two_class_si %>%
                values_to = "social.isolation_score")
 
 #check
-two_class_si
+#two_class_si
 ```
 
 ```{r plot 2 class GMM  model}
@@ -259,7 +265,7 @@ two_traj_plot_clustered_full_sample
 
 ### Three Class model
 
-```{r three class GMM model preparation, include=FALSE}
+```{r three class GMM model preparation}
 #create three class data frame with means and variances
 three_class_si <- as.data.frame(
   si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.LCGA.clustered.full_sample.output..LCGA_isolation_3traj_full_sample_clustered.out$gh5$means_and_variances_data$y_estimated_means)
@@ -277,7 +283,7 @@ three_class_si <- three_class_si %>%
                values_to = "social.isolation_score")
 
 #check
-three_class_si
+#three_class_si
 ```
 
 ```{r plot 3 class GMM model}
@@ -315,7 +321,7 @@ three_traj_plot_clustered_full_sample
 
 ### Four Class model
 
-```{r four class GMM model preparation, include=FALSE}
+```{r four class GMM model preparation}
 #create four class data frame with means and variances
 four_class_si <- as.data.frame(
   si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.LCGA.clustered.full_sample.output..LCGA_isolation_4traj_full_sample_clustered.out$gh5$means_and_variances_data$y_estimated_means)
@@ -333,7 +339,7 @@ four_class_si <- four_class_si %>%
                values_to = "social.isolation_score")
 
 #check
-four_class_si
+#four_class_si
 ```
 
 ```{r plot 4 class GMM model}
@@ -371,7 +377,7 @@ four_traj_plot_clustered_full_sample
 
 ### Five Class model
 
-```{r five class GMM  model preparation, include=FALSE}
+```{r five class GMM  model preparation}
 #create five class data frame with means and variances
 five_class_si <- as.data.frame(
   si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.LCGA.clustered.full_sample.output..LCGA_isolation_5traj_full_sample_clustered.out$gh5$means_and_variances_data$y_estimated_means)
@@ -389,7 +395,7 @@ five_class_si <- five_class_si %>%
                values_to = "social.isolation_score")
 
 #check
-five_class_si
+#five_class_si
 ```
 
 ```{r plot 5 class GMM model}
@@ -427,7 +433,7 @@ five_traj_plot_clustered_full_sample
 
 ### Six Class model
 
-```{r six class GMM  model preparation, include=FALSE}
+```{r six class GMM  model preparation}
 #create five class data frame with means and variances
 six_class_si <- as.data.frame(
   si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.LCGA.clustered.full_sample.output..LCGA_isolation_6traj_full_sample_clustered.out$gh5$means_and_variances_data$y_estimated_means)
@@ -445,7 +451,7 @@ six_class_si <- six_class_si %>%
                values_to = "social.isolation_score")
 
 #check
-six_class_si
+#six_class_si
 ```
 
 ```{r plot 6 class GMM model}
@@ -480,8 +486,6 @@ six_traj_plot_clustered_full_sample <- ggplot(six_class_si,
 
 six_traj_plot_clustered_full_sample
 ```
-
-# Save all graphs as images into folder "plots"
 
 ```{r save as JPEG, include=FALSE}
 # Two trajectories
@@ -531,7 +535,7 @@ ggsave(
 )
 ```
 
-# Rename and format for joint plot
+# Combined LCGA trajectory plot
 
 ```{r rename plots, include=FALSE}
 # rename all plot titles
@@ -566,8 +570,6 @@ six_traj_plot_clustered_full_sample <- six_traj_plot_clustered_full_sample +
         legend.position="none")
 ```
 
-# Combined trajectory plot 
-
 ```{r combine trajectory plots}
 #combine all plots
 library(ggpubr) # Needed for combining plots
@@ -584,13 +586,16 @@ combined_trajectories_plot_clustered_full_sample <- ggarrange(
                                         labels = c("A", "B", "C", "D", "E", "F"),
                                         legend = "bottom")
 
-ggsave(
-  "LCGA_combined_trajectories_plot_clustered_full_sample.jpeg",
-  plot = combined_trajectories_plot_clustered_full_sample,
-  device = "jpeg",
-  path = paste0(graph_save_data_path, "LCGA/"),
-  width = 9,
-  height = 10
-)
+# ggsave(
+#   "LCGA_combined_trajectories_plot_clustered_full_sample.jpeg",
+#   plot = combined_trajectories_plot_clustered_full_sample,
+#   device = "jpeg",
+#   path = paste0(graph_save_data_path, "LCGA/"),
+#   width = 9,
+#   height = 10
+# )
 ```
-*****
+
+```{r combined plot, fig.height=10, fig.width=8.5}
+combined_trajectories_plot_clustered_full_sample
+```

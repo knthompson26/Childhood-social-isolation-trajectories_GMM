@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>LCGA statistics and figures</title>
+
+<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { font-weight: bold; } /* Alert */
+code span.an { font-style: italic; } /* Annotation */
+code span.cf { font-weight: bold; } /* ControlFlow */
+code span.co { font-style: italic; } /* Comment */
+code span.cv { font-style: italic; } /* CommentVar */
+code span.do { font-style: italic; } /* Documentation */
+code span.dt { text-decoration: underline; } /* DataType */
+code span.er { font-weight: bold; } /* Error */
+code span.in { font-style: italic; } /* Information */
+code span.kw { font-weight: bold; } /* Keyword */
+code span.pp { font-weight: bold; } /* Preprocessor */
+code span.wa { font-style: italic; } /* Warning */
+
+.sourceCode .row {
+  width: 100%;
+}
+.sourceCode {
+  overflow-x: auto;
+}
+.code-folding-btn {
+  margin-right: -30px;
+}
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"></a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Home
+  </a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/knthompson26/Childhood-social-isolation-trajectories_GMM">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">LCGA statistics and figures</h1>
+
+</div>
+
+
+<hr />
+<p>This page displays results from the Latent class growth analysis, which we used as a preliminary analysis step before conducting GMM. LCGA constrains the variance within each class, meaning that the classes that are estimated are trying to account for more variance in the data - thus more classes are often idenfified.</p>
+<hr />
+<div id="linear-latent-class-growth-analysis" class="section level1">
+<h1>Linear Latent Class Growth Analysis</h1>
+<div id="model-fit-statistics" class="section level2">
+<h2>Model fit statistics</h2>
+<p>We selected the <strong>four class LCGA model</strong> as the best fitting model.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#For class models, read in all output files within your folder that you have all your class models</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>si.classes.all <span class="ot">&lt;-</span> <span class="fu">readModels</span>(<span class="fu">paste0</span>(mplus_LCGA_clustered_full_output_data_path), <span class="at">recursive =</span> <span class="cn">TRUE</span>) <span class="co">#Recursive means it reads data in sub-folders too</span></span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#extract the summary variables from the mplus output files. Assuming there are multiple files in the above directory, model summaries could be retained as a data.frame as follows:</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>si_summaries <span class="ot">&lt;-</span> <span class="fu">do.call</span>(<span class="st">&quot;rbind.fill&quot;</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>                        <span class="fu">sapply</span>(si.classes.all,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>                               <span class="st">&quot;[&quot;</span>, </span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>                               <span class="st">&quot;summaries&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#social isolation summaries </span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>si.class.summaries <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">matrix</span>(<span class="at">nrow =</span> <span class="dv">5</span>, </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>                                         <span class="at">ncol =</span> <span class="dv">8</span>)) </span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#create column names for the variables you will be adding to the empty matrix of si.class.summaries</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(si.class.summaries) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Model&quot;</span>, </span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>                                  <span class="st">&quot;Parameters&quot;</span>, </span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>                                  <span class="st">&quot;AIC&quot;</span>, </span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>                                  <span class="st">&quot;BIC&quot;</span>, </span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>                                  <span class="st">&quot;aBIC&quot;</span>, </span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>                                  <span class="st">&quot;Entropy&quot;</span>, </span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>                                  <span class="st">&quot;VLMR LRT p-value&quot;</span>, </span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>                                  <span class="st">&quot;Class Proportions&quot;</span>) <span class="co">#or whichever indices you want to compare; do si_summaries$ to see what&#39;s in there</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co">#check colnames</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="co">#si.class.summaries</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="co">#create &quot;Model&quot; variable</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>si.class.summaries <span class="ot">&lt;-</span> si.class.summaries <span class="sc">%&gt;%</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">Model =</span> </span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.factor</span>(<span class="fu">c</span>(<span class="st">&quot;Two Class&quot;</span>, <span class="co">#change nrow in data frame above when adding more models</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>                <span class="st">&quot;Three Class&quot;</span>, </span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>                <span class="st">&quot;Four Class&quot;</span>, </span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>                <span class="st">&quot;Five Class&quot;</span>,</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>                <span class="st">&quot;Six Class&quot;</span>)))  </span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a><span class="co">#add summary information into data frame </span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>si.class.summaries <span class="ot">&lt;-</span> si.class.summaries <span class="sc">%&gt;%</span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">Parameters =</span> </span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>      si_summaries<span class="sc">$</span>Parameters) <span class="sc">%&gt;%</span> <span class="co">#parameters col from original summaries data set</span></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">AIC =</span> </span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>      si_summaries<span class="sc">$</span>AIC) <span class="sc">%&gt;%</span> <span class="co">#AIC col from original summaries data set</span></span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">BIC =</span> </span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>      si_summaries<span class="sc">$</span>BIC) <span class="sc">%&gt;%</span> <span class="co">#BIC col from original summaries data set</span></span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">aBIC =</span> </span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>      si_summaries<span class="sc">$</span>aBIC) <span class="sc">%&gt;%</span> <span class="co">#aBIC col from original summaries data set</span></span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">Entropy =</span> </span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>      si_summaries<span class="sc">$</span>Entropy) <span class="sc">%&gt;%</span> <span class="co">#Entropy col from original summaries data set</span></span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">VLMR LRT p-value</span><span class="st">`</span> <span class="ot">=</span> </span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>      si_summaries<span class="sc">$</span>T11_VLMR_PValue) <span class="co">#T11_VLMR_PValue col from original summaries data set</span></span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a><span class="co">#check</span></span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a><span class="co"># si.class.summaries</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">#for each class we want to add in the model estimated class counts - then convert this into a list with the percentage of people in each class</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#two classes</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>si.class.summaries<span class="sc">$</span><span class="st">`</span><span class="at">Class Proportions</span><span class="st">`</span>[si.class.summaries<span class="sc">$</span>Model <span class="sc">==</span> <span class="st">&quot;Two Class&quot;</span>] <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="fu">sprintf</span>(<span class="st">&quot;%.0f&quot;</span>, si.classes.all<span class="sc">$</span>X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.<span class="fl">1.</span>data_analysis.mplus.LCGA.clustered.full_sample.output..LCGA_isolation_2traj_full_sample_clustered.out<span class="sc">$</span>class_counts<span class="sc">$</span>modelEstimated<span class="sc">$</span>proportion<span class="sc">*</span><span class="dv">100</span>)))</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">#three classes</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>si.class.summaries<span class="sc">$</span><span class="st">`</span><span class="at">Class Proportions</span><span class="st">`</span>[si.class.summaries<span class="sc">$</span>Model <span class="sc">==</span> <span class="st">&quot;Three Class&quot;</span>] <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="fu">sprintf</span>(<span class="st">&#39;%.0f&#39;</span>, si.classes.all<span class="sc">$</span>X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.<span class="fl">1.</span>data_analysis.mplus.LCGA.clustered.full_sample.output..LCGA_isolation_3traj_full_sample_clustered.out<span class="sc">$</span>class_counts<span class="sc">$</span>modelEstimated<span class="sc">$</span>proportion<span class="sc">*</span><span class="dv">100</span>)))</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co">#four classes</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>si.class.summaries<span class="sc">$</span><span class="st">`</span><span class="at">Class Proportions</span><span class="st">`</span>[si.class.summaries<span class="sc">$</span>Model <span class="sc">==</span> <span class="st">&quot;Four Class&quot;</span>] <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="fu">sprintf</span>(<span class="st">&#39;%.0f&#39;</span>, si.classes.all<span class="sc">$</span>X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.<span class="fl">1.</span>data_analysis.mplus.LCGA.clustered.full_sample.output..LCGA_isolation_4traj_full_sample_clustered.out<span class="sc">$</span>class_counts<span class="sc">$</span>modelEstimated<span class="sc">$</span>proportion<span class="sc">*</span><span class="dv">100</span>)))</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co">#five classes</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>si.class.summaries<span class="sc">$</span><span class="st">`</span><span class="at">Class Proportions</span><span class="st">`</span>[si.class.summaries<span class="sc">$</span>Model <span class="sc">==</span> <span class="st">&quot;Five Class&quot;</span>] <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="fu">sprintf</span>(<span class="st">&#39;%.0f&#39;</span>, si.classes.all<span class="sc">$</span>X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.<span class="fl">1.</span>data_analysis.mplus.LCGA.clustered.full_sample.output..LCGA_isolation_5traj_full_sample_clustered.out<span class="sc">$</span>class_counts<span class="sc">$</span>modelEstimated<span class="sc">$</span>proportion<span class="sc">*</span><span class="dv">100</span>)))</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="co">#six classes</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>si.class.summaries<span class="sc">$</span><span class="st">`</span><span class="at">Class Proportions</span><span class="st">`</span>[si.class.summaries<span class="sc">$</span>Model <span class="sc">==</span> <span class="st">&quot;Six Class&quot;</span>] <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="fu">sprintf</span>(<span class="st">&#39;%.0f&#39;</span>, si.classes.all<span class="sc">$</span>X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.<span class="fl">1.</span>data_analysis.mplus.LCGA.clustered.full_sample.output..LCGA_isolation_6traj_full_sample_clustered.out<span class="sc">$</span>class_counts<span class="sc">$</span>modelEstimated<span class="sc">$</span>proportion<span class="sc">*</span><span class="dv">100</span>)))</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#two classes</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>si.class.summaries<span class="sc">$</span><span class="st">`</span><span class="at">Class N</span><span class="st">`</span>[si.class.summaries<span class="sc">$</span>Model <span class="sc">==</span> <span class="st">&quot;Two Class&quot;</span>] <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="fu">sprintf</span>(<span class="st">&quot;%.0f&quot;</span>, si.classes.all<span class="sc">$</span>X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.<span class="fl">1.</span>data_analysis.mplus.LCGA.clustered.full_sample.output..LCGA_isolation_2traj_full_sample_clustered.out<span class="sc">$</span>class_counts<span class="sc">$</span>posteriorProb<span class="sc">$</span>count)))</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">#three classes</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>si.class.summaries<span class="sc">$</span><span class="st">`</span><span class="at">Class N</span><span class="st">`</span>[si.class.summaries<span class="sc">$</span>Model <span class="sc">==</span> <span class="st">&quot;Three Class&quot;</span>] <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="fu">sprintf</span>(<span class="st">&quot;%.0f&quot;</span>, si.classes.all<span class="sc">$</span>X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.<span class="fl">1.</span>data_analysis.mplus.LCGA.clustered.full_sample.output..LCGA_isolation_3traj_full_sample_clustered.out<span class="sc">$</span>class_counts<span class="sc">$</span>posteriorProb<span class="sc">$</span>count)))</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">#four classes</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>si.class.summaries<span class="sc">$</span><span class="st">`</span><span class="at">Class N</span><span class="st">`</span>[si.class.summaries<span class="sc">$</span>Model <span class="sc">==</span> <span class="st">&quot;Four Class&quot;</span>] <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="fu">sprintf</span>(<span class="st">&quot;%.0f&quot;</span>, si.classes.all<span class="sc">$</span>X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.<span class="fl">1.</span>data_analysis.mplus.LCGA.clustered.full_sample.output..LCGA_isolation_4traj_full_sample_clustered.out<span class="sc">$</span>class_counts<span class="sc">$</span>posteriorProb<span class="sc">$</span>count)))</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co">#five classes</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>si.class.summaries<span class="sc">$</span><span class="st">`</span><span class="at">Class N</span><span class="st">`</span>[si.class.summaries<span class="sc">$</span>Model <span class="sc">==</span> <span class="st">&quot;Five Class&quot;</span>] <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="fu">sprintf</span>(<span class="st">&quot;%.0f&quot;</span>, si.classes.all<span class="sc">$</span>X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.<span class="fl">1.</span>data_analysis.mplus.LCGA.clustered.full_sample.output..LCGA_isolation_5traj_full_sample_clustered.out<span class="sc">$</span>class_counts<span class="sc">$</span>posteriorProb<span class="sc">$</span>count)))</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co">#six classes</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>si.class.summaries<span class="sc">$</span><span class="st">`</span><span class="at">Class N</span><span class="st">`</span>[si.class.summaries<span class="sc">$</span>Model <span class="sc">==</span> <span class="st">&quot;Six Class&quot;</span>] <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="fu">sprintf</span>(<span class="st">&quot;%.0f&quot;</span>, si.classes.all<span class="sc">$</span>X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.<span class="fl">1.</span>data_analysis.mplus.LCGA.clustered.full_sample.output..LCGA_isolation_6traj_full_sample_clustered.out<span class="sc">$</span>class_counts<span class="sc">$</span>posteriorProb<span class="sc">$</span>count)))</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Look at summary table </span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(si.class.summaries)</span></code></pre></div>
+<table>
+<colgroup>
+<col width="9%" />
+<col width="8%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="12%" />
+<col width="17%" />
+<col width="25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Model</th>
+<th align="right">Parameters</th>
+<th align="right">AIC</th>
+<th align="right">BIC</th>
+<th align="right">aBIC</th>
+<th align="right">Entropy</th>
+<th align="right">VLMR LRT p-value</th>
+<th align="left">Class Proportions</th>
+<th align="left">Class N</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Two Class</td>
+<td align="right">9</td>
+<td align="right">26053.35</td>
+<td align="right">26104.75</td>
+<td align="right">26076.15</td>
+<td align="right">0.945</td>
+<td align="right">0.0008</td>
+<td align="left">10, 90</td>
+<td align="left">218 , 2014</td>
+</tr>
+<tr class="even">
+<td align="left">Three Class</td>
+<td align="right">12</td>
+<td align="right">25279.97</td>
+<td align="right">25348.50</td>
+<td align="right">25310.37</td>
+<td align="right">0.920</td>
+<td align="right">0.0608</td>
+<td align="left">15, 2 , 82</td>
+<td align="left">344 , 50 , 1838</td>
+</tr>
+<tr class="odd">
+<td align="left">Four Class</td>
+<td align="right">15</td>
+<td align="right">24726.10</td>
+<td align="right">24811.76</td>
+<td align="right">24764.11</td>
+<td align="right">0.932</td>
+<td align="right">0.8002</td>
+<td align="left">81, 5 , 11, 2</td>
+<td align="left">1816, 121 , 249 , 47</td>
+</tr>
+<tr class="even">
+<td align="left">Five Class</td>
+<td align="right">18</td>
+<td align="right">24440.05</td>
+<td align="right">24542.84</td>
+<td align="right">24485.65</td>
+<td align="right">0.934</td>
+<td align="right">0.0728</td>
+<td align="left">1 , 2 , 80, 10, 7</td>
+<td align="left">26 , 36 , 1786, 231 , 154</td>
+</tr>
+<tr class="odd">
+<td align="left">Six Class</td>
+<td align="right">21</td>
+<td align="right">24242.80</td>
+<td align="right">24362.72</td>
+<td align="right">24296.01</td>
+<td align="right">0.924</td>
+<td align="right">0.2323</td>
+<td align="left">3 , 1 , 5 , 2 , 76, 14</td>
+<td align="left">74 , 15 , 100 , 36 , 1699, 308</td>
+</tr>
+</tbody>
+</table>
+<p><em>Reminder that LCGA constrains the variance in each class to zero.</em></p>
+</div>
+<div id="classification-probabilities" class="section level2">
+<h2>Classification probabilities</h2>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># extract the classification probabilities for the most likely class memberships (column) by latent class (row). This shows the uncertainty rate of the probabilities. If it was perfect - the diagonal would be 1. E.g. for Class 1 - 98.3% of individuals fit that category. </span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>class.probs <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(si.classes.all<span class="sc">$</span>X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.<span class="fl">1.</span>data_analysis.mplus.LCGA.clustered.full_sample.output..LCGA_isolation_4traj_full_sample_clustered.out<span class="sc">$</span>class_counts<span class="sc">$</span>classificationProbs.mostLikely)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># add column names</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(class.probs) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Low stable&quot;</span>,<span class="st">&quot;Decreasing&quot;</span>,<span class="st">&quot;Low increasing&quot;</span>, <span class="st">&quot;High increasing&quot;</span>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>class.probs<span class="sc">$</span>Class <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Low stable&quot;</span>,<span class="st">&quot;Decreasing&quot;</span>,<span class="st">&quot;Low increasing&quot;</span>, <span class="st">&quot;High increasing&quot;</span>)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co">#as.tibble(class.probs)</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>class.probs <span class="ot">&lt;-</span> class.probs <span class="sc">%&gt;%</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">pivot_longer</span>(<span class="sc">-</span>Class, </span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">&quot;class&quot;</span>, </span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>               <span class="at">values_to =</span> <span class="st">&quot;Classification probabilities&quot;</span>)</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>class.probs <span class="ot">&lt;-</span> class.probs[<span class="sc">-</span><span class="fu">c</span>(<span class="dv">2</span><span class="sc">:</span><span class="dv">5</span>,<span class="dv">7</span><span class="sc">:</span><span class="dv">10</span>,<span class="dv">12</span><span class="sc">:</span><span class="dv">15</span>),<span class="sc">-</span><span class="fu">c</span>(<span class="dv">2</span>)]</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(class.probs)</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Class</th>
+<th align="right">Classification probabilities</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Low stable</td>
+<td align="right">0.987</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="right">0.860</td>
+</tr>
+<tr class="odd">
+<td align="left">Low increasing</td>
+<td align="right">0.836</td>
+</tr>
+<tr class="even">
+<td align="left">High increasing</td>
+<td align="right">0.956</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="plots" class="section level2 tabset tabset-fade">
+<h2 class="tabset tabset-fade">Plots</h2>
+<div id="two-class-model" class="section level3">
+<h3>Two Class model</h3>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">#create two class data frame with means and variances</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>two_class_si <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  si.classes.all<span class="sc">$</span>X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.<span class="fl">1.</span>data_analysis.mplus.LCGA.clustered.full_sample.output..LCGA_isolation_2traj_full_sample_clustered.out<span class="sc">$</span>gh5<span class="sc">$</span>means_and_variances_data<span class="sc">$</span>y_estimated_means)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co">#name the variables</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(two_class_si) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Class 1&quot;</span>,<span class="st">&quot;Class 2&quot;</span>)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co">#create timepoint column </span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>two_class_si<span class="sc">$</span>timepoint <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">7</span>, <span class="dv">10</span>, <span class="dv">12</span>)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="co">#convert data to long format </span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>two_class_si <span class="ot">&lt;-</span> two_class_si <span class="sc">%&gt;%</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>timepoint, </span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">&quot;Class&quot;</span>, </span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>               <span class="at">values_to =</span> <span class="st">&quot;social.isolation_score&quot;</span>)</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a><span class="co">#check</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a><span class="co">#two_class_si</span></span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>two_traj_plot_clustered_full_sample <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(two_class_si,</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>        <span class="fu">aes</span>(<span class="at">x =</span> timepoint, </span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">y =</span> social.isolation_score, </span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">colour =</span> Class)) <span class="sc">+</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>          <span class="fu">geom_line</span>(<span class="at">size =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="co">#shape = class, </span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>                 <span class="at">size =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> palette2) <span class="sc">+</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> palette2) <span class="sc">+</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Age (in years)&quot;</span>, </span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">&quot;Two class LCGA model of social isolation in E-risk&quot;</span>,</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">&quot;Class&quot;</span>,</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span><span class="st">&quot;Social isolation score&quot;</span>) <span class="sc">+</span>   </span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="fl">0.1</span>,<span class="fl">0.1</span>),</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>                     <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">12</span>),</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>                     <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">12</span>, <span class="dv">2</span>)) <span class="sc">+</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="fl">0.1</span>,<span class="fl">0.1</span>),</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>                     <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">5</span>,<span class="dv">12</span>),</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>                     <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">7</span>, <span class="dv">10</span>, <span class="dv">12</span>)) <span class="sc">+</span></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">panel.grid.major.y =</span> <span class="fu">element_line</span>(<span class="at">size =</span> <span class="fl">0.5</span>,</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">linetype =</span> <span class="st">&#39;dashed&#39;</span>,</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">colour =</span> <span class="st">&quot;gray&quot;</span>),</span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">colour=</span><span class="st">&quot;black&quot;</span>, </span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">size =</span> <span class="dv">12</span>),</span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">colour=</span><span class="st">&quot;black&quot;</span>, </span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">size =</span> <span class="dv">12</span>),</span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.background =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>        <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">16</span>, <span class="at">hjust =</span> <span class="fl">0.5</span>)) <span class="sc">+</span> </span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">shape =</span> <span class="cn">FALSE</span>, <span class="at">size =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>two_traj_plot_clustered_full_sample</span></code></pre></div>
+<p><img src="trajectory_statistics_and_figures_LCGA_files/figure-html/plot%202%20class%20GMM%20%20model-1.png" width="672" /></p>
+</div>
+<div id="three-class-model" class="section level3">
+<h3>Three Class model</h3>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">#create three class data frame with means and variances</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>three_class_si <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  si.classes.all<span class="sc">$</span>X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.<span class="fl">1.</span>data_analysis.mplus.LCGA.clustered.full_sample.output..LCGA_isolation_3traj_full_sample_clustered.out<span class="sc">$</span>gh5<span class="sc">$</span>means_and_variances_data<span class="sc">$</span>y_estimated_means)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="co">#name the variables</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(three_class_si) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Class 1&quot;</span>,<span class="st">&quot;Class 2&quot;</span>,<span class="st">&quot;Class 3&quot;</span>)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="co">#create time point column </span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>three_class_si<span class="sc">$</span>timepoint <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">7</span>, <span class="dv">10</span>, <span class="dv">12</span>)</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="co">#convert data to long format </span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>three_class_si <span class="ot">&lt;-</span> three_class_si <span class="sc">%&gt;%</span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>timepoint, </span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">&quot;Class&quot;</span>, </span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>               <span class="at">values_to =</span> <span class="st">&quot;social.isolation_score&quot;</span>)</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a><span class="co">#check</span></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a><span class="co">#three_class_si</span></span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>three_traj_plot_clustered_full_sample <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(three_class_si,</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>        <span class="fu">aes</span>(<span class="at">x =</span> timepoint, </span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">y =</span> social.isolation_score, </span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">colour =</span> Class)) <span class="sc">+</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>          <span class="fu">geom_line</span>(<span class="at">size =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">size =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> palette3) <span class="sc">+</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> palette3) <span class="sc">+</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Age (in years)&quot;</span>, </span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">&quot;Three class LCGA model of social isolation in E-risk&quot;</span>,</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">&quot;Class&quot;</span>,</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span><span class="st">&quot;Social isolation score&quot;</span>) <span class="sc">+</span>   </span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="fl">0.1</span>,<span class="fl">0.1</span>),</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>                     <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">12</span>),</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>                     <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">12</span>, <span class="dv">2</span>)) <span class="sc">+</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="fl">0.1</span>,<span class="fl">0.1</span>),</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>                     <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">5</span>,<span class="dv">12</span>),</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>                     <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">7</span>, <span class="dv">10</span>, <span class="dv">12</span>)) <span class="sc">+</span></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">panel.grid.major.y =</span> <span class="fu">element_line</span>(<span class="at">size =</span> <span class="fl">0.5</span>,</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">linetype =</span> <span class="st">&#39;dashed&#39;</span>,</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">colour =</span> <span class="st">&quot;gray&quot;</span>),</span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">colour=</span><span class="st">&quot;black&quot;</span>, </span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">size =</span> <span class="dv">12</span>),</span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">colour=</span><span class="st">&quot;black&quot;</span>, </span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">size =</span> <span class="dv">12</span>),</span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.background =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>        <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">16</span>, <span class="at">hjust=</span><span class="fl">0.5</span>)) <span class="sc">+</span> </span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">shape =</span> <span class="cn">FALSE</span>, <span class="at">size =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>three_traj_plot_clustered_full_sample</span></code></pre></div>
+<p><img src="trajectory_statistics_and_figures_LCGA_files/figure-html/plot%203%20class%20GMM%20model-1.png" width="672" /></p>
+</div>
+<div id="four-class-model" class="section level3">
+<h3>Four Class model</h3>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">#create four class data frame with means and variances</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>four_class_si <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  si.classes.all<span class="sc">$</span>X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.<span class="fl">1.</span>data_analysis.mplus.LCGA.clustered.full_sample.output..LCGA_isolation_4traj_full_sample_clustered.out<span class="sc">$</span>gh5<span class="sc">$</span>means_and_variances_data<span class="sc">$</span>y_estimated_means)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="co">#name the variables</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(four_class_si) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Class 1&quot;</span>,<span class="st">&quot;Class 2&quot;</span>,<span class="st">&quot;Class 3&quot;</span>,<span class="st">&quot;Class 4&quot;</span>)</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="co">#create timepoint column </span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>four_class_si<span class="sc">$</span>timepoint <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">7</span>, <span class="dv">10</span>, <span class="dv">12</span>)</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="co">#convert data to long format </span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>four_class_si <span class="ot">&lt;-</span> four_class_si <span class="sc">%&gt;%</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>timepoint, </span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">&quot;Class&quot;</span>, </span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>               <span class="at">values_to =</span> <span class="st">&quot;social.isolation_score&quot;</span>)</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a><span class="co">#check</span></span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a><span class="co">#four_class_si</span></span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>four_traj_plot_clustered_full_sample <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(four_class_si,</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>        <span class="fu">aes</span>(<span class="at">x =</span> timepoint, </span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">y =</span> social.isolation_score, </span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">colour =</span> Class)) <span class="sc">+</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>          <span class="fu">geom_line</span>(<span class="at">size =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">size =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> palette4) <span class="sc">+</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> palette4) <span class="sc">+</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Age (in years)&quot;</span>, </span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">&quot;Four class LCGA model of social isolation in E-risk&quot;</span>,</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">&quot;Class&quot;</span>,</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span><span class="st">&quot;Social isolation score&quot;</span>) <span class="sc">+</span>   </span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="fl">0.1</span>,<span class="fl">0.1</span>),</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>                     <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">12</span>),</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>                     <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">12</span>, <span class="dv">2</span>)) <span class="sc">+</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="fl">0.1</span>,<span class="fl">0.1</span>),</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>                     <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">5</span>,<span class="dv">12</span>),</span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>                     <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">7</span>, <span class="dv">10</span>, <span class="dv">12</span>)) <span class="sc">+</span></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">panel.grid.major.y =</span> <span class="fu">element_line</span>(<span class="at">size =</span> <span class="fl">0.5</span>,</span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">linetype =</span> <span class="st">&#39;dashed&#39;</span>,</span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">colour =</span> <span class="st">&quot;gray&quot;</span>),</span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">colour=</span><span class="st">&quot;black&quot;</span>, </span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">size =</span> <span class="dv">12</span>),</span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">colour=</span><span class="st">&quot;black&quot;</span>, </span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">size =</span> <span class="dv">12</span>),</span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.background =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a>        <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">16</span>, <span class="at">hjust=</span><span class="fl">0.5</span>)) <span class="sc">+</span> </span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">shape =</span> <span class="cn">FALSE</span>, <span class="at">size =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a>four_traj_plot_clustered_full_sample</span></code></pre></div>
+<p><img src="trajectory_statistics_and_figures_LCGA_files/figure-html/plot%204%20class%20GMM%20model-1.png" width="672" /></p>
+</div>
+<div id="five-class-model" class="section level3">
+<h3>Five Class model</h3>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">#create five class data frame with means and variances</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>five_class_si <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  si.classes.all<span class="sc">$</span>X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.<span class="fl">1.</span>data_analysis.mplus.LCGA.clustered.full_sample.output..LCGA_isolation_5traj_full_sample_clustered.out<span class="sc">$</span>gh5<span class="sc">$</span>means_and_variances_data<span class="sc">$</span>y_estimated_means)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="co">#name the variables</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(five_class_si) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Class 1&quot;</span>,<span class="st">&quot;Class 2&quot;</span>,<span class="st">&quot;Class 3&quot;</span>,<span class="st">&quot;Class 4&quot;</span>,<span class="st">&quot;Class 5&quot;</span>)</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="co">#create timepoint column </span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>five_class_si<span class="sc">$</span>timepoint <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">7</span>, <span class="dv">10</span>, <span class="dv">12</span>)</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="co">#convert data to long format </span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>five_class_si <span class="ot">&lt;-</span> five_class_si <span class="sc">%&gt;%</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>timepoint, </span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">&quot;Class&quot;</span>, </span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>               <span class="at">values_to =</span> <span class="st">&quot;social.isolation_score&quot;</span>)</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a><span class="co">#check</span></span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a><span class="co">#five_class_si</span></span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>five_traj_plot_clustered_full_sample <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(five_class_si,</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>        <span class="fu">aes</span>(<span class="at">x =</span> timepoint, </span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">y =</span> social.isolation_score, </span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">colour =</span> Class)) <span class="sc">+</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>          <span class="fu">geom_line</span>(<span class="at">size =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">size =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> palette5) <span class="sc">+</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> palette5) <span class="sc">+</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Age (in years)&quot;</span>, </span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">&quot;Five class LCGA model of social isolation in E-risk&quot;</span>,</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">&quot;Class&quot;</span>,</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span><span class="st">&quot;Social isolation score&quot;</span>) <span class="sc">+</span>   </span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="fl">0.1</span>,<span class="fl">0.1</span>),</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>                     <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">12</span>),</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>                     <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">12</span>, <span class="dv">2</span>)) <span class="sc">+</span></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="fl">0.1</span>,<span class="fl">0.1</span>),</span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>                     <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">5</span>,<span class="dv">12</span>),</span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>                     <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">7</span>, <span class="dv">10</span>, <span class="dv">12</span>)) <span class="sc">+</span></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">panel.grid.major.y =</span> <span class="fu">element_line</span>(<span class="at">size =</span> <span class="fl">0.5</span>,</span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">linetype =</span> <span class="st">&#39;dashed&#39;</span>,</span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">colour =</span> <span class="st">&quot;gray&quot;</span>),</span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">colour=</span><span class="st">&quot;black&quot;</span>, </span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">size =</span> <span class="dv">12</span>),</span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">colour=</span><span class="st">&quot;black&quot;</span>, </span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">size =</span> <span class="dv">12</span>),</span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.background =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a>        <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">16</span>, <span class="at">hjust=</span><span class="fl">0.5</span>)) <span class="sc">+</span> </span>
+<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">shape =</span> <span class="cn">FALSE</span>, <span class="at">size =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a>five_traj_plot_clustered_full_sample</span></code></pre></div>
+<p><img src="trajectory_statistics_and_figures_LCGA_files/figure-html/plot%205%20class%20GMM%20model-1.png" width="672" /></p>
+</div>
+<div id="six-class-model" class="section level3">
+<h3>Six Class model</h3>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co">#create five class data frame with means and variances</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>six_class_si <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  si.classes.all<span class="sc">$</span>X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.<span class="fl">1.</span>data_analysis.mplus.LCGA.clustered.full_sample.output..LCGA_isolation_6traj_full_sample_clustered.out<span class="sc">$</span>gh5<span class="sc">$</span>means_and_variances_data<span class="sc">$</span>y_estimated_means)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="co">#name the variables</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(six_class_si) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Class 1&quot;</span>,<span class="st">&quot;Class 2&quot;</span>,<span class="st">&quot;Class 3&quot;</span>,<span class="st">&quot;Class 4&quot;</span>,<span class="st">&quot;Class 5&quot;</span>,<span class="st">&quot;Class 6&quot;</span>)</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="co">#create timepoint column </span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>six_class_si<span class="sc">$</span>timepoint <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">7</span>, <span class="dv">10</span>, <span class="dv">12</span>)</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="co">#convert data to long format </span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>six_class_si <span class="ot">&lt;-</span> six_class_si <span class="sc">%&gt;%</span></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>timepoint, </span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">&quot;Class&quot;</span>, </span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>               <span class="at">values_to =</span> <span class="st">&quot;social.isolation_score&quot;</span>)</span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a><span class="co">#check</span></span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a><span class="co">#six_class_si</span></span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>six_traj_plot_clustered_full_sample <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(six_class_si,</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>        <span class="fu">aes</span>(<span class="at">x =</span> timepoint, </span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">y =</span> social.isolation_score, </span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">colour =</span> Class)) <span class="sc">+</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>          <span class="fu">geom_line</span>(<span class="at">size =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">size =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> palette6) <span class="sc">+</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> palette6) <span class="sc">+</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Age (in years)&quot;</span>, </span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">&quot;Six class LCGA model of social isolation in E-risk&quot;</span>,</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">&quot;Class&quot;</span>,</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">&quot;Social isolation score&quot;</span>) <span class="sc">+</span>   </span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="fl">0.1</span>,<span class="fl">0.1</span>),</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>                     <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">12</span>),</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>                     <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">12</span>, <span class="dv">2</span>)) <span class="sc">+</span></span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="fl">0.1</span>,<span class="fl">0.1</span>),</span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>                     <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">5</span>,<span class="dv">12</span>),</span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>                     <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">7</span>, <span class="dv">10</span>, <span class="dv">12</span>)) <span class="sc">+</span></span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">panel.grid.major.y =</span> <span class="fu">element_line</span>(<span class="at">size =</span> <span class="fl">0.5</span>,</span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">linetype =</span> <span class="st">&#39;dashed&#39;</span>,</span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">colour =</span> <span class="st">&quot;gray&quot;</span>),</span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">colour=</span><span class="st">&quot;black&quot;</span>, </span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">size =</span> <span class="dv">12</span>),</span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">colour=</span><span class="st">&quot;black&quot;</span>, </span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">size =</span> <span class="dv">12</span>),</span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.background =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>        <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">16</span>, <span class="at">hjust=</span><span class="fl">0.5</span>)) <span class="sc">+</span> </span>
+<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">shape =</span> <span class="cn">FALSE</span>, <span class="at">size =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-30"><a href="#cb18-30" aria-hidden="true" tabindex="-1"></a>six_traj_plot_clustered_full_sample</span></code></pre></div>
+<p><img src="trajectory_statistics_and_figures_LCGA_files/figure-html/plot%206%20class%20GMM%20model-1.png" width="672" /></p>
+</div>
+</div>
+</div>
+<div id="combined-lcga-trajectory-plot" class="section level1">
+<h1>Combined LCGA trajectory plot</h1>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co">#combine all plots</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggpubr) <span class="co"># Needed for combining plots</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gridExtra)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>combined_trajectories_plot_clustered_full_sample <span class="ot">&lt;-</span> <span class="fu">ggarrange</span>( </span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>                                        two_traj_plot_clustered_full_sample, </span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>                                        three_traj_plot_clustered_full_sample, </span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>                                        four_traj_plot_clustered_full_sample, </span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>                                        five_traj_plot_clustered_full_sample,</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>                                        six_traj_plot_clustered_full_sample,</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">ncol =</span> <span class="dv">2</span>, <span class="at">nrow =</span> <span class="dv">3</span>,</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">widths =</span> <span class="fu">c</span>(<span class="fl">2.7</span>,<span class="fl">2.7</span>,<span class="fl">2.7</span>,<span class="fl">2.7</span>), </span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">heights =</span> <span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">3</span>),</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">&quot;A&quot;</span>, <span class="st">&quot;B&quot;</span>, <span class="st">&quot;C&quot;</span>, <span class="st">&quot;D&quot;</span>, <span class="st">&quot;E&quot;</span>, <span class="st">&quot;F&quot;</span>),</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">legend =</span> <span class="st">&quot;bottom&quot;</span>)</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a><span class="co"># ggsave(</span></span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a><span class="co">#   &quot;LCGA_combined_trajectories_plot_clustered_full_sample.jpeg&quot;,</span></span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a><span class="co">#   plot = combined_trajectories_plot_clustered_full_sample,</span></span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a><span class="co">#   device = &quot;jpeg&quot;,</span></span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a><span class="co">#   path = paste0(graph_save_data_path, &quot;LCGA/&quot;),</span></span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a><span class="co">#   width = 9,</span></span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a><span class="co">#   height = 10</span></span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a><span class="co"># )</span></span></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>combined_trajectories_plot_clustered_full_sample</span></code></pre></div>
+<p><img src="trajectory_statistics_and_figures_LCGA_files/figure-html/combined%20plot-1.png" width="816" /></p>
+</div>
+
+<!-- Add footer -->
+
+&nbsp;
+
+<hr />
+
+<center>
+
+<img src="kcl_logo.png" 
+
+     width="100" 
+
+     height="75" />
+
+</center>
+
+<br>
+
+<p style="text-align: center;">Work by <a href="https://github.com/knthompson26/">Katherine N Thompson</a></p>
+
+<p style="text-align: center;"><span style="color: #808080;"><em>katherine.n.thompson@kcl.ac.uk</em></span></p>
+
+
+
+<!-- Add icon library -->
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
+
+<!-- Add font awesome icons -->
+
+<p style="text-align: center;">
+
+    <a href="https://twitter.com/KTNThompson" class="fa fa-twitter"></a>
+
+    <a href="https://github.com/knthompson26/" class="fa fa-github"></a>
+
+</p>
+
+
+
+&nbsp;
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

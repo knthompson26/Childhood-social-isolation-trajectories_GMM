@@ -1,44 +1,41 @@
 ---
-title: 'Trajectory descriptives'
-author: "Katherine N Thompson"
-date: "02 Feb 2021"
-output:
-  word_document:
-    toc: yes
-    toc_depth: '2'
+title: "GMM trajectory descriptives"
+output:  
   html_document:
     df_print: paged
     toc: yes
     toc_depth: 2
     toc_float:
-      collapsed: no
-    number_sections: no
+      collapsed: false
+    number_sections: false
     highlight: monochrome
-    theme: cerulean
-code_folding: hide
+    theme: flatly
+    code_folding: hide
+    includes:
+      after_body: footer.html
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE,
+knitr::opts_chunk$set(echo = TRUE,
                       comment = NA,
                       prompt = FALSE,
                       cache = FALSE,
                       message = FALSE,
-                      warning = FALSE)
-
+                      warning = FALSE,
+                      results = 'asis')
 
 options(bitmapType = 'quartz') # to render fonts better
 ```
 
-```{r Clear global environment}
+```{r Clear global environment, include=FALSE}
 remove(list = ls())
 ```
 
-```{r Current date}
+```{r Current date, include=FALSE}
 date = Sys.Date()
 ```
 
-```{r Load packages}
+```{r Load packages, include=FALSE}
 library(knitr)
 library(summarytools)
 library(MplusAutomation)
@@ -48,26 +45,33 @@ library(plyr)
 library(dplyr) #conflicts with tidyverse for e.g. rename and row_number
 ```
 
-```{r palette}
+```{r palette, include=FALSE}
 palette3 <- c("#78D9C5","#F5BE5E","#EEB6E9")
 palette_spag <- c(`Low stable` = "#78D9C5", Increasing = "#F5BE5E", Decreasing ="#EEB6E9", `Class 1` = "#19A487", `Class 2` = "#DE9310", `Class 3` = "#E570DA")
 ```
 
-```{r source the data file path}
+```{r source the data file path, include=FALSE}
 #source raw data directory: data_raw and data included
-source("../../../../../isolation_trajectories_data_path.R")
+source("../../../isolation_trajectories_data_path.R")
 ```
 
-# Read in descriptives output file
+***
 
-```{r read in prior descriptives data and check variable names, include=FALSE}
+This page contains the code to combine the original Rmd dataset and the new Mplus output. We also include relevant descriptive statistics for the classes/trajectories. We have used the hard classification variable given by Mplus for our analyses. We conduct sensitivity analyses using the 3STEP approach, data is prepped for this at the end of this page. *Please note, if you are running this analysis for yourself, you wiull need to do this step after running your Mplus models and before analysing the data in Rmd*
+
+***
+
+# Combine Mplus and Rmd data
+
+We have read in the processed R data and the Mplus model information to show who is has identified into which class. 
+
+```{r read in prior descriptives data and check variable names}
 dat.descriptives <- readRDS(file = paste0(data_path, "preprocessed_isolation_trajectories_Jan2021_full_sample.rds"))
-colnames(dat.descriptives)
 ```
 
-# Read in class probability file 
+The Mplus output file contains the raw original data, slope estimate, intercept estimate, factor scores based on the slope and intercept, class probabilities for each person per class, and the hard class classification. 
 
-```{r read in txt file with probabilities, include=FALSE}
+```{r read in txt file with probabilities}
 dat.tra.prob.full <- read.table(paste0(mplus_GMM_clustered_full_output_data_path, "GMM_SI_3Cl_full_sample_clustered.txt"), 
                             header = FALSE, 
                             col.names = c("SISOE5", # original social isolation score at age 5
@@ -86,12 +90,12 @@ dat.tra.prob.full <- read.table(paste0(mplus_GMM_clustered_full_output_data_path
                                          "FAMILYID" # Family ID - twin clustering  
                                        ))   
 #check 
-dat.tra.prob.full
+head(dat.tra.prob.full)
 ```
 
-## Select the variables needed from the Mplus output file 
+We will only need the classification probabilities and the hard classification variable. This is then combined with the rest of our Rmd data.
 
-```{r select relevant variables, include=FALSE}
+```{r select relevant variables}
 dat.tra.prob <- dat.tra.prob.full %>%
   select(id = ID, 
          prob1 = CPROB1,
@@ -100,7 +104,7 @@ dat.tra.prob <- dat.tra.prob.full %>%
          class = C
          )
 #check 
-dat.tra.prob
+# dat.tra.prob
 
 #create list of data frames to merge
 dataframe_list <- list(
@@ -115,10 +119,10 @@ dat <- plyr::join_all(
   )
 
 #check
-colnames(dat)
+# colnames(dat)
 ```
 
-# Rename class variable to shape of trajectory
+The class variable is then renamed to reflect the pattern seen in the classes identified. Here, we name them "Low stable", "Increasing", and "Decreasing" to reflect the pattern of each of the linear curves. 
 
 ```{r rename class variable}
 dat <- dat %>%
@@ -129,14 +133,14 @@ dat <- dat %>%
       "3" = "Decreasing"
     )
   )
-table(dat$class_renamed)
+
+data.frame(table(dat$class_renamed))
 ```
+***
 
-# Spaghetti plot of social isolation over time
+# Spaghetti plot showing all social isolation trajectories over time
 
-## Convert data to long format
-
-```{r convert data to long format, include=FALSE}
+```{r convert data to long format}
 combined_social_isolation <- c("isolation_combined_05",
                               "isolation_combined_07",
                               "isolation_combined_10",
@@ -155,7 +159,7 @@ dat_long <- dat %>%
     social_isolation,
     class_renamed)
 
-head(dat_long)
+#head(dat_long)
 
 #create variable that has just the number for the time point
 dat_long <- dat_long %>%
@@ -172,7 +176,7 @@ dat_long <- dat_long %>%
     social_isolation,
     class_renamed)
 
-head(dat_long)
+#head(dat_long)
 ```
 
 ```{r spaghetti plot A}
@@ -197,10 +201,14 @@ spaghetti_plot <- ggplot(data = dat_long,
         legend.position = "bottom")
 ```
 
-```{r spaghetti plot B prep}
+The trajectory of each participant is plotted separately and colour coded depending on which class they were classified. Decreasing is indicated in pink, Increasing in Orange, and Low stable in blue. The average class trajectories are then plotted over the top. 
+
+```{r read in data for spag plot, results='hide', message=FALSE}
 #For class models, read in all output files within your folder that you have all your class models
 si.classes.all <- readModels(paste0(mplus_GMM_clustered_full_output_data_path), recursive = TRUE) #Recursive means it reads data in sub-folders too
+```
 
+```{r spaghetti plot B prep}
 #create three class data frame with means and variances
 three_class_si <- as.data.frame(
   si.classes.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.output..isolation_3traj_full_sample_clustered.out$gh5$means_and_variances_data$y_estimated_means)
@@ -244,20 +252,24 @@ spaghetti_plotB <- ggplot(data = dat_long,
                           axis.text.y = element_text(colour = "black", size = 10),
                           panel.background = element_blank(),
                           legend.position = "none") 
+spaghetti_plotB
 ```
 
 ```{r save spag plot}
-ggsave(
-  "spaghetti_plot_three_class_colour_coded.jpeg",
-  plot = spaghetti_plotB,
-  device = "jpeg",
-  path = paste0(graph_save_data_path, "trajectories/"),
-  width = 7,
-  height = 5
-)
+# ggsave(
+#   "spaghetti_plot_three_class_colour_coded.jpeg",
+#   plot = spaghetti_plotB,
+#   device = "jpeg",
+#   path = paste0(graph_save_data_path, "trajectories/"),
+#   width = 7,
+#   height = 5
+# )
 ```
+***
 
 # Descriptives by class
+
+The code to create these descriptives is long, so has been hidden here, please see raw code on Github if interested. The descriptives include ethnicity, SES, zygosity, and sex. 
 
 ```{r ethnicity descriptives by class, include=FALSE}
 # calculate Ns and %s for each class by ethnicity
@@ -308,8 +320,6 @@ ethnicity_descriptives <- ethnicity_descriptives %>%
 ethnicity_descriptives
 ```
 
-## SES descriptives stratified by class 
-
 ```{r SES descriptives by class, include=FALSE}
 SES_descriptives_stable <- dat %>% 
   dplyr::count(class_renamed, SES) %>%
@@ -349,8 +359,6 @@ SES_descriptives <- SES_descriptives %>%
     "% Total" = Prop_total)
 SES_descriptives
 ```
-
-## Zygosity descriptives stratified by class 
 
 ```{r zygosity descriptives by class, include=FALSE}
 zygosity_binary_descriptives_stable <- dat %>% 
@@ -392,8 +400,6 @@ zygosity_binary_descriptives <- zygosity_binary_descriptives %>%
 zygosity_binary_descriptives
 ```
 
-## Sex descriptives stratified by class 
-
 ```{r sex descriptives by class, include=FALSE}
 sex_descriptives_stable <- dat %>% 
   dplyr::count(class_renamed, sex) %>%
@@ -434,8 +440,6 @@ sex_descriptives <- sex_descriptives %>%
 sex_descriptives
 ```
 
-## Combine all descriptives into one table
-
 ```{r combine descriptives, include=FALSE}
 class.descriptives <- bind_rows(
   sex_descriptives,
@@ -470,15 +474,14 @@ class.descriptives <- class.descriptives %>%
 kable(class.descriptives)
 ```
 
-# *Adapt variables for regression analysis*
+***
 
-Need to relevel the class variable to use the Low Stable class as the reference group in all regressions. 
+# Adapt variables for regression analysis
 
-```{r relevel class, include=FALSE}
+We need to relevel the class variable to use the Low Stable class as the reference group in all subsequent regression analyses.  
+
+```{r relevel class variable}
 library(nnet)
-# check the biggest group in the class to be the reference group
-table(dat$class_renamed)
-
 # relevel class_factor
 dat <- dat %>% 
   mutate(
@@ -492,11 +495,12 @@ dat <- dat %>%
         
       )
   )
-# check
-table(dat$class_reordered)
 ```
+***
 
-# Class probability statistics
+# Class statistics {.tabset .tabset-fade}
+
+Next, we calculate the classification probabilities, class means and NAs per class. 
 
 ```{r read in data for all traj models, include=FALSE}
 class.all <- readModels(paste0(mplus_GMM_clustered_full_output_data_path), recursive = TRUE)
@@ -506,9 +510,9 @@ class.all <- readModels(paste0(mplus_GMM_clustered_full_output_data_path), recur
 
 For the diagonal, this represents the probability given that the an observation is a part of a specific latent class that you will classify it as said class.
 
-*Note* this is not average probabilities - this table wasn't available in Mplus version 8. 
+*Note* this does not represent average probabilities as this table wasn't available in Mplus version 8. 
 
-```{r extract classification probs for 3 class model, include=FALSE}
+```{r extract classification probs for 3 class model}
 # extract the classification probabilities for the most likely class memberships (column) by latent class (row). This shows the uncertainty rate of the probabilities. If it was perfect - the diagonal would be 1. E.g. for Class 1 - 98.3% of individuals fit that category. 
 class.probs <- data.frame(class.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.output..isolation_3traj_full_sample_clustered.out$class_counts$classificationProbs.mostLikely)
 
@@ -517,7 +521,7 @@ colnames(class.probs) <- c("Low stable","Increasing","Decreasing")
 
 class.probs$Class <- c("Low stable","Increasing","Decreasing")
 
-as.tibble(class.probs)
+# as.tibble(class.probs)
 
 class.probs <- class.probs %>%
   tidyr::pivot_longer(-Class, 
@@ -527,7 +531,7 @@ class.probs <- class.probs %>%
 class.probs <- class.probs[-c(2:4,6:8),-c(2)]
 ```
 
-```{r classification probabilities table, include=FALSE}
+```{r classification probabilities table}
 kable(class.probs)
 ```
 
@@ -559,20 +563,25 @@ class.means <- class.means %>%
 kable(class.means)
 ```
 
-# Na per person split by class
+## Na per person split by class
 
 ```{r na per person slipt by class}
 ctable(dat$class_renamed, dat$na.per.person.si)
 ```
 
-# Export the joined preprocessed and class data
+
+***
+
+# Export data 
+
+## Main analyses
 
 ```{r export new data files}
 # save R data file
 saveRDS(object = dat, file = paste0(data_path, "class_joined_preprocessed_isolation_data_full_sample.rds"))
 ```
 
-# Export file for 3STEP method sensitivity analysis
+## 3STEP method sensitivity analysis 
 
 This 3STEP method that will be conducted in Mplus uses the ID variable, the class membership variable. 
 
@@ -586,7 +595,7 @@ dat.raw <- read.spss(file = paste0(data.raw_path, "Katie_18Dec20.sav"),
                   use.value.labels = FALSE, #convert value labels into factors with those labels
                   to.data.frame = TRUE) #return data frame 
 
-colnames(dat.raw) # check colnames
+#colnames(dat.raw) # check colnames
 
 dat.tra.prob.3step <- dat.tra.prob %>%
   select(atwinid = id,
@@ -595,7 +604,7 @@ dat.tra.prob.3step <- dat.tra.prob %>%
          prob3,
          class)
 
-colnames(dat.tra.prob.3step) # check colnames
+#colnames(dat.tra.prob.3step) # check colnames
 
 #create list of data frames to merge
 dataframe_list <- list(
@@ -610,14 +619,18 @@ dat.3step <- plyr::join_all(
   )
 
 #check
-colnames(dat.3step)
+#colnames(dat.3step)
 ```
 
-## Variable REcode based on analysis decisions
+### Variable REcode based on analysis decisions {.tabset .tabset-fade}
 
-Some variables were edited further dependent on power and other factors. 
+Variables that were created in the preprocessing script need to be recomputed here for the 3STEP sensitivity analysis.
 
-```{r ACORN recode, include=FALSE}
+#### ACORN recode
+
+Moderate Means and Hard Pressed were combined, Wealthy Achievers, Urban Prosperity, and Comfortably Off were combined.
+
+```{r ACORN recode}
 dat.3step <- dat.3step %>%
   mutate(P5CACORNCategoryrecoded =
            if_else(
@@ -626,8 +639,10 @@ dat.3step <- dat.3step %>%
              1, # Deprived
              0  # Relatively affluent
            ))
-table(dat.3step$P5CACORNCategoryrecoded)
+#table(dat.3step$P5CACORNCategoryrecoded)
 ```
+
+#### Harm recode 
 
 Possible harm and Definite harm were combined to give a binary variable of Harm VS No harm.
 
@@ -641,8 +656,10 @@ dat.3step <- dat.3step %>%
              0
            ))
          
-table(dat.3step$harm3em5recoded)
+#table(dat.3step$harm3em5recoded)
 ```
+
+#### Highest education recode
 
 GSCE grades were collapsed: No qualification and Level 1 (GCSE at grades D-G) were combined. Level 2 (GCSE at grades A*-C) and Level 3 (A Level) were combined. 
 
@@ -656,8 +673,10 @@ dat.3step <- dat.3step %>%
              0
            ))
          
-table(dat.3step$educachve18recoded)
+#table(dat.3step$educachve18recoded)
 ```
+
+#### Parental antisocial bhaviour and alcoholism
 
 We combined maternal and paternal reports to form parental report for antisocial behaviour and alcoholism. 
 
@@ -675,6 +694,8 @@ dat.3step <- dat.3step %>%
            alcmm5 + alcfm5) # mum plus dad scores
 ```
 
+## Check column names and export the data 
+
 ```{r check column names}
 colnames(dat.3step)
 ```
@@ -684,20 +705,4 @@ colnames(dat.3step)
 write_csv(x = dat.3step, path = paste0(data_path, "FOR_MPLUS_preprocessed_isolation_trajectories_Sep2021_3STEP.csv")) # save data in data file
 write_csv(x = dat.3step, path = "/Users/katiethompson/Desktop/FOR_MPLUS_preprocessed_isolation_trajectories_Sep2021_3STEP.csv") # save data on desktop for Mplus 
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
