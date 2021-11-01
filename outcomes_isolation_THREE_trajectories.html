@@ -1,0 +1,2422 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Associations between social isolation trajectories and outcomes at age 18</title>
+
+<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { font-weight: bold; } /* Alert */
+code span.an { font-style: italic; } /* Annotation */
+code span.cf { font-weight: bold; } /* ControlFlow */
+code span.co { font-style: italic; } /* Comment */
+code span.cv { font-style: italic; } /* CommentVar */
+code span.do { font-style: italic; } /* Documentation */
+code span.dt { text-decoration: underline; } /* DataType */
+code span.er { font-weight: bold; } /* Error */
+code span.in { font-style: italic; } /* Information */
+code span.kw { font-weight: bold; } /* Keyword */
+code span.pp { font-weight: bold; } /* Preprocessor */
+code span.wa { font-style: italic; } /* Warning */
+
+.sourceCode .row {
+  width: 100%;
+}
+.sourceCode {
+  overflow-x: auto;
+}
+.code-folding-btn {
+  margin-right: -30px;
+}
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"></a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Home
+  </a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/knthompson26/Childhood-social-isolation-trajectories_GMM">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Associations between social isolation trajectories and outcomes at age 18</h1>
+
+</div>
+
+
+<hr />
+<p>This page displays the results from logistic and linear multivariate regressions used to assess how the outcomes at age 18 are associated with social isolation trajectory membership. Outcomes are sorted into domains of “Mental health”, “Physical health”, “Coping and functioning”, and “Employment prospects”.</p>
+<hr />
+<div id="functions" class="section level1">
+<h1>Functions</h1>
+<p>To run the following code more clearly, I have created these functions:</p>
+<ul>
+<li>multiple.testing() applies the BH multiple testing correction. You define the data, class, method and number of tests.</li>
+<li>add.significance.variable() add’s a variable to the dataset that labels if a result has a significant p value or not.</li>
+<li>paper.table() creates a table that is formatted correctly for either linear or logitic regression results.</li>
+<li>create.dataset() binds regression results together to form a data set.</li>
+<li>huber.white.cluster.logistic() applies heteroskedasticity-robust standard errors while clustering for familyid for logistic regression</li>
+<li>order.variables() orders the data whereby points in a plot are arranged by OR/Beta and domain.</li>
+<li>reorder_cor_matrix() orders the correlation matrix for the heat map</li>
+<li>huber.white.cluster.linear() applies heteroskedasticity-robust standard errors while clustering for familyid for linear regression</li>
+</ul>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r fold-show"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>multiple.testing <span class="ot">&lt;-</span> <span class="cf">function</span>(data, class, <span class="at">method =</span> <span class="st">&quot;BH&quot;</span>, n.tests){</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  data <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(Class <span class="sc">==</span> class) <span class="sc">%&gt;%</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">p.value.adjusted =</span> </span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>           stats<span class="sc">::</span><span class="fu">p.adjust</span>(p.value, </span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>                    <span class="at">method =</span> method,</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>                    <span class="at">n =</span> n.tests) </span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Significance.adjusted =</span> </span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>           <span class="fu">if_else</span>(</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>            p.value.adjusted <span class="sc">&lt;</span> <span class="fl">0.05</span>, </span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>            <span class="dv">1</span>,</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>            <span class="dv">0</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>      ) <span class="sc">%&gt;%</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>        <span class="fu">recode_factor</span>(</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>          <span class="st">`</span><span class="at">1</span><span class="st">`</span> <span class="ot">=</span> <span class="st">&quot;Significant&quot;</span>,</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>          <span class="st">`</span><span class="at">0</span><span class="st">`</span> <span class="ot">=</span> <span class="st">&quot;Non-significant&quot;</span>)</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>         )  </span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(data)</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>add.significance.variable <span class="ot">&lt;-</span> <span class="cf">function</span>(data){</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>  data <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">Significance =</span> </span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>      <span class="fu">if_else</span>(</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>        p.value <span class="sc">&lt;</span> <span class="fl">0.05</span>, </span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>        <span class="dv">1</span>,</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>        <span class="dv">0</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>      ) <span class="sc">%&gt;%</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>    <span class="fu">recode_factor</span>(</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;0&quot;</span> <span class="ot">=</span> <span class="st">&quot;Non-significant&quot;</span>,</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;1&quot;</span> <span class="ot">=</span> <span class="st">&quot;Significant&quot;</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>      ))</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(data)</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>paper.table <span class="ot">&lt;-</span> <span class="cf">function</span>(data, model){</span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (model <span class="sc">==</span> <span class="st">&quot;logistic&quot;</span>){</span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>  table <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(</span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>    Class,</span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>    Variable,</span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>    OR,</span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">95% CI low</span><span class="st">`</span> <span class="ot">=</span> OR.conf.low,</span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">95% CI high</span><span class="st">`</span> <span class="ot">=</span> OR.conf.high,</span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">p value</span><span class="st">`</span> <span class="ot">=</span> p.value,</span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>    Domain,</span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span>Significance) <span class="sc">%&gt;%</span></span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">2</span>)</span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(table)}</span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span> <span class="cf">if</span> (model <span class="sc">==</span> <span class="st">&quot;linear&quot;</span>){</span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a>    table <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(</span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a>    Class,</span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a>    Variable,</span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Beta estimate</span><span class="st">`</span> <span class="ot">=</span> estimate,</span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">95% CI low</span><span class="st">`</span> <span class="ot">=</span> conf.low,</span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">95% CI high</span><span class="st">`</span> <span class="ot">=</span> conf.high,</span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">p value</span><span class="st">`</span> <span class="ot">=</span> p.value,</span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a>    Domain,</span>
+<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span>Significance) <span class="sc">%&gt;%</span></span>
+<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">2</span>)</span>
+<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(table)</span>
+<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a>create.dataset <span class="ot">&lt;-</span> <span class="cf">function</span>(data, model){</span>
+<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (model <span class="sc">==</span> <span class="st">&quot;logistic&quot;</span>){</span>
+<span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a>  data <span class="ot">&lt;-</span> data.table<span class="sc">::</span><span class="fu">rbindlist</span>(data) <span class="sc">%&gt;%</span></span>
+<span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(Class,</span>
+<span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a>         Variable,</span>
+<span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a>         OR,</span>
+<span id="cb1-76"><a href="#cb1-76" aria-hidden="true" tabindex="-1"></a>         OR.conf.low,</span>
+<span id="cb1-77"><a href="#cb1-77" aria-hidden="true" tabindex="-1"></a>         OR.conf.high,</span>
+<span id="cb1-78"><a href="#cb1-78" aria-hidden="true" tabindex="-1"></a>         p.value, </span>
+<span id="cb1-79"><a href="#cb1-79" aria-hidden="true" tabindex="-1"></a>         Significance,</span>
+<span id="cb1-80"><a href="#cb1-80" aria-hidden="true" tabindex="-1"></a>         <span class="at">Domain =</span> block)</span>
+<span id="cb1-81"><a href="#cb1-81" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(data)}</span>
+<span id="cb1-82"><a href="#cb1-82" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span> <span class="cf">if</span> (model <span class="sc">==</span> <span class="st">&quot;linear&quot;</span>){</span>
+<span id="cb1-83"><a href="#cb1-83" aria-hidden="true" tabindex="-1"></a>  data <span class="ot">&lt;-</span> data.table<span class="sc">::</span><span class="fu">rbindlist</span>(data) <span class="sc">%&gt;%</span></span>
+<span id="cb1-84"><a href="#cb1-84" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(Class,</span>
+<span id="cb1-85"><a href="#cb1-85" aria-hidden="true" tabindex="-1"></a>         Variable,</span>
+<span id="cb1-86"><a href="#cb1-86" aria-hidden="true" tabindex="-1"></a>         estimate,</span>
+<span id="cb1-87"><a href="#cb1-87" aria-hidden="true" tabindex="-1"></a>         robust.std.error,</span>
+<span id="cb1-88"><a href="#cb1-88" aria-hidden="true" tabindex="-1"></a>         conf.low,</span>
+<span id="cb1-89"><a href="#cb1-89" aria-hidden="true" tabindex="-1"></a>         conf.high,</span>
+<span id="cb1-90"><a href="#cb1-90" aria-hidden="true" tabindex="-1"></a>         p.value, </span>
+<span id="cb1-91"><a href="#cb1-91" aria-hidden="true" tabindex="-1"></a>         Significance,</span>
+<span id="cb1-92"><a href="#cb1-92" aria-hidden="true" tabindex="-1"></a>         <span class="at">Domain =</span> block)</span>
+<span id="cb1-93"><a href="#cb1-93" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(data)</span>
+<span id="cb1-94"><a href="#cb1-94" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb1-95"><a href="#cb1-95" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-96"><a href="#cb1-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-97"><a href="#cb1-97" aria-hidden="true" tabindex="-1"></a>huber.white.cluster.logistic <span class="ot">&lt;-</span> <span class="cf">function</span>(regression.outcome){</span>
+<span id="cb1-98"><a href="#cb1-98" aria-hidden="true" tabindex="-1"></a>   outcome.full <span class="ot">&lt;-</span> <span class="fu">summ</span>(regression.outcome,</span>
+<span id="cb1-99"><a href="#cb1-99" aria-hidden="true" tabindex="-1"></a>                       <span class="at">scale =</span> <span class="cn">FALSE</span>,          <span class="co"># standardized regression coefficients </span></span>
+<span id="cb1-100"><a href="#cb1-100" aria-hidden="true" tabindex="-1"></a>                       <span class="at">confint =</span> <span class="cn">TRUE</span>,        <span class="co"># report confidence intervals over standard errors</span></span>
+<span id="cb1-101"><a href="#cb1-101" aria-hidden="true" tabindex="-1"></a>                       <span class="at">ci.width =</span> <span class="fl">0.95</span>,       <span class="co"># desired confidence interval</span></span>
+<span id="cb1-102"><a href="#cb1-102" aria-hidden="true" tabindex="-1"></a>                       <span class="at">robust =</span> <span class="st">&quot;HC0&quot;</span>,        <span class="co"># heteroskedasticity-robust standard errors instead of conventional SEs</span></span>
+<span id="cb1-103"><a href="#cb1-103" aria-hidden="true" tabindex="-1"></a>                       <span class="at">cluster =</span> <span class="st">&quot;familyid&quot;</span>,  <span class="co"># for clustered standard errors, provide column name of cluster variable</span></span>
+<span id="cb1-104"><a href="#cb1-104" aria-hidden="true" tabindex="-1"></a>                       <span class="at">exp =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb1-105"><a href="#cb1-105" aria-hidden="true" tabindex="-1"></a>   <span class="fu">return</span>(outcome.full)</span>
+<span id="cb1-106"><a href="#cb1-106" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-107"><a href="#cb1-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-108"><a href="#cb1-108" aria-hidden="true" tabindex="-1"></a>order.variables <span class="ot">&lt;-</span> <span class="cf">function</span>(data, domain, model){</span>
+<span id="cb1-109"><a href="#cb1-109" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (model <span class="sc">==</span> <span class="st">&quot;logistic&quot;</span>){</span>
+<span id="cb1-110"><a href="#cb1-110" aria-hidden="true" tabindex="-1"></a>  data <span class="ot">&lt;-</span> <span class="fu">filter</span>(data, Domain <span class="sc">==</span> domain) <span class="sc">%&gt;%</span></span>
+<span id="cb1-111"><a href="#cb1-111" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(<span class="fu">desc</span>(OR))</span>
+<span id="cb1-112"><a href="#cb1-112" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-113"><a href="#cb1-113" aria-hidden="true" tabindex="-1"></a>  data<span class="sc">$</span>Variable <span class="ot">&lt;-</span> <span class="fu">factor</span>(data<span class="sc">$</span>Variable, </span>
+<span id="cb1-114"><a href="#cb1-114" aria-hidden="true" tabindex="-1"></a>                          <span class="at">levels =</span> <span class="fu">paste</span>(<span class="fu">unique</span>(<span class="fu">paste</span>(data<span class="sc">$</span>Variable)), <span class="at">sep =</span> <span class="st">&quot;,&quot;</span>))</span>
+<span id="cb1-115"><a href="#cb1-115" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(data)}</span>
+<span id="cb1-116"><a href="#cb1-116" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span> <span class="cf">if</span> (model <span class="sc">==</span> <span class="st">&quot;linear&quot;</span>){</span>
+<span id="cb1-117"><a href="#cb1-117" aria-hidden="true" tabindex="-1"></a>    data <span class="ot">&lt;-</span> <span class="fu">filter</span>(data, Domain <span class="sc">==</span> domain) <span class="sc">%&gt;%</span></span>
+<span id="cb1-118"><a href="#cb1-118" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(<span class="fu">desc</span>(estimate))</span>
+<span id="cb1-119"><a href="#cb1-119" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-120"><a href="#cb1-120" aria-hidden="true" tabindex="-1"></a>    data<span class="sc">$</span>Variable <span class="ot">&lt;-</span> <span class="fu">factor</span>(data<span class="sc">$</span>Variable, </span>
+<span id="cb1-121"><a href="#cb1-121" aria-hidden="true" tabindex="-1"></a>                          <span class="at">levels =</span> <span class="fu">paste</span>(<span class="fu">unique</span>(<span class="fu">paste</span>(data<span class="sc">$</span>Variable)), <span class="at">sep =</span> <span class="st">&quot;,&quot;</span>))</span>
+<span id="cb1-122"><a href="#cb1-122" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(data)</span>
+<span id="cb1-123"><a href="#cb1-123" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb1-124"><a href="#cb1-124" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-125"><a href="#cb1-125" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-126"><a href="#cb1-126" aria-hidden="true" tabindex="-1"></a>reorder_cor_matrix <span class="ot">&lt;-</span> <span class="cf">function</span>(cor_matrix){</span>
+<span id="cb1-127"><a href="#cb1-127" aria-hidden="true" tabindex="-1"></a> dd <span class="ot">&lt;-</span> <span class="fu">as.dist</span>((<span class="dv">1</span><span class="sc">-</span>cor_matrix)<span class="sc">/</span><span class="dv">2</span>) <span class="co">#Use correlation between variables as distance</span></span>
+<span id="cb1-128"><a href="#cb1-128" aria-hidden="true" tabindex="-1"></a> hc <span class="ot">&lt;-</span> <span class="fu">hclust</span>(dd)</span>
+<span id="cb1-129"><a href="#cb1-129" aria-hidden="true" tabindex="-1"></a> cormat <span class="ot">&lt;-</span>cor_matrix[hc<span class="sc">$</span>order, hc<span class="sc">$</span>order]</span>
+<span id="cb1-130"><a href="#cb1-130" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-131"><a href="#cb1-131" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-132"><a href="#cb1-132" aria-hidden="true" tabindex="-1"></a><span class="co"># robust standard error estimation - account for non-independence of twin sample</span></span>
+<span id="cb1-133"><a href="#cb1-133" aria-hidden="true" tabindex="-1"></a>huber.white.cluster.linear <span class="ot">&lt;-</span> <span class="cf">function</span>(regression.outcome, rows.remove){</span>
+<span id="cb1-134"><a href="#cb1-134" aria-hidden="true" tabindex="-1"></a>  outcome.full <span class="ot">&lt;-</span> broom<span class="sc">::</span><span class="fu">tidy</span>(<span class="fu">coeftest</span>(regression.outcome,                          <span class="co"># reports coefficients for new covariance matrix</span></span>
+<span id="cb1-135"><a href="#cb1-135" aria-hidden="true" tabindex="-1"></a>                                       <span class="at">vcov =</span> <span class="fu">vcovHC</span>(regression.outcome,            <span class="co"># estimates a robust covariance matrix</span></span>
+<span id="cb1-136"><a href="#cb1-136" aria-hidden="true" tabindex="-1"></a>                                                     <span class="at">type =</span> <span class="st">&quot;HC0&quot;</span>,                  <span class="co"># gives White&#39;s estimator </span></span>
+<span id="cb1-137"><a href="#cb1-137" aria-hidden="true" tabindex="-1"></a>                                                     <span class="at">cluster =</span> <span class="st">&quot;familyid&quot;</span>)),        <span class="co"># clusters by familyid</span></span>
+<span id="cb1-138"><a href="#cb1-138" aria-hidden="true" tabindex="-1"></a>                              <span class="at">conf.int =</span> <span class="cn">TRUE</span>,   </span>
+<span id="cb1-139"><a href="#cb1-139" aria-hidden="true" tabindex="-1"></a>                              <span class="at">conf.level =</span> <span class="fl">0.95</span>)[rows.remove,] <span class="sc">%&gt;%</span></span>
+<span id="cb1-140"><a href="#cb1-140" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">robust.std.error =</span> std.error) <span class="sc">%&gt;%</span></span>
+<span id="cb1-141"><a href="#cb1-141" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">Class =</span> <span class="fu">c</span>(<span class="st">&quot;Increasing&quot;</span>, <span class="st">&quot;Decreasing&quot;</span>)) <span class="co"># Create new formatted class variable</span></span>
+<span id="cb1-142"><a href="#cb1-142" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(outcome.full)</span>
+<span id="cb1-143"><a href="#cb1-143" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+<div id="test-for-multicollinearity-for-outcome-variables" class="section level1">
+<h1>Test for multicollinearity for outcome variables</h1>
+<p>We created a correlation matrix to look for variables that are highly correlated. The only variables that are highly correlated here are those that are actually measuring the same construct. For example, current depression and having a depression diagnosis. This is expected and not considered multicollinearity as these lifetime vs current measures will not be used within the same model.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create data frame with just numeric antecedent variables</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>outcome_data_frame <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(dat[,outcome.dependent.numeric])</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(outcome_data_frame) <span class="ot">&lt;-</span> name.list</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># get correlation matrix</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>isolation_cor_matrix <span class="ot">&lt;-</span> <span class="fu">cor</span>(outcome_data_frame, <span class="at">method =</span> <span class="st">&quot;pearson&quot;</span>, <span class="at">use =</span> <span class="st">&quot;complete.obs&quot;</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Reorder the correlation matrix</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>cor_matrix_full <span class="ot">&lt;-</span> <span class="fu">reorder_cor_matrix</span>(isolation_cor_matrix)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co">#melt the values</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>metled_cor_matrix <span class="ot">&lt;-</span> reshape<span class="sc">::</span><span class="fu">melt</span>(cor_matrix_full, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="co">#correlation heat map</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>correlation_heat_map <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(metled_cor_matrix, <span class="fu">aes</span>(X2, X1, <span class="at">fill =</span> value))<span class="sc">+</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a> <span class="fu">geom_tile</span>(<span class="at">color =</span> <span class="st">&quot;white&quot;</span>)<span class="sc">+</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a> <span class="fu">scale_fill_gradient2</span>(<span class="at">low =</span> <span class="st">&quot;blue&quot;</span>, <span class="at">high =</span> <span class="st">&quot;red&quot;</span>, <span class="at">mid =</span> <span class="st">&quot;white&quot;</span>,</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>   <span class="at">midpoint =</span> <span class="dv">0</span>, <span class="at">limit =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>,<span class="dv">1</span>), <span class="at">space =</span> <span class="st">&quot;Lab&quot;</span>,</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">name=</span><span class="st">&quot;Pearson</span><span class="sc">\n</span><span class="st">Correlation&quot;</span>) <span class="sc">+</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">&quot;&quot;</span>,</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">&quot;&quot;</span>,</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">&quot;Correlation heat map for outcomes&quot;</span>)<span class="sc">+</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a> <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">vjust =</span> <span class="dv">1</span>, <span class="at">size =</span> <span class="dv">12</span>, <span class="at">hjust =</span> <span class="dv">1</span>),</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>       <span class="at">axis.text.y =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>),</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>       <span class="at">plot.margin=</span>grid<span class="sc">::</span><span class="fu">unit</span>(<span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>), <span class="st">&quot;mm&quot;</span>),</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>       <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">20</span>),</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>       )<span class="sc">+</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a> <span class="fu">coord_fixed</span>() <span class="sc">+</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(X2, X1, <span class="at">label =</span> <span class="fu">round</span>(value, <span class="at">digits =</span> <span class="dv">2</span>)), <span class="at">color =</span> <span class="st">&quot;black&quot;</span>, <span class="at">size =</span> <span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>correlation_heat_map</span></code></pre></div>
+<p><img src="outcomes_isolation_THREE_trajectories_files/figure-html/heat%20map%20fig-1.png" width="1440" /></p>
+</div>
+<div id="association-with-outcome-variables-at-age-18" class="section level1">
+<h1>Association with outcome variables at age 18</h1>
+<p><strong>Analysis Plan </strong></p>
+<ul>
+<li><p><em>Individual outcome regressions</em>: single regressions are computed to see if the class can predict the the occurrence of each variable (variable ~ class). This is done through a loop. Odds Ratios (OR) and their confidence intervals are calculated for binary variables (logistic regression). Standardized Beta values are calculated for continuous variables (linear regression). Continuous and binary variables are plotted separately. Z scores are calculated for all continuous variables and all linear regressions are run using z scores.</p>
+<ul>
+<li><p>A. <em>Logistic regressions</em> (binary variables): depression_diagnosis_12mo_18, anxiety_diagnosis_18, ADHD_diagnosis_18, conduct_disorder_moderate_18, alcohol_dependence_18, cannabis_dependence_18, PTSD_diagnosis_lifetime_18, PTSD_diagnosis_current_18,suicide_attempt_selfharm_18, service_use_18, not_in_employment_education_numeric_18. alcohol_abuse_18 removed as using alcohol_dependence_18 instead as it captures more disordered drinking.</p></li>
+<li><p>B. <em>Linear regressions</em> (continuous variables): depression_current_scale_18, anxiety_current_scale_18, inattentive_hyperactive_symptoms_total_18, conduct_disorder_symptoms_18, alcohol_symptom_scale_18, cannabis_symptom_scale_18, cat_psychosis_experiences_scale_18, BMI_18, CRP_log_18, physical_activity_18, smoking_current_number_18, loneliness_18, life_satisfaction_18, technology_use_18, coping_with_stress_18, PSQI_global_score_18, job_preparedness_skills_18, job_preparedness_attributes_18, optimism_18, job_search_activities_count_18</p></li>
+<li><p>C. <em>Regressions rerun whilst controlling for antecedents</em> (both continuous and binary are rerun): antecedents controlled for include: prosocial_behaviours_combined_05 + ADHD_combined_05 + internalising_combined_excl_sis_05 + maternal_personality_openness_05 + number_children_school_05</p></li>
+</ul></li>
+</ul>
+<div id="preparation" class="section level2">
+<h2>Preparation</h2>
+<p>Create <em>z scores</em> for all continuous variables</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create a scaled version of the continuous variables - z scores for all variables</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>scaled_continuous_data <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">scale</span>(dat[outcome.dependent.linear], <span class="at">center =</span> <span class="cn">TRUE</span>, <span class="at">scale =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># rename variables to show that they are z scores </span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(scaled_continuous_data) <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">&quot;z_score.&quot;</span>, <span class="fu">colnames</span>(scaled_continuous_data))</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co"># combine the scaled data to the main dataset </span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">cbind</span>(dat, scaled_continuous_data)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co">#colnames(dat)</span></span></code></pre></div>
+</div>
+</div>
+<div id="posterior-sensitivity-analysis" class="section level1">
+<h1>Posterior sensitivity analysis</h1>
+<p>The below few chunks are used to run the same analysis again in a reduced sample (only individuals who had a posterior probability of above 0.8 in all classes).</p>
+<p><strong>IMPORTANT</strong>: We created the current Rmd script to be able to use the same script to run the same analysis again in a reduced sample as a sensitivity analysis (only individuals who had a posterior probability of above 0.8 in all classes). When the variable “posterior.cut” is set to TRUE the following code will run for the data set that has those probability&lt;0.8 dropped.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r fold-show"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>posterior.cut <span class="ot">=</span> <span class="cn">FALSE</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r fold-show"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(posterior.cut <span class="sc">==</span> <span class="cn">TRUE</span>){</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># create new variable only with those who have a probability higher than 0.8 for each class</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> dat <span class="sc">%&gt;%</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">class_renamed_cut =</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>           <span class="fu">factor</span>(</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>             <span class="fu">case_when</span>(</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>             prob2 <span class="sc">&gt;</span> <span class="fl">0.8</span> <span class="sc">&amp;</span> class_renamed <span class="sc">==</span> <span class="st">&quot;Increasing&quot;</span> <span class="sc">~</span> <span class="st">&quot;Increasing&quot;</span>,</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>             prob3 <span class="sc">&gt;</span> <span class="fl">0.8</span> <span class="sc">&amp;</span> class_renamed <span class="sc">==</span> <span class="st">&quot;Decreasing&quot;</span> <span class="sc">~</span> <span class="st">&quot;Decreasing&quot;</span>,</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>             prob1 <span class="sc">&gt;</span> <span class="fl">0.8</span> <span class="sc">&amp;</span> class_renamed <span class="sc">==</span> <span class="st">&quot;Low stable&quot;</span> <span class="sc">~</span> <span class="st">&quot;Low stable&quot;</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>           ), </span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>           <span class="at">ordered =</span> <span class="cn">FALSE</span>))</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(nnet)</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co"># check the biggest group in the class to be the reference group</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(dat<span class="sc">$</span>class_renamed_cut)</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="co"># relevel class_factor</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> dat <span class="sc">%&gt;%</span> </span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">class_reordered_cut =</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>      <span class="fu">relevel</span>(</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>        class_renamed_cut,</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>        <span class="at">ref =</span> <span class="st">&quot;Low stable&quot;</span>,</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>        <span class="at">first =</span> <span class="cn">TRUE</span>, <span class="co">#levels in ref come first</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>        <span class="at">collapse =</span> <span class="st">&quot;+&quot;</span>, <span class="co">#String used when constructing names for combined factor levels</span></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>        <span class="at">xlevels =</span> <span class="cn">TRUE</span> <span class="co">#levels maintained even if not actually occurring</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a><span class="co"># check</span></span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(dat<span class="sc">$</span>class_reordered_cut)</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a><span class="co"># create new data set with only these individuals</span></span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>dat_prob_cut_out <span class="ot">&lt;-</span> dat <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="fu">is.na</span>(class_reordered_cut))</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> dat <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(class_reordered_cut))</span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a><span class="co"># check</span></span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a><span class="fu">freq</span>(dat<span class="sc">$</span>class_reordered)</span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>Statistics for posterior probability sensitivity analyses:</p>
+<ul>
+<li>Low stable: Dropped 42 people. Average probability = 0.66, minimum probability = 0.48.</li>
+<li>Increasing: Dropped 24 people. Average probability = 0.64, minimum probability = 0.49.</li>
+<li>Decreasing: Dropped 25 people. Average probability = 0.63, minimum probability = 0.51.</li>
+</ul>
+<p><strong>Posterior sensitivity N = 2141</strong></p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r fold-show"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(posterior.cut <span class="sc">==</span> <span class="cn">TRUE</span>){</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>low.stable.cut.stats <span class="ot">&lt;-</span> dat_prob_cut_out <span class="sc">%&gt;%</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(class_reordered <span class="sc">==</span> <span class="st">&quot;Low stable&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">descr</span>(prob1)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>increasing.cut.stats <span class="ot">&lt;-</span> dat_prob_cut_out <span class="sc">%&gt;%</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(class_reordered <span class="sc">==</span> <span class="st">&quot;Increasing&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">descr</span>(prob2)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>decreasing.cut.stats <span class="ot">&lt;-</span> dat_prob_cut_out <span class="sc">%&gt;%</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(class_reordered <span class="sc">==</span> <span class="st">&quot;Decreasing&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">descr</span>(prob3)</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>low.stable.cut.stats</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>increasing.cut.stats</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>decreasing.cut.stats</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+<div id="logistic-regression" class="section level1 tabset tabset-fade">
+<h1 class="tabset tabset-fade">Logistic regression</h1>
+<div id="loop" class="section level2">
+<h2>Loop</h2>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r fold-show"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>logistic.stats.outcome <span class="ot">&lt;-</span> <span class="fu">list</span>() <span class="co">#create empty list to store the information in</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(outcome.dependent.logistic))</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>{ <span class="fu">cat</span>(i)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  logistic.formula.outcome <span class="ot">&lt;-</span> <span class="fu">as.formula</span>(<span class="fu">sprintf</span>(<span class="st">&quot;%s ~ class_reordered + sex + SES_ordered&quot;</span>, outcome.dependent.logistic[i]))</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  logistic.reg.outcome <span class="ot">&lt;-</span> <span class="fu">glm</span>(logistic.formula.outcome, <span class="at">data =</span> dat, <span class="at">family =</span> <span class="st">&quot;binomial&quot;</span>)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  logistic.output.outcome.full <span class="ot">&lt;-</span> <span class="fu">huber.white.cluster.logistic</span>(logistic.reg.outcome)</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  logistic.output.outcome.full <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(logistic.output.outcome.full<span class="sc">$</span>coeftable)[<span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">4</span><span class="sc">:</span><span class="dv">6</span>),] <span class="sc">%&gt;%</span> <span class="co"># delete sex and SES coefficients</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">Class =</span> <span class="fu">c</span>(<span class="st">&quot;Increasing&quot;</span>, <span class="st">&quot;Decreasing&quot;</span>)) <span class="sc">%&gt;%</span> <span class="co"># Create new formatted class variable</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>      Class,</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>      <span class="at">OR =</span> <span class="st">`</span><span class="at">exp(Est.)</span><span class="st">`</span>,</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">OR.conf.low =</span> <span class="st">`</span><span class="at">2.5%</span><span class="st">`</span>,</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>      <span class="at">OR.conf.high =</span> <span class="st">`</span><span class="at">97.5%</span><span class="st">`</span>,</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>      <span class="at">p.value =</span> p)</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (i <span class="sc">&lt;</span> <span class="dv">11</span>) {</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>    logistic.output.outcome.full <span class="ot">&lt;-</span> logistic.output.outcome.full <span class="sc">%&gt;%</span></span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">block =</span> <span class="st">&quot;Mental health domain&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">Variable =</span> outcome.dependent.logistic.name.list[[i]]) </span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>   logistic.output.outcome.full <span class="ot">&lt;-</span> logistic.output.outcome.full <span class="sc">%&gt;%</span></span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">block =</span> <span class="st">&quot;Employment domain&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">Variable =</span> outcome.dependent.logistic.name.list[[i]])</span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>  logistic.output.outcome.full <span class="ot">&lt;-</span> <span class="fu">add.significance.variable</span>(logistic.output.outcome.full)</span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>  logistic.stats.outcome[[i]] <span class="ot">&lt;-</span> logistic.output.outcome.full</span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a><span class="co"># set the names of the list to match the variable names</span></span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(logistic.stats.outcome) <span class="ot">&lt;-</span> outcome.dependent.logistic</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>data.outcome.logistic <span class="ot">&lt;-</span> <span class="fu">create.dataset</span>(logistic.stats.outcome, <span class="at">model =</span> <span class="st">&quot;logistic&quot;</span>) </span></code></pre></div>
+</div>
+<div id="table" class="section level2">
+<h2>Table</h2>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">paper.table</span>(data.outcome.logistic, <span class="at">model =</span> <span class="st">&quot;logistic&quot;</span>)</span></code></pre></div>
+<table>
+<colgroup>
+<col width="11%" />
+<col width="31%" />
+<col width="5%" />
+<col width="11%" />
+<col width="12%" />
+<col width="8%" />
+<col width="21%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Class</th>
+<th align="left">Variable</th>
+<th align="right">OR</th>
+<th align="right">95% CI low</th>
+<th align="right">95% CI high</th>
+<th align="right">p value</th>
+<th align="left">Domain</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Depression diagnosis</td>
+<td align="right">1.32</td>
+<td align="right">0.81</td>
+<td align="right">2.15</td>
+<td align="right">0.26</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Depression diagnosis</td>
+<td align="right">1.57</td>
+<td align="right">1.00</td>
+<td align="right">2.45</td>
+<td align="right">0.05</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Anxiety diagnosis</td>
+<td align="right">1.56</td>
+<td align="right">0.79</td>
+<td align="right">3.10</td>
+<td align="right">0.20</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Anxiety diagnosis</td>
+<td align="right">1.16</td>
+<td align="right">0.56</td>
+<td align="right">2.43</td>
+<td align="right">0.69</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">ADHD diagnosis</td>
+<td align="right">2.15</td>
+<td align="right">1.15</td>
+<td align="right">4.01</td>
+<td align="right">0.02</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">ADHD diagnosis</td>
+<td align="right">1.78</td>
+<td align="right">0.95</td>
+<td align="right">3.32</td>
+<td align="right">0.07</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Moderate conduct disorder</td>
+<td align="right">1.91</td>
+<td align="right">1.16</td>
+<td align="right">3.15</td>
+<td align="right">0.01</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Moderate conduct disorder</td>
+<td align="right">1.21</td>
+<td align="right">0.70</td>
+<td align="right">2.08</td>
+<td align="right">0.50</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Alcohol dependence</td>
+<td align="right">0.73</td>
+<td align="right">0.36</td>
+<td align="right">1.45</td>
+<td align="right">0.36</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Alcohol dependence</td>
+<td align="right">0.84</td>
+<td align="right">0.46</td>
+<td align="right">1.55</td>
+<td align="right">0.58</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Cannabis dependence</td>
+<td align="right">2.22</td>
+<td align="right">1.08</td>
+<td align="right">4.54</td>
+<td align="right">0.03</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Cannabis dependence</td>
+<td align="right">2.11</td>
+<td align="right">1.01</td>
+<td align="right">4.39</td>
+<td align="right">0.05</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">PTSD lifetime diagnosis</td>
+<td align="right">1.41</td>
+<td align="right">0.69</td>
+<td align="right">2.87</td>
+<td align="right">0.35</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">PTSD lifetime diagnosis</td>
+<td align="right">1.12</td>
+<td align="right">0.54</td>
+<td align="right">2.34</td>
+<td align="right">0.75</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">PTSD current diagnosis</td>
+<td align="right">1.28</td>
+<td align="right">0.47</td>
+<td align="right">3.53</td>
+<td align="right">0.63</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">PTSD current diagnosis</td>
+<td align="right">0.84</td>
+<td align="right">0.30</td>
+<td align="right">2.38</td>
+<td align="right">0.75</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Suicide attempt</td>
+<td align="right">1.99</td>
+<td align="right">1.16</td>
+<td align="right">3.39</td>
+<td align="right">0.01</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Suicide attempt</td>
+<td align="right">1.69</td>
+<td align="right">1.02</td>
+<td align="right">2.79</td>
+<td align="right">0.04</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Service use</td>
+<td align="right">1.91</td>
+<td align="right">1.10</td>
+<td align="right">3.32</td>
+<td align="right">0.02</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Service use</td>
+<td align="right">1.06</td>
+<td align="right">0.58</td>
+<td align="right">1.95</td>
+<td align="right">0.85</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Not in employment or education</td>
+<td align="right">2.07</td>
+<td align="right">1.24</td>
+<td align="right">3.47</td>
+<td align="right">0.01</td>
+<td align="left">Employment domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Not in employment or education</td>
+<td align="right">1.63</td>
+<td align="right">0.91</td>
+<td align="right">2.95</td>
+<td align="right">0.10</td>
+<td align="left">Employment domain</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># mental health</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>data.outcome.logistic.mental <span class="ot">&lt;-</span> <span class="fu">order.variables</span>(data.outcome.logistic, <span class="at">domain =</span> <span class="st">&quot;Mental health domain&quot;</span>, <span class="at">model =</span> <span class="st">&quot;logistic&quot;</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co"># employment prospects</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>data.outcome.logistic.employ <span class="ot">&lt;-</span> <span class="fu">order.variables</span>(data.outcome.logistic, <span class="at">domain =</span> <span class="st">&quot;Employment domain&quot;</span>, <span class="at">model =</span> <span class="st">&quot;logistic&quot;</span>)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co"># all</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>dat.logistic.ordered <span class="ot">&lt;-</span> <span class="fu">rbind</span>(</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>  data.outcome.logistic.mental,</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  data.outcome.logistic.employ</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+</div>
+<div id="plot" class="section level2">
+<h2>Plot</h2>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>outcome.logistic.separate.plot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  dat.logistic.ordered, </span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> Variable,</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> OR,</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">ymin =</span> OR.conf.low,</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">ymax =</span> OR.conf.high)</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_shape_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="dv">21</span>, <span class="dv">19</span>)) <span class="sc">+</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_pointrange</span>(<span class="fu">aes</span>(<span class="at">shape =</span> Significance), <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">width =</span> <span class="fl">0.7</span>)) <span class="sc">+</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(Domain <span class="sc">~</span> Class, <span class="at">drop =</span> <span class="cn">TRUE</span>, <span class="at">scales =</span> <span class="st">&quot;free_y&quot;</span>, <span class="at">space =</span> <span class="st">&quot;free&quot;</span>) <span class="sc">+</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">&quot;OR (95% CI)&quot;</span>,</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">&quot;names&quot;</span>,</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">&quot;Association between class membership and outcomes at age 18&quot;</span>,</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">&quot;&quot;</span>,</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">shape =</span> <span class="st">&quot;&quot;</span>) <span class="sc">+</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">trans =</span> scales<span class="sc">::</span><span class="fu">log10_trans</span>(), <span class="at">breaks =</span> <span class="fu">c</span>(<span class="fl">0.2</span>,<span class="fl">0.4</span>,<span class="fl">0.6</span>,<span class="fl">0.8</span>, <span class="dv">1</span>, <span class="fl">1.5</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>)) <span class="sc">+</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>  theme.outcome <span class="sc">+</span></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">linetype =</span> <span class="st">&quot;dashed&quot;</span>, <span class="at">yintercept =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>()</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>outcome.logistic.separate.plot</span></code></pre></div>
+<p><img src="outcomes_isolation_THREE_trajectories_files/figure-html/logistic%20regression%20outcome%20plot-1.png" width="672" /></p>
+</div>
+</div>
+<div id="linear-regression" class="section level1 tabset tabset-fade">
+<h1 class="tabset tabset-fade">Linear regression</h1>
+<p>Using z-scores in all calculations.</p>
+<div id="loop-1" class="section level2">
+<h2>Loop</h2>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r fold-show"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>linear.stats.outcome.zscore <span class="ot">&lt;-</span> <span class="fu">list</span>() <span class="co">#create empty list to store the information in</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(outcome.dependent.linear.zscore))</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>{ <span class="fu">cat</span>(i)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  linear.formula.outcome.zscore <span class="ot">&lt;-</span> <span class="fu">as.formula</span>(<span class="fu">sprintf</span>(<span class="st">&quot;%s ~ class_reordered + sex + SES_ordered&quot;</span>, outcome.dependent.linear.zscore[i]))</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  linear.reg.outcome.zscore <span class="ot">&lt;-</span> <span class="fu">lm</span>(linear.formula.outcome.zscore, <span class="at">data =</span> dat)</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># robust standard error estimation - account for non-independence of twin sample</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>  linear.output.outcome.full.zscore <span class="ot">&lt;-</span> <span class="fu">huber.white.cluster.linear</span>(linear.reg.outcome.zscore, </span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>                                                                  <span class="at">rows.remove =</span> <span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">4</span><span class="sc">:</span><span class="dv">6</span>))</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (i <span class="sc">&lt;</span> <span class="dv">8</span>) {</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>    linear.output.outcome.full.zscore <span class="ot">&lt;-</span> linear.output.outcome.full.zscore <span class="sc">%&gt;%</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">block =</span> <span class="st">&quot;Mental health domain&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">Variable =</span> outcome.dependent.linear.name.list[[i]])</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (i <span class="sc">&lt;</span> <span class="dv">12</span> ) {</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>   linear.output.outcome.full.zscore <span class="ot">&lt;-</span> linear.output.outcome.full.zscore <span class="sc">%&gt;%</span></span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">block =</span> <span class="st">&quot;Physical health domain&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">Variable =</span> outcome.dependent.linear.name.list[[i]])</span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (i <span class="sc">&lt;</span> <span class="dv">17</span>) {</span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>    linear.output.outcome.full.zscore <span class="ot">&lt;-</span> linear.output.outcome.full.zscore <span class="sc">%&gt;%</span></span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">block =</span> <span class="st">&quot;Coping and functioning domain&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">Variable =</span> outcome.dependent.linear.name.list[[i]])</span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>    linear.output.outcome.full.zscore <span class="ot">&lt;-</span> linear.output.outcome.full.zscore <span class="sc">%&gt;%</span></span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">block =</span> <span class="st">&quot;Employment domain&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">Variable =</span> outcome.dependent.linear.name.list[[i]])</span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a>  linear.output.outcome.full.zscore <span class="ot">&lt;-</span> <span class="fu">add.significance.variable</span>(linear.output.outcome.full.zscore)</span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a>  linear.stats.outcome.zscore[[i]] <span class="ot">&lt;-</span> linear.output.outcome.full.zscore</span>
+<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a><span class="co"># set the names of the list to match the variable names</span></span>
+<span id="cb13-36"><a href="#cb13-36" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(linear.stats.outcome.zscore) <span class="ot">&lt;-</span> outcome.dependent.linear.zscore</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>data.outcome.linear.zscore <span class="ot">&lt;-</span> <span class="fu">create.dataset</span>(linear.stats.outcome.zscore, <span class="at">model =</span> <span class="st">&quot;linear&quot;</span>)</span></code></pre></div>
+</div>
+<div id="table-1" class="section level2">
+<h2>Table</h2>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>linear.table <span class="ot">&lt;-</span> <span class="fu">paper.table</span>(data.outcome.linear.zscore, <span class="at">model =</span> <span class="st">&quot;linear&quot;</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>linear.table </span></code></pre></div>
+<table>
+<colgroup>
+<col width="8%" />
+<col width="30%" />
+<col width="11%" />
+<col width="8%" />
+<col width="9%" />
+<col width="6%" />
+<col width="24%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Class</th>
+<th align="left">Variable</th>
+<th align="right">Beta estimate</th>
+<th align="right">95% CI low</th>
+<th align="right">95% CI high</th>
+<th align="right">p value</th>
+<th align="left">Domain</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Depression symptoms</td>
+<td align="right">0.20</td>
+<td align="right">-0.02</td>
+<td align="right">0.43</td>
+<td align="right">0.08</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Depression symptoms</td>
+<td align="right">0.26</td>
+<td align="right">0.05</td>
+<td align="right">0.47</td>
+<td align="right">0.02</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Anxiety symptoms</td>
+<td align="right">0.10</td>
+<td align="right">-0.13</td>
+<td align="right">0.32</td>
+<td align="right">0.39</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Anxiety symptoms</td>
+<td align="right">0.07</td>
+<td align="right">-0.14</td>
+<td align="right">0.27</td>
+<td align="right">0.52</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Inattentive and hyperactive symptoms</td>
+<td align="right">0.57</td>
+<td align="right">0.36</td>
+<td align="right">0.79</td>
+<td align="right">0.00</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Inattentive and hyperactive symptoms</td>
+<td align="right">-0.03</td>
+<td align="right">-0.23</td>
+<td align="right">0.18</td>
+<td align="right">0.81</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Conduct disorder symptoms</td>
+<td align="right">0.41</td>
+<td align="right">0.15</td>
+<td align="right">0.66</td>
+<td align="right">0.00</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Conduct disorder symptoms</td>
+<td align="right">0.06</td>
+<td align="right">-0.16</td>
+<td align="right">0.28</td>
+<td align="right">0.60</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Alcohol dependence symptoms</td>
+<td align="right">-0.11</td>
+<td align="right">-0.29</td>
+<td align="right">0.08</td>
+<td align="right">0.24</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Alcohol dependence symptoms</td>
+<td align="right">0.01</td>
+<td align="right">-0.23</td>
+<td align="right">0.25</td>
+<td align="right">0.92</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Cannabis dependence symptoms</td>
+<td align="right">0.23</td>
+<td align="right">-0.03</td>
+<td align="right">0.49</td>
+<td align="right">0.09</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Cannabis dependence symptoms</td>
+<td align="right">0.30</td>
+<td align="right">-0.01</td>
+<td align="right">0.62</td>
+<td align="right">0.06</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Experiences of psychosis</td>
+<td align="right">0.35</td>
+<td align="right">0.09</td>
+<td align="right">0.60</td>
+<td align="right">0.01</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Experiences of psychosis</td>
+<td align="right">0.31</td>
+<td align="right">0.07</td>
+<td align="right">0.55</td>
+<td align="right">0.01</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">BMI</td>
+<td align="right">0.22</td>
+<td align="right">-0.04</td>
+<td align="right">0.48</td>
+<td align="right">0.09</td>
+<td align="left">Physical health domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">BMI</td>
+<td align="right">0.03</td>
+<td align="right">-0.15</td>
+<td align="right">0.21</td>
+<td align="right">0.74</td>
+<td align="left">Physical health domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Log CRP</td>
+<td align="right">0.07</td>
+<td align="right">-0.16</td>
+<td align="right">0.30</td>
+<td align="right">0.55</td>
+<td align="left">Physical health domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Log CRP</td>
+<td align="right">0.17</td>
+<td align="right">-0.07</td>
+<td align="right">0.41</td>
+<td align="right">0.16</td>
+<td align="left">Physical health domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Physical activity</td>
+<td align="right">-0.28</td>
+<td align="right">-0.48</td>
+<td align="right">-0.07</td>
+<td align="right">0.01</td>
+<td align="left">Physical health domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Physical activity</td>
+<td align="right">-0.43</td>
+<td align="right">-0.60</td>
+<td align="right">-0.25</td>
+<td align="right">0.00</td>
+<td align="left">Physical health domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Daily number of cigarettes smoked</td>
+<td align="right">0.46</td>
+<td align="right">0.08</td>
+<td align="right">0.84</td>
+<td align="right">0.02</td>
+<td align="left">Physical health domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Daily number of cigarettes smoked</td>
+<td align="right">0.19</td>
+<td align="right">-0.01</td>
+<td align="right">0.39</td>
+<td align="right">0.06</td>
+<td align="left">Physical health domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Loneliness</td>
+<td align="right">0.37</td>
+<td align="right">0.13</td>
+<td align="right">0.61</td>
+<td align="right">0.00</td>
+<td align="left">Coping and functioning domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Loneliness</td>
+<td align="right">0.19</td>
+<td align="right">-0.03</td>
+<td align="right">0.42</td>
+<td align="right">0.08</td>
+<td align="left">Coping and functioning domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Life satisfaction</td>
+<td align="right">-0.29</td>
+<td align="right">-0.52</td>
+<td align="right">-0.06</td>
+<td align="right">0.01</td>
+<td align="left">Coping and functioning domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Life satisfaction</td>
+<td align="right">-0.20</td>
+<td align="right">-0.42</td>
+<td align="right">0.02</td>
+<td align="right">0.08</td>
+<td align="left">Coping and functioning domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Technology use</td>
+<td align="right">0.24</td>
+<td align="right">0.02</td>
+<td align="right">0.46</td>
+<td align="right">0.03</td>
+<td align="left">Coping and functioning domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Technology use</td>
+<td align="right">0.18</td>
+<td align="right">-0.03</td>
+<td align="right">0.39</td>
+<td align="right">0.10</td>
+<td align="left">Coping and functioning domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Coping with stress</td>
+<td align="right">-0.34</td>
+<td align="right">-0.55</td>
+<td align="right">-0.12</td>
+<td align="right">0.00</td>
+<td align="left">Coping and functioning domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Coping with stress</td>
+<td align="right">-0.08</td>
+<td align="right">-0.27</td>
+<td align="right">0.12</td>
+<td align="right">0.45</td>
+<td align="left">Coping and functioning domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">PSQI score</td>
+<td align="right">0.21</td>
+<td align="right">0.01</td>
+<td align="right">0.41</td>
+<td align="right">0.04</td>
+<td align="left">Coping and functioning domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">PSQI score</td>
+<td align="right">0.06</td>
+<td align="right">-0.14</td>
+<td align="right">0.25</td>
+<td align="right">0.57</td>
+<td align="left">Coping and functioning domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Job preparedness: skills</td>
+<td align="right">0.01</td>
+<td align="right">-0.23</td>
+<td align="right">0.24</td>
+<td align="right">0.96</td>
+<td align="left">Employment domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Job preparedness: skills</td>
+<td align="right">-0.03</td>
+<td align="right">-0.24</td>
+<td align="right">0.18</td>
+<td align="right">0.76</td>
+<td align="left">Employment domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Job preparedness: attributes</td>
+<td align="right">-0.37</td>
+<td align="right">-0.62</td>
+<td align="right">-0.13</td>
+<td align="right">0.00</td>
+<td align="left">Employment domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Job preparedness: attributes</td>
+<td align="right">-0.12</td>
+<td align="right">-0.32</td>
+<td align="right">0.09</td>
+<td align="right">0.27</td>
+<td align="left">Employment domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Job optimism</td>
+<td align="right">-0.58</td>
+<td align="right">-0.80</td>
+<td align="right">-0.36</td>
+<td align="right">0.00</td>
+<td align="left">Employment domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Job optimism</td>
+<td align="right">-0.27</td>
+<td align="right">-0.47</td>
+<td align="right">-0.07</td>
+<td align="right">0.01</td>
+<td align="left">Employment domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Job search activities</td>
+<td align="right">-0.06</td>
+<td align="right">-0.27</td>
+<td align="right">0.15</td>
+<td align="right">0.57</td>
+<td align="left">Employment domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Job search activities</td>
+<td align="right">0.06</td>
+<td align="right">-0.16</td>
+<td align="right">0.29</td>
+<td align="right">0.58</td>
+<td align="left">Employment domain</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="do">##Separate out data frames for each domain (this is done to order the plot later on by domain)</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="co"># mental health</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>data.outcome.linear.mental <span class="ot">&lt;-</span> <span class="fu">order.variables</span>(<span class="at">data =</span> data.outcome.linear.zscore, <span class="at">domain =</span> <span class="st">&quot;Mental health domain&quot;</span>, <span class="at">model =</span> <span class="st">&quot;linear&quot;</span>)</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="co"># physical health</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>data.outcome.linear.physical <span class="ot">&lt;-</span> <span class="fu">order.variables</span>(data.outcome.linear.zscore, <span class="at">domain =</span> <span class="st">&quot;Physical health domain&quot;</span>, <span class="at">model =</span> <span class="st">&quot;linear&quot;</span>) </span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="co"># coping and functioning</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>data.outcome.linear.coping <span class="ot">&lt;-</span> <span class="fu">order.variables</span>(data.outcome.linear.zscore, <span class="at">domain =</span> <span class="st">&quot;Coping and functioning domain&quot;</span>, <span class="at">model =</span> <span class="st">&quot;linear&quot;</span>) </span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="co"># employment prospects</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>data.outcome.linear.employ <span class="ot">&lt;-</span> <span class="fu">order.variables</span>(data.outcome.linear.zscore, <span class="at">domain =</span> <span class="st">&quot;Employment domain&quot;</span>, <span class="at">model =</span> <span class="st">&quot;linear&quot;</span>)</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a><span class="co"># all</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>dat.linear.ordered <span class="ot">&lt;-</span> <span class="fu">rbind</span>(</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>  data.outcome.linear.mental,</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>  data.outcome.linear.physical,</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>  data.outcome.linear.coping,</span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>  data.outcome.linear.employ</span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+</div>
+<div id="plot-1" class="section level2">
+<h2>Plot</h2>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>outcome.linear.separate.plot.zscore <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  dat.linear.ordered, </span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> Variable,</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> estimate,</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">ymin =</span> conf.low,</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">ymax =</span> conf.high)</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">&quot;black&quot;</span>)) <span class="sc">+</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">&quot;black&quot;</span>)) <span class="sc">+</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_shape_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="dv">19</span>)) <span class="sc">+</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_pointrange</span>(<span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">width =</span> <span class="fl">0.7</span>)) <span class="sc">+</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(Domain <span class="sc">~</span> Class, </span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>             <span class="at">drop =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>             <span class="at">scales =</span> <span class="st">&quot;free_y&quot;</span>, </span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>             <span class="at">space =</span> <span class="st">&quot;free&quot;</span>) <span class="sc">+</span></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">&quot;Standardised Beta Estimate (95% CI)&quot;</span>,</span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">&quot;names&quot;</span>) <span class="sc">+</span></span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>  theme.outcome <span class="sc">+</span></span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">strip.text.x =</span> <span class="fu">element_text</span>(</span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>        <span class="at">size =</span> <span class="dv">10</span>, <span class="at">color =</span> <span class="st">&quot;black&quot;</span>, <span class="at">face =</span> <span class="st">&quot;bold&quot;</span>, </span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>        ),</span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">strip.background =</span> <span class="fu">element_rect</span>(</span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a>     <span class="at">color =</span> <span class="st">&quot;black&quot;</span>, <span class="at">fill =</span> <span class="st">&quot;white&quot;</span>, <span class="at">size =</span> <span class="fl">0.5</span>, <span class="at">linetype =</span> <span class="st">&quot;solid&quot;</span></span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a>     ),</span>
+<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>,<span class="at">face =</span> <span class="st">&quot;bold&quot;</span>),</span>
+<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.title.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">10</span>, <span class="at">face =</span> <span class="st">&quot;bold&quot;</span>),</span>
+<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">8</span>, <span class="at">colour =</span> <span class="st">&quot;black&quot;</span>),</span>
+<span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.text.y =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">10</span>)</span>
+<span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb17-31"><a href="#cb17-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">linetype =</span> <span class="st">&quot;dashed&quot;</span>, <span class="at">yintercept =</span> <span class="dv">0</span>) <span class="sc">+</span></span>
+<span id="cb17-32"><a href="#cb17-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">breaks=</span><span class="fu">c</span>(<span class="sc">-</span><span class="fl">1.5</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="sc">-</span><span class="fl">0.75</span>, <span class="sc">-</span><span class="fl">0.5</span>, <span class="sc">-</span><span class="fl">0.25</span>, <span class="dv">0</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>, <span class="dv">1</span>, <span class="fl">1.5</span>, <span class="dv">2</span>)) <span class="sc">+</span> </span>
+<span id="cb17-33"><a href="#cb17-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>()</span>
+<span id="cb17-34"><a href="#cb17-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-35"><a href="#cb17-35" aria-hidden="true" tabindex="-1"></a>outcome.linear.separate.plot.zscore</span></code></pre></div>
+<p><img src="outcomes_isolation_THREE_trajectories_files/figure-html/linear%20regression%20outcome%20plot%20zscores-1.png" width="672" /></p>
+</div>
+</div>
+<div id="controlling-for-significant-antecedents" class="section level1 tabset tabset-fade">
+<h1 class="tabset tabset-fade">Controlling for significant antecedents</h1>
+<p>We have rerun all regression models while controlling for antecedents that remained significant in the full antecedent model. Antecedents that remained significant in the full antecedent model: child prosocial behaviours, child ADHD behaviours, child internalising behaviours, maternal personality openness, number of children in school. All regressions controlled for sex and SES.</p>
+<div id="logistic-regression-controlling-for-antecedents" class="section level2 tabset tabset-fade">
+<h2 class="tabset tabset-fade">Logistic regression: controlling for antecedents</h2>
+<div id="loop-2" class="section level3">
+<h3>Loop</h3>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r fold-show"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>logistic.stats.outcome.ant_control <span class="ot">&lt;-</span> <span class="fu">list</span>() <span class="co">#create empty list to store the information in</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(outcome.dependent.logistic))</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>{ <span class="fu">cat</span>(i)</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  logistic.formula.outcome.ant_control <span class="ot">&lt;-</span> <span class="fu">as.formula</span>(<span class="fu">sprintf</span>(<span class="st">&quot;%s ~ class_reordered + ADHD_combined_05 + internalising_combined_excl_sis_05 + prosocial_behaviours_combined_05 + maternal_personality_openness_05 + number_children_school_05 + sex + SES_ordered&quot;</span>, outcome.dependent.logistic[i]))</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  logistic.reg.outcome.ant_control <span class="ot">&lt;-</span> <span class="fu">glm</span>(logistic.formula.outcome.ant_control, <span class="at">data =</span> dat, <span class="at">family =</span> <span class="st">&quot;binomial&quot;</span>)</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>  logistic.output.outcome.full.ant_control <span class="ot">&lt;-</span> <span class="fu">huber.white.cluster.logistic</span>(logistic.reg.outcome.ant_control)</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>  logistic.output.outcome.full.ant_control <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(logistic.output.outcome.full.ant_control<span class="sc">$</span>coeftable)[<span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">4</span><span class="sc">:</span><span class="dv">11</span>),] <span class="sc">%&gt;%</span> <span class="co"># delete sex and SES coefficients</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Class =</span> <span class="fu">c</span>(<span class="st">&quot;Increasing&quot;</span>, <span class="st">&quot;Decreasing&quot;</span>)) <span class="sc">%&gt;%</span> <span class="co"># Create new formatted class variable</span></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>      Class,</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>      <span class="at">OR =</span> <span class="st">`</span><span class="at">exp(Est.)</span><span class="st">`</span>,</span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">OR.conf.low =</span> <span class="st">`</span><span class="at">2.5%</span><span class="st">`</span>,</span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>      <span class="at">OR.conf.high =</span> <span class="st">`</span><span class="at">97.5%</span><span class="st">`</span>,</span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>      <span class="at">p.value =</span> p)</span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (i <span class="sc">&lt;</span> <span class="dv">11</span>) {</span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>    logistic.output.outcome.full.ant_control <span class="ot">&lt;-</span> logistic.output.outcome.full.ant_control <span class="sc">%&gt;%</span></span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">block =</span> <span class="st">&quot;Mental health domain&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">Variable =</span> outcome.dependent.logistic.name.list[[i]])</span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a>   logistic.output.outcome.full.ant_control <span class="ot">&lt;-</span> logistic.output.outcome.full.ant_control <span class="sc">%&gt;%</span></span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">block =</span> <span class="st">&quot;Employment domain&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">Variable =</span> outcome.dependent.logistic.name.list[[i]])</span>
+<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb18-30"><a href="#cb18-30" aria-hidden="true" tabindex="-1"></a>  logistic.output.outcome.full.ant_control <span class="ot">&lt;-</span> <span class="fu">add.significance.variable</span>(logistic.output.outcome.full.ant_control)</span>
+<span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb18-32"><a href="#cb18-32" aria-hidden="true" tabindex="-1"></a>  logistic.stats.outcome.ant_control[[i]] <span class="ot">&lt;-</span> logistic.output.outcome.full.ant_control</span>
+<span id="cb18-33"><a href="#cb18-33" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>1234567891011</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r fold-show"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># set the names of the list to match the variable names</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(logistic.stats.outcome.ant_control) <span class="ot">&lt;-</span> outcome.dependent.logistic</span></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>data.outcome.logistic.ant_control <span class="ot">&lt;-</span> <span class="fu">create.dataset</span>(logistic.stats.outcome.ant_control, <span class="at">model =</span> <span class="st">&quot;logistic&quot;</span>) </span></code></pre></div>
+</div>
+<div id="table-2" class="section level3">
+<h3>Table</h3>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">paper.table</span>(data.outcome.logistic.ant_control, <span class="at">model =</span> <span class="st">&quot;logistic&quot;</span>)</span></code></pre></div>
+<table>
+<colgroup>
+<col width="11%" />
+<col width="31%" />
+<col width="5%" />
+<col width="11%" />
+<col width="12%" />
+<col width="8%" />
+<col width="21%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Class</th>
+<th align="left">Variable</th>
+<th align="right">OR</th>
+<th align="right">95% CI low</th>
+<th align="right">95% CI high</th>
+<th align="right">p value</th>
+<th align="left">Domain</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Depression diagnosis</td>
+<td align="right">1.15</td>
+<td align="right">0.67</td>
+<td align="right">1.96</td>
+<td align="right">0.61</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Depression diagnosis</td>
+<td align="right">1.28</td>
+<td align="right">0.75</td>
+<td align="right">2.18</td>
+<td align="right">0.37</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Anxiety diagnosis</td>
+<td align="right">1.18</td>
+<td align="right">0.52</td>
+<td align="right">2.67</td>
+<td align="right">0.69</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Anxiety diagnosis</td>
+<td align="right">1.09</td>
+<td align="right">0.50</td>
+<td align="right">2.38</td>
+<td align="right">0.83</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">ADHD diagnosis</td>
+<td align="right">1.19</td>
+<td align="right">0.60</td>
+<td align="right">2.36</td>
+<td align="right">0.61</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">ADHD diagnosis</td>
+<td align="right">0.78</td>
+<td align="right">0.36</td>
+<td align="right">1.68</td>
+<td align="right">0.52</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Moderate conduct disorder</td>
+<td align="right">1.56</td>
+<td align="right">0.90</td>
+<td align="right">2.69</td>
+<td align="right">0.11</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Moderate conduct disorder</td>
+<td align="right">0.90</td>
+<td align="right">0.47</td>
+<td align="right">1.73</td>
+<td align="right">0.75</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Alcohol dependence</td>
+<td align="right">0.74</td>
+<td align="right">0.35</td>
+<td align="right">1.57</td>
+<td align="right">0.43</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Alcohol dependence</td>
+<td align="right">0.86</td>
+<td align="right">0.43</td>
+<td align="right">1.74</td>
+<td align="right">0.68</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Cannabis dependence</td>
+<td align="right">1.76</td>
+<td align="right">0.77</td>
+<td align="right">4.04</td>
+<td align="right">0.18</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Cannabis dependence</td>
+<td align="right">1.34</td>
+<td align="right">0.59</td>
+<td align="right">3.03</td>
+<td align="right">0.48</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">PTSD lifetime diagnosis</td>
+<td align="right">1.32</td>
+<td align="right">0.60</td>
+<td align="right">2.92</td>
+<td align="right">0.49</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">PTSD lifetime diagnosis</td>
+<td align="right">1.03</td>
+<td align="right">0.44</td>
+<td align="right">2.42</td>
+<td align="right">0.94</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">PTSD current diagnosis</td>
+<td align="right">1.14</td>
+<td align="right">0.35</td>
+<td align="right">3.73</td>
+<td align="right">0.83</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">PTSD current diagnosis</td>
+<td align="right">0.75</td>
+<td align="right">0.22</td>
+<td align="right">2.56</td>
+<td align="right">0.65</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Suicide attempt</td>
+<td align="right">1.77</td>
+<td align="right">1.00</td>
+<td align="right">3.14</td>
+<td align="right">0.05</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Suicide attempt</td>
+<td align="right">1.47</td>
+<td align="right">0.82</td>
+<td align="right">2.62</td>
+<td align="right">0.19</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Service use</td>
+<td align="right">1.62</td>
+<td align="right">0.90</td>
+<td align="right">2.91</td>
+<td align="right">0.11</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Service use</td>
+<td align="right">0.74</td>
+<td align="right">0.37</td>
+<td align="right">1.51</td>
+<td align="right">0.41</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Not in employment or education</td>
+<td align="right">1.35</td>
+<td align="right">0.77</td>
+<td align="right">2.38</td>
+<td align="right">0.30</td>
+<td align="left">Employment domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Not in employment or education</td>
+<td align="right">0.75</td>
+<td align="right">0.38</td>
+<td align="right">1.48</td>
+<td align="right">0.41</td>
+<td align="left">Employment domain</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="plot-2" class="section level3">
+<h3>Plot</h3>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>outcome.logistic.separate.plot.ant_control <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  data.outcome.logistic.ant_control, </span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> Variable,</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> OR,</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">ymin =</span> OR.conf.low,</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">ymax =</span> OR.conf.high)</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_shape_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="dv">21</span>, <span class="dv">19</span>)) <span class="sc">+</span></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_pointrange</span>(<span class="fu">aes</span>(<span class="at">shape =</span> Significance), <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">width =</span> <span class="fl">0.7</span>)) <span class="sc">+</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(Domain <span class="sc">~</span> Class, <span class="at">drop =</span> <span class="cn">TRUE</span>, <span class="at">scales =</span> <span class="st">&quot;free_y&quot;</span>, <span class="at">space =</span> <span class="st">&quot;free&quot;</span>) <span class="sc">+</span></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">&quot;OR (95% CI)&quot;</span>,</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">&quot;names&quot;</span>,</span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">&quot;Association betweenclass membership and outcomes at age 18&quot;</span>,</span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="fu">paste</span>(<span class="st">&quot;N(Total) = &quot;</span>, <span class="fu">length</span>(dat<span class="sc">$</span>sex),</span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>                        <span class="st">&quot;; N(Increasing) = &quot;</span>, <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(dat<span class="sc">$</span>class_renamed[dat<span class="sc">$</span>class_renamed<span class="sc">==</span><span class="st">&quot;Increasing&quot;</span>])),</span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>                        <span class="st">&quot;; N(Decreasing) = &quot;</span>, <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(dat<span class="sc">$</span>class_renamed[dat<span class="sc">$</span>class_renamed<span class="sc">==</span><span class="st">&quot;Decreasing&quot;</span>])), <span class="at">sep =</span> <span class="st">&quot;&quot;</span>),</span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">&quot;&quot;</span>,</span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>       <span class="at">shape =</span> <span class="st">&quot;&quot;</span></span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>       ) <span class="sc">+</span></span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a>  theme.outcome <span class="sc">+</span></span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">linetype =</span> <span class="st">&quot;dashed&quot;</span>, <span class="at">yintercept =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">trans =</span> scales<span class="sc">::</span><span class="fu">log10_trans</span>(), <span class="at">breaks=</span><span class="fu">c</span>(<span class="fl">0.2</span>,<span class="fl">0.4</span>,<span class="fl">0.6</span>,<span class="fl">0.8</span>, <span class="dv">1</span>, <span class="fl">1.5</span>, <span class="dv">2</span>, <span class="fl">2.5</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>)) <span class="sc">+</span></span>
+<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>()</span>
+<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a>outcome.logistic.separate.plot.ant_control</span></code></pre></div>
+<p><img src="outcomes_isolation_THREE_trajectories_files/figure-html/logistic%20regression%20outcome%20plot%20ant%20control-1.png" width="672" /></p>
+</div>
+</div>
+<div id="linear-regression-controlling-for-antecedents" class="section level2 tabset tabset-fade">
+<h2 class="tabset tabset-fade">Linear regression: controlling for antecedents</h2>
+<div id="loop-3" class="section level3">
+<h3>Loop</h3>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r fold-show"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>linear.stats.outcome.zscore.ant_control <span class="ot">&lt;-</span> <span class="fu">list</span>() <span class="co">#create empty list to store the information in</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(outcome.dependent.linear.zscore))</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>{ <span class="fu">cat</span>(i)</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>  linear.formula.outcome.zscore.ant_control <span class="ot">&lt;-</span> <span class="fu">as.formula</span>(<span class="fu">sprintf</span>(<span class="st">&quot;%s ~ class_reordered + prosocial_behaviours_combined_05 + ADHD_combined_05 + internalising_combined_excl_sis_05 + maternal_personality_openness_05 + number_children_school_05 + sex + SES_ordered&quot;</span>, outcome.dependent.linear.zscore[i]))</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>  linear.reg.outcome.zscore.ant_control <span class="ot">&lt;-</span> <span class="fu">lm</span>(linear.formula.outcome.zscore.ant_control, <span class="at">data =</span> dat)</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># robust standard error estimation - account for non-independence of twin sample</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>  linear.output.outcome.full.zscore.ant_control <span class="ot">&lt;-</span> <span class="fu">huber.white.cluster.linear</span>(<span class="at">regression.outcome =</span> linear.reg.outcome.zscore.ant_control,</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>                                                                              <span class="at">rows.remove =</span> <span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">4</span><span class="sc">:</span><span class="dv">11</span>))</span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (i <span class="sc">&lt;</span> <span class="dv">8</span>) {</span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>    linear.output.outcome.full.zscore.ant_control <span class="ot">&lt;-</span> linear.output.outcome.full.zscore.ant_control <span class="sc">%&gt;%</span></span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">block =</span> <span class="st">&quot;Mental health domain&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">Variable =</span> outcome.dependent.linear.name.list[[i]]) </span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (i <span class="sc">&lt;</span> <span class="dv">12</span> ) {</span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>   linear.output.outcome.full.zscore.ant_control <span class="ot">&lt;-</span> linear.output.outcome.full.zscore.ant_control <span class="sc">%&gt;%</span></span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">block =</span> <span class="st">&quot;Physical health domain&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">Variable =</span> outcome.dependent.linear.name.list[[i]])</span>
+<span id="cb23-21"><a href="#cb23-21" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (i <span class="sc">&lt;</span> <span class="dv">17</span>) {</span>
+<span id="cb23-22"><a href="#cb23-22" aria-hidden="true" tabindex="-1"></a>    linear.output.outcome.full.zscore.ant_control <span class="ot">&lt;-</span> linear.output.outcome.full.zscore.ant_control <span class="sc">%&gt;%</span></span>
+<span id="cb23-23"><a href="#cb23-23" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">block =</span> <span class="st">&quot;Coping and functioning domain&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb23-24"><a href="#cb23-24" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">Variable =</span> outcome.dependent.linear.name.list[[i]])</span>
+<span id="cb23-25"><a href="#cb23-25" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb23-26"><a href="#cb23-26" aria-hidden="true" tabindex="-1"></a>    linear.output.outcome.full.zscore.ant_control <span class="ot">&lt;-</span> linear.output.outcome.full.zscore.ant_control <span class="sc">%&gt;%</span></span>
+<span id="cb23-27"><a href="#cb23-27" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">block =</span> <span class="st">&quot;Employment domain&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb23-28"><a href="#cb23-28" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">Variable =</span> outcome.dependent.linear.name.list[[i]])</span>
+<span id="cb23-29"><a href="#cb23-29" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb23-30"><a href="#cb23-30" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb23-31"><a href="#cb23-31" aria-hidden="true" tabindex="-1"></a>  linear.output.outcome.full.zscore.ant_control <span class="ot">&lt;-</span> <span class="fu">add.significance.variable</span>(linear.output.outcome.full.zscore.ant_control)</span>
+<span id="cb23-32"><a href="#cb23-32" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb23-33"><a href="#cb23-33" aria-hidden="true" tabindex="-1"></a>  linear.stats.outcome.zscore.ant_control[[i]] <span class="ot">&lt;-</span> linear.output.outcome.full.zscore.ant_control</span>
+<span id="cb23-34"><a href="#cb23-34" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>1234567891011121314151617181920</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r fold-show"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># set the names of the list to match the variable names</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(linear.stats.outcome.zscore.ant_control) <span class="ot">&lt;-</span> outcome.dependent.linear.zscore</span></code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>data.outcome.linear.zscore.ant_control <span class="ot">&lt;-</span> <span class="fu">create.dataset</span>(linear.stats.outcome.zscore.ant_control, <span class="at">model =</span> <span class="st">&quot;linear&quot;</span>)</span></code></pre></div>
+</div>
+<div id="table-3" class="section level3">
+<h3>Table</h3>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>linear.table.ant.control <span class="ot">&lt;-</span> <span class="fu">paper.table</span>(data.outcome.linear.zscore.ant_control, <span class="at">model =</span> <span class="st">&quot;linear&quot;</span>)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>linear.table.ant.control</span></code></pre></div>
+<table>
+<colgroup>
+<col width="8%" />
+<col width="30%" />
+<col width="11%" />
+<col width="8%" />
+<col width="9%" />
+<col width="6%" />
+<col width="24%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Class</th>
+<th align="left">Variable</th>
+<th align="right">Beta estimate</th>
+<th align="right">95% CI low</th>
+<th align="right">95% CI high</th>
+<th align="right">p value</th>
+<th align="left">Domain</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Depression symptoms</td>
+<td align="right">0.14</td>
+<td align="right">-0.10</td>
+<td align="right">0.38</td>
+<td align="right">0.26</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Depression symptoms</td>
+<td align="right">0.15</td>
+<td align="right">-0.09</td>
+<td align="right">0.40</td>
+<td align="right">0.21</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Anxiety symptoms</td>
+<td align="right">-0.01</td>
+<td align="right">-0.26</td>
+<td align="right">0.23</td>
+<td align="right">0.91</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Anxiety symptoms</td>
+<td align="right">-0.07</td>
+<td align="right">-0.31</td>
+<td align="right">0.17</td>
+<td align="right">0.55</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Inattentive and hyperactive symptoms</td>
+<td align="right">0.35</td>
+<td align="right">0.12</td>
+<td align="right">0.58</td>
+<td align="right">0.00</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Inattentive and hyperactive symptoms</td>
+<td align="right">-0.24</td>
+<td align="right">-0.47</td>
+<td align="right">-0.02</td>
+<td align="right">0.03</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Conduct disorder symptoms</td>
+<td align="right">0.30</td>
+<td align="right">0.03</td>
+<td align="right">0.57</td>
+<td align="right">0.03</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Conduct disorder symptoms</td>
+<td align="right">-0.10</td>
+<td align="right">-0.33</td>
+<td align="right">0.14</td>
+<td align="right">0.42</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Alcohol dependence symptoms</td>
+<td align="right">-0.15</td>
+<td align="right">-0.34</td>
+<td align="right">0.04</td>
+<td align="right">0.12</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Alcohol dependence symptoms</td>
+<td align="right">-0.04</td>
+<td align="right">-0.31</td>
+<td align="right">0.24</td>
+<td align="right">0.79</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Cannabis dependence symptoms</td>
+<td align="right">0.14</td>
+<td align="right">-0.15</td>
+<td align="right">0.43</td>
+<td align="right">0.34</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Cannabis dependence symptoms</td>
+<td align="right">0.17</td>
+<td align="right">-0.15</td>
+<td align="right">0.49</td>
+<td align="right">0.30</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Experiences of psychosis</td>
+<td align="right">0.20</td>
+<td align="right">-0.07</td>
+<td align="right">0.47</td>
+<td align="right">0.14</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Experiences of psychosis</td>
+<td align="right">0.16</td>
+<td align="right">-0.11</td>
+<td align="right">0.42</td>
+<td align="right">0.26</td>
+<td align="left">Mental health domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">BMI</td>
+<td align="right">0.20</td>
+<td align="right">-0.08</td>
+<td align="right">0.48</td>
+<td align="right">0.16</td>
+<td align="left">Physical health domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">BMI</td>
+<td align="right">0.05</td>
+<td align="right">-0.17</td>
+<td align="right">0.26</td>
+<td align="right">0.67</td>
+<td align="left">Physical health domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Log CRP</td>
+<td align="right">0.08</td>
+<td align="right">-0.17</td>
+<td align="right">0.33</td>
+<td align="right">0.52</td>
+<td align="left">Physical health domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Log CRP</td>
+<td align="right">0.18</td>
+<td align="right">-0.09</td>
+<td align="right">0.45</td>
+<td align="right">0.19</td>
+<td align="left">Physical health domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Physical activity</td>
+<td align="right">-0.21</td>
+<td align="right">-0.43</td>
+<td align="right">0.01</td>
+<td align="right">0.06</td>
+<td align="left">Physical health domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Physical activity</td>
+<td align="right">-0.27</td>
+<td align="right">-0.48</td>
+<td align="right">-0.06</td>
+<td align="right">0.01</td>
+<td align="left">Physical health domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Daily number of cigarettes smoked</td>
+<td align="right">0.37</td>
+<td align="right">-0.03</td>
+<td align="right">0.77</td>
+<td align="right">0.07</td>
+<td align="left">Physical health domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Daily number of cigarettes smoked</td>
+<td align="right">-0.03</td>
+<td align="right">-0.26</td>
+<td align="right">0.19</td>
+<td align="right">0.77</td>
+<td align="left">Physical health domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Loneliness</td>
+<td align="right">0.29</td>
+<td align="right">0.05</td>
+<td align="right">0.53</td>
+<td align="right">0.02</td>
+<td align="left">Coping and functioning domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Loneliness</td>
+<td align="right">0.09</td>
+<td align="right">-0.16</td>
+<td align="right">0.35</td>
+<td align="right">0.47</td>
+<td align="left">Coping and functioning domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Life satisfaction</td>
+<td align="right">-0.17</td>
+<td align="right">-0.41</td>
+<td align="right">0.07</td>
+<td align="right">0.17</td>
+<td align="left">Coping and functioning domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Life satisfaction</td>
+<td align="right">-0.04</td>
+<td align="right">-0.29</td>
+<td align="right">0.22</td>
+<td align="right">0.77</td>
+<td align="left">Coping and functioning domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Technology use</td>
+<td align="right">0.13</td>
+<td align="right">-0.10</td>
+<td align="right">0.35</td>
+<td align="right">0.26</td>
+<td align="left">Coping and functioning domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Technology use</td>
+<td align="right">0.07</td>
+<td align="right">-0.17</td>
+<td align="right">0.31</td>
+<td align="right">0.58</td>
+<td align="left">Coping and functioning domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Coping with stress</td>
+<td align="right">-0.21</td>
+<td align="right">-0.45</td>
+<td align="right">0.02</td>
+<td align="right">0.07</td>
+<td align="left">Coping and functioning domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Coping with stress</td>
+<td align="right">0.10</td>
+<td align="right">-0.12</td>
+<td align="right">0.33</td>
+<td align="right">0.36</td>
+<td align="left">Coping and functioning domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">PSQI score</td>
+<td align="right">0.13</td>
+<td align="right">-0.08</td>
+<td align="right">0.35</td>
+<td align="right">0.22</td>
+<td align="left">Coping and functioning domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">PSQI score</td>
+<td align="right">-0.05</td>
+<td align="right">-0.28</td>
+<td align="right">0.18</td>
+<td align="right">0.66</td>
+<td align="left">Coping and functioning domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Job preparedness: skills</td>
+<td align="right">0.13</td>
+<td align="right">-0.12</td>
+<td align="right">0.37</td>
+<td align="right">0.32</td>
+<td align="left">Employment domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Job preparedness: skills</td>
+<td align="right">0.15</td>
+<td align="right">-0.09</td>
+<td align="right">0.39</td>
+<td align="right">0.22</td>
+<td align="left">Employment domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Job preparedness: attributes</td>
+<td align="right">-0.19</td>
+<td align="right">-0.46</td>
+<td align="right">0.07</td>
+<td align="right">0.15</td>
+<td align="left">Employment domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Job preparedness: attributes</td>
+<td align="right">0.16</td>
+<td align="right">-0.08</td>
+<td align="right">0.40</td>
+<td align="right">0.19</td>
+<td align="left">Employment domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Job optimism</td>
+<td align="right">-0.40</td>
+<td align="right">-0.64</td>
+<td align="right">-0.16</td>
+<td align="right">0.00</td>
+<td align="left">Employment domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Job optimism</td>
+<td align="right">-0.03</td>
+<td align="right">-0.26</td>
+<td align="right">0.19</td>
+<td align="right">0.78</td>
+<td align="left">Employment domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Job search activities</td>
+<td align="right">-0.11</td>
+<td align="right">-0.34</td>
+<td align="right">0.12</td>
+<td align="right">0.35</td>
+<td align="left">Employment domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Job search activities</td>
+<td align="right">0.09</td>
+<td align="right">-0.16</td>
+<td align="right">0.35</td>
+<td align="right">0.46</td>
+<td align="left">Employment domain</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="plot-3" class="section level3">
+<h3>Plot</h3>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>outcome.linear.separate.plot.zscore.ant_control <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  data.outcome.linear.zscore.ant_control, </span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> Variable,</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> estimate,</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">ymin =</span> conf.low,</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">ymax =</span> conf.high)</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_shape_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="dv">21</span>, <span class="dv">19</span>)) <span class="sc">+</span></span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_pointrange</span>(<span class="fu">aes</span>(<span class="at">shape =</span> Significance), <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">width =</span> <span class="fl">0.7</span>)) <span class="sc">+</span></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(Domain <span class="sc">~</span> Class, <span class="at">drop =</span> <span class="cn">TRUE</span>, <span class="at">scales =</span> <span class="st">&quot;free_y&quot;</span>, <span class="at">space =</span> <span class="st">&quot;free&quot;</span>) <span class="sc">+</span></span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">&quot;Standardised Estimate (95% CI)&quot;</span>,</span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">&quot;names&quot;</span>,</span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">&quot;Association between class membership and outcomes at age 18&quot;</span>,</span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="fu">paste</span>(<span class="st">&quot;N(Total) = &quot;</span>, <span class="fu">length</span>(dat<span class="sc">$</span>sex),</span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a>                        <span class="st">&quot;; N(Increasing) = &quot;</span>, <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(dat<span class="sc">$</span>class_renamed[dat<span class="sc">$</span>class_renamed<span class="sc">==</span><span class="st">&quot;Increasing&quot;</span>])),</span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a>                        <span class="st">&quot;; N(Decreasing) = &quot;</span>, <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(dat<span class="sc">$</span>class_renamed[dat<span class="sc">$</span>class_renamed<span class="sc">==</span><span class="st">&quot;Decreasing&quot;</span>])), <span class="at">sep =</span> <span class="st">&quot;&quot;</span>),</span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">&quot;&quot;</span>,</span>
+<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a>       <span class="at">shape =</span> <span class="st">&quot;&quot;</span>) <span class="sc">+</span></span>
+<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a>  theme.outcome <span class="sc">+</span></span>
+<span id="cb27-20"><a href="#cb27-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">linetype =</span> <span class="st">&quot;dashed&quot;</span>, <span class="at">yintercept =</span> <span class="dv">0</span>) <span class="sc">+</span></span>
+<span id="cb27-21"><a href="#cb27-21" aria-hidden="true" tabindex="-1"></a> <span class="fu">scale_y_continuous</span>(<span class="at">breaks=</span><span class="fu">c</span>(<span class="sc">-</span><span class="fl">1.5</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="sc">-</span><span class="fl">0.75</span>, <span class="sc">-</span><span class="fl">0.5</span>, <span class="sc">-</span><span class="fl">0.25</span>, <span class="dv">0</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>, <span class="dv">1</span>, <span class="fl">1.5</span>, <span class="dv">2</span>)) <span class="sc">+</span> <span class="co"># log10_trans() has been removed here</span></span>
+<span id="cb27-22"><a href="#cb27-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>()</span>
+<span id="cb27-23"><a href="#cb27-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-24"><a href="#cb27-24" aria-hidden="true" tabindex="-1"></a>outcome.linear.separate.plot.zscore.ant_control</span></code></pre></div>
+<p><img src="outcomes_isolation_THREE_trajectories_files/figure-html/linear%20regression%20outcome%20plot%20zscore%20ant%20control-1.png" width="672" /></p>
+</div>
+</div>
+</div>
+
+<!-- Add footer -->
+
+&nbsp;
+
+<hr />
+
+<center>
+
+<img src="kcl_logo.png" 
+
+     width="100" 
+
+     height="75" />
+
+</center>
+
+<br>
+
+<p style="text-align: center;">Work by <a href="https://github.com/knthompson26/">Katherine N Thompson</a></p>
+
+<p style="text-align: center;"><span style="color: #808080;"><em>katherine.n.thompson@kcl.ac.uk</em></span></p>
+
+
+
+<!-- Add icon library -->
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
+
+<!-- Add font awesome icons -->
+
+<p style="text-align: center;">
+
+    <a href="https://twitter.com/KTNThompson" class="fa fa-twitter"></a>
+
+    <a href="https://github.com/knthompson26/" class="fa fa-github"></a>
+
+</p>
+
+
+
+&nbsp;
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

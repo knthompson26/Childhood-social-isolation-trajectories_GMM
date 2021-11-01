@@ -1,44 +1,42 @@
 ---
-title: "Analyses for testing the association betwween isolation trajectories and outcomes - Three trajectories"
-author: "Katherine N Thompson"
-date: "19th Jan 2021"
-output:
-  word_document:
-    toc: yes
-    toc_depth: '2'
+title: "Associations between social isolation trajectories and outcomes at age 18"
+output:  
   html_document:
     df_print: paged
     toc: yes
     toc_depth: 2
     toc_float:
-      collapsed: no
-    number_sections: no
+      collapsed: false
+    number_sections: false
     highlight: monochrome
-    theme: cerulean
-code_folding: hide
+    theme: flatly
+    code_folding: hide
+    includes:
+      after_body: footer.html
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE,
+knitr::opts_chunk$set(echo = TRUE,
                       comment = NA,
                       prompt = FALSE,
                       cache = FALSE,
                       message = FALSE,
-                      warning = FALSE)
+                      warning = FALSE,
+                      results = 'asis')
 
 options(bitmapType = 'quartz') # to render fonts better
 ```
 
-```{r Clear global environment}
+```{r Clear global environment, include=FALSE}
 remove(list = ls())
 ```
 
-```{r colour palletes for graphs}
+```{r colour palletes for graphs, include=FALSE}
 palette2 <- c("#78D9C5","#F5BE5E")
 palette2b <- c("#78D9C5","#EEB6E9")
 ```
 
-```{r Load packages}
+```{r Load packages, include=FALSE}
 library(knitr)
 library(summarytools)
 library(psych)
@@ -65,14 +63,12 @@ library(tidyverse)
 library(dplyr) #conflicts with tidyverse for e.g. rename and row_number
 ```
 
-```{r source the data file path}
+```{r source the data file path, include=FALSE}
 #source raw data directory: data_raw and data included
-source("../../../../../isolation_trajectories_data_path.R")
+source("../../../isolation_trajectories_data_path.R")
 ```
 
-# Theme for plotting
-
-```{r theme for all plots}
+```{r theme for all plots, include=FALSE}
 theme.outcome <- theme(panel.grid.major.x = element_line(size = 0.5,
                                           linetype = 'dashed',
                                           colour = "gray"),
@@ -89,9 +85,7 @@ theme.outcome <- theme(panel.grid.major.x = element_line(size = 0.5,
         strip.text.y = element_blank())
 ```
 
-# Variable lists
-
-```{r lists for outcome regressions}
+```{r lists for outcome regressions, include=FALSE}
 outcome.dependent <- c( # mental health
                       "depression_diagnosis_12mo_18", 
                        "depression_current_scale_18",
@@ -296,9 +290,26 @@ outcome.dependent.logistic.name.list <- c(
 )
 ```
 
-# Script functions
+***
 
-```{r script functions}
+This page displays the results from logistic and linear multivariate regressions used to assess how the outcomes at age 18 are associated with social isolation trajectory membership. Outcomes are sorted into domains of "Mental health", "Physical health", "Coping and functioning", and "Employment prospects". 
+
+***
+
+# Functions 
+
+To run the following code more clearly, I have created these functions:
+
+* multiple.testing() applies the BH multiple testing correction. You define the data, class, method and number of tests.
+* add.significance.variable() add's a variable to the dataset that labels if a result has a significant p value or not. 
+* paper.table() creates a table that is formatted correctly for either linear or logitic regression results. 
+* create.dataset() binds regression results together to form a data set. 
+* huber.white.cluster.logistic() applies heteroskedasticity-robust standard errors while clustering for familyid for logistic regression
+* order.variables() orders the data whereby points in a plot are arranged by OR/Beta and domain. 
+* reorder_cor_matrix() orders the correlation matrix for the heat map
+* huber.white.cluster.linear() applies heteroskedasticity-robust standard errors while clustering for familyid for linear regression
+
+```{r script functions, class.source = 'fold-show'}
 multiple.testing <- function(data, class, method = "BH", n.tests){
   data <- data %>%
     filter(Class == class) %>%
@@ -445,17 +456,14 @@ huber.white.cluster.linear <- function(regression.outcome, rows.remove){
 
 ```
 
-# Read in data
-
 ```{r read in prepped regression data and check variable names, include=FALSE}
 dat <- readRDS(file = paste0(data_path, "class_joined_preprocessed_isolation_data_full_sample.rds"))
-colnames(dat)
+#colnames(dat)
 ```
 
 # Test for multicollinearity for outcome variables
-Create correlation matrix to look for variables that are highly correlated.
 
-The only variables that are highly correlated here are those that are actually measuring the same construct. For example, current depression and having a depression diagnosis. This is expected and not considered multicollinearity as these lifetime vs current measures will not be used within the same model. 
+We created a correlation matrix to look for variables that are highly correlated. The only variables that are highly correlated here are those that are actually measuring the same construct. For example, current depression and having a depression diagnosis. This is expected and not considered multicollinearity as these lifetime vs current measures will not be used within the same model. 
 
 ```{r test for multicollinearity for outcome variables}
 # create data frame with just numeric antecedent variables
@@ -488,41 +496,42 @@ correlation_heat_map <- ggplot(metled_cor_matrix, aes(X2, X1, fill = value))+
        )+
  coord_fixed() +
   geom_text(aes(X2, X1, label = round(value, digits = 2)), color = "black", size = 3)
+```
 
+```{r heat map fig, fig.width=15, fig.height=15}
 correlation_heat_map
 ```
 
-```{r save correlation heat map}
-#save
-ggsave(
-  "outcomes_correlation_heat_map.png",
-  plot = correlation_heat_map,
-  device = "png",
-  path = paste0(graph_save_data_path, "outcomes/analysis_interpretation"),
-  width = 15,
-  height = 15
-)
+```{r save correlation heat map, include=FALSE}
+# #save
+# ggsave(
+#   "outcomes_correlation_heat_map.png",
+#   plot = correlation_heat_map,
+#   device = "png",
+#   path = paste0(graph_save_data_path, "outcomes/analysis_interpretation"),
+#   width = 15,
+#   height = 15
+# )
 ```
 
 # Association with outcome variables at age 18
 
-ANALYSIS PLAN 
+**Analysis Plan **
 
-**Individual outcome regressions**: single regressions are computed to see if the class can predict the the occurrence of each variable (variable ~ class). This is done through a loop. OR (Odds ratios) and their confidence intervals are calculated for binary variables (logistic regression). Standardized Beta values are calculated for continuous variables (linear regression). Continuous and binary variables are plotted separately. Z scores are calculated for all continuous variables. All linear regressions are run with raw scores and z scores.
+* *Individual outcome regressions*: single regressions are computed to see if the class can predict the the occurrence of each variable (variable ~ class). This is done through a loop. Odds Ratios (OR) and their confidence intervals are calculated for binary variables (logistic regression). Standardized Beta values are calculated for continuous variables (linear regression). Continuous and binary variables are plotted separately. Z scores are calculated for all continuous variables and  all linear regressions are run using z scores.
 
-A. *Linear regressions* (continuous variables):
+  + A. *Logistic regressions* (binary variables):
+depression_diagnosis_12mo_18, anxiety_diagnosis_18, ADHD_diagnosis_18, conduct_disorder_moderate_18, alcohol_dependence_18, cannabis_dependence_18, PTSD_diagnosis_lifetime_18, PTSD_diagnosis_current_18,suicide_attempt_selfharm_18, service_use_18, not_in_employment_education_numeric_18. alcohol_abuse_18 removed as using alcohol_dependence_18 instead as it captures more disordered drinking. 
+
+  + B. *Linear regressions* (continuous variables):
 depression_current_scale_18, anxiety_current_scale_18, inattentive_hyperactive_symptoms_total_18, conduct_disorder_symptoms_18, alcohol_symptom_scale_18, cannabis_symptom_scale_18,   cat_psychosis_experiences_scale_18, BMI_18, CRP_log_18, physical_activity_18, smoking_current_number_18, loneliness_18, life_satisfaction_18, technology_use_18, coping_with_stress_18, PSQI_global_score_18, job_preparedness_skills_18, job_preparedness_attributes_18, optimism_18, job_search_activities_count_18
 
-B. *Logistic regressions* (binary variables):
-depression_diagnosis_12mo_18, anxiety_diagnosis_18, ADHD_diagnosis_18, conduct_disorder_moderate_18, alcohol_dependence_18, cannabis_dependence_18, PTSD_diagnosis_lifetime_18, PTSD_diagnosis_current_18,suicide_attempt_selfharm_18, service_use_18, not_in_employment_education_numeric_18
-
-alcohol_abuse_18 removed as using alcohol_dependence_18 instead as it captures more disordered drinking. 
-
-C. *Regressions rerun whilst controlling for antecedents* (both continuous and binary are rerun):
+  + C. *Regressions rerun whilst controlling for antecedents* (both continuous and binary are rerun):
 antecedents controlled for include: prosocial_behaviours_combined_05 + ADHD_combined_05 + internalising_combined_excl_sis_05 + maternal_personality_openness_05 + number_children_school_05
 
+## Preparation
 
-# Create *z scores* for all continuous variables
+Create *z scores* for all continuous variables
 
 ```{r scale continuous variables and combine to main dataset}
 # create a scaled version of the continuous variables - z scores for all variables
@@ -534,24 +543,20 @@ colnames(scaled_continuous_data) <- paste0("z_score.", colnames(scaled_continuou
 # combine the scaled data to the main dataset 
 dat <- cbind(dat, scaled_continuous_data)
 
-colnames(dat)
+#colnames(dat)
 ```
 
 # Posterior sensitivity analysis 
 
 The below few chunks are used to run the same analysis again in a reduced sample (only individuals who had a posterior probability of above 0.8 in all classes). 
 
-## Posterior probability indicator
+**IMPORTANT**: We created the current Rmd script to be able to use the same script to run the same analysis again in a reduced sample as a sensitivity analysis (only individuals who had a posterior probability of above 0.8 in all classes). When the variable "posterior.cut" is set to TRUE the following code will run for the data set that has those probability<0.8 dropped. 
 
-*IMPORTANT* 
-When posterior.cut is set to TRUE the following chunks will run for the data set that has those probability<0.8 dropped.  
-*IMPORTANT* 
-
-```{r posterior probability indicator}
+```{r posterior probability indicator, class.source = 'fold-show'}
 posterior.cut = FALSE
 ```
 
-```{r posterior probability code}
+```{r posterior probability code, results='hide', class.source = 'fold-show'}
 if(posterior.cut == TRUE){
 
 # create new variable only with those who have a probability higher than 0.8 for each class
@@ -594,7 +599,15 @@ freq(dat$class_reordered)
 }
 ```
 
-```{r descriptives for probabilites}
+Statistics for posterior probability sensitivity analyses:
+
+* Low stable: Dropped 42 people. Average probability = 0.66, minimum probability = 0.48. 
+* Increasing: Dropped 24 people. Average probability = 0.64, minimum probability = 0.49.
+* Decreasing: Dropped 25 people. Average probability = 0.63, minimum probability = 0.51.
+
+**Posterior sensitivity N = 2141** 
+
+```{r descriptives for probabilites, results='hide', class.source = 'fold-show'}
 if(posterior.cut == TRUE){
 low.stable.cut.stats <- dat_prob_cut_out %>%
   filter(class_reordered == "Low stable") %>%
@@ -614,17 +627,11 @@ decreasing.cut.stats
 }
 ```
 
-STATS
-Low stable: Dropped 42 people. Average probability = 0.66, minimum probability = 0.48. 
-Increasing: Dropped 24 people. Average probability = 0.64, minimum probability = 0.49.
-Decreasing: Dropped 25 people. Average probability = 0.63, minimum probability = 0.51.
-NEW N = 2141 
-
-# Logistic regression
+# Logistic regression {.tabset .tabset-fade}
 
 ## Loop
 
-```{r logistic regression loop}
+```{r logistic regression loop, results='hide', class.source = 'fold-show'}
 logistic.stats.outcome <- list() #create empty list to store the information in
 
 for (i in 1:length(outcome.dependent.logistic))
@@ -714,9 +721,7 @@ outcome.logistic.separate.plot <- ggplot(
 outcome.logistic.separate.plot
 ```
 
-### Plot made for the SGDP presentation
-
-```{r logistic regression outcome plot}
+```{r plot made for the SGDP presentation, include=FALSE}
 dat.logistic.ordered.sgdp.plot <- dat.logistic.ordered %>% 
   filter(Significance == "Significant",
          Domain != "Physical health domain")
@@ -764,27 +769,27 @@ outcome.logistic.separate.plot.SGDP.CENTRE <- ggplot(
 outcome.logistic.separate.plot.SGDP.CENTRE
 ```
 
-```{r save logistic plot}
-if(posterior.cut == FALSE){
-# save
-ggsave(
-  "outcome.logistic.separate.plot.SGDP.CENTRE.png",
-  plot = outcome.logistic.separate.plot.SGDP.CENTRE,
-  device = "png",
-  path = paste0(graph_save_data_path, "outcomes/"),
-  width = 8,
-  height = 2.5
-)
-}
+```{r save logistic plot, include=FALSE}
+# if(posterior.cut == FALSE){
+# # save
+# ggsave(
+#   "outcome.logistic.separate.plot.SGDP.CENTRE.png",
+#   plot = outcome.logistic.separate.plot.SGDP.CENTRE,
+#   device = "png",
+#   path = paste0(graph_save_data_path, "outcomes/"),
+#   width = 8,
+#   height = 2.5
+# )
+# }
 ```
 
-# Linear regression
+# Linear regression {.tabset .tabset-fade}
 
-Using z-scores in all below calculations. 
+Using z-scores in all calculations. 
 
 ## Loop
 
-```{r linear regression loop with z scores}
+```{r linear regression loop with z scores, results='hide', class.source = 'fold-show'}
 linear.stats.outcome.zscore <- list() #create empty list to store the information in
 
 for (i in 1:length(outcome.dependent.linear.zscore))
@@ -827,14 +832,15 @@ names(linear.stats.outcome.zscore) <- outcome.dependent.linear.zscore
 data.outcome.linear.zscore <- create.dataset(linear.stats.outcome.zscore, model = "linear")
 ```
 
+## Table
+
 ```{r table for combined linear dataframes zscore}
 linear.table <- paper.table(data.outcome.linear.zscore, model = "linear")
 linear.table 
 ```
 
+```{r multiple testing correction for linear models, include=FALSE}
 ### Getting multiple testing correction (BH FDR) p values -- IGNORE -- **FDR correction not applied here.** 
-
-```{r multiple testing correction for linear models}
 data.outcome.linear.zscore.decreasing <- multiple.testing(data = data.outcome.linear.zscore,
                                                           class = "Decreasing",
                                                           method = "BH",
@@ -851,13 +857,13 @@ data.outcome.linear.zscore.fdr <- rbind(
 )
 ```
 
-```{r table for multiple corrected }
+```{r table for multiple corrected, include=FALSE}
 paper.table(data.outcome.linear.zscore.fdr, model = "linear")
 ```
 
-Separate out data frames for each domain (this is done to order the plot later on by domain)
-
 ```{r bind and order rows stata}
+##Separate out data frames for each domain (this is done to order the plot later on by domain)
+
 # mental health
 data.outcome.linear.mental <- order.variables(data = data.outcome.linear.zscore, domain = "Mental health domain", model = "linear")
 # physical health
@@ -876,7 +882,7 @@ dat.linear.ordered <- rbind(
 )
 ```
 
-## Linear regression plot using z scores
+## Plot
 
 ```{r linear regression outcome plot zscores}
 outcome.linear.separate.plot.zscore <- ggplot(
@@ -916,23 +922,21 @@ outcome.linear.separate.plot.zscore <- ggplot(
 outcome.linear.separate.plot.zscore
 ```
 
-```{r save linear individual plot zscore}
-if(posterior.cut == FALSE){
-# save
-ggsave(
-  "linear_outcome_individual_regressions_zscore.png",
-  plot = outcome.linear.separate.plot.zscore,
-  device = "png",
-  path = paste0(graph_save_data_path, "outcomes/final"),
-  width = 8,
-  height = 6
-)
-}
+```{r save linear individual plot zscore, include=FALSE}
+# if(posterior.cut == FALSE){
+# # save
+# ggsave(
+#   "linear_outcome_individual_regressions_zscore.png",
+#   plot = outcome.linear.separate.plot.zscore,
+#   device = "png",
+#   path = paste0(graph_save_data_path, "outcomes/final"),
+#   width = 8,
+#   height = 6
+# )
+# }
 ```
 
-### Plot made for the SGDP presentation
-
-```{r linear regression outcome plot zscores}
+```{r linear regression outcome plot zscores - SGDP presentation, include=FALSE}
 dat.linear.ordered.sgdp.plot <- dat.linear.ordered %>% 
   filter(Significance == "Significant",
          Domain != "Physical health domain")
@@ -993,14 +997,16 @@ ggsave(
 }
 ```
 
-# Controlling for significant antecedents
+# Controlling for significant antecedents {.tabset .tabset-fade}
 
 We have rerun all regression models while controlling for antecedents that remained significant in the full antecedent model. Antecedents that remained significant in the full antecedent model: child prosocial behaviours, child ADHD behaviours, child internalising behaviours, maternal personality openness, number of children in school. 
 All regressions controlled for sex and SES. 
 
-## Logistic regression loop - controlling for antecedents
+## Logistic regression: controlling for antecedents {.tabset .tabset-fade}
 
-```{r logistic regression loop}
+### Loop
+
+```{r logistic regression loop controlling for antecedents, class.source = 'fold-show'}
 logistic.stats.outcome.ant_control <- list() #create empty list to store the information in
 
 for (i in 1:length(outcome.dependent.logistic))
@@ -1045,11 +1051,11 @@ data.outcome.logistic.ant_control <- create.dataset(logistic.stats.outcome.ant_c
 
 ### Table 
 
-```{r table for combined logistic dataframes}
+```{r table for combined logistic dataframes controlling for antecedents}
 paper.table(data.outcome.logistic.ant_control, model = "logistic")
 ```
 
-### Logistic regression plot - controlling for antecedents
+### Plot
 
 ```{r logistic regression outcome plot ant control}
 outcome.logistic.separate.plot.ant_control <- ggplot(
@@ -1079,9 +1085,11 @@ outcome.logistic.separate.plot.ant_control <- ggplot(
 outcome.logistic.separate.plot.ant_control
 ```
 
-## Linear regression loop using z scores - controlling for antecedents
+## Linear regression: controlling for antecedents {.tabset .tabset-fade}
 
-```{r linear regression loop zscore ant control}
+### Loop
+
+```{r linear regression loop zscore ant control, class.source = 'fold-show'}
 linear.stats.outcome.zscore.ant_control <- list() #create empty list to store the information in
 
 for (i in 1:length(outcome.dependent.linear.zscore))
@@ -1124,12 +1132,14 @@ names(linear.stats.outcome.zscore.ant_control) <- outcome.dependent.linear.zscor
 data.outcome.linear.zscore.ant_control <- create.dataset(linear.stats.outcome.zscore.ant_control, model = "linear")
 ```
 
-```{r table for combined linear dataframes zscore}
+### Table
+
+```{r table for combined linear dataframes zscore ant control}
 linear.table.ant.control <- paper.table(data.outcome.linear.zscore.ant_control, model = "linear")
 linear.table.ant.control
 ```
 
-### Linear regression plot with z scores - controlling for antecedents
+### Plot
 
 ```{r linear regression outcome plot zscore ant control}
 outcome.linear.separate.plot.zscore.ant_control <- ggplot(
@@ -1158,9 +1168,7 @@ outcome.linear.separate.plot.zscore.ant_control <- ggplot(
 outcome.linear.separate.plot.zscore.ant_control
 ```
 
-### Plot made for the SGDP presentation
-
-```{r linear regression outcome plot zscore ant control for sgdp center talk}
+```{r linear regression outcome plot zscore ant control for sgdp center talk, include=FALSE}
 data.outcome.linear.zscore.ant_control.sgdp.plot <- data.outcome.linear.zscore.ant_control %>% 
   filter(Significance == "Significant",
          Domain != "Physical health domain",
@@ -1208,7 +1216,7 @@ outcome.linear.separate.plot.zscore.ant_control.SGDP.centre <- ggplot(
 outcome.linear.separate.plot.zscore.ant_control.SGDP.centre
 ```
 
-```{r save SGDP separate plot}
+```{r save SGDP separate plot, include=FALSE}
 if(posterior.cut == FALSE){
 ggsave(
   "outcome.linear.separate.plot.zscore.ant_control.SGDP.centre.png",

@@ -1,44 +1,42 @@
 ---
-title: "Analyses for testing the association betwween isolation trajectories and outcomes - Three trajectories"
-author: "Katherine N Thompson"
-date: "19th Jan 2021"
-output:
-  word_document:
-    toc: yes
-    toc_depth: '2'
+title: "Associations between social isolation trajectories and antecedents"
+output:  
   html_document:
     df_print: paged
     toc: yes
     toc_depth: 2
     toc_float:
-      collapsed: no
-    number_sections: no
+      collapsed: false
+    number_sections: false
     highlight: monochrome
-    theme: cerulean
-code_folding: hide
+    theme: flatly
+    code_folding: hide
+    includes:
+      after_body: footer.html
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE,
+knitr::opts_chunk$set(echo = TRUE,
                       comment = NA,
                       prompt = FALSE,
                       cache = FALSE,
                       message = FALSE,
-                      warning = FALSE)
+                      warning = FALSE,
+                      results = 'asis')
 
 options(bitmapType = 'quartz') # to render fonts better
 ```
 
-```{r Clear global environment}
+```{r Clear global environment, include=FALSE}
 remove(list = ls())
 ```
 
-```{r colour palletes for graphs}
+```{r colour palletes for graphs, include=FALSE}
 palette2 <- c("#78D9C5","#F5BE5E")
 palette2b <- c("#78D9C5","#EEB6E9")
 ```
 
-```{r Load packages}
+```{r Load packages, include=FALSE}
 library(summarytools)
 library(MplusAutomation)
 library(filesstrings)
@@ -49,21 +47,15 @@ library(tidyverse)
 library(dplyr) #conflicts with tidyverse for e.g. rename and row_number
 ```
 
-# Source path 
-
-```{r source the data file path}
+```{r source the data file path, include=FALSE}
 #source raw data directory: data_raw and data included
-source("../../../../../isolation_trajectories_data_path.R")
+source("../../../isolation_trajectories_data_path.R")
 ```
-
-# Read in data - class_joined
 
 ```{r read in prepped regression data and check variable names, include=FALSE}
 dat <- readRDS(file = paste0(data_path, "class_joined_preprocessed_isolation_data_full_sample.rds"))
-colnames(dat)
+#colnames(dat)
 ```
-
-## List of variables
 
 ```{r variable character lists, include=FALSE}
 antecedent.independent.numeric <- c("SES_binary_releveled_numeric",
@@ -149,12 +141,21 @@ name.list <- c("SES: Low",
                "Child prosocial behaviours")
 ```
 
-# Script functions 
-- multiple.testing()
-- paper.table()
-- order.variables()
+***
 
-```{r script functions}
+This page displays the results from multiple multinomial logisitc regressions used to assess how the antecedents are associated with trajectory membership. The multinomial regressions were run in STATA to enable clustering for familyid. Antecedents are sorted into domains of "Social factors", "Home factors", "Parent characteristics", "Neurological child characteristics", and "Emotional/behavioural child characteristics". 
+
+***
+
+# Functions 
+
+To run the following code more clearly, I have created three functions:
+
+* multiple.testing() applies the BH multiple testing correction. You define the data, class, method and number of tests. 
+* paper.table() creates a table that labels the domain of the variable, the comparison class, Relative risk ratios (RRR), confidence intervals, and p value from the multinomial regression. 
+* order.variables() orders the data whereby points in a plot are arranged by RRR and domain. 
+
+```{r script functions, class.source = 'fold-show'}
 multiple.testing <- function(data, class, method = "BH", n.tests){
   data <- data %>%
     filter(Class == class) %>%
@@ -205,9 +206,7 @@ order.variables <- function(data, domain){
 }
 ```
 
-# Theme for plotting
-
-```{r theme for all plots}
+```{r theme for all plots, include=FALSE}
 theme.antecedent <- theme(panel.grid.major.x = element_line(size = 0.5,
                                           linetype = 'dashed',
                                           colour = "gray"),
@@ -223,15 +222,15 @@ theme.antecedent <- theme(panel.grid.major.x = element_line(size = 0.5,
                           legend.position = "bottom",
                           strip.text.y = element_blank(),
                           strip.text.x = element_text(size = 10, color = "black", face = "bold"),
-                          strip.background = element_rect(color = "black", fill = "white", size = 0.5, linetype = "solid")                    
+                          strip.background = element_rect(color = "black", fill = "white", size = 0.5, linetype = "solid")          
   )
 ```
 
 # Test for multicollinearity 
 
-Create correlation matrix to look for variables that are highly correlated.
+We created a correlation matrix to look for variables that are too highly correlated (multicollinearity). 
 
-```{r test for multicollinearity,}
+```{r test for multicollinearity}
 # create data frame with just numeric antecedent variables
 antececent_data_frame <- as.data.frame(dat[,antecedent.independent.numeric])
 colnames(antececent_data_frame) <- name.list
@@ -268,34 +267,34 @@ correlation_heat_map <- ggplot(metled_cor_matrix, aes(X2, X1, fill = value))+
        )+
  coord_fixed() +
   geom_text(aes(X2, X1, label = round(value, digits = 2)), color = "black", size = 3)
+```
 
+```{r heat map fig, fig.width=15, fig.height=15}
 correlation_heat_map
 ```
 
 ```{r save heatmap}
-ggsave(
-  "antecedent_correlation_heat_map.png",
-  plot = correlation_heat_map,
-  device = "png",
-  path = paste0(graph_save_data_path, "antecedents/analysis_interpretation"),
-  width = 15,
-  height = 15
-)
+# ggsave(
+#   "antecedent_correlation_heat_map.png",
+#   plot = correlation_heat_map,
+#   device = "png",
+#   path = paste0(graph_save_data_path, "antecedents/analysis_interpretation"),
+#   width = 15,
+#   height = 15
+# )
 ```
 
 # Posterior sensitivity analysis 
 
 The below few chunks are used to run the same analysis again in a reduced sample (only individuals who had a posterior probability of above 0.8 in all classes). 
 
-*IMPORTANT* 
-When posterior.cut is set to TRUE the following chunks will run for the data set that has those probability<0.8 dropped.  
-*IMPORTANT* 
+**IMPORTANT**: We created the current Rmd script to be able to use the same script to run the same analysis again in a reduced sample as a sensitivity analysis (only individuals who had a posterior probability of above 0.8 in all classes). When the variable "posterior.cut" is set to TRUE the following code will run for the data set that has those probability<0.8 dropped.  
 
-```{r posterior probability indicator}
-posterior.cut = TRUE
+```{r posterior probability indicator, results='hide', class.source = 'fold-show'}
+posterior.cut = FALSE
 ```
 
-```{r posterior probability code}
+```{r posterior probability code, results='hide', class.source = 'fold-show'}
 if(posterior.cut == TRUE){
 
 # create new variable only with those who have a probability higher than 0.8 for each class
@@ -338,7 +337,15 @@ freq(dat$class_reordered)
 }
 ```
 
-```{r descriptives for probabilites}
+Statistics for posterior probability sensitivity analyses:
+
+* Low stable: Dropped 42 people. Average probability = 0.66, minimum probability = 0.48. 
+* Increasing: Dropped 24 people. Average probability = 0.64, minimum probability = 0.49.
+* Decreasing: Dropped 25 people. Average probability = 0.63, minimum probability = 0.51.
+
+**Posterior sensitivity N = 2141** 
+
+```{r descriptives for probabilites, results='hide', class.source = 'fold-show'}
 if(posterior.cut == TRUE){
 low.stable.cut.stats <- dat_prob_cut_out %>%
   filter(class_reordered == "Low stable") %>%
@@ -358,37 +365,23 @@ decreasing.cut.stats
 }
 ```
 
-STATS
-Low stable: Dropped 42 people. Average probability = 0.66, minimum probability = 0.48. 
-Increasing: Dropped 24 people. Average probability = 0.64, minimum probability = 0.49.
-Decreasing: Dropped 25 people. Average probability = 0.63, minimum probability = 0.51.
-NEW N = 2141 
+# Antecedent analysis
 
+The following variables were dropped for the analyses: multinom.class_size_average_05, multinom.resident_moves_05, multinom.temp_negative_affect_05, multinom.temp_impulsivity_05, multinom.temp_approach_05, multinom.temp_sluggishness_05, multinom.temp_wariness_05, multinom.temp_undercontrolled_05, multinom.temp_inhibited_05, multinom.temp_shy_05. 
 
-# Antecedent regression analyses
-
-Forty variables was con variables is too many to include. Variables that have been dropped for the 3 class analysis:
-multinom.class_size_average_05, multinom.resident_moves_05, multinom.temp_negative_affect_05, multinom.temp_impulsivity_05, multinom.temp_approach_05, multinom.temp_sluggishness_05, multinom.temp_wariness_05, multinom.temp_undercontrolled_05, multinom.temp_inhibited_05, multinom.temp_shy_05. 
-
-ANALYSIS PLAN 
+**Analysis plan** 
 
 1. *Individual antecedent regressions*: single regressions are computed for each variable (class ~ variable). This is done through a loop. Relative Risk Ratios (RRR) and their confidence intervals are calculated. Statistics for all variables are combined and RRR (95% CI) are plotted for the Increasing and Decreasing class. 
 
 2. *Full model*: All variables that significantly predict class membership are controlled for. E.g. (class ~ social_variable_1 + home_variable_2 + neuro_variable_3 + emo_variable_4). RRR (95% CI) are calculated. Z scores for continuous variables are used. No multiple testing correction is applied at this step.
 
-All regressions are first computed in STATA - multinomial regression with clustering is not currently doable in R. The coefficients are then imported into R to be interpreted. 
+All regressions are first computed in STATA - multinomial regression with clustering is not currently doable in R. The coefficients are then imported into R to be interpreted. The RRR coefficient indicates the likelihood of having higher values on the variable of interest, for those following either the increasing and decreasing class compared to the low stable. 
 
+Binary variables: SES (middle/high vs low), Child harm (No harm vs possible/definite), any domestic violence (Yes/No), maternal lifetime depression (Yes/No). ACORN (1-5) and maternal warmth (1-6) have been recoded to be continuous variables.
 
-## Antecedent regression loop for ALL variables - variables are either treated as continuous or binary
+## STATA file preparation
 
-The below creates a tibble table for each regression in the list "antecedent.independent" and stores it in the list "multinom.stats.cont". Archived code is stored in "regression_CUTOUTS.Rmd"
-
-Binary variables: SES (middle/high vs low), Child harm (No harm vs possible/definite), any domestic violence (Yes/No), maternal lifetime depression (Yes/No). 
-ACORN (1-5) and maternal warmth (1-6) have been recoded to be continuous variables.
-
-The RRR coefficient indicates the likelihood of having higher values on the variable of interest, for those following either the increasing and decreasing class compared to the low stable. 
-
-# Create *z scores* for all continuous variables
+Create *z scores* for all continuous variables
 
 ```{r scale continuous variables and combine to main dataset}
 # create a scaled version of the continuous variables - z scores for all variables
@@ -401,7 +394,7 @@ colnames(scaled_continuous_data) <- paste0("z_score.", colnames(scaled_continuou
 dat <- cbind(dat, scaled_continuous_data)
 ```
 
-# Create STATA file 
+Create STATA file 
 
 ```{r create mlogit STATA file}
 data.mlogit <- dat %>% # need to rename for stata format
@@ -439,9 +432,7 @@ data.mlogit <- dat %>% # need to rename for stata format
          prosocial = z_score.prosocial_behaviours_combined_05)
 ```
 
-## Write data files for STATA to be used in multinomial regression
-
-Want to save two different files depending on if we've cut the sample or not. 
+Write data files for STATA to be used in multinomial regression. We have saved two different files depending on if we're doing the sensitivity analysis (reduced sample) or not. 
 
 ```{r write STATA file for multinom}
 library(foreign)
@@ -454,16 +445,48 @@ if(posterior.cut == TRUE){
 }
 ```
 
-# Run STATA file and save the txt output for each regression
+## STATA multinomial regressions
 
-*Go into STATA and run the file "antecedent_multinomial_regression.do" or "antecedent_multinomial_regression_POSTERIOR.do"*. The output will then be saved in a txt file for all the regressions run. 
+The mlogit code was run in STATA to calculate RRR, CI and pvalues for all antecedents entered into a single multinomial regression model. If you would like to run this in STATA, you can open the STATA file *"antecedent_multinomial_regression.do"* or *"antecedent_multinomial_regression_POSTERIOR.do"* from the Github home page. The output from the STATA file is saved as a txt file containing all the information from the regressions. 
 
 Three models were run in STATA:
+
 1. Individual regressions. Each antecedent was regressed on class membership. 
-2. Significant only regressions. This is the full model of antecedents that only includes variables that were significant at the individual regression stage. (**THIS IS NOT USED IN THE PAPER**)
+2. Significant from univariate model. **This was NOT taken forward into analyses - only the individual and full model to avoid a stepwise approach**
 3. All model. This includes all antecedents in one model predicting class membership. 
 
-The below chunk includes code to move the txt files to the right place - once this has been done the code is hashed out. 
+```{r, eval=FALSE, class.source = 'fold-show'}
+// read in file
+use "multinom.reg.stata.dta"
+
+// create list of outcome variables
+local outcomes "ses acorn vandalism probneighbours numberchildschool meals harm siblings socialsupport activities biodad domesticviolence maternalwarmth maternaldepression openness conscientiousness extroversion agreeableness neuroticism antisocial alcohol iq execfunction theoryofmind externalising internalising adhd prosocial"
+
+// loop for multinomial regression clustered by familyid
+foreach var of varlist `outcomes' {
+mlogit classreordered `var' sex, cluster(familyid)
+
+estimates store results_`var'
+}
+
+// install package estout
+// ssc install estout
+
+// save results, dropping estimates we don't need and saving the RRR and upper and lower CI for each variable 
+estout results_* using multinomial_results_si.txt, drop(sex) cells(b(fmt(2)) ci_l(fmt(2)) ci_u(fmt(2)) p(fmt(8))) eform replace
+
+// all model - predictors that are significant from UNIVARIATE models
+mlogit classreordered ses acorn probneighbours meals harm siblings socialsupport activities biodad domesticviolence maternalwarmth maternaldepression openness conscientiousness extroversion agreeableness neuroticism antisocial alcohol iq execfunction theoryofmind externalising internalising adhd prosocial sex, cluster(familyid)
+estimates store allmodelsiguni 
+estout allmodelsiguni using multinomial_results_si.allmodel.SIGUNI.txt, drop(sex) cells(b(fmt(2)) ci_l(fmt(2)) ci_u(fmt(2)) p(fmt(8))) eform replace
+
+// all model - all predictors in one model
+mlogit classreordered ses acorn vandalism probneighbours numberchildschool meals harm siblings socialsupport activities biodad domesticviolence maternalwarmth maternaldepression openness conscientiousness extroversion agreeableness neuroticism antisocial alcohol iq execfunction theoryofmind externalising internalising adhd prosocial sex, cluster(familyid)
+estimates store allmodel 
+estout allmodel using multinomial_results_si.allmodel.txt, drop(sex) cells(b(fmt(2)) ci_l(fmt(2)) ci_u(fmt(2)) p(fmt(8))) eform replace
+```
+
+Th next bit of code reades the files and moves the txt files to the right place - once this has been done the code is hashed out. 
 
 ```{r run stata do file from r}
 if(posterior.cut == FALSE){
@@ -495,11 +518,15 @@ dat.stata.all.raw <- read_tsv(paste0(data_path, "multinomial_results_si.allmodel
 }
 ```
 
-# Reformat STATA data frames 
+## Reformat STATA output {.tabset .tabset-fade} 
 
- - b/min95/max95/p is the layout from STATA. We will now rearrange this file to create the antecedent multinomial tables needed for the paper. 
+Layout from the STATA output file:
 
-## Univariate individual regressions 
+* b/min95/max95/p 
+
+We now rearrange this file to create the antecedent multinomial tables needed for the manuscript.  
+
+### Univariate regressions 
 
 ```{r reformat stata data frame}
 dat.stata.individual <- dat.stata.individual.raw[c(120:231,237:348),-c(1)] %>%
@@ -546,14 +573,14 @@ dat.stata.individual <- dat.stata.individual.raw[c(120:231,237:348),-c(1)] %>%
             Domain = block)
 ```
 
+#### Table 
+
 ```{r table for stata coefficients}
 univariate.reg.table <- paper.table(dat.stata.individual)
 univariate.reg.table
 ```
 
-### Check associations applying multiple testing correction
-
-```{r multiple testing correction for univariate associations}
+```{r multiple testing correction for univariate associations, include=FALSE}
 dat.stata.individual.decreasing <- multiple.testing(data = dat.stata.individual,
                                                     class = "Decreasing",
                                                     method = "BH",
@@ -571,198 +598,29 @@ dat.stata.individual.fdr <- rbind(
 kable(dat.stata.individual.fdr, digits = 2)
 ```
 
-## Multivariate model including variables that were significant in univariate models (**THIS IS NOT USED IN THE PAPER**)
-
-```{r reformat stata data all model uni sig}
-dat.stata.all.siguni <- dat.stata.all.siguni.raw[c(112:215,221:324),] %>%
-  mutate(Class =
-    case_when(
-    row_number() < 105 ~ "Increasing",
-    row_number() > 104 ~ "Decreasing")) %>%
-  mutate(key = 
-           rep(c("RRR", "RRR.conf.low", "RRR.conf.high", "p.value"), 52)) %>%
-  mutate(Variable =
-    case_when(row_number() < 5  ~ "SES: Low",
-              row_number() < 9  ~ "ACORN",
-              row_number() < 13 ~ "Problems with neighbours",
-              row_number() < 17 ~ "Number of children eligible for free school meals",
-              row_number() < 21 ~ "Child harm: Harmed",
-              row_number() < 25 ~ "Total siblings",
-              row_number() < 29 ~ "Social support",
-              row_number() < 33 ~ "Total activities with mum",
-              row_number() < 37 ~ "Mum not lived with biological dad since birth: Yes",
-              row_number() < 41 ~ "Any domestic violence: Yes" ,
-              row_number() < 45 ~ "Maternal warmth",
-              row_number() < 49 ~ "Maternal lifetime depression: Yes",
-              row_number() < 53 ~ "Maternal personality: Openness",
-              row_number() < 57 ~ "Maternal personality: Conscientiousness",
-              row_number() < 61 ~ "Maternal personality: Extroversion",
-              row_number() < 65 ~ "Maternal personality: Agreeableness",
-              row_number() < 69 ~ "Maternal personality: Neuroticism",
-              row_number() < 73 ~ "Parental antisocial behaviour",
-              row_number() < 77 ~ "Parental alcoholism",
-              row_number() < 81 ~ "Child IQ",
-              row_number() < 85 ~ "Child executive function",
-              row_number() < 89 ~ "Child theory of mind",
-              row_number() < 93 ~ "Child externalising behaviours" ,
-              row_number() < 97 ~ "Child internalising behaviours",
-              row_number() < 101 ~ "Child ADHD behaviours",
-              row_number() < 105 ~ "Child prosocial behaviours",
-              row_number() < 109  ~ "SES: Low",
-              row_number() < 113  ~ "ACORN",
-              row_number() < 117 ~ "Problems with neighbours",
-              row_number() < 121 ~ "Number of children eligible for free school meals",
-              row_number() < 125 ~ "Child harm: Harmed",
-              row_number() < 129 ~ "Total siblings",
-              row_number() < 133 ~ "Social support",
-              row_number() < 137 ~ "Total activities with mum",
-              row_number() < 141 ~ "Mum not lived with biological dad since birth: Yes",
-              row_number() < 145 ~ "Any domestic violence: Yes" ,
-              row_number() < 149 ~ "Maternal warmth",
-              row_number() < 153 ~ "Maternal lifetime depression: Yes",
-              row_number() < 157 ~ "Maternal personality: Openness",
-              row_number() < 161 ~ "Maternal personality: Conscientiousness",
-              row_number() < 165 ~ "Maternal personality: Extroversion",
-              row_number() < 169 ~ "Maternal personality: Agreeableness",
-              row_number() < 173 ~ "Maternal personality: Neuroticism",
-              row_number() < 177 ~ "Parental antisocial behaviour",
-              row_number() < 181 ~ "Parental alcoholism",
-              row_number() < 185 ~ "Child IQ",
-              row_number() < 189 ~ "Child executive function",
-              row_number() < 193 ~ "Child theory of mind",
-              row_number() < 197 ~ "Child externalising behaviours" ,
-              row_number() < 201 ~ "Child internalising behaviours",
-              row_number() < 205 ~ "Child ADHD behaviours",
-              row_number() > 204 ~ "Child prosocial behaviours")) %>%
-  select(-X1) %>%
-  mutate(
-    block = case_when(
-              row_number() < 17  ~ "Social domain",
-              row_number() < 45 ~ "Home domain",
-              row_number() < 77 ~ "Parent domain",
-              row_number() < 89 ~ "Neuro domain",
-              row_number() < 105 ~ "Emo/behave domain",
-              row_number() < 121 ~ "Social domain",
-              row_number() < 149 ~ "Home domain",
-              row_number() < 181 ~ "Parent domain",
-              row_number() < 193 ~ "Neuro domain",
-              row_number() > 192 ~ "Emo/behave domain")) %>%
-  spread(key, pallmodelsiguni) %>%
-  mutate(
-    Significance = 
-      if_else(
-        p.value < 0.05, 
-        1,
-        0
-      ) %>%
-    recode_factor(
-        "0" = "Non-significant",
-        "1" = "Significant")) %>%
-  transmute(Class = Class,
-            Variable = Variable,
-            RRR = as.numeric(RRR),
-            RRR.conf.low = as.numeric(RRR.conf.low),
-            RRR.conf.high = as.numeric(RRR.conf.high),
-            p.value = as.numeric(p.value),
-            Significance = Significance,
-            Domain = block)
-```
-
-```{r stata all table}
-multivariate.siguni.reg.table <- paper.table(dat.stata.all.siguni)
-multivariate.siguni.reg.table
-```
-
-## Reformat univariate and multivariate data to create a graph containing both information 
-
-### Add in "significance" variable to distinguish between univariate and multivariate significance
-
-```{r add in if the variable was significant in multivariate analysis}
-dat.stata.all.siguni.sig <- dat.stata.all.siguni %>%
-  select(Class,
-         Variable,
-         full.significance = Significance)
-
-dfs <- list(dat.stata.individual,
-            dat.stata.all.siguni.sig)
-
-individual.and.multi.sig <- plyr::join_all(dfs, by = c("Variable", 
-                                                 "Class"))
-
-individual.and.multi.sig <- individual.and.multi.sig %>%
-  mutate(overall.significance = 
-              case_when(full.significance == "Significant" ~ "Multivariate significant",
-                        Significance == "Significant" ~ "Non-significant",
-                        TRUE ~ "Non-significant")) %>%
-  select(Class,
-         Variable,
-         RRR,
-         RRR.conf.low,
-         RRR.conf.high,
-         p.value,
-         Significance,
-         Domain,
-         full.significance,
-         overall.significance)
-
-individual.and.multi.sig$overall.significance <- factor(individual.and.multi.sig$overall.significance, 
-                                                        levels = c("Multivariate significant", 
-                                                                   "Non-significant"))
-```
-
-### Bind *z score* trasformed values to order the graph according to block of variables
+Bind *z score* trasformed values to order the graph according to block of variables
 
 ```{r bind and order rows for the plot}
-individual.and.multi.sig.social <- order.variables(data = individual.and.multi.sig, domain = "Social domain")
-individual.and.multi.sig.home <- order.variables(data = individual.and.multi.sig, domain = "Home domain")
-individual.and.multi.sig.parent <- order.variables(data = individual.and.multi.sig, domain = "Parent domain")
-individual.and.multi.sig.neuro <- order.variables(data = individual.and.multi.sig, domain = "Neuro domain")
-individual.and.multi.sig.emo <- order.variables(data = individual.and.multi.sig, domain = "Emo/behave domain")
+individual.home <- order.variables(data = dat.stata.individual, domain = "Home domain")
+individual.social <- order.variables(data = dat.stata.individual, domain = "Social domain")
+individual.parent <- order.variables(data = dat.stata.individual, domain = "Parent domain")
+individual.neuro <- order.variables(data = dat.stata.individual, domain = "Neuro domain")
+individual.emo <- order.variables(data = dat.stata.individual, domain = "Emo/behave domain")
 
 # join all
 dat.stata.individual.ordered <- rbind(
-  individual.and.multi.sig.social,
-  individual.and.multi.sig.home,
-  individual.and.multi.sig.parent,
-  individual.and.multi.sig.neuro,
-  individual.and.multi.sig.emo
+  individual.social,
+  individual.home,
+  individual.parent,
+  individual.neuro,
+  individual.emo
 )
 ```
 
-# Plot for univariate regressions 
+#### Plot for univariate regressions 
 
-## With significant multivariate associations indicated - OPTION 1
-
-```{r stata plot to be used for results OPTION 1}
-stata.plot.individual.OPTION1 <- ggplot(
-  dat.stata.individual.ordered, 
-  aes(x = Variable,
-      y = RRR,
-      ymin = RRR.conf.low,
-      ymax = RRR.conf.high,)
-  ) +
-  scale_fill_manual(values = "black") +
-  scale_color_manual(values = "black") +
-  scale_shape_manual(values = c(8, 19)) +
-  geom_pointrange(aes(shape = overall.significance),position = position_dodge(width = 0.7), 
-                  show.legend = FALSE, 
-                  size = 0.5) +
- facet_grid(Domain ~ Class, drop = TRUE, scales = "free_y", space = "free") +
-  labs(y = "RRR (95% CI)",
-       x = "names",
-       shape = "") +
-  theme.antecedent +
-  geom_hline(linetype = "dashed", yintercept = 1) +
- scale_y_continuous(trans = scales::log10_trans(), breaks=c(0.4,0.6,0.8, 1, 1.5, 2, 2.5, 3, 3.5, 4)) +
-  coord_flip() 
-  
-stata.plot.individual.OPTION1
-```
-
-## No significance indicators - OPTION 2
-
-```{r stata plot to be used for results OPTION 2}
-stata.plot.individual.OPTION2 <- ggplot(
+```{r stata plot to be used for results}
+stata.plot.individual <- ggplot(
   dat.stata.individual.ordered, 
   aes(x = Variable,
       y = RRR,
@@ -783,25 +641,26 @@ stata.plot.individual.OPTION2 <- ggplot(
   geom_hline(linetype = "dashed", yintercept = 1) +
  scale_y_continuous(trans = scales::log10_trans(), breaks=c(0.4,0.6,0.8, 1, 1.5, 2, 2.5, 3, 3.5, 4)) +
   coord_flip() 
-  
-stata.plot.individual.OPTION2
+```
+```{r individual plot, fig.height=6.5, fig.width=11}
+stata.plot.individual
 ```
 
-```{r save final antecedent plot}
-if(posterior.cut == FALSE){
-#save
-ggsave(
-  "STATA_All_antecedents_individual_regressions_using_zscores_final.png",
-  plot = stata.plot.individual.OPTION2,
-  device = "png",
-  path = paste0(graph_save_data_path, "antecedents/final"),
-  width = 11,
-  height = 6.5
-)
-}
+```{r save final antecedent plot, include=FALSE}
+# if(posterior.cut == FALSE){
+# #save
+# ggsave(
+#   "STATA_All_antecedents_individual_regressions_using_zscores_final.png",
+#   plot = stata.plot.individual,
+#   device = "png",
+#   path = paste0(graph_save_data_path, "antecedents/final"),
+#   width = 11,
+#   height = 6.5
+# )
+# }
 ```
 
-# Multivariate model with all variables included
+### Multivariate model: all variables included
 
 ```{r reformat stata data all model}
 dat.stata.all <- dat.stata.all.raw[c(120:231,237:348),] %>%
@@ -881,7 +740,7 @@ dat.stata.all <- dat.stata.all.raw[c(120:231,237:348),] %>%
               row_number() < 197 ~ "Parent domain",
               row_number() < 209 ~ "Neuro domain",
               row_number() > 208 ~ "Emo/behave domain")) %>%
-  spread(key, pallmodel) %>%
+  spread(key, allmodel) %>%
   mutate(
     Significance = 
       if_else(
@@ -902,31 +761,31 @@ dat.stata.all <- dat.stata.all.raw[c(120:231,237:348),] %>%
             Domain = block) 
 ```
 
-## Table
+#### Table 
 
 ```{r stata all table}
 paper.table.all.variables <- paper.table(dat.stata.all)
 paper.table.all.variables
 ```
 
-```{r bind and order rows for the sgdp centre plot}
+```{r bind and order rows multivariate sig plot}
 dat.stata.all.plot <- dat.stata.all %>% 
   filter(Significance == "Significant",
          Variable != "Child executive function")
 
-individual.and.multi.sig.social.plot <- order.variables(data = dat.stata.all.plot, domain = "Social domain")
-individual.and.multi.sig.parent.plot <- order.variables(data = dat.stata.all.plot, domain = "Parent domain")
-individual.and.multi.sig.emo.plot <- order.variables(data = dat.stata.all.plot, domain = "Emo/behave domain")
+individual.sig.social.plot <- order.variables(data = dat.stata.all.plot, domain = "Social domain")
+individual.sig.parent.plot <- order.variables(data = dat.stata.all.plot, domain = "Parent domain")
+individual.sig.emo.plot <- order.variables(data = dat.stata.all.plot, domain = "Emo/behave domain")
 
 # join all
 dat.stata.all.plot.ordered <- rbind(
-  individual.and.multi.sig.social.plot,
-  individual.and.multi.sig.parent.plot,
-  individual.and.multi.sig.emo.plot
+  individual.sig.social.plot,
+  individual.sig.parent.plot,
+  individual.sig.emo.plot
 )
 ```
 
-## Plot
+Plot of significant variables from the multivariate analysis:
 
 ```{r stata plot full model}
 stata.plot.all_model <- ggplot(
@@ -937,8 +796,8 @@ stata.plot.all_model <- ggplot(
       ymax = RRR.conf.high,
       color = Class)
   ) +
-  scale_fill_manual(values = palette2b) +
-  scale_color_manual(values = palette2b) +
+  scale_fill_manual(values = c("black", "black")) +
+  scale_color_manual(values = c("black", "black")) +
   scale_shape_manual(values = c(19)) +
   geom_pointrange(aes(shape = Significance), position = position_dodge(width = 0.7)) +
   facet_grid(Domain ~ Class, drop = TRUE, scales = "free_y", space = "free") +
@@ -959,17 +818,17 @@ stata.plot.all_model <- ggplot(
 stata.plot.all_model 
 ```
 
-```{r save multivariate plot}
-if(posterior.cut == FALSE){
-#save
-ggsave(
-  "multivariate_antecedent_STATA_SGDP_CENTRE.png",
-  plot = stata.plot.all_model,
-  device = "png",
-  path = paste0(graph_save_data_path, "antecedents/"),
-  width = 8,
-  height = 3
-)
-}
+```{r save multivariate plot, include=FALSE}
+# if(posterior.cut == FALSE){
+# #save
+# ggsave(
+#   "multivariate_antecedent_STATA_SGDP_CENTRE.png",
+#   plot = stata.plot.all_model,
+#   device = "png",
+#   path = paste0(graph_save_data_path, "antecedents/"),
+#   width = 8,
+#   height = 3
+# )
+# }
 ```
 

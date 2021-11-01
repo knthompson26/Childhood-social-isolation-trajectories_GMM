@@ -1,0 +1,2186 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Associations between social isolation trajectories and antecedents</title>
+
+<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { font-weight: bold; } /* Alert */
+code span.an { font-style: italic; } /* Annotation */
+code span.cf { font-weight: bold; } /* ControlFlow */
+code span.co { font-style: italic; } /* Comment */
+code span.cv { font-style: italic; } /* CommentVar */
+code span.do { font-style: italic; } /* Documentation */
+code span.dt { text-decoration: underline; } /* DataType */
+code span.er { font-weight: bold; } /* Error */
+code span.in { font-style: italic; } /* Information */
+code span.kw { font-weight: bold; } /* Keyword */
+code span.pp { font-weight: bold; } /* Preprocessor */
+code span.wa { font-style: italic; } /* Warning */
+
+.sourceCode .row {
+  width: 100%;
+}
+.sourceCode {
+  overflow-x: auto;
+}
+.code-folding-btn {
+  margin-right: -30px;
+}
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"></a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Home
+  </a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/knthompson26/Childhood-social-isolation-trajectories_GMM">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Associations between social isolation trajectories and antecedents</h1>
+
+</div>
+
+
+<hr />
+<p>This page displays the results from multiple multinomial logisitc regressions used to assess how the antecedents are associated with trajectory membership. The multinomial regressions were run in STATA to enable clustering for familyid. Antecedents are sorted into domains of “Social factors”, “Home factors”, “Parent characteristics”, “Neurological child characteristics”, and “Emotional/behavioural child characteristics”.</p>
+<hr />
+<div id="functions" class="section level1">
+<h1>Functions</h1>
+<p>To run the following code more clearly, I have created three functions:</p>
+<ul>
+<li>multiple.testing() applies the BH multiple testing correction. You define the data, class, method and number of tests.</li>
+<li>paper.table() creates a table that labels the domain of the variable, the comparison class, Relative risk ratios (RRR), confidence intervals, and p value from the multinomial regression.</li>
+<li>order.variables() orders the data whereby points in a plot are arranged by RRR and domain.</li>
+</ul>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r fold-show"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>multiple.testing <span class="ot">&lt;-</span> <span class="cf">function</span>(data, class, <span class="at">method =</span> <span class="st">&quot;BH&quot;</span>, n.tests){</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  data <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(Class <span class="sc">==</span> class) <span class="sc">%&gt;%</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">p.value.adjusted =</span> </span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>           stats<span class="sc">::</span><span class="fu">p.adjust</span>(p.value, </span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>                    <span class="at">method =</span> method,</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>                    <span class="at">n =</span> n.tests) </span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Significance.adjusted =</span> </span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>           <span class="fu">if_else</span>(</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>            p.value.adjusted <span class="sc">&lt;</span> <span class="fl">0.05</span>, </span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>            <span class="dv">1</span>,</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>            <span class="dv">0</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>      ) <span class="sc">%&gt;%</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>        <span class="fu">recode_factor</span>(</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>          <span class="st">`</span><span class="at">1</span><span class="st">`</span> <span class="ot">=</span> <span class="st">&quot;Significant&quot;</span>,</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>          <span class="st">`</span><span class="at">0</span><span class="st">`</span> <span class="ot">=</span> <span class="st">&quot;Non-significant&quot;</span>)</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>         )  </span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(data)</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>paper.table <span class="ot">&lt;-</span> <span class="cf">function</span>(data){</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>  table <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">match</span>(Domain, <span class="fu">c</span>(<span class="st">&quot;Social domain&quot;</span>, <span class="st">&quot;Home domain&quot;</span>, <span class="st">&quot;Parent domain&quot;</span>, <span class="st">&quot;Neuro domain&quot;</span>, <span class="st">&quot;Emo/behave domain&quot;</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>    Class,</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>    Variable,</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>    RRR,</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">95% CI low</span><span class="st">`</span> <span class="ot">=</span> RRR.conf.low,</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">95% CI high</span><span class="st">`</span> <span class="ot">=</span> RRR.conf.high,</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">p value</span><span class="st">`</span> <span class="ot">=</span> p.value,</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>    Domain,</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span>Significance) <span class="sc">%&gt;%</span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">2</span>)</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(table)</span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>order.variables <span class="ot">&lt;-</span> <span class="cf">function</span>(data, domain){</span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>  data <span class="ot">&lt;-</span> <span class="fu">filter</span>(data, Domain <span class="sc">==</span> domain) <span class="sc">%&gt;%</span></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(<span class="fu">desc</span>(RRR))</span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>  data<span class="sc">$</span>Variable <span class="ot">&lt;-</span> <span class="fu">factor</span>(data<span class="sc">$</span>Variable, </span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>                          <span class="at">levels =</span> <span class="fu">paste</span>(<span class="fu">unique</span>(<span class="fu">paste</span>(data<span class="sc">$</span>Variable)), <span class="at">sep =</span> <span class="st">&quot;,&quot;</span>))</span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(data)</span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+<div id="test-for-multicollinearity" class="section level1">
+<h1>Test for multicollinearity</h1>
+<p>We created a correlation matrix to look for variables that are too highly correlated (multicollinearity).</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create data frame with just numeric antecedent variables</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>antececent_data_frame <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(dat[,antecedent.independent.numeric])</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(antececent_data_frame) <span class="ot">&lt;-</span> name.list</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># get correlation matrix</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>isolation_cor_matrix <span class="ot">&lt;-</span> <span class="fu">cor</span>(antececent_data_frame, <span class="at">method =</span> <span class="st">&quot;pearson&quot;</span>, <span class="at">use =</span> <span class="st">&quot;pairwise.complete.obs&quot;</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>reorder_cor_matrix <span class="ot">&lt;-</span> <span class="cf">function</span>(cor_matrix){</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a> dd <span class="ot">&lt;-</span> <span class="fu">as.dist</span>((<span class="dv">1</span><span class="sc">-</span>cor_matrix)<span class="sc">/</span><span class="dv">2</span>) <span class="co">#Use correlation between variables as distance</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a> hc <span class="ot">&lt;-</span> <span class="fu">hclust</span>(dd)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a> cormat <span class="ot">&lt;-</span>cor_matrix[hc<span class="sc">$</span>order, hc<span class="sc">$</span>order]</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a> }</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Reorder the correlation matrix</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>cor_matrix_full <span class="ot">&lt;-</span> <span class="fu">reorder_cor_matrix</span>(isolation_cor_matrix)</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="co">#melt the values</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>metled_cor_matrix <span class="ot">&lt;-</span> reshape<span class="sc">::</span><span class="fu">melt</span>(cor_matrix_full, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="co">#correlation heat map</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>correlation_heat_map <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(metled_cor_matrix, <span class="fu">aes</span>(X2, X1, <span class="at">fill =</span> value))<span class="sc">+</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a> <span class="fu">geom_tile</span>(<span class="at">color =</span> <span class="st">&quot;white&quot;</span>)<span class="sc">+</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a> <span class="fu">scale_fill_gradient2</span>(<span class="at">low =</span> <span class="st">&quot;blue&quot;</span>, <span class="at">high =</span> <span class="st">&quot;red&quot;</span>, <span class="at">mid =</span> <span class="st">&quot;white&quot;</span>,</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>   <span class="at">midpoint =</span> <span class="dv">0</span>, <span class="at">limit =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>,<span class="dv">1</span>), <span class="at">space =</span> <span class="st">&quot;Lab&quot;</span>,</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">name=</span><span class="st">&quot;Pearson</span><span class="sc">\n</span><span class="st">Correlation&quot;</span>) <span class="sc">+</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">&quot;&quot;</span>,</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">&quot;&quot;</span>,</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">&quot;Correlation heat map for antecedents&quot;</span>)<span class="sc">+</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a> <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">vjust =</span> <span class="dv">1</span>, <span class="at">size =</span> <span class="dv">12</span>, <span class="at">hjust =</span> <span class="dv">1</span>),</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>       <span class="at">axis.text.y =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>),</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>       <span class="at">plot.margin=</span>grid<span class="sc">::</span><span class="fu">unit</span>(<span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>), <span class="st">&quot;mm&quot;</span>),</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>       <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">20</span>),</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>       )<span class="sc">+</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a> <span class="fu">coord_fixed</span>() <span class="sc">+</span></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(X2, X1, <span class="at">label =</span> <span class="fu">round</span>(value, <span class="at">digits =</span> <span class="dv">2</span>)), <span class="at">color =</span> <span class="st">&quot;black&quot;</span>, <span class="at">size =</span> <span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>correlation_heat_map</span></code></pre></div>
+<p><img src="stata_antecedent_isolation_THREE_trajectories_files/figure-html/heat%20map%20fig-1.png" width="1440" /></p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ggsave(</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   &quot;antecedent_correlation_heat_map.png&quot;,</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   plot = correlation_heat_map,</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   device = &quot;png&quot;,</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   path = paste0(graph_save_data_path, &quot;antecedents/analysis_interpretation&quot;),</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   width = 15,</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">#   height = 15</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co"># )</span></span></code></pre></div>
+</div>
+<div id="posterior-sensitivity-analysis" class="section level1">
+<h1>Posterior sensitivity analysis</h1>
+<p>The below few chunks are used to run the same analysis again in a reduced sample (only individuals who had a posterior probability of above 0.8 in all classes).</p>
+<p><strong>IMPORTANT</strong>: We created the current Rmd script to be able to use the same script to run the same analysis again in a reduced sample as a sensitivity analysis (only individuals who had a posterior probability of above 0.8 in all classes). When the variable “posterior.cut” is set to TRUE the following code will run for the data set that has those probability&lt;0.8 dropped.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r fold-show"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>posterior.cut <span class="ot">=</span> <span class="cn">FALSE</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r fold-show"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(posterior.cut <span class="sc">==</span> <span class="cn">TRUE</span>){</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># create new variable only with those who have a probability higher than 0.8 for each class</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> dat <span class="sc">%&gt;%</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">class_renamed_cut =</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>           <span class="fu">factor</span>(</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>             <span class="fu">case_when</span>(</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>             prob2 <span class="sc">&gt;</span> <span class="fl">0.8</span> <span class="sc">&amp;</span> class_renamed <span class="sc">==</span> <span class="st">&quot;Increasing&quot;</span> <span class="sc">~</span> <span class="st">&quot;Increasing&quot;</span>,</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>             prob3 <span class="sc">&gt;</span> <span class="fl">0.8</span> <span class="sc">&amp;</span> class_renamed <span class="sc">==</span> <span class="st">&quot;Decreasing&quot;</span> <span class="sc">~</span> <span class="st">&quot;Decreasing&quot;</span>,</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>             prob1 <span class="sc">&gt;</span> <span class="fl">0.8</span> <span class="sc">&amp;</span> class_renamed <span class="sc">==</span> <span class="st">&quot;Low stable&quot;</span> <span class="sc">~</span> <span class="st">&quot;Low stable&quot;</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>           ), </span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>           <span class="at">ordered =</span> <span class="cn">FALSE</span>))</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(nnet)</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co"># check the biggest group in the class to be the reference group</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(dat<span class="sc">$</span>class_renamed_cut)</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="co"># relevel class_factor</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> dat <span class="sc">%&gt;%</span> </span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">class_reordered_cut =</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>      <span class="fu">relevel</span>(</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>        class_renamed_cut,</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>        <span class="at">ref =</span> <span class="st">&quot;Low stable&quot;</span>,</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>        <span class="at">first =</span> <span class="cn">TRUE</span>, <span class="co">#levels in ref come first</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>        <span class="at">collapse =</span> <span class="st">&quot;+&quot;</span>, <span class="co">#String used when constructing names for combined factor levels</span></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>        <span class="at">xlevels =</span> <span class="cn">TRUE</span> <span class="co">#levels maintained even if not actually occurring</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a><span class="co"># check</span></span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(dat<span class="sc">$</span>class_reordered_cut)</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a><span class="co"># create new data set with only these individuals</span></span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>dat_prob_cut_out <span class="ot">&lt;-</span> dat <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="fu">is.na</span>(class_reordered_cut))</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> dat <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(class_reordered_cut))</span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a><span class="co"># check</span></span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a><span class="fu">freq</span>(dat<span class="sc">$</span>class_reordered)</span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>Statistics for posterior probability sensitivity analyses:</p>
+<ul>
+<li>Low stable: Dropped 42 people. Average probability = 0.66, minimum probability = 0.48.</li>
+<li>Increasing: Dropped 24 people. Average probability = 0.64, minimum probability = 0.49.</li>
+<li>Decreasing: Dropped 25 people. Average probability = 0.63, minimum probability = 0.51.</li>
+</ul>
+<p><strong>Posterior sensitivity N = 2141</strong></p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r fold-show"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(posterior.cut <span class="sc">==</span> <span class="cn">TRUE</span>){</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>low.stable.cut.stats <span class="ot">&lt;-</span> dat_prob_cut_out <span class="sc">%&gt;%</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(class_reordered <span class="sc">==</span> <span class="st">&quot;Low stable&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">descr</span>(prob1)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>increasing.cut.stats <span class="ot">&lt;-</span> dat_prob_cut_out <span class="sc">%&gt;%</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(class_reordered <span class="sc">==</span> <span class="st">&quot;Increasing&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">descr</span>(prob2)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>decreasing.cut.stats <span class="ot">&lt;-</span> dat_prob_cut_out <span class="sc">%&gt;%</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(class_reordered <span class="sc">==</span> <span class="st">&quot;Decreasing&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">descr</span>(prob3)</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>low.stable.cut.stats</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>increasing.cut.stats</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>decreasing.cut.stats</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+<div id="antecedent-analysis" class="section level1">
+<h1>Antecedent analysis</h1>
+<p>The following variables were dropped for the analyses: multinom.class_size_average_05, multinom.resident_moves_05, multinom.temp_negative_affect_05, multinom.temp_impulsivity_05, multinom.temp_approach_05, multinom.temp_sluggishness_05, multinom.temp_wariness_05, multinom.temp_undercontrolled_05, multinom.temp_inhibited_05, multinom.temp_shy_05.</p>
+<p><strong>Analysis plan</strong></p>
+<ol style="list-style-type: decimal">
+<li><p><em>Individual antecedent regressions</em>: single regressions are computed for each variable (class ~ variable). This is done through a loop. Relative Risk Ratios (RRR) and their confidence intervals are calculated. Statistics for all variables are combined and RRR (95% CI) are plotted for the Increasing and Decreasing class.</p></li>
+<li><p><em>Full model</em>: All variables that significantly predict class membership are controlled for. E.g. (class ~ social_variable_1 + home_variable_2 + neuro_variable_3 + emo_variable_4). RRR (95% CI) are calculated. Z scores for continuous variables are used. No multiple testing correction is applied at this step.</p></li>
+</ol>
+<p>All regressions are first computed in STATA - multinomial regression with clustering is not currently doable in R. The coefficients are then imported into R to be interpreted. The RRR coefficient indicates the likelihood of having higher values on the variable of interest, for those following either the increasing and decreasing class compared to the low stable.</p>
+<p>Binary variables: SES (middle/high vs low), Child harm (No harm vs possible/definite), any domestic violence (Yes/No), maternal lifetime depression (Yes/No). ACORN (1-5) and maternal warmth (1-6) have been recoded to be continuous variables.</p>
+<div id="stata-file-preparation" class="section level2">
+<h2>STATA file preparation</h2>
+<p>Create <em>z scores</em> for all continuous variables</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create a scaled version of the continuous variables - z scores for all variables</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>scaled_continuous_data <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">scale</span>(dat[antecedent.independent.continuous], <span class="at">center =</span> <span class="cn">TRUE</span>, <span class="at">scale =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># rename variables to show that they are z scores </span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(scaled_continuous_data) <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">&quot;z_score.&quot;</span>, <span class="fu">colnames</span>(scaled_continuous_data))</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co"># combine the scaled data to the main dataset </span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">cbind</span>(dat, scaled_continuous_data)</span></code></pre></div>
+<p>Create STATA file</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>data.mlogit <span class="ot">&lt;-</span> dat <span class="sc">%&gt;%</span> <span class="co"># need to rename for stata format</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(id,</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>         familyid,</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>         sex,</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">classreordered =</span> class_reordered,</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">ses =</span> SES_binary_releveled,</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>         <span class="at">acorn =</span> z_score.acorn_continuous_05,</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>         <span class="at">vandalism =</span> z_score.vandalism_05,</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">probneighbours =</span> z_score.problems_neighbours_05,</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>         <span class="at">numberchildschool =</span> z_score.number_children_school_05,</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>         <span class="at">meals =</span> z_score.number_children_school_free_meals_05,</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>         <span class="at">harm =</span> child_harm_recoded_05,</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>         <span class="at">siblings =</span> z_score.total_siblings_05,</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>         <span class="at">socialsupport =</span> z_score.total_social_support_05,</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>         <span class="at">activities =</span> z_score.total_activities_with_mum_05,</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>         <span class="at">biodad =</span> mum_notlived_biodad_sincebirth_05,</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>         <span class="at">domesticviolence =</span> any_domestic_violence_05,</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>         <span class="at">maternalwarmth =</span> z_score.maternal_warmth_continuous_05,</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>         <span class="at">maternaldepression =</span> maternal_depression_lifetime_05,</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>         <span class="at">openness =</span> z_score.maternal_personality_openness_05,</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>         <span class="at">conscientiousness =</span> z_score.maternal_personality_conscientiousness_05,</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>         <span class="at">extroversion =</span> z_score.maternal_personality_extroversion_05,</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>         <span class="at">agreeableness =</span> z_score.maternal_personality_agreeableness_05,</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>         <span class="at">neuroticism =</span> z_score.maternal_personality_neuroticism_05,</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>         <span class="at">antisocial =</span> z_score.antisocial_behaviour_parent_05,</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>         <span class="at">alcohol =</span> z_score.alcoholism_parent_05,</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>         <span class="at">iq =</span> z_score.IQ_05,</span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>         <span class="at">execfunction =</span> z_score.executive_function_05,</span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>         <span class="at">theoryofmind =</span> z_score.theory_of_mind_05,</span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>         <span class="at">externalising =</span> z_score.externalising_combined_05,</span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>         <span class="at">internalising =</span> z_score.internalising_combined_excl_sis_05,</span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>         <span class="at">adhd =</span> z_score.ADHD_combined_05,</span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>         <span class="at">prosocial =</span> z_score.prosocial_behaviours_combined_05)</span></code></pre></div>
+<p>Write data files for STATA to be used in multinomial regression. We have saved two different files depending on if we’re doing the sensitivity analysis (reduced sample) or not.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(foreign)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(posterior.cut <span class="sc">==</span> <span class="cn">FALSE</span>){</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">write.dta</span>(data.mlogit, <span class="st">&quot;/Users/katiethompson/Documents/PhD/LISS-DTP_Louise_and_Tim/Social isolation trajectories_Paper 1/data_analysis/data_full/data_raw/multinom.reg.stata.dta&quot;</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(posterior.cut <span class="sc">==</span> <span class="cn">TRUE</span>){</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">write.dta</span>(data.mlogit, <span class="st">&quot;/Users/katiethompson/Documents/PhD/LISS-DTP_Louise_and_Tim/Social isolation trajectories_Paper 1/data_analysis/data_full/data_raw/multinom.reg.stata.POSTERIOR.dta&quot;</span>)</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+<div id="stata-multinomial-regressions" class="section level2">
+<h2>STATA multinomial regressions</h2>
+<p>The mlogit code was run in STATA to calculate RRR, CI and pvalues for all antecedents entered into a single multinomial regression model. If you would like to run this in STATA, you can open the STATA file <em>“antecedent_multinomial_regression.do”</em> or <em>“antecedent_multinomial_regression_POSTERIOR.do”</em> from the Github home page. The output from the STATA file is saved as a txt file containing all the information from the regressions.</p>
+<p>Three models were run in STATA:</p>
+<ol style="list-style-type: decimal">
+<li>Individual regressions. Each antecedent was regressed on class membership.</li>
+<li>Significant from univariate model. <strong>This was NOT taken forward into analyses - only the individual and full model to avoid a stepwise approach</strong></li>
+<li>All model. This includes all antecedents in one model predicting class membership.</li>
+</ol>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r fold-show"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="sc">/</span><span class="er">/</span> read <span class="cf">in</span> file</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>use <span class="st">&quot;multinom.reg.stata.dta&quot;</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="sc">/</span><span class="er">/</span> create list of outcome variables</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>local outcomes <span class="st">&quot;ses acorn vandalism probneighbours numberchildschool meals harm siblings socialsupport activities biodad domesticviolence maternalwarmth maternaldepression openness conscientiousness extroversion agreeableness neuroticism antisocial alcohol iq execfunction theoryofmind externalising internalising adhd prosocial&quot;</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="sc">/</span><span class="er">/</span> loop <span class="cf">for</span> multinomial regression clustered by familyid</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>foreach var of varlist <span class="st">`</span><span class="at">outcomes&#39; {</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="at">mlogit classreordered </span><span class="st">`</span>var<span class="st">&#39; sex, cluster(familyid)</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="st">estimates store results_`var&#39;</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a><span class="er">}</span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="sc">/</span><span class="er">/</span> install package estout</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a><span class="sc">/</span><span class="er">/</span> ssc install estout</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a><span class="sc">/</span><span class="er">/</span> save results, dropping estimates we don<span class="st">&#39;t need and saving the RRR and upper and lower CI for each variable </span></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a><span class="st">estout results_* using multinomial_results_si.txt, drop(sex) cells(b(fmt(2)) ci_l(fmt(2)) ci_u(fmt(2)) p(fmt(8))) eform replace</span></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a><span class="st">// all model - predictors that are significant from UNIVARIATE models</span></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a><span class="st">mlogit classreordered ses acorn probneighbours meals harm siblings socialsupport activities biodad domesticviolence maternalwarmth maternaldepression openness conscientiousness extroversion agreeableness neuroticism antisocial alcohol iq execfunction theoryofmind externalising internalising adhd prosocial sex, cluster(familyid)</span></span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a><span class="st">estimates store allmodelsiguni </span></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a><span class="st">estout allmodelsiguni using multinomial_results_si.allmodel.SIGUNI.txt, drop(sex) cells(b(fmt(2)) ci_l(fmt(2)) ci_u(fmt(2)) p(fmt(8))) eform replace</span></span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a><span class="st">// all model - all predictors in one model</span></span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a><span class="st">mlogit classreordered ses acorn vandalism probneighbours numberchildschool meals harm siblings socialsupport activities biodad domesticviolence maternalwarmth maternaldepression openness conscientiousness extroversion agreeableness neuroticism antisocial alcohol iq execfunction theoryofmind externalising internalising adhd prosocial sex, cluster(familyid)</span></span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a><span class="st">estimates store allmodel </span></span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a><span class="st">estout allmodel using multinomial_results_si.allmodel.txt, drop(sex) cells(b(fmt(2)) ci_l(fmt(2)) ci_u(fmt(2)) p(fmt(8))) eform replace</span></span></code></pre></div>
+<p>Th next bit of code reades the files and moves the txt files to the right place - once this has been done the code is hashed out.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(posterior.cut <span class="sc">==</span> <span class="cn">FALSE</span>){</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co"># move txt file to data file </span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co"># file.move(paste0(stata_data_path, &quot;multinomial_results_si.txt&quot;), data_path, overwrite = TRUE)</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co"># file.move(paste0(stata_data_path,&quot;multinomial_results_si.allmodel.SIGUNI.txt&quot;), data_path, overwrite = TRUE)</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co"># file.move(paste0(stata_data_path,&quot;multinomial_results_si.allmodel.txt&quot;), data_path, overwrite = TRUE)</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="co"># individual regressions</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>dat.stata.individual.raw <span class="ot">&lt;-</span> <span class="fu">read_tsv</span>(<span class="fu">paste0</span>(data_path, <span class="st">&quot;multinomial_results_si.txt&quot;</span>)) </span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="co"># all model with only univariate sig variables</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>dat.stata.all.siguni.raw <span class="ot">&lt;-</span> <span class="fu">read_tsv</span>(<span class="fu">paste0</span>(data_path, <span class="st">&quot;multinomial_results_si.allmodel.SIGUNI.txt&quot;</span>))</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="co"># all model</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>dat.stata.all.raw <span class="ot">&lt;-</span> <span class="fu">read_tsv</span>(<span class="fu">paste0</span>(data_path, <span class="st">&quot;multinomial_results_si.allmodel.txt&quot;</span>))</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(posterior.cut <span class="sc">==</span> <span class="cn">TRUE</span>){</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a><span class="co"># move txt file to data file </span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a><span class="co"># file.move(paste0(stata_data_path, &quot;multinomial_results_si_POSTERIOR.txt&quot;), data_path, overwrite = TRUE)</span></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a><span class="co"># file.move(paste0(stata_data_path,&quot;multinomial_results_si.allmodel.SIGUNI_POSTERIOR.txt&quot;), data_path, overwrite = TRUE)</span></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a><span class="co"># file.move(paste0(stata_data_path,&quot;multinomial_results_si.allmodel_POSTERIOR.txt&quot;), data_path, overwrite = TRUE)</span></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a><span class="co"># individual regressions</span></span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>dat.stata.individual.raw <span class="ot">&lt;-</span> <span class="fu">read_tsv</span>(<span class="fu">paste0</span>(data_path, <span class="st">&quot;multinomial_results_si_POSTERIOR.txt&quot;</span>)) </span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a><span class="co"># all model with only univariate sig variables</span></span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>dat.stata.all.siguni.raw <span class="ot">&lt;-</span> <span class="fu">read_tsv</span>(<span class="fu">paste0</span>(data_path, <span class="st">&quot;multinomial_results_si.allmodel.SIGUNI_POSTERIOR.txt&quot;</span>))</span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a><span class="co"># all model</span></span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>dat.stata.all.raw <span class="ot">&lt;-</span> <span class="fu">read_tsv</span>(<span class="fu">paste0</span>(data_path, <span class="st">&quot;multinomial_results_si.allmodel_POSTERIOR.txt&quot;</span>))</span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+<div id="reformat-stata-output" class="section level2 tabset tabset-fade">
+<h2 class="tabset tabset-fade">Reformat STATA output</h2>
+<p>Layout from the STATA output file:</p>
+<ul>
+<li>b/min95/max95/p</li>
+</ul>
+<p>We now rearrange this file to create the antecedent multinomial tables needed for the manuscript.</p>
+<div id="univariate-regressions" class="section level3">
+<h3>Univariate regressions</h3>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>dat.stata.individual <span class="ot">&lt;-</span> dat.stata.individual.raw[<span class="fu">c</span>(<span class="dv">120</span><span class="sc">:</span><span class="dv">231</span>,<span class="dv">237</span><span class="sc">:</span><span class="dv">348</span>),<span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span>)] <span class="sc">%&gt;%</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">colnames&lt;-</span><span class="st">`</span>(name.list) <span class="sc">%&gt;%</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Class =</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">case_when</span>(</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">113</span> <span class="sc">~</span> <span class="st">&quot;Increasing&quot;</span>,</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">row_number</span>() <span class="sc">&gt;</span> <span class="dv">112</span> <span class="sc">~</span> <span class="st">&quot;Decreasing&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Variable =</span> </span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>           <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">&quot;RRR&quot;</span>, <span class="st">&quot;RRR.conf.low&quot;</span>, <span class="st">&quot;RRR.conf.high&quot;</span>, <span class="st">&quot;p.value&quot;</span>), <span class="dv">56</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gather</span>(key, value, <span class="st">`</span><span class="at">SES: Low</span><span class="st">`</span><span class="sc">:</span><span class="st">`</span><span class="at">Child prosocial behaviours</span><span class="st">`</span>, <span class="at">factor_key =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">spread</span>(Variable, value) <span class="sc">%&gt;%</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">Variable =</span> key) <span class="sc">%&gt;%</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">Significance =</span> </span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>      <span class="fu">if_else</span>(</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>        p.value <span class="sc">&lt;</span> <span class="fl">0.05</span>, </span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>        <span class="dv">1</span>,</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>        <span class="dv">0</span></span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>      ) <span class="sc">%&gt;%</span></span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">recode_factor</span>(</span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;0&quot;</span> <span class="ot">=</span> <span class="st">&quot;Non-significant&quot;</span>,</span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;1&quot;</span> <span class="ot">=</span> <span class="st">&quot;Significant&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">block =</span> </span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>      <span class="fu">case_when</span>(<span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">7</span> <span class="sc">~</span> <span class="st">&quot;Social domain&quot;</span>,</span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>                <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">14</span> <span class="sc">~</span> <span class="st">&quot;Home domain&quot;</span>,</span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>                <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">22</span> <span class="sc">~</span> <span class="st">&quot;Parent domain&quot;</span>,</span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a>                <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">25</span> <span class="sc">~</span> <span class="st">&quot;Neuro domain&quot;</span>,</span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a>                <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">29</span> <span class="sc">~</span> <span class="st">&quot;Emo/behave domain&quot;</span>,</span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a>                <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">35</span> <span class="sc">~</span> <span class="st">&quot;Social domain&quot;</span>,</span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a>                <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">42</span> <span class="sc">~</span> <span class="st">&quot;Home domain&quot;</span>,</span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a>                <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">50</span> <span class="sc">~</span> <span class="st">&quot;Parent domain&quot;</span>,</span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a>                <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">53</span> <span class="sc">~</span> <span class="st">&quot;Neuro domain&quot;</span>,</span>
+<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a>                <span class="fu">row_number</span>() <span class="sc">&gt;</span> <span class="dv">52</span> <span class="sc">~</span> <span class="st">&quot;Emo/behave domain&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(<span class="at">Class =</span> Class,</span>
+<span id="cb13-36"><a href="#cb13-36" aria-hidden="true" tabindex="-1"></a>            <span class="at">Variable =</span> Variable,</span>
+<span id="cb13-37"><a href="#cb13-37" aria-hidden="true" tabindex="-1"></a>            <span class="at">RRR =</span> <span class="fu">as.numeric</span>(RRR),</span>
+<span id="cb13-38"><a href="#cb13-38" aria-hidden="true" tabindex="-1"></a>            <span class="at">RRR.conf.low =</span> <span class="fu">as.numeric</span>(RRR.conf.low),</span>
+<span id="cb13-39"><a href="#cb13-39" aria-hidden="true" tabindex="-1"></a>            <span class="at">RRR.conf.high =</span> <span class="fu">as.numeric</span>(RRR.conf.high),</span>
+<span id="cb13-40"><a href="#cb13-40" aria-hidden="true" tabindex="-1"></a>            <span class="at">p.value =</span> <span class="fu">as.numeric</span>(p.value),</span>
+<span id="cb13-41"><a href="#cb13-41" aria-hidden="true" tabindex="-1"></a>            <span class="at">Significance =</span> Significance,</span>
+<span id="cb13-42"><a href="#cb13-42" aria-hidden="true" tabindex="-1"></a>            <span class="at">Domain =</span> block)</span></code></pre></div>
+<div id="table" class="section level4">
+<h4>Table</h4>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>univariate.reg.table <span class="ot">&lt;-</span> <span class="fu">paper.table</span>(dat.stata.individual)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>univariate.reg.table</span></code></pre></div>
+<table>
+<colgroup>
+<col width="9%" />
+<col width="43%" />
+<col width="4%" />
+<col width="9%" />
+<col width="10%" />
+<col width="6%" />
+<col width="15%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Class</th>
+<th align="left">Variable</th>
+<th align="right">RRR</th>
+<th align="right">95% CI low</th>
+<th align="right">95% CI high</th>
+<th align="right">p value</th>
+<th align="left">Domain</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Decreasing</td>
+<td align="left">SES: Low</td>
+<td align="right">1.95</td>
+<td align="right">1.32</td>
+<td align="right">2.90</td>
+<td align="right">0.00</td>
+<td align="left">Social domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">ACORN</td>
+<td align="right">1.27</td>
+<td align="right">1.04</td>
+<td align="right">1.55</td>
+<td align="right">0.02</td>
+<td align="left">Social domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Decreasing</td>
+<td align="left">Vandalism</td>
+<td align="right">1.17</td>
+<td align="right">0.98</td>
+<td align="right">1.39</td>
+<td align="right">0.08</td>
+<td align="left">Social domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Problems with neighbours</td>
+<td align="right">1.22</td>
+<td align="right">1.04</td>
+<td align="right">1.44</td>
+<td align="right">0.01</td>
+<td align="left">Social domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Decreasing</td>
+<td align="left">Number of children in school</td>
+<td align="right">1.18</td>
+<td align="right">0.95</td>
+<td align="right">1.47</td>
+<td align="right">0.14</td>
+<td align="left">Social domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Number of children eligible for free school meals</td>
+<td align="right">1.37</td>
+<td align="right">1.16</td>
+<td align="right">1.62</td>
+<td align="right">0.00</td>
+<td align="left">Social domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">SES: Low</td>
+<td align="right">2.56</td>
+<td align="right">1.68</td>
+<td align="right">3.91</td>
+<td align="right">0.00</td>
+<td align="left">Social domain</td>
+</tr>
+<tr class="even">
+<td align="left">Increasing</td>
+<td align="left">ACORN</td>
+<td align="right">1.27</td>
+<td align="right">1.00</td>
+<td align="right">1.60</td>
+<td align="right">0.05</td>
+<td align="left">Social domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Vandalism</td>
+<td align="right">1.17</td>
+<td align="right">0.96</td>
+<td align="right">1.43</td>
+<td align="right">0.13</td>
+<td align="left">Social domain</td>
+</tr>
+<tr class="even">
+<td align="left">Increasing</td>
+<td align="left">Problems with neighbours</td>
+<td align="right">1.32</td>
+<td align="right">1.12</td>
+<td align="right">1.54</td>
+<td align="right">0.00</td>
+<td align="left">Social domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Number of children in school</td>
+<td align="right">1.03</td>
+<td align="right">0.80</td>
+<td align="right">1.32</td>
+<td align="right">0.84</td>
+<td align="left">Social domain</td>
+</tr>
+<tr class="even">
+<td align="left">Increasing</td>
+<td align="left">Number of children eligible for free school meals</td>
+<td align="right">1.16</td>
+<td align="right">0.95</td>
+<td align="right">1.42</td>
+<td align="right">0.14</td>
+<td align="left">Social domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Decreasing</td>
+<td align="left">Child harm: Harmed</td>
+<td align="right">2.53</td>
+<td align="right">1.63</td>
+<td align="right">3.93</td>
+<td align="right">0.00</td>
+<td align="left">Home domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Total siblings</td>
+<td align="right">1.24</td>
+<td align="right">1.05</td>
+<td align="right">1.47</td>
+<td align="right">0.01</td>
+<td align="left">Home domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Decreasing</td>
+<td align="left">Social support</td>
+<td align="right">0.77</td>
+<td align="right">0.63</td>
+<td align="right">0.95</td>
+<td align="right">0.01</td>
+<td align="left">Home domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Total activities with mum</td>
+<td align="right">0.70</td>
+<td align="right">0.57</td>
+<td align="right">0.85</td>
+<td align="right">0.00</td>
+<td align="left">Home domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Decreasing</td>
+<td align="left">Mum not lived with biological dad since birth: Yes</td>
+<td align="right">1.84</td>
+<td align="right">0.91</td>
+<td align="right">3.70</td>
+<td align="right">0.09</td>
+<td align="left">Home domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Any domestic violence: Yes</td>
+<td align="right">1.82</td>
+<td align="right">1.22</td>
+<td align="right">2.71</td>
+<td align="right">0.00</td>
+<td align="left">Home domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Decreasing</td>
+<td align="left">Maternal warmth</td>
+<td align="right">0.66</td>
+<td align="right">0.55</td>
+<td align="right">0.80</td>
+<td align="right">0.00</td>
+<td align="left">Home domain</td>
+</tr>
+<tr class="even">
+<td align="left">Increasing</td>
+<td align="left">Child harm: Harmed</td>
+<td align="right">1.66</td>
+<td align="right">0.98</td>
+<td align="right">2.81</td>
+<td align="right">0.06</td>
+<td align="left">Home domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Total siblings</td>
+<td align="right">1.04</td>
+<td align="right">0.82</td>
+<td align="right">1.31</td>
+<td align="right">0.75</td>
+<td align="left">Home domain</td>
+</tr>
+<tr class="even">
+<td align="left">Increasing</td>
+<td align="left">Social support</td>
+<td align="right">0.77</td>
+<td align="right">0.63</td>
+<td align="right">0.94</td>
+<td align="right">0.01</td>
+<td align="left">Home domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Total activities with mum</td>
+<td align="right">0.65</td>
+<td align="right">0.54</td>
+<td align="right">0.78</td>
+<td align="right">0.00</td>
+<td align="left">Home domain</td>
+</tr>
+<tr class="even">
+<td align="left">Increasing</td>
+<td align="left">Mum not lived with biological dad since birth: Yes</td>
+<td align="right">2.25</td>
+<td align="right">1.15</td>
+<td align="right">4.42</td>
+<td align="right">0.02</td>
+<td align="left">Home domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Any domestic violence: Yes</td>
+<td align="right">1.42</td>
+<td align="right">0.93</td>
+<td align="right">2.18</td>
+<td align="right">0.10</td>
+<td align="left">Home domain</td>
+</tr>
+<tr class="even">
+<td align="left">Increasing</td>
+<td align="left">Maternal warmth</td>
+<td align="right">0.64</td>
+<td align="right">0.52</td>
+<td align="right">0.80</td>
+<td align="right">0.00</td>
+<td align="left">Home domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Decreasing</td>
+<td align="left">Maternal lifetime depression: Yes</td>
+<td align="right">1.88</td>
+<td align="right">1.27</td>
+<td align="right">2.78</td>
+<td align="right">0.00</td>
+<td align="left">Parent domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Maternal personality: Openness</td>
+<td align="right">0.80</td>
+<td align="right">0.65</td>
+<td align="right">0.97</td>
+<td align="right">0.03</td>
+<td align="left">Parent domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Decreasing</td>
+<td align="left">Maternal personality: Conscientiousness</td>
+<td align="right">0.58</td>
+<td align="right">0.49</td>
+<td align="right">0.70</td>
+<td align="right">0.00</td>
+<td align="left">Parent domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Maternal personality: Extroversion</td>
+<td align="right">0.77</td>
+<td align="right">0.64</td>
+<td align="right">0.93</td>
+<td align="right">0.01</td>
+<td align="left">Parent domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Decreasing</td>
+<td align="left">Maternal personality: Agreeableness</td>
+<td align="right">0.66</td>
+<td align="right">0.54</td>
+<td align="right">0.81</td>
+<td align="right">0.00</td>
+<td align="left">Parent domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Maternal personality: Neuroticism</td>
+<td align="right">1.45</td>
+<td align="right">1.20</td>
+<td align="right">1.75</td>
+<td align="right">0.00</td>
+<td align="left">Parent domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Decreasing</td>
+<td align="left">Parental antisocial behaviour</td>
+<td align="right">1.63</td>
+<td align="right">1.40</td>
+<td align="right">1.91</td>
+<td align="right">0.00</td>
+<td align="left">Parent domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Parental alcoholism</td>
+<td align="right">1.35</td>
+<td align="right">1.17</td>
+<td align="right">1.57</td>
+<td align="right">0.00</td>
+<td align="left">Parent domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Maternal lifetime depression: Yes</td>
+<td align="right">1.25</td>
+<td align="right">0.82</td>
+<td align="right">1.92</td>
+<td align="right">0.30</td>
+<td align="left">Parent domain</td>
+</tr>
+<tr class="even">
+<td align="left">Increasing</td>
+<td align="left">Maternal personality: Openness</td>
+<td align="right">0.66</td>
+<td align="right">0.53</td>
+<td align="right">0.81</td>
+<td align="right">0.00</td>
+<td align="left">Parent domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Maternal personality: Conscientiousness</td>
+<td align="right">0.65</td>
+<td align="right">0.54</td>
+<td align="right">0.79</td>
+<td align="right">0.00</td>
+<td align="left">Parent domain</td>
+</tr>
+<tr class="even">
+<td align="left">Increasing</td>
+<td align="left">Maternal personality: Extroversion</td>
+<td align="right">0.72</td>
+<td align="right">0.59</td>
+<td align="right">0.88</td>
+<td align="right">0.00</td>
+<td align="left">Parent domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Maternal personality: Agreeableness</td>
+<td align="right">0.74</td>
+<td align="right">0.61</td>
+<td align="right">0.89</td>
+<td align="right">0.00</td>
+<td align="left">Parent domain</td>
+</tr>
+<tr class="even">
+<td align="left">Increasing</td>
+<td align="left">Maternal personality: Neuroticism</td>
+<td align="right">1.33</td>
+<td align="right">1.09</td>
+<td align="right">1.62</td>
+<td align="right">0.00</td>
+<td align="left">Parent domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Parental antisocial behaviour</td>
+<td align="right">1.42</td>
+<td align="right">1.18</td>
+<td align="right">1.71</td>
+<td align="right">0.00</td>
+<td align="left">Parent domain</td>
+</tr>
+<tr class="even">
+<td align="left">Increasing</td>
+<td align="left">Parental alcoholism</td>
+<td align="right">1.15</td>
+<td align="right">0.98</td>
+<td align="right">1.34</td>
+<td align="right">0.08</td>
+<td align="left">Parent domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Decreasing</td>
+<td align="left">Child IQ</td>
+<td align="right">0.56</td>
+<td align="right">0.46</td>
+<td align="right">0.69</td>
+<td align="right">0.00</td>
+<td align="left">Neuro domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Child executive function</td>
+<td align="right">0.66</td>
+<td align="right">0.55</td>
+<td align="right">0.79</td>
+<td align="right">0.00</td>
+<td align="left">Neuro domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Decreasing</td>
+<td align="left">Child theory of mind</td>
+<td align="right">0.61</td>
+<td align="right">0.49</td>
+<td align="right">0.77</td>
+<td align="right">0.00</td>
+<td align="left">Neuro domain</td>
+</tr>
+<tr class="even">
+<td align="left">Increasing</td>
+<td align="left">Child IQ</td>
+<td align="right">0.64</td>
+<td align="right">0.51</td>
+<td align="right">0.79</td>
+<td align="right">0.00</td>
+<td align="left">Neuro domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Child executive function</td>
+<td align="right">0.88</td>
+<td align="right">0.73</td>
+<td align="right">1.06</td>
+<td align="right">0.19</td>
+<td align="left">Neuro domain</td>
+</tr>
+<tr class="even">
+<td align="left">Increasing</td>
+<td align="left">Child theory of mind</td>
+<td align="right">0.65</td>
+<td align="right">0.52</td>
+<td align="right">0.81</td>
+<td align="right">0.00</td>
+<td align="left">Neuro domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Decreasing</td>
+<td align="left">Child externalising behaviours</td>
+<td align="right">2.47</td>
+<td align="right">2.11</td>
+<td align="right">2.89</td>
+<td align="right">0.00</td>
+<td align="left">Emo/behave domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Child internalising behaviours</td>
+<td align="right">3.37</td>
+<td align="right">2.79</td>
+<td align="right">4.08</td>
+<td align="right">0.00</td>
+<td align="left">Emo/behave domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Decreasing</td>
+<td align="left">Child ADHD behaviours</td>
+<td align="right">2.85</td>
+<td align="right">2.38</td>
+<td align="right">3.41</td>
+<td align="right">0.00</td>
+<td align="left">Emo/behave domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Child prosocial behaviours</td>
+<td align="right">0.42</td>
+<td align="right">0.34</td>
+<td align="right">0.51</td>
+<td align="right">0.00</td>
+<td align="left">Emo/behave domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Child externalising behaviours</td>
+<td align="right">2.06</td>
+<td align="right">1.77</td>
+<td align="right">2.39</td>
+<td align="right">0.00</td>
+<td align="left">Emo/behave domain</td>
+</tr>
+<tr class="even">
+<td align="left">Increasing</td>
+<td align="left">Child internalising behaviours</td>
+<td align="right">1.66</td>
+<td align="right">1.38</td>
+<td align="right">1.99</td>
+<td align="right">0.00</td>
+<td align="left">Emo/behave domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Child ADHD behaviours</td>
+<td align="right">2.39</td>
+<td align="right">2.02</td>
+<td align="right">2.82</td>
+<td align="right">0.00</td>
+<td align="left">Emo/behave domain</td>
+</tr>
+<tr class="even">
+<td align="left">Increasing</td>
+<td align="left">Child prosocial behaviours</td>
+<td align="right">0.64</td>
+<td align="right">0.53</td>
+<td align="right">0.78</td>
+<td align="right">0.00</td>
+<td align="left">Emo/behave domain</td>
+</tr>
+</tbody>
+</table>
+<p>Bind <em>z score</em> trasformed values to order the graph according to block of variables</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>individual.home <span class="ot">&lt;-</span> <span class="fu">order.variables</span>(<span class="at">data =</span> dat.stata.individual, <span class="at">domain =</span> <span class="st">&quot;Home domain&quot;</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>individual.social <span class="ot">&lt;-</span> <span class="fu">order.variables</span>(<span class="at">data =</span> dat.stata.individual, <span class="at">domain =</span> <span class="st">&quot;Social domain&quot;</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>individual.parent <span class="ot">&lt;-</span> <span class="fu">order.variables</span>(<span class="at">data =</span> dat.stata.individual, <span class="at">domain =</span> <span class="st">&quot;Parent domain&quot;</span>)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>individual.neuro <span class="ot">&lt;-</span> <span class="fu">order.variables</span>(<span class="at">data =</span> dat.stata.individual, <span class="at">domain =</span> <span class="st">&quot;Neuro domain&quot;</span>)</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>individual.emo <span class="ot">&lt;-</span> <span class="fu">order.variables</span>(<span class="at">data =</span> dat.stata.individual, <span class="at">domain =</span> <span class="st">&quot;Emo/behave domain&quot;</span>)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="co"># join all</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>dat.stata.individual.ordered <span class="ot">&lt;-</span> <span class="fu">rbind</span>(</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  individual.social,</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  individual.home,</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  individual.parent,</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>  individual.neuro,</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>  individual.emo</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+</div>
+<div id="plot-for-univariate-regressions" class="section level4">
+<h4>Plot for univariate regressions</h4>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>stata.plot.individual <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  dat.stata.individual.ordered, </span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> Variable,</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> RRR,</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">ymin =</span> RRR.conf.low,</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">ymax =</span> RRR.conf.high,)</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="st">&quot;black&quot;</span>) <span class="sc">+</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="st">&quot;black&quot;</span>) <span class="sc">+</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_shape_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="dv">19</span>)) <span class="sc">+</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_pointrange</span>(<span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">width =</span> <span class="fl">0.7</span>), </span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>                  <span class="at">show.legend =</span> <span class="cn">FALSE</span>, </span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>                  <span class="at">size =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a> <span class="fu">facet_grid</span>(Domain <span class="sc">~</span> Class, <span class="at">drop =</span> <span class="cn">TRUE</span>, <span class="at">scales =</span> <span class="st">&quot;free_y&quot;</span>, <span class="at">space =</span> <span class="st">&quot;free&quot;</span>) <span class="sc">+</span></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">&quot;RRR (95% CI)&quot;</span>,</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">&quot;names&quot;</span>,</span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>       <span class="at">shape =</span> <span class="st">&quot;&quot;</span>) <span class="sc">+</span></span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>  theme.antecedent <span class="sc">+</span></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">linetype =</span> <span class="st">&quot;dashed&quot;</span>, <span class="at">yintercept =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a> <span class="fu">scale_y_continuous</span>(<span class="at">trans =</span> scales<span class="sc">::</span><span class="fu">log10_trans</span>(), <span class="at">breaks=</span><span class="fu">c</span>(<span class="fl">0.4</span>,<span class="fl">0.6</span>,<span class="fl">0.8</span>, <span class="dv">1</span>, <span class="fl">1.5</span>, <span class="dv">2</span>, <span class="fl">2.5</span>, <span class="dv">3</span>, <span class="fl">3.5</span>, <span class="dv">4</span>)) <span class="sc">+</span></span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() </span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>stata.plot.individual</span></code></pre></div>
+<p><img src="stata_antecedent_isolation_THREE_trajectories_files/figure-html/individual%20plot-1.png" width="1056" /></p>
+</div>
+</div>
+<div id="multivariate-model-all-variables-included" class="section level3">
+<h3>Multivariate model: all variables included</h3>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>dat.stata.all <span class="ot">&lt;-</span> dat.stata.all.raw[<span class="fu">c</span>(<span class="dv">120</span><span class="sc">:</span><span class="dv">231</span>,<span class="dv">237</span><span class="sc">:</span><span class="dv">348</span>),] <span class="sc">%&gt;%</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Class =</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">case_when</span>(</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">113</span> <span class="sc">~</span> <span class="st">&quot;Increasing&quot;</span>,</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">row_number</span>() <span class="sc">&gt;</span> <span class="dv">112</span> <span class="sc">~</span> <span class="st">&quot;Decreasing&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">key =</span> </span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>           <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">&quot;RRR&quot;</span>, <span class="st">&quot;RRR.conf.low&quot;</span>, <span class="st">&quot;RRR.conf.high&quot;</span>, <span class="st">&quot;p.value&quot;</span>), <span class="dv">56</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Variable =</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">case_when</span>(<span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">5</span>  <span class="sc">~</span> <span class="st">&quot;SES: Low&quot;</span>,</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">9</span>  <span class="sc">~</span> <span class="st">&quot;ACORN&quot;</span>,</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">13</span> <span class="sc">~</span> <span class="st">&quot;Vandalism&quot;</span>,</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">17</span> <span class="sc">~</span> <span class="st">&quot;Problems with neighbours&quot;</span>,</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">21</span> <span class="sc">~</span> <span class="st">&quot;Number of children in school&quot;</span>,</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">25</span> <span class="sc">~</span> <span class="st">&quot;Number of children eligible for free school meals&quot;</span>,</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">29</span> <span class="sc">~</span> <span class="st">&quot;Child harm: Harmed&quot;</span>,</span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">33</span> <span class="sc">~</span> <span class="st">&quot;Total siblings&quot;</span>,</span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">37</span> <span class="sc">~</span> <span class="st">&quot;Social support&quot;</span>,</span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">41</span> <span class="sc">~</span> <span class="st">&quot;Total activities with mum&quot;</span>,</span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">45</span> <span class="sc">~</span> <span class="st">&quot;Mum not lived with biological dad since birth: Yes&quot;</span>,</span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">49</span> <span class="sc">~</span> <span class="st">&quot;Any domestic violence: Yes&quot;</span> ,</span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">53</span> <span class="sc">~</span> <span class="st">&quot;Maternal warmth&quot;</span>,</span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">57</span> <span class="sc">~</span> <span class="st">&quot;Maternal lifetime depression: Yes&quot;</span>,</span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">61</span> <span class="sc">~</span> <span class="st">&quot;Maternal personality: Openness&quot;</span>,</span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">65</span> <span class="sc">~</span> <span class="st">&quot;Maternal personality: Conscientiousness&quot;</span>,</span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">69</span> <span class="sc">~</span> <span class="st">&quot;Maternal personality: Extroversion&quot;</span>,</span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">73</span> <span class="sc">~</span> <span class="st">&quot;Maternal personality: Agreeableness&quot;</span>,</span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">77</span> <span class="sc">~</span> <span class="st">&quot;Maternal personality: Neuroticism&quot;</span>,</span>
+<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">81</span> <span class="sc">~</span> <span class="st">&quot;Parental antisocial behaviour&quot;</span>,</span>
+<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">85</span> <span class="sc">~</span> <span class="st">&quot;Parental alcoholism&quot;</span>,</span>
+<span id="cb18-30"><a href="#cb18-30" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">89</span> <span class="sc">~</span> <span class="st">&quot;Child IQ&quot;</span>,</span>
+<span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">93</span> <span class="sc">~</span> <span class="st">&quot;Child executive function&quot;</span>,</span>
+<span id="cb18-32"><a href="#cb18-32" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">97</span> <span class="sc">~</span> <span class="st">&quot;Child theory of mind&quot;</span>,</span>
+<span id="cb18-33"><a href="#cb18-33" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">101</span> <span class="sc">~</span> <span class="st">&quot;Child externalising behaviours&quot;</span> ,</span>
+<span id="cb18-34"><a href="#cb18-34" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">105</span> <span class="sc">~</span> <span class="st">&quot;Child internalising behaviours&quot;</span>,</span>
+<span id="cb18-35"><a href="#cb18-35" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">109</span> <span class="sc">~</span> <span class="st">&quot;Child ADHD behaviours&quot;</span>,</span>
+<span id="cb18-36"><a href="#cb18-36" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">113</span> <span class="sc">~</span> <span class="st">&quot;Child prosocial behaviours&quot;</span>,</span>
+<span id="cb18-37"><a href="#cb18-37" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">117</span>  <span class="sc">~</span> <span class="st">&quot;SES: Low&quot;</span>,</span>
+<span id="cb18-38"><a href="#cb18-38" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">121</span>  <span class="sc">~</span> <span class="st">&quot;ACORN&quot;</span>,</span>
+<span id="cb18-39"><a href="#cb18-39" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">125</span> <span class="sc">~</span> <span class="st">&quot;Vandalism&quot;</span>,</span>
+<span id="cb18-40"><a href="#cb18-40" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">129</span> <span class="sc">~</span> <span class="st">&quot;Problems with neighbours&quot;</span>,</span>
+<span id="cb18-41"><a href="#cb18-41" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">133</span> <span class="sc">~</span> <span class="st">&quot;Number of children in school&quot;</span>,</span>
+<span id="cb18-42"><a href="#cb18-42" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">137</span> <span class="sc">~</span> <span class="st">&quot;Number of children eligible for free school meals&quot;</span>,</span>
+<span id="cb18-43"><a href="#cb18-43" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">141</span> <span class="sc">~</span> <span class="st">&quot;Child harm: Harmed&quot;</span>,</span>
+<span id="cb18-44"><a href="#cb18-44" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">145</span> <span class="sc">~</span> <span class="st">&quot;Total siblings&quot;</span>,</span>
+<span id="cb18-45"><a href="#cb18-45" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">149</span> <span class="sc">~</span> <span class="st">&quot;Social support&quot;</span>,</span>
+<span id="cb18-46"><a href="#cb18-46" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">153</span> <span class="sc">~</span> <span class="st">&quot;Total activities with mum&quot;</span>,</span>
+<span id="cb18-47"><a href="#cb18-47" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">157</span> <span class="sc">~</span> <span class="st">&quot;Mum not lived with biological dad since birth: Yes&quot;</span>,</span>
+<span id="cb18-48"><a href="#cb18-48" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">161</span> <span class="sc">~</span> <span class="st">&quot;Any domestic violence: Yes&quot;</span> ,</span>
+<span id="cb18-49"><a href="#cb18-49" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">165</span> <span class="sc">~</span> <span class="st">&quot;Maternal warmth&quot;</span>,</span>
+<span id="cb18-50"><a href="#cb18-50" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">169</span> <span class="sc">~</span> <span class="st">&quot;Maternal lifetime depression: Yes&quot;</span>,</span>
+<span id="cb18-51"><a href="#cb18-51" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">173</span> <span class="sc">~</span> <span class="st">&quot;Maternal personality: Openness&quot;</span>,</span>
+<span id="cb18-52"><a href="#cb18-52" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">177</span> <span class="sc">~</span> <span class="st">&quot;Maternal personality: Conscientiousness&quot;</span>,</span>
+<span id="cb18-53"><a href="#cb18-53" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">181</span> <span class="sc">~</span> <span class="st">&quot;Maternal personality: Extroversion&quot;</span>,</span>
+<span id="cb18-54"><a href="#cb18-54" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">185</span> <span class="sc">~</span> <span class="st">&quot;Maternal personality: Agreeableness&quot;</span>,</span>
+<span id="cb18-55"><a href="#cb18-55" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">189</span> <span class="sc">~</span> <span class="st">&quot;Maternal personality: Neuroticism&quot;</span>,</span>
+<span id="cb18-56"><a href="#cb18-56" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">193</span> <span class="sc">~</span> <span class="st">&quot;Parental antisocial behaviour&quot;</span>,</span>
+<span id="cb18-57"><a href="#cb18-57" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">197</span> <span class="sc">~</span> <span class="st">&quot;Parental alcoholism&quot;</span>,</span>
+<span id="cb18-58"><a href="#cb18-58" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">201</span> <span class="sc">~</span> <span class="st">&quot;Child IQ&quot;</span>,</span>
+<span id="cb18-59"><a href="#cb18-59" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">205</span> <span class="sc">~</span> <span class="st">&quot;Child executive function&quot;</span>,</span>
+<span id="cb18-60"><a href="#cb18-60" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">209</span> <span class="sc">~</span> <span class="st">&quot;Child theory of mind&quot;</span>,</span>
+<span id="cb18-61"><a href="#cb18-61" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">213</span> <span class="sc">~</span> <span class="st">&quot;Child externalising behaviours&quot;</span> ,</span>
+<span id="cb18-62"><a href="#cb18-62" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">217</span> <span class="sc">~</span> <span class="st">&quot;Child internalising behaviours&quot;</span>,</span>
+<span id="cb18-63"><a href="#cb18-63" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">221</span> <span class="sc">~</span> <span class="st">&quot;Child ADHD behaviours&quot;</span>,</span>
+<span id="cb18-64"><a href="#cb18-64" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&gt;</span> <span class="dv">220</span> <span class="sc">~</span> <span class="st">&quot;Child prosocial behaviours&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb18-65"><a href="#cb18-65" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>X1) <span class="sc">%&gt;%</span></span>
+<span id="cb18-66"><a href="#cb18-66" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb18-67"><a href="#cb18-67" aria-hidden="true" tabindex="-1"></a>    <span class="at">block =</span> <span class="fu">case_when</span>(</span>
+<span id="cb18-68"><a href="#cb18-68" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">25</span>  <span class="sc">~</span> <span class="st">&quot;Social domain&quot;</span>,</span>
+<span id="cb18-69"><a href="#cb18-69" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">53</span> <span class="sc">~</span> <span class="st">&quot;Home domain&quot;</span>,</span>
+<span id="cb18-70"><a href="#cb18-70" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">85</span> <span class="sc">~</span> <span class="st">&quot;Parent domain&quot;</span>,</span>
+<span id="cb18-71"><a href="#cb18-71" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">97</span> <span class="sc">~</span> <span class="st">&quot;Neuro domain&quot;</span>,</span>
+<span id="cb18-72"><a href="#cb18-72" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">113</span> <span class="sc">~</span> <span class="st">&quot;Emo/behave domain&quot;</span>,</span>
+<span id="cb18-73"><a href="#cb18-73" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">137</span> <span class="sc">~</span> <span class="st">&quot;Social domain&quot;</span>,</span>
+<span id="cb18-74"><a href="#cb18-74" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">165</span> <span class="sc">~</span> <span class="st">&quot;Home domain&quot;</span>,</span>
+<span id="cb18-75"><a href="#cb18-75" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">197</span> <span class="sc">~</span> <span class="st">&quot;Parent domain&quot;</span>,</span>
+<span id="cb18-76"><a href="#cb18-76" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&lt;</span> <span class="dv">209</span> <span class="sc">~</span> <span class="st">&quot;Neuro domain&quot;</span>,</span>
+<span id="cb18-77"><a href="#cb18-77" aria-hidden="true" tabindex="-1"></a>              <span class="fu">row_number</span>() <span class="sc">&gt;</span> <span class="dv">208</span> <span class="sc">~</span> <span class="st">&quot;Emo/behave domain&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb18-78"><a href="#cb18-78" aria-hidden="true" tabindex="-1"></a>  <span class="fu">spread</span>(key, allmodel) <span class="sc">%&gt;%</span></span>
+<span id="cb18-79"><a href="#cb18-79" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb18-80"><a href="#cb18-80" aria-hidden="true" tabindex="-1"></a>    <span class="at">Significance =</span> </span>
+<span id="cb18-81"><a href="#cb18-81" aria-hidden="true" tabindex="-1"></a>      <span class="fu">if_else</span>(</span>
+<span id="cb18-82"><a href="#cb18-82" aria-hidden="true" tabindex="-1"></a>        p.value <span class="sc">&lt;</span> <span class="fl">0.05</span>, </span>
+<span id="cb18-83"><a href="#cb18-83" aria-hidden="true" tabindex="-1"></a>        <span class="dv">1</span>,</span>
+<span id="cb18-84"><a href="#cb18-84" aria-hidden="true" tabindex="-1"></a>        <span class="dv">0</span></span>
+<span id="cb18-85"><a href="#cb18-85" aria-hidden="true" tabindex="-1"></a>      ) <span class="sc">%&gt;%</span></span>
+<span id="cb18-86"><a href="#cb18-86" aria-hidden="true" tabindex="-1"></a>    <span class="fu">recode_factor</span>(</span>
+<span id="cb18-87"><a href="#cb18-87" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;0&quot;</span> <span class="ot">=</span> <span class="st">&quot;Non-significant&quot;</span>,</span>
+<span id="cb18-88"><a href="#cb18-88" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;1&quot;</span> <span class="ot">=</span> <span class="st">&quot;Significant&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb18-89"><a href="#cb18-89" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(<span class="at">Class =</span> Class,</span>
+<span id="cb18-90"><a href="#cb18-90" aria-hidden="true" tabindex="-1"></a>            <span class="at">Variable =</span> Variable,</span>
+<span id="cb18-91"><a href="#cb18-91" aria-hidden="true" tabindex="-1"></a>            <span class="at">RRR =</span> <span class="fu">as.numeric</span>(RRR),</span>
+<span id="cb18-92"><a href="#cb18-92" aria-hidden="true" tabindex="-1"></a>            <span class="at">RRR.conf.low =</span> <span class="fu">as.numeric</span>(RRR.conf.low),</span>
+<span id="cb18-93"><a href="#cb18-93" aria-hidden="true" tabindex="-1"></a>            <span class="at">RRR.conf.high =</span> <span class="fu">as.numeric</span>(RRR.conf.high),</span>
+<span id="cb18-94"><a href="#cb18-94" aria-hidden="true" tabindex="-1"></a>            <span class="at">p.value =</span> <span class="fu">as.numeric</span>(p.value),</span>
+<span id="cb18-95"><a href="#cb18-95" aria-hidden="true" tabindex="-1"></a>            <span class="at">Significance =</span> Significance,</span>
+<span id="cb18-96"><a href="#cb18-96" aria-hidden="true" tabindex="-1"></a>            <span class="at">Domain =</span> block) </span></code></pre></div>
+<div id="table-1" class="section level4">
+<h4>Table</h4>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>paper.table.all.variables <span class="ot">&lt;-</span> <span class="fu">paper.table</span>(dat.stata.all)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>paper.table.all.variables</span></code></pre></div>
+<table>
+<colgroup>
+<col width="9%" />
+<col width="43%" />
+<col width="4%" />
+<col width="9%" />
+<col width="10%" />
+<col width="6%" />
+<col width="15%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Class</th>
+<th align="left">Variable</th>
+<th align="right">RRR</th>
+<th align="right">95% CI low</th>
+<th align="right">95% CI high</th>
+<th align="right">p value</th>
+<th align="left">Domain</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Decreasing</td>
+<td align="left">ACORN</td>
+<td align="right">0.91</td>
+<td align="right">0.61</td>
+<td align="right">1.35</td>
+<td align="right">0.64</td>
+<td align="left">Social domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Number of children eligible for free school meals</td>
+<td align="right">1.06</td>
+<td align="right">0.73</td>
+<td align="right">1.54</td>
+<td align="right">0.77</td>
+<td align="left">Social domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Decreasing</td>
+<td align="left">Number of children in school</td>
+<td align="right">1.43</td>
+<td align="right">1.07</td>
+<td align="right">1.93</td>
+<td align="right">0.02</td>
+<td align="left">Social domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Problems with neighbours</td>
+<td align="right">0.84</td>
+<td align="right">0.59</td>
+<td align="right">1.19</td>
+<td align="right">0.32</td>
+<td align="left">Social domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Decreasing</td>
+<td align="left">SES: Low</td>
+<td align="right">1.00</td>
+<td align="right">0.48</td>
+<td align="right">2.12</td>
+<td align="right">0.99</td>
+<td align="left">Social domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Vandalism</td>
+<td align="right">0.88</td>
+<td align="right">0.63</td>
+<td align="right">1.23</td>
+<td align="right">0.46</td>
+<td align="left">Social domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">ACORN</td>
+<td align="right">0.94</td>
+<td align="right">0.67</td>
+<td align="right">1.32</td>
+<td align="right">0.71</td>
+<td align="left">Social domain</td>
+</tr>
+<tr class="even">
+<td align="left">Increasing</td>
+<td align="left">Number of children eligible for free school meals</td>
+<td align="right">1.02</td>
+<td align="right">0.73</td>
+<td align="right">1.42</td>
+<td align="right">0.91</td>
+<td align="left">Social domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Number of children in school</td>
+<td align="right">1.07</td>
+<td align="right">0.81</td>
+<td align="right">1.43</td>
+<td align="right">0.62</td>
+<td align="left">Social domain</td>
+</tr>
+<tr class="even">
+<td align="left">Increasing</td>
+<td align="left">Problems with neighbours</td>
+<td align="right">1.17</td>
+<td align="right">0.89</td>
+<td align="right">1.55</td>
+<td align="right">0.25</td>
+<td align="left">Social domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">SES: Low</td>
+<td align="right">1.48</td>
+<td align="right">0.77</td>
+<td align="right">2.83</td>
+<td align="right">0.24</td>
+<td align="left">Social domain</td>
+</tr>
+<tr class="even">
+<td align="left">Increasing</td>
+<td align="left">Vandalism</td>
+<td align="right">0.80</td>
+<td align="right">0.58</td>
+<td align="right">1.10</td>
+<td align="right">0.17</td>
+<td align="left">Social domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Decreasing</td>
+<td align="left">Any domestic violence: Yes</td>
+<td align="right">0.93</td>
+<td align="right">0.49</td>
+<td align="right">1.79</td>
+<td align="right">0.84</td>
+<td align="left">Home domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Child harm: Harmed</td>
+<td align="right">1.14</td>
+<td align="right">0.56</td>
+<td align="right">2.33</td>
+<td align="right">0.71</td>
+<td align="left">Home domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Decreasing</td>
+<td align="left">Maternal warmth</td>
+<td align="right">1.06</td>
+<td align="right">0.81</td>
+<td align="right">1.37</td>
+<td align="right">0.68</td>
+<td align="left">Home domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Mum not lived with biological dad since birth: Yes</td>
+<td align="right">0.89</td>
+<td align="right">0.34</td>
+<td align="right">2.32</td>
+<td align="right">0.81</td>
+<td align="left">Home domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Decreasing</td>
+<td align="left">Social support</td>
+<td align="right">0.87</td>
+<td align="right">0.64</td>
+<td align="right">1.18</td>
+<td align="right">0.37</td>
+<td align="left">Home domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Total activities with mum</td>
+<td align="right">1.04</td>
+<td align="right">0.76</td>
+<td align="right">1.43</td>
+<td align="right">0.79</td>
+<td align="left">Home domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Decreasing</td>
+<td align="left">Total siblings</td>
+<td align="right">1.15</td>
+<td align="right">0.91</td>
+<td align="right">1.45</td>
+<td align="right">0.25</td>
+<td align="left">Home domain</td>
+</tr>
+<tr class="even">
+<td align="left">Increasing</td>
+<td align="left">Any domestic violence: Yes</td>
+<td align="right">0.75</td>
+<td align="right">0.41</td>
+<td align="right">1.38</td>
+<td align="right">0.36</td>
+<td align="left">Home domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Child harm: Harmed</td>
+<td align="right">1.19</td>
+<td align="right">0.57</td>
+<td align="right">2.48</td>
+<td align="right">0.65</td>
+<td align="left">Home domain</td>
+</tr>
+<tr class="even">
+<td align="left">Increasing</td>
+<td align="left">Maternal warmth</td>
+<td align="right">1.00</td>
+<td align="right">0.77</td>
+<td align="right">1.30</td>
+<td align="right">1.00</td>
+<td align="left">Home domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Mum not lived with biological dad since birth: Yes</td>
+<td align="right">1.10</td>
+<td align="right">0.42</td>
+<td align="right">2.87</td>
+<td align="right">0.85</td>
+<td align="left">Home domain</td>
+</tr>
+<tr class="even">
+<td align="left">Increasing</td>
+<td align="left">Social support</td>
+<td align="right">0.92</td>
+<td align="right">0.72</td>
+<td align="right">1.18</td>
+<td align="right">0.53</td>
+<td align="left">Home domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Total activities with mum</td>
+<td align="right">0.79</td>
+<td align="right">0.60</td>
+<td align="right">1.03</td>
+<td align="right">0.08</td>
+<td align="left">Home domain</td>
+</tr>
+<tr class="even">
+<td align="left">Increasing</td>
+<td align="left">Total siblings</td>
+<td align="right">0.82</td>
+<td align="right">0.61</td>
+<td align="right">1.11</td>
+<td align="right">0.21</td>
+<td align="left">Home domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Decreasing</td>
+<td align="left">Maternal lifetime depression: Yes</td>
+<td align="right">1.08</td>
+<td align="right">0.58</td>
+<td align="right">1.99</td>
+<td align="right">0.81</td>
+<td align="left">Parent domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Maternal personality: Agreeableness</td>
+<td align="right">0.97</td>
+<td align="right">0.64</td>
+<td align="right">1.46</td>
+<td align="right">0.88</td>
+<td align="left">Parent domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Decreasing</td>
+<td align="left">Maternal personality: Conscientiousness</td>
+<td align="right">0.85</td>
+<td align="right">0.60</td>
+<td align="right">1.20</td>
+<td align="right">0.35</td>
+<td align="left">Parent domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Maternal personality: Extroversion</td>
+<td align="right">0.84</td>
+<td align="right">0.58</td>
+<td align="right">1.22</td>
+<td align="right">0.36</td>
+<td align="left">Parent domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Decreasing</td>
+<td align="left">Maternal personality: Neuroticism</td>
+<td align="right">1.01</td>
+<td align="right">0.65</td>
+<td align="right">1.57</td>
+<td align="right">0.95</td>
+<td align="left">Parent domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Maternal personality: Openness</td>
+<td align="right">1.67</td>
+<td align="right">1.12</td>
+<td align="right">2.50</td>
+<td align="right">0.01</td>
+<td align="left">Parent domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Decreasing</td>
+<td align="left">Parental alcoholism</td>
+<td align="right">1.09</td>
+<td align="right">0.80</td>
+<td align="right">1.50</td>
+<td align="right">0.57</td>
+<td align="left">Parent domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Parental antisocial behaviour</td>
+<td align="right">0.93</td>
+<td align="right">0.63</td>
+<td align="right">1.36</td>
+<td align="right">0.69</td>
+<td align="left">Parent domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Maternal lifetime depression: Yes</td>
+<td align="right">1.12</td>
+<td align="right">0.62</td>
+<td align="right">2.02</td>
+<td align="right">0.70</td>
+<td align="left">Parent domain</td>
+</tr>
+<tr class="even">
+<td align="left">Increasing</td>
+<td align="left">Maternal personality: Agreeableness</td>
+<td align="right">0.93</td>
+<td align="right">0.67</td>
+<td align="right">1.28</td>
+<td align="right">0.65</td>
+<td align="left">Parent domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Maternal personality: Conscientiousness</td>
+<td align="right">1.00</td>
+<td align="right">0.69</td>
+<td align="right">1.43</td>
+<td align="right">0.98</td>
+<td align="left">Parent domain</td>
+</tr>
+<tr class="even">
+<td align="left">Increasing</td>
+<td align="left">Maternal personality: Extroversion</td>
+<td align="right">1.05</td>
+<td align="right">0.71</td>
+<td align="right">1.56</td>
+<td align="right">0.82</td>
+<td align="left">Parent domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Maternal personality: Neuroticism</td>
+<td align="right">0.93</td>
+<td align="right">0.66</td>
+<td align="right">1.31</td>
+<td align="right">0.69</td>
+<td align="left">Parent domain</td>
+</tr>
+<tr class="even">
+<td align="left">Increasing</td>
+<td align="left">Maternal personality: Openness</td>
+<td align="right">0.94</td>
+<td align="right">0.60</td>
+<td align="right">1.48</td>
+<td align="right">0.80</td>
+<td align="left">Parent domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Parental alcoholism</td>
+<td align="right">0.81</td>
+<td align="right">0.63</td>
+<td align="right">1.04</td>
+<td align="right">0.10</td>
+<td align="left">Parent domain</td>
+</tr>
+<tr class="even">
+<td align="left">Increasing</td>
+<td align="left">Parental antisocial behaviour</td>
+<td align="right">0.97</td>
+<td align="right">0.66</td>
+<td align="right">1.44</td>
+<td align="right">0.90</td>
+<td align="left">Parent domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Decreasing</td>
+<td align="left">Child executive function</td>
+<td align="right">0.79</td>
+<td align="right">0.62</td>
+<td align="right">1.00</td>
+<td align="right">0.05</td>
+<td align="left">Neuro domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Child IQ</td>
+<td align="right">0.96</td>
+<td align="right">0.71</td>
+<td align="right">1.28</td>
+<td align="right">0.77</td>
+<td align="left">Neuro domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Decreasing</td>
+<td align="left">Child theory of mind</td>
+<td align="right">1.02</td>
+<td align="right">0.74</td>
+<td align="right">1.41</td>
+<td align="right">0.90</td>
+<td align="left">Neuro domain</td>
+</tr>
+<tr class="even">
+<td align="left">Increasing</td>
+<td align="left">Child executive function</td>
+<td align="right">1.30</td>
+<td align="right">1.02</td>
+<td align="right">1.66</td>
+<td align="right">0.04</td>
+<td align="left">Neuro domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Child IQ</td>
+<td align="right">1.00</td>
+<td align="right">0.75</td>
+<td align="right">1.34</td>
+<td align="right">1.00</td>
+<td align="left">Neuro domain</td>
+</tr>
+<tr class="even">
+<td align="left">Increasing</td>
+<td align="left">Child theory of mind</td>
+<td align="right">0.82</td>
+<td align="right">0.63</td>
+<td align="right">1.07</td>
+<td align="right">0.15</td>
+<td align="left">Neuro domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Decreasing</td>
+<td align="left">Child ADHD behaviours</td>
+<td align="right">1.78</td>
+<td align="right">1.25</td>
+<td align="right">2.54</td>
+<td align="right">0.00</td>
+<td align="left">Emo/behave domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Child externalising behaviours</td>
+<td align="right">1.15</td>
+<td align="right">0.79</td>
+<td align="right">1.67</td>
+<td align="right">0.46</td>
+<td align="left">Emo/behave domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Decreasing</td>
+<td align="left">Child internalising behaviours</td>
+<td align="right">3.02</td>
+<td align="right">2.29</td>
+<td align="right">3.97</td>
+<td align="right">0.00</td>
+<td align="left">Emo/behave domain</td>
+</tr>
+<tr class="even">
+<td align="left">Decreasing</td>
+<td align="left">Child prosocial behaviours</td>
+<td align="right">0.59</td>
+<td align="right">0.43</td>
+<td align="right">0.81</td>
+<td align="right">0.00</td>
+<td align="left">Emo/behave domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Child ADHD behaviours</td>
+<td align="right">1.90</td>
+<td align="right">1.40</td>
+<td align="right">2.57</td>
+<td align="right">0.00</td>
+<td align="left">Emo/behave domain</td>
+</tr>
+<tr class="even">
+<td align="left">Increasing</td>
+<td align="left">Child externalising behaviours</td>
+<td align="right">1.30</td>
+<td align="right">0.94</td>
+<td align="right">1.78</td>
+<td align="right">0.11</td>
+<td align="left">Emo/behave domain</td>
+</tr>
+<tr class="odd">
+<td align="left">Increasing</td>
+<td align="left">Child internalising behaviours</td>
+<td align="right">1.22</td>
+<td align="right">0.95</td>
+<td align="right">1.56</td>
+<td align="right">0.12</td>
+<td align="left">Emo/behave domain</td>
+</tr>
+<tr class="even">
+<td align="left">Increasing</td>
+<td align="left">Child prosocial behaviours</td>
+<td align="right">1.01</td>
+<td align="right">0.77</td>
+<td align="right">1.33</td>
+<td align="right">0.95</td>
+<td align="left">Emo/behave domain</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>dat.stata.all.plot <span class="ot">&lt;-</span> dat.stata.all <span class="sc">%&gt;%</span> </span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Significance <span class="sc">==</span> <span class="st">&quot;Significant&quot;</span>,</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>         Variable <span class="sc">!=</span> <span class="st">&quot;Child executive function&quot;</span>)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>individual.sig.social.plot <span class="ot">&lt;-</span> <span class="fu">order.variables</span>(<span class="at">data =</span> dat.stata.all.plot, <span class="at">domain =</span> <span class="st">&quot;Social domain&quot;</span>)</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>individual.sig.parent.plot <span class="ot">&lt;-</span> <span class="fu">order.variables</span>(<span class="at">data =</span> dat.stata.all.plot, <span class="at">domain =</span> <span class="st">&quot;Parent domain&quot;</span>)</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>individual.sig.emo.plot <span class="ot">&lt;-</span> <span class="fu">order.variables</span>(<span class="at">data =</span> dat.stata.all.plot, <span class="at">domain =</span> <span class="st">&quot;Emo/behave domain&quot;</span>)</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="co"># join all</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>dat.stata.all.plot.ordered <span class="ot">&lt;-</span> <span class="fu">rbind</span>(</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>  individual.sig.social.plot,</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>  individual.sig.parent.plot,</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>  individual.sig.emo.plot</span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<p>Plot of significant variables from the multivariate analysis:</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>stata.plot.all_model <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  dat.stata.all.plot.ordered, </span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> Variable,</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> RRR,</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">ymin =</span> RRR.conf.low,</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">ymax =</span> RRR.conf.high,</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">color =</span> Class)</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">&quot;black&quot;</span>, <span class="st">&quot;black&quot;</span>)) <span class="sc">+</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">&quot;black&quot;</span>, <span class="st">&quot;black&quot;</span>)) <span class="sc">+</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_shape_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="dv">19</span>)) <span class="sc">+</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_pointrange</span>(<span class="fu">aes</span>(<span class="at">shape =</span> Significance), <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">width =</span> <span class="fl">0.7</span>)) <span class="sc">+</span></span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(Domain <span class="sc">~</span> Class, <span class="at">drop =</span> <span class="cn">TRUE</span>, <span class="at">scales =</span> <span class="st">&quot;free_y&quot;</span>, <span class="at">space =</span> <span class="st">&quot;free&quot;</span>) <span class="sc">+</span></span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">&quot;RRR (95% CI)&quot;</span>,</span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">&quot;names&quot;</span>,</span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">&quot;Association between antecedents and social isolation trajectories&quot;</span>,</span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="fu">paste</span>(<span class="st">&quot;N(Total) = &quot;</span>, <span class="fu">length</span>(dat<span class="sc">$</span>sex),</span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>                        <span class="st">&quot;; N(Increasing) = &quot;</span>, <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(dat<span class="sc">$</span>class_renamed[dat<span class="sc">$</span>class_renamed<span class="sc">==</span><span class="st">&quot;Increasing&quot;</span>])),</span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>                        <span class="st">&quot;; N(Decreasing) = &quot;</span>, <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(dat<span class="sc">$</span>class_renamed[dat<span class="sc">$</span>class_renamed<span class="sc">==</span><span class="st">&quot;Decreasing&quot;</span>])), <span class="at">sep =</span> <span class="st">&quot;&quot;</span>),</span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">&quot;&quot;</span>,</span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>       <span class="at">shape =</span> <span class="st">&quot;&quot;</span>) <span class="sc">+</span></span>
+<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a>  theme.antecedent <span class="sc">+</span></span>
+<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">&quot;none&quot;</span>) <span class="sc">+</span></span>
+<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">linetype =</span> <span class="st">&quot;dashed&quot;</span>, <span class="at">yintercept =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a> <span class="fu">scale_y_continuous</span>(<span class="at">trans =</span> scales<span class="sc">::</span><span class="fu">log10_trans</span>(), <span class="at">breaks=</span><span class="fu">c</span>(<span class="fl">0.5</span>, <span class="fl">0.6</span>,<span class="fl">0.8</span>, <span class="dv">1</span>, <span class="fl">1.5</span>, <span class="dv">2</span>, <span class="fl">2.5</span>, <span class="dv">3</span>, <span class="dv">4</span>)) <span class="sc">+</span></span>
+<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>()</span>
+<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-28"><a href="#cb21-28" aria-hidden="true" tabindex="-1"></a>stata.plot.all_model </span></code></pre></div>
+<p><img src="stata_antecedent_isolation_THREE_trajectories_files/figure-html/stata%20plot%20full%20model-1.png" width="672" /></p>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Add footer -->
+
+&nbsp;
+
+<hr />
+
+<center>
+
+<img src="kcl_logo.png" 
+
+     width="100" 
+
+     height="75" />
+
+</center>
+
+<br>
+
+<p style="text-align: center;">Work by <a href="https://github.com/knthompson26/">Katherine N Thompson</a></p>
+
+<p style="text-align: center;"><span style="color: #808080;"><em>katherine.n.thompson@kcl.ac.uk</em></span></p>
+
+
+
+<!-- Add icon library -->
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
+
+<!-- Add font awesome icons -->
+
+<p style="text-align: center;">
+
+    <a href="https://twitter.com/KTNThompson" class="fa fa-twitter"></a>
+
+    <a href="https://github.com/knthompson26/" class="fa fa-github"></a>
+
+</p>
+
+
+
+&nbsp;
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
