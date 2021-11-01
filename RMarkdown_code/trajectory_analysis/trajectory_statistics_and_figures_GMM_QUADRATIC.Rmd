@@ -1,39 +1,37 @@
 ---
-title: "GMM trajectory statistics and figures for Quadratic models"
-author: "Katherine N Thompson"
-date: "13th Jan 2021"
-output:
-  word_document:
-    toc: yes
-    toc_depth: '2'
+title: "GMM trajectory statistics and figures for quadratic models"
+output:  
   html_document:
     df_print: paged
     toc: yes
     toc_depth: 2
     toc_float:
-      collapsed: no
-    number_sections: no
+      collapsed: false
+    number_sections: false
     highlight: monochrome
-    theme: cerulean
-code_folding: hide
+    theme: flatly
+    code_folding: hide
+    includes:
+      after_body: footer.html
 ---
+
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE,
+knitr::opts_chunk$set(echo = TRUE,
                       comment = NA,
                       prompt = FALSE,
                       cache = FALSE,
                       message = FALSE,
-                      warning = FALSE)
-
+                      warning = FALSE,
+                      results = 'asis')
 
 options(bitmapType = 'quartz') # to render fonts better
 ```
 
-```{r Clear global environment}
+```{r Clear global environment, include=FALSE}
 remove(list = ls())
 ```
 
-```{r colour palletes for graphs}
+```{r colour palletes for graphs, include=FALSE}
 palette1 <- c("#78D9C5")
 palette2 <- c("#78D9C5","#F5BE5E")
 palette3 <- c("#78D9C5","#F5BE5E","#EEB6E9")
@@ -44,11 +42,12 @@ palette6 <- c("#78D9C5","#F5BE5E","#EEB6E9","#DBDB73","#FFED98","#BFD2EB")
  
 ```{r source the data file path}
 #source raw data directory: data_raw and data included
-source("../../../../../isolation_trajectories_data_path.R")
+source("../../../isolation_trajectories_data_path.R")
 ```
 
-```{r Mplus packages}
+```{r Packages, include=FALSE}
 library(MplusAutomation)
+library(summarytools)
 library(stringr)
 library(stringi)
 library(filesstrings)
@@ -61,19 +60,15 @@ library(tidyverse)
 library(plyr) #conflicts with tidyverse for e.g. rename and row_number
 ```
 
-```{r MplusAutomation citation}
-# citation("MplusAutomation")
-```
-
 # Quadratic GMM 
 
-## Q significance for each model
+## Quadratic term significance for each model {.tabset .tabset-fade}
 
-```{r read in data for growth curves, include=FALSE}
+```{r read in data for growth curves, results='hide', message=FALSE}
 si.quad.all <- readModels(paste0(mplus_GMM_clustered_full_output_QUAD_data_path), recursive = TRUE)
 ```
 
-```{r extract summary stats for growth curves, include=FALSE}
+```{r extract summary stats for growth curves}
 #extract the summary variables from the mplus output files. Assuming there are multiple files in the above directory, model summaries could be retained as a data.frame as follows:
 si_quad_summaries <- do.call("rbind.fill",
                         sapply(si.quad.all,
@@ -81,16 +76,18 @@ si_quad_summaries <- do.call("rbind.fill",
                                "summaries"))
 ```
 
-Only reported mean significance of q for classes 2-3 as the 4-6 class models did not converge. 
+Here we only reprt trsults for the two and three class models as the four to six class models did not converge. 
 
-4th class originally had problems with negative S variances - set S@0 for this model. 
-- this then resulted in non-convergence. 
+* 4th class originally had problems with negative S variances - set S@0 for this model, this then resulted in non-convergence. 
+* 5th class originally had problems with negative S variances - set S@0 for this model, this then resulted in non-convergence. 
+* 6th class originally had problems with negative S variances - set S@0 for this model, this then resulted in non-convergence. 
 
-5th class originally had problems with negative S variances - set S@0 for this model. 
-- this then resulted in non-convergence. 
+**Significance values for 2 class model:**
+Q has significant mean for class 1 (0.044), although only just. Q has non significant mean for class 2 (0.085). 
 
-6th class originally had problems with negative S variances - set S@0 for this model. 
-- this then resulted in non-convergence. 
+**Significance values for 3 class model:**
+Q has significant mean for class 1 (0.001). Q has significant mean for class 2 (0.002). Q has significant mean for class 3 (0.008).
+
 
 ```{r extract significance values of Q}
 # two class
@@ -106,30 +103,40 @@ quad.mean.three.class <- si.quad.all$X.Users.katiethompson.Documents.PhD.LISS.DT
 
 quad.variance.three.class <- si.quad.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.quadratic..isolation_3traj_full_sample_clustered_QUAD.out$parameters$unstandardized %>%
   filter(paramHeader == "Variances" & LatentClass < 7) # filter out the means for I, S and Q for each class 
-
-quad.mean.two.class
-quad.variance.two.class
-quad.mean.three.class
-quad.variance.three.class
 ```
 
-Significance values for 2 class model:
-- Q has significant mean for class 1 (0.044), although only just. 
-- Q has non significant mean for class 2 (0.085). 
+### Two class model
 
-Significance values for 3 class model:
-- Q has significant mean for class 1 (0.001).
-- Q has significant mean for class 2 (0.002). 
-- Q has significant mean for class 3 (0.008). 
+```{r means two class}
+two.class.mean.var <- rbind(quad.mean.two.class, quad.variance.two.class) %>%
+  select(`Mean/variance` = paramHeader, 
+         `Intercept/slope/quadratic` = param, 
+         `estimate` = est, 
+         `standard error` = se, 
+         `p value` = pval)
+kable(two.class.mean.var)
+```
+
+### Three class model
+
+```{r means three class}
+three.class.mean.var <- rbind(quad.mean.three.class, quad.variance.three.class) %>%
+  select(`Mean/variance` = paramHeader, 
+         `Intercept/slope/quadratic` = param, 
+         `estimate` = est, 
+         `standard error` = se, 
+         `p value` = pval)
+kable(three.class.mean.var)
+```
 
 ## Model fit statistics for two and three class models
 
-```{r remove 4,5,6 class models, include=FALSE}
+```{r remove 4,5,6 class models}
 # remove 4,5,6 class models
 si.two_three.summaries <- si_quad_summaries[-c(3:5),] 
 ```
 
-```{r create data frame with sumamary variables, include=FALSE}
+```{r create data frame with sumamary variables}
 #social isolation summaries 
 si.class.summaries <- data.frame(matrix(nrow = 2, 
                                          ncol = 8)) 
@@ -145,7 +152,7 @@ colnames(si.class.summaries) <- c("Model",
                                   "Class Proportions") #or whichever indices you want to compare; do si_summaries$ to see what's in there
 
 #check colnames
-si.class.summaries
+#si.class.summaries
 
 #create "Model" variable
 si.class.summaries <- si.class.summaries %>%
@@ -176,7 +183,7 @@ si.class.summaries <- si.class.summaries %>%
       si.two_three.summaries$T11_VLMR_PValue) #T11_VLMR_PValue col from original summaries data set
 
 #check
-si.class.summaries
+#si.class.summaries
 ```
 
 ```{r create class proportions % for each model}
@@ -205,7 +212,7 @@ kable(si.class.summaries)
 ## Plots {.tabset .tabset-fade}
 
 ### Two Class model
-```{r two class GMM model preparation, include=FALSE}
+```{r two class GMM model preparation}
 #create two class data frame with means and variances
 two_class_si <- as.data.frame(
   si.quad.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.quadratic..isolation_2traj_full_sample_clustered_QUAD.out$gh5$means_and_variances_data$y_estimated_means)
@@ -223,7 +230,7 @@ two_class_si <- two_class_si %>%
                values_to = "social.isolation_score")
 
 #check
-two_class_si
+#two_class_si
 ```
 
 ```{r plot 2 class GMM  model}
@@ -262,7 +269,7 @@ two_traj_plot_clustered_full_sample
 
 ### Three Class model
 
-```{r three class GMM model preparation, include=FALSE}
+```{r three class GMM model preparation}
 #create three class data frame with means and variances
 three_class_si <- as.data.frame(
   si.quad.all$X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.quadratic..isolation_3traj_full_sample_clustered_QUAD.out$gh5$means_and_variances_data$y_estimated_means)
@@ -280,7 +287,7 @@ three_class_si <- three_class_si %>%
                values_to = "social.isolation_score")
 
 #check
-three_class_si
+#three_class_si
 ```
 
 ```{r plot 3 class GMM model}
@@ -316,8 +323,6 @@ three_traj_plot_clustered_full_sample <- ggplot(three_class_si,
 three_traj_plot_clustered_full_sample
 ```
 
-# Save graphs as images into folder "plots"
-
 ```{r save as JPEG, include=FALSE}
 # Two trajectories
 ggsave(
@@ -339,7 +344,7 @@ ggsave(
 )
 ```
 
-```{r combine graphs into panel figure}
+```{r combine graphs into panel figure, include=FALSE}
 library(ggpubr) # Needed for combining plots
 library(gridExtra)
 combined_trajectories_plot_clustered_full_sample_quadratic <- ggarrange(two_traj_plot_clustered_full_sample, 
@@ -361,18 +366,14 @@ ggsave(
 )
 ```
 
-# Check to see how group allocation differs between linear and quadratic 3 class model
+# Allocation differences between linear and quadratic 3 class model
 
-## Read in descriptives output file
-
-```{r read in prior descriptives data and check variable names, include=FALSE}
+```{r read in prior descriptives data and check variable names}
 dat.descriptives <- readRDS(file = paste0(data_path, "preprocessed_isolation_trajectories_Jan2021_full_sample.rds"))
-colnames(dat.descriptives)
+#colnames(dat.descriptives)
 ```
 
-## Read in class probability file for linear model
-
-```{r read in txt file with probabilities LINEAR, include=FALSE}
+```{r read in txt file with probabilities LINEAR}
 dat.tra.prob.full.LINEAR <- read.table(paste0(mplus_GMM_clustered_full_output_data_path, "GMM_SI_3Cl_full_sample_clustered.txt"), 
                             header = FALSE, 
                             col.names = c("SISOE5", # original social isolation score at age 5
@@ -391,10 +392,10 @@ dat.tra.prob.full.LINEAR <- read.table(paste0(mplus_GMM_clustered_full_output_da
                                          "FAMILYID" # Family ID - twin clustering  
                                        ))   
 #check 
-dat.tra.prob.full.LINEAR
+#dat.tra.prob.full.LINEAR
 ```
 
-```{r read in txt file with probabilities QUAD, include=FALSE}
+```{r read in txt file with probabilities QUAD}
 dat.tra.prob.full.QUAD <- read.table(paste0(mplus_GMM_clustered_full_output_QUAD_data_path, "GMM_SI_3Cl_full_sample_clustered_QUAD.txt"), 
                             header = FALSE, 
                             col.names = c("SISOE5", # original social isolation score at age 5
@@ -415,10 +416,10 @@ dat.tra.prob.full.QUAD <- read.table(paste0(mplus_GMM_clustered_full_output_QUAD
                                          "FAMILYID" # Family ID - twin clustering  
                                        ))   
 #check 
-dat.tra.prob.full.QUAD
+#dat.tra.prob.full.QUAD
 ```
 
-```{r select relevant variables, include=FALSE}
+```{r select relevant variables}
 dat.tra.prob.LINEAR <- dat.tra.prob.full.LINEAR %>%
   select(id = ID, 
          prob1.linear = CPROB1,
@@ -427,7 +428,7 @@ dat.tra.prob.LINEAR <- dat.tra.prob.full.LINEAR %>%
          class.linear = C
          )
 #check 
-dat.tra.prob.LINEAR
+#dat.tra.prob.LINEAR
 
 dat.tra.prob.QUAD <- dat.tra.prob.full.QUAD %>%
   select(id = ID, 
@@ -437,7 +438,7 @@ dat.tra.prob.QUAD <- dat.tra.prob.full.QUAD %>%
          class.quad = C
          )
 #check 
-dat.tra.prob.QUAD
+#dat.tra.prob.QUAD
 
 #create list of data frames to merge
 dataframe_list <- list(
@@ -453,10 +454,8 @@ dat <- plyr::join_all(
   )
 
 #check
-colnames(dat)
+#colnames(dat)
 ```
-
-## Rename class variable to shape of trajectory
 
 ```{r rename class variable}
 # linear
@@ -468,7 +467,9 @@ dat <- dat %>%
       "3" = "Decreasing"
     )
   )
-table(dat$class_renamed.linear)
+as.data.frame(table(dat$class_renamed.linear)) %>% 
+  select(`Linear classes` = Var1,
+         Freq)
 
 # quadratic
 dat <- dat %>%
@@ -479,10 +480,20 @@ dat <- dat %>%
       "3" = "Decreasing"
     )
   )
-table(dat$class_renamed.quad)
+as.data.frame(table(dat$class_renamed.quad)) %>% 
+  select(`Quadratic classes` = Var1,
+         Freq)
 ```
 
-## See how many people were classed the same way
+## Matching classification
+
+96.51% of people were classified the same way regardless if the model was linear or quadratic. 
+
+Overall average movement from Linear to Quadratic: 
+
+* 1  more person in the increasing class
+* 18 less people in the decreasing class
+* 17 more people in the low stable class
 
 ```{r matching linear and quadratic}
 dat <- dat %>%
@@ -494,9 +505,18 @@ dat <- dat %>%
       )
   )
 
-table(dat$matching.class)
+freq(dat$matching.class,
+        cumul = FALSE, 
+       display.type = FALSE, 
+       headings = FALSE,
+       style = "rmarkdown",
+       report.nas = FALSE)
 ```
-78 people who were not classified the same way.
+
+* 29 in the decreasing class changed classes in the quadratic model. 
+* 19 in the increasing class changed classes in the quadratic model.
+* 30 in the low stable class changed classes in the quadratic model.
+== 78 who are not matching. 
 
 ```{r descriptives for nonmatching participants}
 dat <- dat %>%
@@ -507,23 +527,13 @@ dat <- dat %>%
              matching.class == "Matching" & class_renamed.linear == "Low stable" ~ "Matching and low stable"
            ))
 
-table(dat$matching.isolated)
-table(dat$class_renamed.linear)
-table(dat$class_renamed.quad)
+freq(dat$matching.isolated,
+        cumul = FALSE, 
+       display.type = FALSE, 
+       headings = FALSE,
+       style = "rmarkdown",
+       report.nas = FALSE)
 ```
-Overall average movement: 
-- 1  more person in the increasing class
-- 18 less people in the decreasing class
-- 17 more people in the low stable class
-
-88 of 117 in the decreasing class are classified the same.
-87 of 106 in the increasing class are classified the same.
-1979 of 2009 in the low stable class are classified the same. 
-
-29 in the decreasing class changed classes in the quadratic model. 
-19 in the increasing class changed classes in the quadratic model.
-30 in the low stable class changed classes in the quadratic model.
-== 78 who are not matching. 
 
 ```{r filter non matching}
 dat.non.match <- dat %>%
@@ -545,13 +555,18 @@ dat.non.match <- dat.non.match %>%
       )
   )
 
-table(dat.non.match$direction.match)
+freq(dat.non.match$direction.match,
+     cumul = FALSE, 
+       display.type = FALSE, 
+       headings = FALSE,
+       style = "rmarkdown",
+       report.nas = FALSE)
 ```
 
- 1 person moved from the decreasing to the increasing class.
-28 people moved from the decreasing to the low stable class.
-19 people moved from the increasing to the low stable class. 
-11 people moved from the low stable to the decreasing class.
-19 people moved from the low stable to the increasing class.
+* 1 person moved from the decreasing to the increasing class.
+* 28 people moved from the decreasing to the low stable class.
+* 19 people moved from the increasing to the low stable class. 
+* 11 people moved from the low stable to the decreasing class.
+* 19 people moved from the low stable to the increasing class.
 == 78 non matching. 
 

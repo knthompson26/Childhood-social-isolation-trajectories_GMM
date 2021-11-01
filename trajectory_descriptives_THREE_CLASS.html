@@ -1,0 +1,1276 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>GMM trajectory descriptives</title>
+
+<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { font-weight: bold; } /* Alert */
+code span.an { font-style: italic; } /* Annotation */
+code span.cf { font-weight: bold; } /* ControlFlow */
+code span.co { font-style: italic; } /* Comment */
+code span.cv { font-style: italic; } /* CommentVar */
+code span.do { font-style: italic; } /* Documentation */
+code span.dt { text-decoration: underline; } /* DataType */
+code span.er { font-weight: bold; } /* Error */
+code span.in { font-style: italic; } /* Information */
+code span.kw { font-weight: bold; } /* Keyword */
+code span.pp { font-weight: bold; } /* Preprocessor */
+code span.wa { font-style: italic; } /* Warning */
+
+.sourceCode .row {
+  width: 100%;
+}
+.sourceCode {
+  overflow-x: auto;
+}
+.code-folding-btn {
+  margin-right: -30px;
+}
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"></a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Home
+  </a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/knthompson26/Childhood-social-isolation-trajectories_GMM">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">GMM trajectory descriptives</h1>
+
+</div>
+
+
+<hr />
+<p>This page contains the code to combine the original Rmd dataset and the new Mplus output. We also include relevant descriptive statistics for the classes/trajectories. We have used the hard classification variable given by Mplus for our analyses. We conduct sensitivity analyses using the 3STEP approach, data is prepped for this at the end of this page. <em>Please note, if you are running this analysis for yourself, you wiull need to do this step after running your Mplus models and before analysing the data in Rmd</em></p>
+<hr />
+<div id="combine-mplus-and-rmd-data" class="section level1">
+<h1>Combine Mplus and Rmd data</h1>
+<p>We have read in the processed R data and the Mplus model information to show who is has identified into which class.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>dat.descriptives <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="at">file =</span> <span class="fu">paste0</span>(data_path, <span class="st">&quot;preprocessed_isolation_trajectories_Jan2021_full_sample.rds&quot;</span>))</span></code></pre></div>
+<p>The Mplus output file contains the raw original data, slope estimate, intercept estimate, factor scores based on the slope and intercept, class probabilities for each person per class, and the hard class classification.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>dat.tra.prob.full <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="fu">paste0</span>(mplus_GMM_clustered_full_output_data_path, <span class="st">&quot;GMM_SI_3Cl_full_sample_clustered.txt&quot;</span>), </span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>                            <span class="at">header =</span> <span class="cn">FALSE</span>, </span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>                            <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">&quot;SISOE5&quot;</span>, <span class="co"># original social isolation score at age 5</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">&quot;SISOE7&quot;</span>,  <span class="co"># original social isolation score at age 7</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">&quot;SISOE10&quot;</span>, <span class="co"># original social isolation score at age 10</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">&quot;SISOE12&quot;</span>, <span class="co"># original social isolation score at age 12</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">&quot;I&quot;</span>,       <span class="co"># intercept</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">&quot;S&quot;</span>,       <span class="co"># slope</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">&quot;C_I&quot;</span>,     <span class="co"># factor scores based on most likely class membership</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">&quot;C_S&quot;</span>,     <span class="co"># factor scores based on most likely class membership</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">&quot;CPROB1&quot;</span>,  <span class="co"># class probability 1</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">&quot;CPROB2&quot;</span>,  <span class="co"># class probability 2</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">&quot;CPROB3&quot;</span>,  <span class="co"># class probability 3</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">&quot;C&quot;</span>,       <span class="co"># class </span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">&quot;ID&quot;</span>,      <span class="co"># ID</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">&quot;FAMILYID&quot;</span> <span class="co"># Family ID - twin clustering  </span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>                                       ))   </span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="co">#check </span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dat.tra.prob.full)</span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["SISOE5"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["SISOE7"],"name":[2],"type":["chr"],"align":["left"]},{"label":["SISOE10"],"name":[3],"type":["chr"],"align":["left"]},{"label":["SISOE12"],"name":[4],"type":["chr"],"align":["left"]},{"label":["I"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["S"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["C_I"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["C_S"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["CPROB1"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["CPROB2"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["CPROB3"],"name":[11],"type":["dbl"],"align":["right"]},{"label":["C"],"name":[12],"type":["dbl"],"align":["right"]},{"label":["ID"],"name":[13],"type":["int"],"align":["right"]},{"label":["FAMILYID"],"name":[14],"type":["int"],"align":["right"]}],"data":[{"1":"0","2":"2.500","3":"0.000","4":"0.000","5":"0.567","6":"-0.004","7":"0.567","8":"-0.004","9":"1","10":"0","11":"0","12":"1","13":"12101","14":"1210","_rn_":"1"},{"1":"0","2":"2.500","3":"0.500","4":"0.500","5":"0.684","6":"0.015","7":"0.684","8":"0.015","9":"1","10":"0","11":"0","12":"1","13":"12102","14":"1210","_rn_":"2"},{"1":"1","2":"0.000","3":"1.000","4":"0.500","5":"0.599","6":"0.007","7":"0.599","8":"0.007","9":"1","10":"0","11":"0","12":"1","13":"12201","14":"1220","_rn_":"3"},{"1":"1","2":"0.500","3":"1.000","4":"0.500","5":"0.651","6":"0.010","7":"0.651","8":"0.010","9":"1","10":"0","11":"0","12":"1","13":"12202","14":"1220","_rn_":"4"},{"1":"1","2":"1.000","3":"0.000","4":"1.000","5":"0.683","6":"0.014","7":"0.683","8":"0.014","9":"1","10":"0","11":"0","12":"1","13":"12251","14":"1225","_rn_":"5"},{"1":"1","2":"1.000","3":"1.000","4":"2.000","5":"0.916","6":"0.051","7":"0.917","8":"0.051","9":"1","10":"0","11":"0","12":"1","13":"12252","14":"1225","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>We will only need the classification probabilities and the hard classification variable. This is then combined with the rest of our Rmd data.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>dat.tra.prob <span class="ot">&lt;-</span> dat.tra.prob.full <span class="sc">%&gt;%</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="at">id =</span> ID, </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">prob1 =</span> CPROB1,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">prob2 =</span> CPROB2,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">prob3 =</span> CPROB3,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">class =</span> C</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>         )</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co">#check </span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co"># dat.tra.prob</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co">#create list of data frames to merge</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>dataframe_list <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  dat.descriptives,</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  dat.tra.prob</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="co">#merge data frames</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> plyr<span class="sc">::</span><span class="fu">join_all</span>(</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>  dataframe_list,</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">by =</span> <span class="st">&quot;id&quot;</span> <span class="co"># Alternatively you can join by several columns</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="co">#check</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="co"># colnames(dat)</span></span></code></pre></div>
+<p>The class variable is then renamed to reflect the pattern seen in the classes identified. Here, we name them “Low stable”, “Increasing”, and “Decreasing” to reflect the pattern of each of the linear curves.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> dat <span class="sc">%&gt;%</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">class_renamed =</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">recode_factor</span>(class,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>      <span class="st">&quot;1&quot;</span> <span class="ot">=</span> <span class="st">&quot;Low stable&quot;</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>      <span class="st">&quot;2&quot;</span> <span class="ot">=</span> <span class="st">&quot;Increasing&quot;</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>      <span class="st">&quot;3&quot;</span> <span class="ot">=</span> <span class="st">&quot;Decreasing&quot;</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(<span class="fu">table</span>(dat<span class="sc">$</span>class_renamed))</span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Var1"],"name":[1],"type":["fct"],"align":["left"]},{"label":["Freq"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"Low stable","2":"2009"},{"1":"Increasing","2":"106"},{"1":"Decreasing","2":"117"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<hr />
+</div>
+<div id="spaghetti-plot-showing-all-social-isolation-trajectories-over-time" class="section level1">
+<h1>Spaghetti plot showing all social isolation trajectories over time</h1>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>combined_social_isolation <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;isolation_combined_05&quot;</span>,</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>                              <span class="st">&quot;isolation_combined_07&quot;</span>,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>                              <span class="st">&quot;isolation_combined_10&quot;</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>                              <span class="st">&quot;isolation_combined_12&quot;</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">#convert to long format </span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>dat_long <span class="ot">&lt;-</span> dat <span class="sc">%&gt;%</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gather</span>(</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">key =</span> <span class="st">&quot;time_point_raw&quot;</span>,</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">value =</span> <span class="st">&quot;social_isolation&quot;</span>,</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>      <span class="fu">all_of</span>(combined_social_isolation)) <span class="sc">%&gt;%</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    id,</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    sex,</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    time_point_raw,</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    social_isolation,</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    class_renamed)</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="co">#head(dat_long)</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a><span class="co">#create variable that has just the number for the time point</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>dat_long <span class="ot">&lt;-</span> dat_long <span class="sc">%&gt;%</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">time_point =</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">recode_factor</span>(time_point_raw, </span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>                <span class="st">&quot;isolation_combined_05&quot;</span> <span class="ot">=</span> <span class="st">&quot;5&quot;</span>, </span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>                <span class="st">&quot;isolation_combined_07&quot;</span> <span class="ot">=</span> <span class="st">&quot;7&quot;</span>, </span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>                <span class="st">&quot;isolation_combined_10&quot;</span> <span class="ot">=</span> <span class="st">&quot;10&quot;</span>, </span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>                <span class="st">&quot;isolation_combined_12&quot;</span> <span class="ot">=</span> <span class="st">&quot;12&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(</span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>    id,</span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>    sex,</span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>    time_point,</span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>    social_isolation,</span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>    class_renamed)</span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a><span class="co">#head(dat_long)</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>spaghetti_plot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> dat_long,</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> time_point,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> social_isolation,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">group =</span> <span class="fu">factor</span>(id),</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>           <span class="at">color =</span> class_renamed)) <span class="sc">+</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">name =</span> <span class="st">&quot;Class&quot;</span>, <span class="at">values =</span> palette3) <span class="sc">+</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">&quot;Social isolation score&quot;</span>,</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">&quot;Age (years)&quot;</span>) <span class="sc">+</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_discrete</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="fl">0.05</span>,<span class="fl">0.05</span>), <span class="at">breaks =</span> <span class="fu">c</span>(<span class="st">&quot;5&quot;</span>, <span class="st">&quot;7&quot;</span>, <span class="st">&quot;10&quot;</span>, <span class="st">&quot;12&quot;</span>)) <span class="sc">+</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="fl">0.05</span>,<span class="fl">0.05</span>), <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">2</span>,<span class="dv">4</span>,<span class="dv">6</span>,<span class="dv">8</span>,<span class="dv">10</span>,<span class="dv">12</span>)) <span class="sc">+</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.grid.major.y =</span> <span class="fu">element_line</span>(<span class="at">size =</span> <span class="fl">0.2</span>,<span class="at">linetype =</span> <span class="st">&#39;dashed&#39;</span>,<span class="at">colour =</span> <span class="st">&quot;gray&quot;</span>),</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.title.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>,<span class="at">face=</span><span class="st">&quot;bold&quot;</span>),</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.title.y =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>,<span class="at">face=</span><span class="st">&quot;bold&quot;</span>),</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">colour =</span> <span class="st">&quot;black&quot;</span>, <span class="at">size =</span> <span class="dv">10</span>),</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.text.y =</span> <span class="fu">element_text</span>(<span class="at">colour =</span> <span class="st">&quot;black&quot;</span>, <span class="at">size =</span> <span class="dv">10</span>),</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.background =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.position =</span> <span class="st">&quot;bottom&quot;</span>)</span></code></pre></div>
+<p>The trajectory of each participant is plotted separately and colour coded depending on which class they were classified. Decreasing is indicated in pink, Increasing in Orange, and Low stable in blue. The average class trajectories are then plotted over the top.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">#For class models, read in all output files within your folder that you have all your class models</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>si.classes.all <span class="ot">&lt;-</span> <span class="fu">readModels</span>(<span class="fu">paste0</span>(mplus_GMM_clustered_full_output_data_path), <span class="at">recursive =</span> <span class="cn">TRUE</span>) <span class="co">#Recursive means it reads data in sub-folders too</span></span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">#create three class data frame with means and variances</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>three_class_si <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  si.classes.all<span class="sc">$</span>X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.<span class="fl">1.</span>data_analysis.mplus.GMM.clustered.full_sample.output..isolation_3traj_full_sample_clustered.out<span class="sc">$</span>gh5<span class="sc">$</span>means_and_variances_data<span class="sc">$</span>y_estimated_means)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">#name the variables</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(three_class_si) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Class 1&quot;</span>,<span class="st">&quot;Class 2&quot;</span>,<span class="st">&quot;Class 3&quot;</span>)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co">#create time point column </span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>three_class_si<span class="sc">$</span>time_point <span class="ot">&lt;-</span> <span class="fu">factor</span>(<span class="fu">c</span>(<span class="st">&quot;5&quot;</span>,<span class="st">&quot;7&quot;</span>,<span class="st">&quot;10&quot;</span>,<span class="st">&quot;12&quot;</span>))</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="co">#convert data to long format </span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>three_class_si <span class="ot">&lt;-</span> three_class_si <span class="sc">%&gt;%</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>time_point, </span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">&quot;class_renamed&quot;</span>, </span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>               <span class="at">values_to =</span> <span class="st">&quot;social_isolation&quot;</span>)</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="co"># create factor for Class variable</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>three_class_si <span class="ot">&lt;-</span> three_class_si <span class="sc">%&gt;%</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">class_renamed =</span> </span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>              <span class="fu">factor</span>(class_renamed, </span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>                     <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;Class 1&quot;</span>,<span class="st">&quot;Class 2&quot;</span>,<span class="st">&quot;Class 3&quot;</span>))) </span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>spaghetti_plotB <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> dat_long,</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>                         <span class="fu">aes</span>(<span class="at">x =</span> time_point,</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>                             <span class="at">y =</span> social_isolation,</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>                             <span class="at">color =</span> class_renamed)) <span class="sc">+</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">group =</span> <span class="fu">factor</span>(id)), <span class="at">alpha =</span> <span class="fl">0.9</span>, <span class="at">size =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">geom_line</span>(<span class="at">data =</span> three_class_si, <span class="fu">aes</span>(<span class="at">group =</span> class_renamed), <span class="at">size =</span> <span class="dv">1</span>, <span class="at">alpha =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">scale_color_manual</span>(<span class="at">name =</span> <span class="st">&quot;class_renamed&quot;</span>, <span class="at">values =</span> palette_spag) <span class="sc">+</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">&quot;Social isolation score&quot;</span>,</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>                         <span class="at">x =</span> <span class="st">&quot;Age (years)&quot;</span>) <span class="sc">+</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">scale_x_discrete</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="fl">0.05</span>,<span class="fl">0.05</span>), <span class="at">breaks =</span> <span class="fu">c</span>(<span class="st">&quot;5&quot;</span>, <span class="st">&quot;7&quot;</span>, <span class="st">&quot;10&quot;</span>, <span class="st">&quot;12&quot;</span>)) <span class="sc">+</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="fl">0.05</span>,<span class="fl">0.05</span>), <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">2</span>,<span class="dv">4</span>,<span class="dv">6</span>,<span class="dv">8</span>,<span class="dv">10</span>,<span class="dv">12</span>)) <span class="sc">+</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">theme</span>(</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>                          <span class="at">panel.grid.major.y =</span> <span class="fu">element_line</span>(<span class="at">size =</span> <span class="fl">0.2</span>,<span class="at">linetype =</span> <span class="st">&#39;dashed&#39;</span>,<span class="at">colour =</span> <span class="st">&quot;gray&quot;</span>),</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>                          <span class="at">axis.title.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>,<span class="at">face=</span><span class="st">&quot;bold&quot;</span>),</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>                          <span class="at">axis.title.y =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>,<span class="at">face=</span><span class="st">&quot;bold&quot;</span>),</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>                          <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">colour =</span> <span class="st">&quot;black&quot;</span>, <span class="at">size =</span> <span class="dv">10</span>),</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>                          <span class="at">axis.text.y =</span> <span class="fu">element_text</span>(<span class="at">colour =</span> <span class="st">&quot;black&quot;</span>, <span class="at">size =</span> <span class="dv">10</span>),</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>                          <span class="at">panel.background =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>                          <span class="at">legend.position =</span> <span class="st">&quot;none&quot;</span>) </span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>spaghetti_plotB</span></code></pre></div>
+<p><img src="trajectory_descriptives_THREE_CLASS_files/figure-html/spaghetti%20plot%20B-1.png" width="672" /></p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ggsave(</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   &quot;spaghetti_plot_three_class_colour_coded.jpeg&quot;,</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   plot = spaghetti_plotB,</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   device = &quot;jpeg&quot;,</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   path = paste0(graph_save_data_path, &quot;trajectories/&quot;),</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   width = 7,</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co">#   height = 5</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co"># )</span></span></code></pre></div>
+<hr />
+</div>
+<div id="descriptives-by-class" class="section level1">
+<h1>Descriptives by class</h1>
+<p>The code to create these descriptives is long, so has been hidden here, please see raw code on Github if interested. The descriptives include ethnicity, SES, zygosity, and sex.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">#final descriptives by class table</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(class.descriptives)</span></code></pre></div>
+<table style="width:100%;">
+<colgroup>
+<col width="9%" />
+<col width="11%" />
+<col width="10%" />
+<col width="12%" />
+<col width="10%" />
+<col width="12%" />
+<col width="10%" />
+<col width="12%" />
+<col width="5%" />
+<col width="7%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Category</th>
+<th align="left">Descriptive</th>
+<th align="right">Low stable</th>
+<th align="right">% Low stable</th>
+<th align="right">Increasing</th>
+<th align="right">% Increasing</th>
+<th align="right">Decreasing</th>
+<th align="right">% Decreasing</th>
+<th align="right">Total</th>
+<th align="right">% Total</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Sex</td>
+<td align="left">Male</td>
+<td align="right">961</td>
+<td align="right">47.83</td>
+<td align="right">62</td>
+<td align="right">58.49</td>
+<td align="right">69</td>
+<td align="right">58.97</td>
+<td align="right">1092</td>
+<td align="right">48.92</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Female</td>
+<td align="right">1048</td>
+<td align="right">52.17</td>
+<td align="right">44</td>
+<td align="right">41.51</td>
+<td align="right">48</td>
+<td align="right">41.03</td>
+<td align="right">1140</td>
+<td align="right">51.08</td>
+</tr>
+<tr class="odd">
+<td align="left">Zygosity</td>
+<td align="left">MZ</td>
+<td align="right">1133</td>
+<td align="right">56.40</td>
+<td align="right">55</td>
+<td align="right">51.89</td>
+<td align="right">54</td>
+<td align="right">46.15</td>
+<td align="right">1242</td>
+<td align="right">55.65</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">DZ</td>
+<td align="right">876</td>
+<td align="right">43.60</td>
+<td align="right">51</td>
+<td align="right">48.11</td>
+<td align="right">63</td>
+<td align="right">53.85</td>
+<td align="right">990</td>
+<td align="right">44.35</td>
+</tr>
+<tr class="odd">
+<td align="left">SES</td>
+<td align="left">Low</td>
+<td align="right">630</td>
+<td align="right">31.36</td>
+<td align="right">57</td>
+<td align="right">53.77</td>
+<td align="right">55</td>
+<td align="right">47.01</td>
+<td align="right">742</td>
+<td align="right">33.24</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Middle</td>
+<td align="right">681</td>
+<td align="right">33.90</td>
+<td align="right">27</td>
+<td align="right">25.47</td>
+<td align="right">30</td>
+<td align="right">25.64</td>
+<td align="right">738</td>
+<td align="right">33.06</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">High</td>
+<td align="right">698</td>
+<td align="right">34.74</td>
+<td align="right">22</td>
+<td align="right">20.75</td>
+<td align="right">32</td>
+<td align="right">27.35</td>
+<td align="right">752</td>
+<td align="right">33.69</td>
+</tr>
+<tr class="even">
+<td align="left">Ethnicity</td>
+<td align="left">White</td>
+<td align="right">1818</td>
+<td align="right">90.49</td>
+<td align="right">102</td>
+<td align="right">96.23</td>
+<td align="right">98</td>
+<td align="right">83.76</td>
+<td align="right">2018</td>
+<td align="right">90.41</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">Asian</td>
+<td align="right">78</td>
+<td align="right">3.88</td>
+<td align="right">2</td>
+<td align="right">1.89</td>
+<td align="right">10</td>
+<td align="right">8.55</td>
+<td align="right">90</td>
+<td align="right">4.03</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Black</td>
+<td align="right">36</td>
+<td align="right">1.79</td>
+<td align="right">0</td>
+<td align="right">0.00</td>
+<td align="right">6</td>
+<td align="right">5.13</td>
+<td align="right">42</td>
+<td align="right">1.88</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">Mixed race</td>
+<td align="right">7</td>
+<td align="right">0.35</td>
+<td align="right">0</td>
+<td align="right">0.00</td>
+<td align="right">1</td>
+<td align="right">0.85</td>
+<td align="right">8</td>
+<td align="right">0.36</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Other</td>
+<td align="right">70</td>
+<td align="right">3.48</td>
+<td align="right">2</td>
+<td align="right">1.89</td>
+<td align="right">2</td>
+<td align="right">1.71</td>
+<td align="right">74</td>
+<td align="right">3.32</td>
+</tr>
+</tbody>
+</table>
+<hr />
+</div>
+<div id="adapt-variables-for-regression-analysis" class="section level1">
+<h1>Adapt variables for regression analysis</h1>
+<p>We need to relevel the class variable to use the Low Stable class as the reference group in all subsequent regression analyses.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(nnet)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co"># relevel class_factor</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> dat <span class="sc">%&gt;%</span> </span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">class_reordered =</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>      <span class="fu">relevel</span>(</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>        class_renamed,</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">ref =</span> <span class="st">&quot;Low stable&quot;</span>,</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">first =</span> <span class="cn">TRUE</span>, <span class="co">#levels in ref come first</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">collapse =</span> <span class="st">&quot;+&quot;</span>, <span class="co">#String used when constructing names for combined factor levels</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">xlevels =</span> <span class="cn">TRUE</span> <span class="co">#levels maintained even if not actually occurring</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<hr />
+</div>
+<div id="class-statistics" class="section level1 tabset tabset-fade">
+<h1 class="tabset tabset-fade">Class statistics</h1>
+<p>Next, we calculate the classification probabilities, class means and NAs per class.</p>
+<div id="classification-probabilities" class="section level2">
+<h2>Classification probabilities</h2>
+<p>For the diagonal, this represents the probability given that the an observation is a part of a specific latent class that you will classify it as said class.</p>
+<p><em>Note</em> this does not represent average probabilities as this table wasn’t available in Mplus version 8.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># extract the classification probabilities for the most likely class memberships (column) by latent class (row). This shows the uncertainty rate of the probabilities. If it was perfect - the diagonal would be 1. E.g. for Class 1 - 98.3% of individuals fit that category. </span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>class.probs <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(class.all<span class="sc">$</span>X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.<span class="fl">1.</span>data_analysis.mplus.GMM.clustered.full_sample.output..isolation_3traj_full_sample_clustered.out<span class="sc">$</span>class_counts<span class="sc">$</span>classificationProbs.mostLikely)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># add column names</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(class.probs) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Low stable&quot;</span>,<span class="st">&quot;Increasing&quot;</span>,<span class="st">&quot;Decreasing&quot;</span>)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>class.probs<span class="sc">$</span>Class <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Low stable&quot;</span>,<span class="st">&quot;Increasing&quot;</span>,<span class="st">&quot;Decreasing&quot;</span>)</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="co"># as.tibble(class.probs)</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>class.probs <span class="ot">&lt;-</span> class.probs <span class="sc">%&gt;%</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">pivot_longer</span>(<span class="sc">-</span>Class, </span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">&quot;class&quot;</span>, </span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>               <span class="at">values_to =</span> <span class="st">&quot;Classification probabilities&quot;</span>)</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>class.probs <span class="ot">&lt;-</span> class.probs[<span class="sc">-</span><span class="fu">c</span>(<span class="dv">2</span><span class="sc">:</span><span class="dv">4</span>,<span class="dv">6</span><span class="sc">:</span><span class="dv">8</span>),<span class="sc">-</span><span class="fu">c</span>(<span class="dv">2</span>)]</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(class.probs)</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Class</th>
+<th align="right">Classification probabilities</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Low stable</td>
+<td align="right">0.989</td>
+</tr>
+<tr class="even">
+<td align="left">Increasing</td>
+<td align="right">0.871</td>
+</tr>
+<tr class="odd">
+<td align="left">Decreasing</td>
+<td align="right">0.899</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="class-means" class="section level2">
+<h2>Class means</h2>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># extract means for each class </span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>class.<span class="fl">1.</span>means <span class="ot">&lt;-</span> <span class="fu">as.tibble</span>(class.all<span class="sc">$</span>X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.<span class="fl">1.</span>data_analysis.mplus.GMM.clustered.full_sample.output..isolation_3traj_full_sample_clustered.out<span class="sc">$</span>tech7<span class="sc">$</span>CLASS<span class="fl">.1</span><span class="sc">$</span>classSampMeans)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>class.<span class="fl">2.</span>means <span class="ot">&lt;-</span> <span class="fu">as.tibble</span>(class.all<span class="sc">$</span>X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.<span class="fl">1.</span>data_analysis.mplus.GMM.clustered.full_sample.output..isolation_3traj_full_sample_clustered.out<span class="sc">$</span>tech7<span class="sc">$</span>CLASS<span class="fl">.2</span><span class="sc">$</span>classSampMeans)</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>class.<span class="fl">3.</span>means <span class="ot">&lt;-</span> <span class="fu">as.tibble</span>(class.all<span class="sc">$</span>X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.<span class="fl">1.</span>data_analysis.mplus.GMM.clustered.full_sample.output..isolation_3traj_full_sample_clustered.out<span class="sc">$</span>tech7<span class="sc">$</span>CLASS<span class="fl">.3</span><span class="sc">$</span>classSampMeans)</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>class.means <span class="ot">&lt;-</span> <span class="fu">rbind</span>(class.<span class="fl">1.</span>means,class.<span class="fl">2.</span>means,class.<span class="fl">3.</span>means)</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>class.means<span class="sc">$</span>Class <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Low stable&quot;</span>,<span class="st">&quot;Increasing&quot;</span>,<span class="st">&quot;Decreasing&quot;</span>)</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>class.means <span class="ot">&lt;-</span> class.means <span class="sc">%&gt;%</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>    Class,</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Mean at age 5</span><span class="st">`</span> <span class="ot">=</span> SISOE5,</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Mean at age 7</span><span class="st">`</span> <span class="ot">=</span> SISOE7,</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Mean at age 10</span><span class="st">`</span> <span class="ot">=</span> SISOE10,</span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Mean at age 12</span><span class="st">`</span> <span class="ot">=</span> SISOE12</span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(class.means)</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Class</th>
+<th align="right">Mean at age 5</th>
+<th align="right">Mean at age 7</th>
+<th align="right">Mean at age 10</th>
+<th align="right">Mean at age 12</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Low stable</td>
+<td align="right">0.605</td>
+<td align="right">0.632</td>
+<td align="right">0.718</td>
+<td align="right">0.673</td>
+</tr>
+<tr class="even">
+<td align="left">Increasing</td>
+<td align="right">1.291</td>
+<td align="right">1.848</td>
+<td align="right">3.545</td>
+<td align="right">5.027</td>
+</tr>
+<tr class="odd">
+<td align="left">Decreasing</td>
+<td align="right">3.984</td>
+<td align="right">3.374</td>
+<td align="right">2.347</td>
+<td align="right">1.771</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="na-per-person-split-by-class" class="section level2">
+<h2>Na per person split by class</h2>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ctable</span>(dat<span class="sc">$</span>class_renamed, dat<span class="sc">$</span>na.per.person.si)</span></code></pre></div>
+<p>Cross-Tabulation, Row Proportions<br />
+dat<span class="math inline">\(class_renamed * dat\)</span>na.per.person.si</p>
+<table>
+<tbody>
+<tr class="odd">
+<td></td>
+<td align="right">dat$na.per.person.si</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">3</td>
+<td align="right">Total</td>
+</tr>
+<tr class="even">
+<td>dat$class_renamed</td>
+<td align="right"></td>
+<td align="right"></td>
+<td align="right"></td>
+<td align="right"></td>
+<td align="right"></td>
+<td align="right"></td>
+</tr>
+<tr class="odd">
+<td>Low stable</td>
+<td align="right"></td>
+<td align="right">1874 (93.3%)</td>
+<td align="right">79 (3.9%)</td>
+<td align="right">39 (1.9%)</td>
+<td align="right">17 (0.8%)</td>
+<td align="right">2009 (100.0%)</td>
+</tr>
+<tr class="even">
+<td>Increasing</td>
+<td align="right"></td>
+<td align="right">97 (91.5%)</td>
+<td align="right">6 (5.7%)</td>
+<td align="right">3 (2.8%)</td>
+<td align="right">0 (0.0%)</td>
+<td align="right">106 (100.0%)</td>
+</tr>
+<tr class="odd">
+<td>Decreasing</td>
+<td align="right"></td>
+<td align="right">108 (92.3%)</td>
+<td align="right">4 (3.4%)</td>
+<td align="right">4 (3.4%)</td>
+<td align="right">1 (0.9%)</td>
+<td align="right">117 (100.0%)</td>
+</tr>
+<tr class="even">
+<td>Total</td>
+<td align="right"></td>
+<td align="right">2079 (93.1%)</td>
+<td align="right">89 (4.0%)</td>
+<td align="right">46 (2.1%)</td>
+<td align="right">18 (0.8%)</td>
+<td align="right">2232 (100.0%)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+</div>
+</div>
+<div id="export-data" class="section level1">
+<h1>Export data</h1>
+<div id="main-analyses" class="section level2">
+<h2>Main analyses</h2>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># save R data file</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(<span class="at">object =</span> dat, <span class="at">file =</span> <span class="fu">paste0</span>(data_path, <span class="st">&quot;class_joined_preprocessed_isolation_data_full_sample.rds&quot;</span>))</span></code></pre></div>
+</div>
+<div id="step-method-sensitivity-analysis" class="section level2">
+<h2>3STEP method sensitivity analysis</h2>
+<p>This 3STEP method that will be conducted in Mplus uses the ID variable, the class membership variable.</p>
+<p><em>Remember to manually delete the headers in the csv file and replace NA to . so that Mplus can read the file</em></p>
+<p>Will need to combine the raw data file (to get numeric values and short names to the class statistics)</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(foreign)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>dat.raw <span class="ot">&lt;-</span> <span class="fu">read.spss</span>(<span class="at">file =</span> <span class="fu">paste0</span>(data.raw_path, <span class="st">&quot;Katie_18Dec20.sav&quot;</span>),</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>                  <span class="at">use.value.labels =</span> <span class="cn">FALSE</span>, <span class="co">#convert value labels into factors with those labels</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>                  <span class="at">to.data.frame =</span> <span class="cn">TRUE</span>) <span class="co">#return data frame </span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="co">#colnames(dat.raw) # check colnames</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>dat.tra.prob<span class="fl">.3</span>step <span class="ot">&lt;-</span> dat.tra.prob <span class="sc">%&gt;%</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="at">atwinid =</span> id,</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>         prob1,</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>         prob2,</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>         prob3,</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>         class)</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a><span class="co">#colnames(dat.tra.prob.3step) # check colnames</span></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a><span class="co">#create list of data frames to merge</span></span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>dataframe_list <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>  dat.raw,</span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>  dat.tra.prob<span class="fl">.3</span>step</span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a><span class="co">#merge data frames</span></span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a>dat<span class="fl">.3</span>step <span class="ot">&lt;-</span> plyr<span class="sc">::</span><span class="fu">join_all</span>(</span>
+<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a>  dataframe_list,</span>
+<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">by =</span> <span class="st">&quot;atwinid&quot;</span> <span class="co"># Alternatively you can join by several columns</span></span>
+<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-29"><a href="#cb19-29" aria-hidden="true" tabindex="-1"></a><span class="co">#check</span></span>
+<span id="cb19-30"><a href="#cb19-30" aria-hidden="true" tabindex="-1"></a><span class="co">#colnames(dat.3step)</span></span></code></pre></div>
+<div id="variable-recode-based-on-analysis-decisions" class="section level3 tabset tabset-fade">
+<h3 class="tabset tabset-fade">Variable REcode based on analysis decisions</h3>
+<p>Variables that were created in the preprocessing script need to be recomputed here for the 3STEP sensitivity analysis.</p>
+<div id="acorn-recode" class="section level4">
+<h4>ACORN recode</h4>
+<p>Moderate Means and Hard Pressed were combined, Wealthy Achievers, Urban Prosperity, and Comfortably Off were combined.</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>dat<span class="fl">.3</span>step <span class="ot">&lt;-</span> dat<span class="fl">.3</span>step <span class="sc">%&gt;%</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">P5CACORNCategoryrecoded =</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>           <span class="fu">if_else</span>(</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>             P5CACORNCategory <span class="sc">==</span> <span class="dv">4</span> <span class="sc">|</span> <span class="co">#Moderate Means and Hard Pressed were combined, Wealthy Achievers, Urban Prosperity, and Comfortably Off were combined</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>               P5CACORNCategory <span class="sc">==</span> <span class="dv">5</span>,</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>             <span class="dv">1</span>, <span class="co"># Deprived</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>             <span class="dv">0</span>  <span class="co"># Relatively affluent</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>           ))</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="co">#table(dat.3step$P5CACORNCategoryrecoded)</span></span></code></pre></div>
+</div>
+<div id="harm-recode" class="section level4">
+<h4>Harm recode</h4>
+<p>Possible harm and Definite harm were combined to give a binary variable of Harm VS No harm.</p>
+</div>
+<div id="highest-education-recode" class="section level4">
+<h4>Highest education recode</h4>
+<p>GSCE grades were collapsed: No qualification and Level 1 (GCSE at grades D-G) were combined. Level 2 (GCSE at grades A*-C) and Level 3 (A Level) were combined.</p>
+</div>
+<div id="parental-antisocial-bhaviour-and-alcoholism" class="section level4">
+<h4>Parental antisocial bhaviour and alcoholism</h4>
+<p>We combined maternal and paternal reports to form parental report for antisocial behaviour and alcoholism.</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create total score for mum and data to make parent</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>dat<span class="fl">.3</span>step <span class="ot">&lt;-</span> dat<span class="fl">.3</span>step <span class="sc">%&gt;%</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">antisocialparent =</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>           asbmm5 <span class="sc">+</span> asbfm5) <span class="co"># mum plus dad scores</span></span></code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create total score for mum and data to make parent</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>dat<span class="fl">.3</span>step <span class="ot">&lt;-</span> dat<span class="fl">.3</span>step <span class="sc">%&gt;%</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">alcoholismparent =</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>           alcmm5 <span class="sc">+</span> alcfm5) <span class="co"># mum plus dad scores</span></span></code></pre></div>
+</div>
+</div>
+</div>
+<div id="check-column-names-and-export-the-data" class="section level2">
+<h2>Check column names and export the data</h2>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(dat<span class="fl">.3</span>step)</span></code></pre></div>
+<p>[1] “familyid” “atwinid”<br />
+[3] “btwinid” “rorderp5”<br />
+[5] “torder” “risks”<br />
+[7] “cohort” “sampsex”<br />
+[9] “zygosity” “sethnic”<br />
+[11] “seswq35” “P5CACORNCategory”<br />
+[13] “nchildren00e5” “schmeals00e5”<br />
+[15] “classsize00e5” “vndngdm5”<br />
+[17] “socprbm5” “sisoe5”<br />
+[19] “sisoy5” “sisoet5”<br />
+[21] “sisoyt5” “sisoem5”<br />
+[23] “sisoym5” “harm3em5”<br />
+[25] “warme5” “totproe5”<br />
+[27] “iqe5” “exfunce5”<br />
+[29] “tomtote5” “totexte5”<br />
+[31] “intisoe5” “totadde5”<br />
+[33] “irre5” “impe5”<br />
+[35] “appe5” “slue5”<br />
+[37] “ware5” “unce5”<br />
+[39] “inhe5” “shye5”<br />
+[41] “nmovel5” “nobiodl5”<br />
+[43] “tsibl5” “anyviom5”<br />
+[45] “tssupm5” “actvm5”<br />
+[47] “fdepmm5” “bfiom5”<br />
+[49] “bficm5” “bfiem5”<br />
+[51] “bfiam5” “bfinm5”<br />
+[53] “asbmm5” “asbfm5”<br />
+[55] “alcmm5” “alcfm5”<br />
+[57] “sisoe7” “sisoy7”<br />
+[59] “sisoet7” “sisoyt7”<br />
+[61] “sisoem7” “sisoym7”<br />
+[63] “sisoe10” “sisoy10”<br />
+[65] “sisoet10” “sisoyt10”<br />
+[67] “sisoem10” “sisoym10”<br />
+[69] “sisoe12” “sisoy12”<br />
+[71] “sisoet12” “sisoyt12”<br />
+[73] “sisoem12” “sisoym12”<br />
+[75] “dxmdee18” “mdesxe18”<br />
+[77] “dxgade18” “gadsxe18”<br />
+[79] “dxadhd5_18e” “SR_symtot18e”<br />
+[81] “cdmode18” “cdsxe18”<br />
+[83] “dxalcdepe18” “dxalcabue18”<br />
+[85] “alcsxe18” “dxmarje18”<br />
+[87] “marjsxe18” “dxptsd5lfe18”<br />
+[89] “dxptsd5cue18” “psysympe18”<br />
+[91] “psysymp01e18” “psyexpe18”<br />
+[93] “psyexpce18” “sharmsuice18”<br />
+[95] “bmie18” “phyacte18”<br />
+[97] “smkcnume18” “lnCRP_E18_4SD”<br />
+[99] “lonelye18” “lifsate18”<br />
+[101] “teche18” “psqie18”<br />
+[103] “neete18” “educachve18”<br />
+[105] “jprepse18” “jprepae18”<br />
+[107] “jbschacte18” “optime18”<br />
+[109] “srvusemhe18” “copstrse18”<br />
+[111] “prob1” “prob2”<br />
+[113] “prob3” “class”<br />
+[115] “P5CACORNCategoryrecoded” “harm3em5recoded”<br />
+[117] “educachve18recoded” “antisocialparent”<br />
+[119] “alcoholismparent”</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># save csv file </span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(<span class="at">x =</span> dat<span class="fl">.3</span>step, <span class="at">path =</span> <span class="fu">paste0</span>(data_path, <span class="st">&quot;FOR_MPLUS_preprocessed_isolation_trajectories_Sep2021_3STEP.csv&quot;</span>)) <span class="co"># save data in data file</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(<span class="at">x =</span> dat<span class="fl">.3</span>step, <span class="at">path =</span> <span class="st">&quot;/Users/katiethompson/Desktop/FOR_MPLUS_preprocessed_isolation_trajectories_Sep2021_3STEP.csv&quot;</span>) <span class="co"># save data on desktop for Mplus </span></span></code></pre></div>
+</div>
+</div>
+
+<!-- Add footer -->
+
+&nbsp;
+
+<hr />
+
+<center>
+
+<img src="kcl_logo.png" 
+
+     width="100" 
+
+     height="75" />
+
+</center>
+
+<br>
+
+<p style="text-align: center;">Work by <a href="https://github.com/knthompson26/">Katherine N Thompson</a></p>
+
+<p style="text-align: center;"><span style="color: #808080;"><em>katherine.n.thompson@kcl.ac.uk</em></span></p>
+
+
+
+<!-- Add icon library -->
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
+
+<!-- Add font awesome icons -->
+
+<p style="text-align: center;">
+
+    <a href="https://twitter.com/KTNThompson" class="fa fa-twitter"></a>
+
+    <a href="https://github.com/knthompson26/" class="fa fa-github"></a>
+
+</p>
+
+
+
+&nbsp;
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

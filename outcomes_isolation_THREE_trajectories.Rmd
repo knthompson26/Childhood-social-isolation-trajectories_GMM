@@ -1,0 +1,1231 @@
+---
+title: "Associations between social isolation trajectories and outcomes at age 18"
+output:  
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+    number_sections: false
+    highlight: monochrome
+    theme: flatly
+    code_folding: hide
+    includes:
+      after_body: footer.html
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      comment = NA,
+                      prompt = FALSE,
+                      cache = FALSE,
+                      message = FALSE,
+                      warning = FALSE,
+                      results = 'asis')
+
+options(bitmapType = 'quartz') # to render fonts better
+```
+
+```{r Clear global environment, include=FALSE}
+remove(list = ls())
+```
+
+```{r colour palletes for graphs, include=FALSE}
+palette2 <- c("#78D9C5","#F5BE5E")
+palette2b <- c("#78D9C5","#EEB6E9")
+```
+
+```{r Load packages, include=FALSE}
+library(knitr)
+library(summarytools)
+library(psych)
+library(skimr)
+library(ggpubr)
+library(tidyr)
+library(gplots)
+library(Rmisc)
+library(MplusAutomation)
+library(stringr)
+library(stringi)
+library(filesstrings)
+library(texreg)
+library(relimp)
+library(nnet)
+library(ggplot2)
+# load necessary packages for importing the function
+library(lmtest) # linear models
+library(sandwich)
+library(jtools) # glm
+library(clusterSEs) #multinomial models
+
+library(tidyverse)
+library(dplyr) #conflicts with tidyverse for e.g. rename and row_number
+```
+
+```{r source the data file path, include=FALSE}
+#source raw data directory: data_raw and data included
+source("../../../isolation_trajectories_data_path.R")
+```
+
+```{r theme for all plots, include=FALSE}
+theme.outcome <- theme(panel.grid.major.x = element_line(size = 0.5,
+                                          linetype = 'dashed',
+                                          colour = "gray"),
+        plot.title = element_text(size = 15, face = "bold", hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5),
+        axis.title.x = element_text(size=12,face="bold"),
+        axis.title.y = element_blank(),
+        axis.text.x = element_text(colour = "black", size = 9),
+        axis.text.y = element_text(colour = "black", size = 12),
+        axis.ticks.x = element_blank(),
+        axis.ticks.y = element_blank(),
+        panel.background = element_blank(),
+        legend.position = "bottom",
+        strip.text.y = element_blank())
+```
+
+```{r lists for outcome regressions, include=FALSE}
+outcome.dependent <- c( # mental health
+                      "depression_diagnosis_12mo_18", 
+                       "depression_current_scale_18",
+                       "anxiety_diagnosis_18", 
+                       "anxiety_current_scale_18",
+                       "ADHD_diagnosis_18", 
+                       "inattentive_hyperactive_symptoms_total_18",
+                       "conduct_disorder_moderate_18", 
+                       "conduct_disorder_symptoms_18", 
+                       "alcohol_dependence_18", 
+                    #   "alcohol_abuse_18", # using dependence as better representation of severity
+                       "alcohol_symptom_scale_18",
+                       "cannabis_dependence_18", 
+                       "cannabis_symptom_scale_18", 
+                       "PTSD_diagnosis_lifetime_18", 
+                       "PTSD_diagnosis_current_18", 
+                       "cat_psychosis_experiences_scale_18", 
+                       "suicide_attempt_selfharm_18", 
+                       "service_use_18", 
+                      # physical health
+                       "BMI_18", 
+                       "CRP_log_18",
+                       "physical_activity_18",
+                       "smoking_current_number_18",
+                      # coping and functioning
+                       "loneliness_18",
+                       "life_satisfaction_18",
+                       "technology_use_18",
+                       "coping_with_stress_18",
+                       "PSQI_global_score_18",
+                      # employment
+                       "not_in_employment_education_18", 
+                       "job_preparedness_skills_18",
+                       "job_preparedness_attributes_18",
+                       "optimism_18",
+                       "job_search_activities_count_18")
+
+outcome.dependent.numeric <- c( # mental health
+                               "depression_diagnosis_12mo_numeric_18", 
+                               "depression_current_scale_18",
+                               "anxiety_diagnosis_numeric_18", 
+                               "anxiety_current_scale_18",
+                               "ADHD_diagnosis_numeric_18", 
+                               "inattentive_hyperactive_symptoms_total_18",
+                               "conduct_disorder_moderate_numeric_18", 
+                               "conduct_disorder_symptoms_18", 
+                               "alcohol_dependence_numeric_18", 
+                            #   "alcohol_abuse_numeric_18", 
+                               "alcohol_symptom_scale_18",
+                               "cannabis_dependence_numeric_18", 
+                               "cannabis_symptom_scale_18", 
+                               "PTSD_diagnosis_lifetime_numeric_18", 
+                               "PTSD_diagnosis_current_numeric_18", 
+                               "cat_psychosis_experiences_scale_numeric_18", 
+                               "suicide_attempt_selfharm_numeric_18", 
+                               "service_use_numeric_18", 
+                               "BMI_18", # physical health
+                               "CRP_log_18",
+                               "physical_activity_18",
+                               "smoking_current_number_18",
+                               "loneliness_18", # coping and functioning
+                               "life_satisfaction_18",
+                               "technology_use_18",
+                               "coping_with_stress_18",
+                               "PSQI_global_score_18",
+                               "not_in_employment_education_numeric_18", # employment
+                               "job_preparedness_skills_18",
+                               "job_preparedness_attributes_18",
+                               "optimism_18",
+                               "job_search_activities_count_18")
+
+name.list <- c(
+              "Depression diagnosis: Yes",
+              "Depression symptoms",
+              "Anxiety diagnosis: Yes",
+              "Anxiety symptoms",
+              "ADHD diagnosis: Yes",
+              "Inattentive and hyperactive symptoms",
+              "Moderate conduct disorder: Yes",
+              "Conduct disorder symptoms",
+              "Alcohol dependence: Yes",
+            #  "Alcohol abuse: Yes",
+              "Alcohol dependence symptoms",
+              "Cannabis dependence: Yes",
+              "Canabis dependence symptoms",
+              "PTSD lifetime diagnosis: Yes",
+              "PTSD current diagnosis: Yes",
+              "Experiences of psychosis",
+              "Suicide attempt: Yes",
+              "Service use: Yes",
+              "BMI",
+              "Log CRP",
+              "Physical activity",
+              "Daily number of cigarettes smoked",
+              "Loneliness",
+              "Life satisfaction",
+              "Technology use",
+              "Coping with stress",
+              "PSQI score",
+              "Not in employment or education: Yes",
+              "Job preparedness: skills",
+              "Job preparedness: attributes",
+              "Job optimism",
+              "Job search activities")
+
+outcome.dependent.linear <- c(
+  "depression_current_scale_18", # mental health
+  "anxiety_current_scale_18",
+  "inattentive_hyperactive_symptoms_total_18",
+  "conduct_disorder_symptoms_18", 
+  "alcohol_symptom_scale_18",
+  "cannabis_symptom_scale_18", 
+  "cat_psychosis_experiences_scale_numeric_18", # can to be numeric to be in linear regression
+  "BMI_18", # physical health
+  "CRP_log_18",
+  "physical_activity_18",
+  "smoking_current_number_18",
+  "loneliness_18", #coping and functioning
+  "life_satisfaction_18",
+  "technology_use_18",
+  "coping_with_stress_18",
+  "PSQI_global_score_18",
+  "job_preparedness_skills_18", #employment
+  "job_preparedness_attributes_18",
+  "optimism_18",
+  "job_search_activities_count_18"
+)
+
+outcome.dependent.linear.zscore <- c(
+  "z_score.depression_current_scale_18", # mental health
+  "z_score.anxiety_current_scale_18",
+  "z_score.inattentive_hyperactive_symptoms_total_18",
+  "z_score.conduct_disorder_symptoms_18", 
+  "z_score.alcohol_symptom_scale_18",
+  "z_score.cannabis_symptom_scale_18", 
+  "z_score.cat_psychosis_experiences_scale_numeric_18", # can to be numeric to be in linear regression
+  "z_score.BMI_18", # physical health
+  "z_score.CRP_log_18",
+  "z_score.physical_activity_18",
+  "z_score.smoking_current_number_18",
+  "z_score.loneliness_18", #coping and functioning
+  "z_score.life_satisfaction_18",
+  "z_score.technology_use_18",
+  "z_score.coping_with_stress_18",
+  "z_score.PSQI_global_score_18",
+  "z_score.job_preparedness_skills_18", #employment
+  "z_score.job_preparedness_attributes_18",
+  "z_score.optimism_18",
+  "z_score.job_search_activities_count_18"     
+)
+
+outcome.dependent.linear.name.list <- c(
+                                        "Depression symptoms",
+                                        "Anxiety symptoms",
+                                        "Inattentive and hyperactive symptoms",
+                                        "Conduct disorder symptoms",
+                                        "Alcohol dependence symptoms",
+                                        "Cannabis dependence symptoms",
+                                        "Experiences of psychosis",
+                                        "BMI",
+                                        "Log CRP",
+                                        "Physical activity",
+                                        "Daily number of cigarettes smoked",
+                                        "Loneliness",
+                                        "Life satisfaction",
+                                        "Technology use",
+                                        "Coping with stress",
+                                        "PSQI score",
+                                        "Job preparedness: skills",
+                                        "Job preparedness: attributes",
+                                        "Job optimism",
+                                        "Job search activities")
+
+outcome.dependent.logistic <- c(
+  "depression_diagnosis_12mo_18", # mental health 
+  "anxiety_diagnosis_18", 
+  "ADHD_diagnosis_18",
+  "conduct_disorder_moderate_18",
+  "alcohol_dependence_18",
+ # "alcohol_abuse_18", 
+  "cannabis_dependence_18", 
+  "PTSD_diagnosis_lifetime_18", 
+  "PTSD_diagnosis_current_18", 
+  "suicide_attempt_selfharm_18", 
+  "service_use_18",
+  "not_in_employment_education_18" #employment
+)
+
+outcome.dependent.logistic.name.list <- c(
+  "Depression diagnosis",
+  "Anxiety diagnosis",
+  "ADHD diagnosis",
+  "Moderate conduct disorder",
+  "Alcohol dependence",
+ # "Alcohol abuse",
+  "Cannabis dependence",
+  "PTSD lifetime diagnosis",
+  "PTSD current diagnosis",
+  "Suicide attempt",
+  "Service use",
+  "Not in employment or education"
+)
+```
+
+***
+
+This page displays the results from logistic and linear multivariate regressions used to assess how the outcomes at age 18 are associated with social isolation trajectory membership. Outcomes are sorted into domains of "Mental health", "Physical health", "Coping and functioning", and "Employment prospects". 
+
+***
+
+# Functions 
+
+To run the following code more clearly, I have created these functions:
+
+* multiple.testing() applies the BH multiple testing correction. You define the data, class, method and number of tests.
+* add.significance.variable() add's a variable to the dataset that labels if a result has a significant p value or not. 
+* paper.table() creates a table that is formatted correctly for either linear or logitic regression results. 
+* create.dataset() binds regression results together to form a data set. 
+* huber.white.cluster.logistic() applies heteroskedasticity-robust standard errors while clustering for familyid for logistic regression
+* order.variables() orders the data whereby points in a plot are arranged by OR/Beta and domain. 
+* reorder_cor_matrix() orders the correlation matrix for the heat map
+* huber.white.cluster.linear() applies heteroskedasticity-robust standard errors while clustering for familyid for linear regression
+
+```{r script functions, class.source = 'fold-show'}
+multiple.testing <- function(data, class, method = "BH", n.tests){
+  data <- data %>%
+    filter(Class == class) %>%
+  mutate(
+    p.value.adjusted = 
+           stats::p.adjust(p.value, 
+                    method = method,
+                    n = n.tests) 
+  ) %>%
+  mutate(Significance.adjusted = 
+           if_else(
+            p.value.adjusted < 0.05, 
+            1,
+            0
+      ) %>%
+        recode_factor(
+          `1` = "Significant",
+          `0` = "Non-significant")
+         )  
+  return(data)
+}
+
+add.significance.variable <- function(data){
+  data <- data %>%
+    mutate(
+    Significance = 
+      if_else(
+        p.value < 0.05, 
+        1,
+        0
+      ) %>%
+    recode_factor(
+        "0" = "Non-significant",
+        "1" = "Significant"
+      ))
+  return(data)
+}
+
+paper.table <- function(data, model){
+  if (model == "logistic"){
+  table <- data %>%
+    select(
+    Class,
+    Variable,
+    OR,
+    `95% CI low` = OR.conf.low,
+    `95% CI high` = OR.conf.high,
+    `p value` = p.value,
+    Domain,
+    -Significance) %>%
+  kable(digits = 2)
+  return(table)}
+  
+  else if (model == "linear"){
+    table <- data %>%
+    select(
+    Class,
+    Variable,
+    `Beta estimate` = estimate,
+    `95% CI low` = conf.low,
+    `95% CI high` = conf.high,
+    `p value` = p.value,
+    Domain,
+    -Significance) %>%
+  kable(digits = 2)
+  return(table)
+  }
+}
+
+create.dataset <- function(data, model){
+  if (model == "logistic"){
+  data <- data.table::rbindlist(data) %>%
+  dplyr::select(Class,
+         Variable,
+         OR,
+         OR.conf.low,
+         OR.conf.high,
+         p.value, 
+         Significance,
+         Domain = block)
+  return(data)}
+  else if (model == "linear"){
+  data <- data.table::rbindlist(data) %>%
+  dplyr::select(Class,
+         Variable,
+         estimate,
+         robust.std.error,
+         conf.low,
+         conf.high,
+         p.value, 
+         Significance,
+         Domain = block)
+  return(data)
+  }
+}
+
+huber.white.cluster.logistic <- function(regression.outcome){
+   outcome.full <- summ(regression.outcome,
+                       scale = FALSE,          # standardized regression coefficients 
+                       confint = TRUE,        # report confidence intervals over standard errors
+                       ci.width = 0.95,       # desired confidence interval
+                       robust = "HC0",        # heteroskedasticity-robust standard errors instead of conventional SEs
+                       cluster = "familyid",  # for clustered standard errors, provide column name of cluster variable
+                       exp = TRUE)
+   return(outcome.full)
+}
+
+order.variables <- function(data, domain, model){
+  if (model == "logistic"){
+  data <- filter(data, Domain == domain) %>%
+    arrange(desc(OR))
+  
+  data$Variable <- factor(data$Variable, 
+                          levels = paste(unique(paste(data$Variable)), sep = ","))
+  return(data)}
+  else if (model == "linear"){
+    data <- filter(data, Domain == domain) %>%
+    arrange(desc(estimate))
+    
+    data$Variable <- factor(data$Variable, 
+                          levels = paste(unique(paste(data$Variable)), sep = ","))
+  return(data)
+  }
+}
+
+reorder_cor_matrix <- function(cor_matrix){
+ dd <- as.dist((1-cor_matrix)/2) #Use correlation between variables as distance
+ hc <- hclust(dd)
+ cormat <-cor_matrix[hc$order, hc$order]
+}
+
+# robust standard error estimation - account for non-independence of twin sample
+huber.white.cluster.linear <- function(regression.outcome, rows.remove){
+  outcome.full <- broom::tidy(coeftest(regression.outcome,                          # reports coefficients for new covariance matrix
+                                       vcov = vcovHC(regression.outcome,            # estimates a robust covariance matrix
+                                                     type = "HC0",                  # gives White's estimator 
+                                                     cluster = "familyid")),        # clusters by familyid
+                              conf.int = TRUE,   
+                              conf.level = 0.95)[rows.remove,] %>%
+    dplyr::rename(robust.std.error = std.error) %>%
+    mutate(Class = c("Increasing", "Decreasing")) # Create new formatted class variable
+  return(outcome.full)
+}
+
+```
+
+```{r read in prepped regression data and check variable names, include=FALSE}
+dat <- readRDS(file = paste0(data_path, "class_joined_preprocessed_isolation_data_full_sample.rds"))
+#colnames(dat)
+```
+
+# Test for multicollinearity for outcome variables
+
+We created a correlation matrix to look for variables that are highly correlated. The only variables that are highly correlated here are those that are actually measuring the same construct. For example, current depression and having a depression diagnosis. This is expected and not considered multicollinearity as these lifetime vs current measures will not be used within the same model. 
+
+```{r test for multicollinearity for outcome variables}
+# create data frame with just numeric antecedent variables
+outcome_data_frame <- as.data.frame(dat[,outcome.dependent.numeric])
+colnames(outcome_data_frame) <- name.list
+
+# get correlation matrix
+isolation_cor_matrix <- cor(outcome_data_frame, method = "pearson", use = "complete.obs")
+
+# Reorder the correlation matrix
+cor_matrix_full <- reorder_cor_matrix(isolation_cor_matrix)
+  
+#melt the values
+metled_cor_matrix <- reshape::melt(cor_matrix_full, na.rm = TRUE)
+
+#correlation heat map
+correlation_heat_map <- ggplot(metled_cor_matrix, aes(X2, X1, fill = value))+
+ geom_tile(color = "white")+
+ scale_fill_gradient2(low = "blue", high = "red", mid = "white",
+   midpoint = 0, limit = c(-1,1), space = "Lab",
+    name="Pearson\nCorrelation") +
+  theme_minimal() +
+  labs(y = "",
+       x = "",
+       title = "Correlation heat map for outcomes")+
+ theme(axis.text.x = element_text(angle = 45, vjust = 1, size = 12, hjust = 1),
+       axis.text.y = element_text(size = 12),
+       plot.margin=grid::unit(c(0,0,0,0), "mm"),
+       plot.title = element_text(size = 20),
+       )+
+ coord_fixed() +
+  geom_text(aes(X2, X1, label = round(value, digits = 2)), color = "black", size = 3)
+```
+
+```{r heat map fig, fig.width=15, fig.height=15}
+correlation_heat_map
+```
+
+```{r save correlation heat map, include=FALSE}
+# #save
+# ggsave(
+#   "outcomes_correlation_heat_map.png",
+#   plot = correlation_heat_map,
+#   device = "png",
+#   path = paste0(graph_save_data_path, "outcomes/analysis_interpretation"),
+#   width = 15,
+#   height = 15
+# )
+```
+
+# Association with outcome variables at age 18
+
+**Analysis Plan **
+
+* *Individual outcome regressions*: single regressions are computed to see if the class can predict the the occurrence of each variable (variable ~ class). This is done through a loop. Odds Ratios (OR) and their confidence intervals are calculated for binary variables (logistic regression). Standardized Beta values are calculated for continuous variables (linear regression). Continuous and binary variables are plotted separately. Z scores are calculated for all continuous variables and  all linear regressions are run using z scores.
+
+  + A. *Logistic regressions* (binary variables):
+depression_diagnosis_12mo_18, anxiety_diagnosis_18, ADHD_diagnosis_18, conduct_disorder_moderate_18, alcohol_dependence_18, cannabis_dependence_18, PTSD_diagnosis_lifetime_18, PTSD_diagnosis_current_18,suicide_attempt_selfharm_18, service_use_18, not_in_employment_education_numeric_18. alcohol_abuse_18 removed as using alcohol_dependence_18 instead as it captures more disordered drinking. 
+
+  + B. *Linear regressions* (continuous variables):
+depression_current_scale_18, anxiety_current_scale_18, inattentive_hyperactive_symptoms_total_18, conduct_disorder_symptoms_18, alcohol_symptom_scale_18, cannabis_symptom_scale_18,   cat_psychosis_experiences_scale_18, BMI_18, CRP_log_18, physical_activity_18, smoking_current_number_18, loneliness_18, life_satisfaction_18, technology_use_18, coping_with_stress_18, PSQI_global_score_18, job_preparedness_skills_18, job_preparedness_attributes_18, optimism_18, job_search_activities_count_18
+
+  + C. *Regressions rerun whilst controlling for antecedents* (both continuous and binary are rerun):
+antecedents controlled for include: prosocial_behaviours_combined_05 + ADHD_combined_05 + internalising_combined_excl_sis_05 + maternal_personality_openness_05 + number_children_school_05
+
+## Preparation
+
+Create *z scores* for all continuous variables
+
+```{r scale continuous variables and combine to main dataset}
+# create a scaled version of the continuous variables - z scores for all variables
+scaled_continuous_data <- as.data.frame(scale(dat[outcome.dependent.linear], center = TRUE, scale = TRUE))
+
+# rename variables to show that they are z scores 
+colnames(scaled_continuous_data) <- paste0("z_score.", colnames(scaled_continuous_data))
+
+# combine the scaled data to the main dataset 
+dat <- cbind(dat, scaled_continuous_data)
+
+#colnames(dat)
+```
+
+# Posterior sensitivity analysis 
+
+The below few chunks are used to run the same analysis again in a reduced sample (only individuals who had a posterior probability of above 0.8 in all classes). 
+
+**IMPORTANT**: We created the current Rmd script to be able to use the same script to run the same analysis again in a reduced sample as a sensitivity analysis (only individuals who had a posterior probability of above 0.8 in all classes). When the variable "posterior.cut" is set to TRUE the following code will run for the data set that has those probability<0.8 dropped. 
+
+```{r posterior probability indicator, class.source = 'fold-show'}
+posterior.cut = FALSE
+```
+
+```{r posterior probability code, results='hide', class.source = 'fold-show'}
+if(posterior.cut == TRUE){
+
+# create new variable only with those who have a probability higher than 0.8 for each class
+dat <- dat %>%
+  mutate(class_renamed_cut =
+           factor(
+             case_when(
+             prob2 > 0.8 & class_renamed == "Increasing" ~ "Increasing",
+             prob3 > 0.8 & class_renamed == "Decreasing" ~ "Decreasing",
+             prob1 > 0.8 & class_renamed == "Low stable" ~ "Low stable"
+           ), 
+           ordered = FALSE))
+
+library(nnet)
+# check the biggest group in the class to be the reference group
+table(dat$class_renamed_cut)
+
+# relevel class_factor
+dat <- dat %>% 
+  mutate(
+    class_reordered_cut =
+      relevel(
+        class_renamed_cut,
+        ref = "Low stable",
+        first = TRUE, #levels in ref come first
+        collapse = "+", #String used when constructing names for combined factor levels
+        xlevels = TRUE #levels maintained even if not actually occurring
+        
+      )
+  )
+# check
+table(dat$class_reordered_cut)
+
+# create new data set with only these individuals
+dat_prob_cut_out <- dat %>% filter(is.na(class_reordered_cut))
+dat <- dat %>% filter(!is.na(class_reordered_cut))
+
+# check
+freq(dat$class_reordered)
+}
+```
+
+Statistics for posterior probability sensitivity analyses:
+
+* Low stable: Dropped 42 people. Average probability = 0.66, minimum probability = 0.48. 
+* Increasing: Dropped 24 people. Average probability = 0.64, minimum probability = 0.49.
+* Decreasing: Dropped 25 people. Average probability = 0.63, minimum probability = 0.51.
+
+**Posterior sensitivity N = 2141** 
+
+```{r descriptives for probabilites, results='hide', class.source = 'fold-show'}
+if(posterior.cut == TRUE){
+low.stable.cut.stats <- dat_prob_cut_out %>%
+  filter(class_reordered == "Low stable") %>%
+  descr(prob1)
+
+increasing.cut.stats <- dat_prob_cut_out %>%
+  filter(class_reordered == "Increasing") %>%
+  descr(prob2)
+
+decreasing.cut.stats <- dat_prob_cut_out %>%
+  filter(class_reordered == "Decreasing") %>%
+  descr(prob3)
+
+low.stable.cut.stats
+increasing.cut.stats
+decreasing.cut.stats
+}
+```
+
+# Logistic regression {.tabset .tabset-fade}
+
+## Loop
+
+```{r logistic regression loop, results='hide', class.source = 'fold-show'}
+logistic.stats.outcome <- list() #create empty list to store the information in
+
+for (i in 1:length(outcome.dependent.logistic))
+{ cat(i)
+  logistic.formula.outcome <- as.formula(sprintf("%s ~ class_reordered + sex + SES_ordered", outcome.dependent.logistic[i]))
+
+  logistic.reg.outcome <- glm(logistic.formula.outcome, data = dat, family = "binomial")
+
+  logistic.output.outcome.full <- huber.white.cluster.logistic(logistic.reg.outcome)
+  
+  logistic.output.outcome.full <- as.data.frame(logistic.output.outcome.full$coeftable)[-c(1,4:6),] %>% # delete sex and SES coefficients
+    mutate(Class = c("Increasing", "Decreasing")) %>% # Create new formatted class variable
+    dplyr::select(
+      Class,
+      OR = `exp(Est.)`,
+      OR.conf.low = `2.5%`,
+      OR.conf.high = `97.5%`,
+      p.value = p)
+    
+  if (i < 11) {
+    logistic.output.outcome.full <- logistic.output.outcome.full %>%
+      mutate(block = "Mental health domain") %>%
+      mutate(Variable = outcome.dependent.logistic.name.list[[i]]) 
+                
+  } else {
+   logistic.output.outcome.full <- logistic.output.outcome.full %>%
+      mutate(block = "Employment domain") %>%
+      mutate(Variable = outcome.dependent.logistic.name.list[[i]])
+  }
+  
+  logistic.output.outcome.full <- add.significance.variable(logistic.output.outcome.full)
+    
+  logistic.stats.outcome[[i]] <- logistic.output.outcome.full
+}
+
+# set the names of the list to match the variable names
+names(logistic.stats.outcome) <- outcome.dependent.logistic
+```
+
+```{r combine logistic dataframes}
+data.outcome.logistic <- create.dataset(logistic.stats.outcome, model = "logistic") 
+```
+
+## Table 
+
+```{r table for combined logistic dataframes}
+paper.table(data.outcome.logistic, model = "logistic")
+```
+
+```{r bind and order rows}
+# mental health
+data.outcome.logistic.mental <- order.variables(data.outcome.logistic, domain = "Mental health domain", model = "logistic")
+
+# employment prospects
+data.outcome.logistic.employ <- order.variables(data.outcome.logistic, domain = "Employment domain", model = "logistic")
+
+# all
+dat.logistic.ordered <- rbind(
+  data.outcome.logistic.mental,
+  data.outcome.logistic.employ
+)
+```
+
+## Plot 
+
+```{r logistic regression outcome plot}
+outcome.logistic.separate.plot <- ggplot(
+  dat.logistic.ordered, 
+  aes(x = Variable,
+      y = OR,
+      ymin = OR.conf.low,
+      ymax = OR.conf.high)
+  ) +
+  scale_shape_manual(values = c(21, 19)) +
+  geom_pointrange(aes(shape = Significance), position = position_dodge(width = 0.7)) +
+  facet_grid(Domain ~ Class, drop = TRUE, scales = "free_y", space = "free") +
+  labs(y = "OR (95% CI)",
+       x = "names",
+       title = "Association between class membership and outcomes at age 18",
+       color = "",
+       shape = "") +
+  scale_y_continuous(trans = scales::log10_trans(), breaks = c(0.2,0.4,0.6,0.8, 1, 1.5, 2, 3, 4)) +
+  theme.outcome +
+  geom_hline(linetype = "dashed", yintercept = 1) +
+  coord_flip()
+
+outcome.logistic.separate.plot
+```
+
+```{r plot made for the SGDP presentation, include=FALSE}
+dat.logistic.ordered.sgdp.plot <- dat.logistic.ordered %>% 
+  filter(Significance == "Significant",
+         Domain != "Physical health domain")
+
+outcome.logistic.separate.plot.SGDP.CENTRE <- ggplot(
+  dat.logistic.ordered.sgdp.plot, 
+  aes(x = Variable,
+      y = OR,
+      ymin = OR.conf.low,
+      ymax = OR.conf.high,
+      color = Class)
+  ) +
+  scale_shape_manual(values = c(19)) +
+  scale_fill_manual(values = palette2b) +
+  scale_color_manual(values = palette2b) +
+  geom_pointrange(aes(shape = Significance), position = position_dodge(width = 0.7)) +
+  facet_grid(Domain ~ Class, drop = TRUE, scales = "free_y", space = "free") +
+  labs(y = "OR (95% CI)",
+       x = "names",
+       title = "Binary outcomes",
+       subtitle = paste("N(Total) = ", length(dat$sex),
+                        "; N(Increasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Increasing"])),
+                        "; N(Decreasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Decreasing"])), sep = ""),
+       color = "",
+       shape = "") +
+  scale_y_continuous(trans = scales::log10_trans(), breaks = c(0.2,0.4,0.6,0.8, 1, 1.5, 2, 3, 4), 
+                     limits = c(0.4,5)
+                     ) +
+  theme.outcome +theme(
+    strip.text.x = element_text(
+        size = 10, color = "black", face = "bold", 
+        ),
+    strip.background = element_rect(
+     color = "black", fill = "white", size = 0.5, linetype = "solid"
+     ),
+    plot.title = element_text(size = 12,face = "bold"),
+        axis.title.x = element_text(size = 10, face = "bold"),
+        axis.text.x = element_text(size = 8, colour = "black"),
+        axis.text.y = element_text(size = 10)
+  ) +
+  theme(legend.position = "none") +
+  geom_hline(linetype = "dashed", yintercept = 1) +
+  coord_flip()
+
+outcome.logistic.separate.plot.SGDP.CENTRE
+```
+
+```{r save logistic plot, include=FALSE}
+# if(posterior.cut == FALSE){
+# # save
+# ggsave(
+#   "outcome.logistic.separate.plot.SGDP.CENTRE.png",
+#   plot = outcome.logistic.separate.plot.SGDP.CENTRE,
+#   device = "png",
+#   path = paste0(graph_save_data_path, "outcomes/"),
+#   width = 8,
+#   height = 2.5
+# )
+# }
+```
+
+# Linear regression {.tabset .tabset-fade}
+
+Using z-scores in all calculations. 
+
+## Loop
+
+```{r linear regression loop with z scores, results='hide', class.source = 'fold-show'}
+linear.stats.outcome.zscore <- list() #create empty list to store the information in
+
+for (i in 1:length(outcome.dependent.linear.zscore))
+{ cat(i)
+  linear.formula.outcome.zscore <- as.formula(sprintf("%s ~ class_reordered + sex + SES_ordered", outcome.dependent.linear.zscore[i]))
+
+  linear.reg.outcome.zscore <- lm(linear.formula.outcome.zscore, data = dat)
+  
+  # robust standard error estimation - account for non-independence of twin sample
+  linear.output.outcome.full.zscore <- huber.white.cluster.linear(linear.reg.outcome.zscore, 
+                                                                  rows.remove = -c(1,4:6))
+ 
+  if (i < 8) {
+    linear.output.outcome.full.zscore <- linear.output.outcome.full.zscore %>%
+      mutate(block = "Mental health domain") %>%
+      mutate(Variable = outcome.dependent.linear.name.list[[i]])
+  } else if (i < 12 ) {
+   linear.output.outcome.full.zscore <- linear.output.outcome.full.zscore %>%
+      mutate(block = "Physical health domain") %>%
+      mutate(Variable = outcome.dependent.linear.name.list[[i]])
+  } else if (i < 17) {
+    linear.output.outcome.full.zscore <- linear.output.outcome.full.zscore %>%
+      mutate(block = "Coping and functioning domain") %>%
+      mutate(Variable = outcome.dependent.linear.name.list[[i]])
+  } else {
+    linear.output.outcome.full.zscore <- linear.output.outcome.full.zscore %>%
+      mutate(block = "Employment domain") %>%
+      mutate(Variable = outcome.dependent.linear.name.list[[i]])
+  }
+  
+  linear.output.outcome.full.zscore <- add.significance.variable(linear.output.outcome.full.zscore)
+    
+  linear.stats.outcome.zscore[[i]] <- linear.output.outcome.full.zscore
+}
+# set the names of the list to match the variable names
+names(linear.stats.outcome.zscore) <- outcome.dependent.linear.zscore
+```
+
+```{r combine linear dataframes zscore}
+data.outcome.linear.zscore <- create.dataset(linear.stats.outcome.zscore, model = "linear")
+```
+
+## Table
+
+```{r table for combined linear dataframes zscore}
+linear.table <- paper.table(data.outcome.linear.zscore, model = "linear")
+linear.table 
+```
+
+```{r multiple testing correction for linear models, include=FALSE}
+### Getting multiple testing correction (BH FDR) p values -- IGNORE -- **FDR correction not applied here.** 
+data.outcome.linear.zscore.decreasing <- multiple.testing(data = data.outcome.linear.zscore,
+                                                          class = "Decreasing",
+                                                          method = "BH",
+                                                          n.tests = 20)
+
+data.outcome.linear.zscore.increasing <- multiple.testing(data = data.outcome.linear.zscore,
+                                                          class = "Increasing",
+                                                          method = "BH",
+                                                          n.tests = 20)
+  
+data.outcome.linear.zscore.fdr <- rbind(
+  data.outcome.linear.zscore.decreasing,
+  data.outcome.linear.zscore.increasing
+)
+```
+
+```{r table for multiple corrected, include=FALSE}
+paper.table(data.outcome.linear.zscore.fdr, model = "linear")
+```
+
+```{r bind and order rows stata}
+##Separate out data frames for each domain (this is done to order the plot later on by domain)
+
+# mental health
+data.outcome.linear.mental <- order.variables(data = data.outcome.linear.zscore, domain = "Mental health domain", model = "linear")
+# physical health
+data.outcome.linear.physical <- order.variables(data.outcome.linear.zscore, domain = "Physical health domain", model = "linear") 
+# coping and functioning
+data.outcome.linear.coping <- order.variables(data.outcome.linear.zscore, domain = "Coping and functioning domain", model = "linear") 
+# employment prospects
+data.outcome.linear.employ <- order.variables(data.outcome.linear.zscore, domain = "Employment domain", model = "linear")
+
+# all
+dat.linear.ordered <- rbind(
+  data.outcome.linear.mental,
+  data.outcome.linear.physical,
+  data.outcome.linear.coping,
+  data.outcome.linear.employ
+)
+```
+
+## Plot
+
+```{r linear regression outcome plot zscores}
+outcome.linear.separate.plot.zscore <- ggplot(
+  dat.linear.ordered, 
+  aes(x = Variable,
+      y = estimate,
+      ymin = conf.low,
+      ymax = conf.high)
+  ) +
+  scale_fill_manual(values = c("black")) +
+  scale_color_manual(values = c("black")) +
+  scale_shape_manual(values = c(19)) +
+  geom_pointrange(position = position_dodge(width = 0.7)) +
+  facet_grid(Domain ~ Class, 
+             drop = TRUE, 
+             scales = "free_y", 
+             space = "free") +
+  labs(y = "Standardised Beta Estimate (95% CI)",
+       x = "names") +
+  theme.outcome +
+  theme(
+    strip.text.x = element_text(
+        size = 10, color = "black", face = "bold", 
+        ),
+    strip.background = element_rect(
+     color = "black", fill = "white", size = 0.5, linetype = "solid"
+     ),
+    plot.title = element_text(size = 12,face = "bold"),
+        axis.title.x = element_text(size = 10, face = "bold"),
+        axis.text.x = element_text(size = 8, colour = "black"),
+        axis.text.y = element_text(size = 10)
+  ) +
+  geom_hline(linetype = "dashed", yintercept = 0) +
+  scale_y_continuous(breaks=c(-1.5, -1, -0.75, -0.5, -0.25, 0, 0.25, 0.5, 0.75, 1, 1.5, 2)) + 
+  coord_flip()
+
+outcome.linear.separate.plot.zscore
+```
+
+```{r save linear individual plot zscore, include=FALSE}
+# if(posterior.cut == FALSE){
+# # save
+# ggsave(
+#   "linear_outcome_individual_regressions_zscore.png",
+#   plot = outcome.linear.separate.plot.zscore,
+#   device = "png",
+#   path = paste0(graph_save_data_path, "outcomes/final"),
+#   width = 8,
+#   height = 6
+# )
+# }
+```
+
+```{r linear regression outcome plot zscores - SGDP presentation, include=FALSE}
+dat.linear.ordered.sgdp.plot <- dat.linear.ordered %>% 
+  filter(Significance == "Significant",
+         Domain != "Physical health domain")
+
+outcome.linear.separate.plot.zscore.SGDP.CENTRE <- ggplot(
+  dat.linear.ordered.sgdp.plot, 
+  aes(x = Variable,
+      y = estimate,
+      ymin = conf.low,
+      ymax = conf.high,
+      color = Class)
+  ) +
+  scale_fill_manual(values = palette2b) +
+  scale_color_manual(values = palette2b) +
+  scale_shape_manual(values = c(19)) +
+  geom_pointrange(position = position_dodge(width = 0.7)) +
+  facet_grid(Domain ~ Class, 
+             drop = TRUE, 
+             scales = "free_y", 
+             space = "free") +
+   labs(y = "Standardised Beta Estimate (95% CI)",
+       x = "names",
+       title = "Continuous outcomes",
+       subtitle = paste("N(Total) = ", length(dat$sex),
+                        "; N(Increasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Increasing"])),
+                        "; N(Decreasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Decreasing"])), sep = ""),
+       color = "",
+       shape = "") +
+  theme.outcome +
+  theme(
+    strip.text.x = element_text(
+        size = 10, color = "black", face = "bold", 
+        ),
+    strip.background = element_rect(
+     color = "black", fill = "white", size = 0.5, linetype = "solid"
+     ),
+    plot.title = element_text(size = 12,face = "bold"),
+        axis.title.x = element_text(size = 10, face = "bold"),
+        axis.text.x = element_text(size = 8, colour = "black"),
+        axis.text.y = element_text(size = 10)
+  ) +
+  theme(legend.position = "none") +
+  geom_hline(linetype = "dashed", yintercept = 0) +
+  scale_y_continuous(breaks=c(-1.5, -1, -0.75, -0.5, -0.25, 0, 0.25, 0.5, 0.75, 1, 1.5, 2)) + 
+  coord_flip()
+
+outcome.linear.separate.plot.zscore.SGDP.CENTRE
+
+if(posterior.cut == FALSE){
+ggsave(
+  "outcome.linear.separate.plot.zscore.SGDP.CENTRE.png",
+  plot = outcome.linear.separate.plot.zscore.SGDP.CENTRE,
+  device = "png",
+  path = paste0(graph_save_data_path, "outcomes/"),
+  width = 8,
+  height = 3.5
+)
+}
+```
+
+# Controlling for significant antecedents {.tabset .tabset-fade}
+
+We have rerun all regression models while controlling for antecedents that remained significant in the full antecedent model. Antecedents that remained significant in the full antecedent model: child prosocial behaviours, child ADHD behaviours, child internalising behaviours, maternal personality openness, number of children in school. 
+All regressions controlled for sex and SES. 
+
+## Logistic regression: controlling for antecedents {.tabset .tabset-fade}
+
+### Loop
+
+```{r logistic regression loop controlling for antecedents, class.source = 'fold-show'}
+logistic.stats.outcome.ant_control <- list() #create empty list to store the information in
+
+for (i in 1:length(outcome.dependent.logistic))
+{ cat(i)
+  logistic.formula.outcome.ant_control <- as.formula(sprintf("%s ~ class_reordered + ADHD_combined_05 + internalising_combined_excl_sis_05 + prosocial_behaviours_combined_05 + maternal_personality_openness_05 + number_children_school_05 + sex + SES_ordered", outcome.dependent.logistic[i]))
+
+  logistic.reg.outcome.ant_control <- glm(logistic.formula.outcome.ant_control, data = dat, family = "binomial")
+  
+  logistic.output.outcome.full.ant_control <- huber.white.cluster.logistic(logistic.reg.outcome.ant_control)
+  
+  logistic.output.outcome.full.ant_control <- as.data.frame(logistic.output.outcome.full.ant_control$coeftable)[-c(1,4:11),] %>% # delete sex and SES coefficients
+    dplyr::mutate(Class = c("Increasing", "Decreasing")) %>% # Create new formatted class variable
+    dplyr::select(
+      Class,
+      OR = `exp(Est.)`,
+      OR.conf.low = `2.5%`,
+      OR.conf.high = `97.5%`,
+      p.value = p)
+ 
+  if (i < 11) {
+    logistic.output.outcome.full.ant_control <- logistic.output.outcome.full.ant_control %>%
+      mutate(block = "Mental health domain") %>%
+      mutate(Variable = outcome.dependent.logistic.name.list[[i]])
+  } else {
+   logistic.output.outcome.full.ant_control <- logistic.output.outcome.full.ant_control %>%
+      mutate(block = "Employment domain") %>%
+      mutate(Variable = outcome.dependent.logistic.name.list[[i]])
+  }
+  
+  logistic.output.outcome.full.ant_control <- add.significance.variable(logistic.output.outcome.full.ant_control)
+    
+  logistic.stats.outcome.ant_control[[i]] <- logistic.output.outcome.full.ant_control
+}
+
+# set the names of the list to match the variable names
+names(logistic.stats.outcome.ant_control) <- outcome.dependent.logistic
+```
+
+```{r combine logistic dataframes ant control}
+data.outcome.logistic.ant_control <- create.dataset(logistic.stats.outcome.ant_control, model = "logistic") 
+```
+
+### Table 
+
+```{r table for combined logistic dataframes controlling for antecedents}
+paper.table(data.outcome.logistic.ant_control, model = "logistic")
+```
+
+### Plot
+
+```{r logistic regression outcome plot ant control}
+outcome.logistic.separate.plot.ant_control <- ggplot(
+  data.outcome.logistic.ant_control, 
+  aes(x = Variable,
+      y = OR,
+      ymin = OR.conf.low,
+      ymax = OR.conf.high)
+  ) +
+  scale_shape_manual(values = c(21, 19)) +
+  geom_pointrange(aes(shape = Significance), position = position_dodge(width = 0.7)) +
+  facet_grid(Domain ~ Class, drop = TRUE, scales = "free_y", space = "free") +
+  labs(y = "OR (95% CI)",
+       x = "names",
+       title = "Association betweenclass membership and outcomes at age 18",
+       subtitle = paste("N(Total) = ", length(dat$sex),
+                        "; N(Increasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Increasing"])),
+                        "; N(Decreasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Decreasing"])), sep = ""),
+       color = "",
+       shape = ""
+       ) +
+  theme.outcome +
+  geom_hline(linetype = "dashed", yintercept = 1) +
+  scale_y_continuous(trans = scales::log10_trans(), breaks=c(0.2,0.4,0.6,0.8, 1, 1.5, 2, 2.5, 3, 4, 5)) +
+  coord_flip()
+
+outcome.logistic.separate.plot.ant_control
+```
+
+## Linear regression: controlling for antecedents {.tabset .tabset-fade}
+
+### Loop
+
+```{r linear regression loop zscore ant control, class.source = 'fold-show'}
+linear.stats.outcome.zscore.ant_control <- list() #create empty list to store the information in
+
+for (i in 1:length(outcome.dependent.linear.zscore))
+{ cat(i)
+  linear.formula.outcome.zscore.ant_control <- as.formula(sprintf("%s ~ class_reordered + prosocial_behaviours_combined_05 + ADHD_combined_05 + internalising_combined_excl_sis_05 + maternal_personality_openness_05 + number_children_school_05 + sex + SES_ordered", outcome.dependent.linear.zscore[i]))
+
+  linear.reg.outcome.zscore.ant_control <- lm(linear.formula.outcome.zscore.ant_control, data = dat)
+  
+  # robust standard error estimation - account for non-independence of twin sample
+  linear.output.outcome.full.zscore.ant_control <- huber.white.cluster.linear(regression.outcome = linear.reg.outcome.zscore.ant_control,
+                                                                              rows.remove = -c(1,4:11))
+ 
+  if (i < 8) {
+    linear.output.outcome.full.zscore.ant_control <- linear.output.outcome.full.zscore.ant_control %>%
+      mutate(block = "Mental health domain") %>%
+      mutate(Variable = outcome.dependent.linear.name.list[[i]]) 
+  } else if (i < 12 ) {
+   linear.output.outcome.full.zscore.ant_control <- linear.output.outcome.full.zscore.ant_control %>%
+      mutate(block = "Physical health domain") %>%
+      mutate(Variable = outcome.dependent.linear.name.list[[i]])
+  } else if (i < 17) {
+    linear.output.outcome.full.zscore.ant_control <- linear.output.outcome.full.zscore.ant_control %>%
+      mutate(block = "Coping and functioning domain") %>%
+      mutate(Variable = outcome.dependent.linear.name.list[[i]])
+  } else {
+    linear.output.outcome.full.zscore.ant_control <- linear.output.outcome.full.zscore.ant_control %>%
+      mutate(block = "Employment domain") %>%
+      mutate(Variable = outcome.dependent.linear.name.list[[i]])
+  }
+  
+  linear.output.outcome.full.zscore.ant_control <- add.significance.variable(linear.output.outcome.full.zscore.ant_control)
+  
+  linear.stats.outcome.zscore.ant_control[[i]] <- linear.output.outcome.full.zscore.ant_control
+}
+# set the names of the list to match the variable names
+names(linear.stats.outcome.zscore.ant_control) <- outcome.dependent.linear.zscore
+```
+
+```{r combine linear dataframes zscore ant control}
+data.outcome.linear.zscore.ant_control <- create.dataset(linear.stats.outcome.zscore.ant_control, model = "linear")
+```
+
+### Table
+
+```{r table for combined linear dataframes zscore ant control}
+linear.table.ant.control <- paper.table(data.outcome.linear.zscore.ant_control, model = "linear")
+linear.table.ant.control
+```
+
+### Plot
+
+```{r linear regression outcome plot zscore ant control}
+outcome.linear.separate.plot.zscore.ant_control <- ggplot(
+  data.outcome.linear.zscore.ant_control, 
+  aes(x = Variable,
+      y = estimate,
+      ymin = conf.low,
+      ymax = conf.high)
+  ) +
+  scale_shape_manual(values = c(21, 19)) +
+  geom_pointrange(aes(shape = Significance), position = position_dodge(width = 0.7)) +
+  facet_grid(Domain ~ Class, drop = TRUE, scales = "free_y", space = "free") +
+  labs(y = "Standardised Estimate (95% CI)",
+       x = "names",
+       title = "Association between class membership and outcomes at age 18",
+       subtitle = paste("N(Total) = ", length(dat$sex),
+                        "; N(Increasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Increasing"])),
+                        "; N(Decreasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Decreasing"])), sep = ""),
+       color = "",
+       shape = "") +
+  theme.outcome +
+  geom_hline(linetype = "dashed", yintercept = 0) +
+ scale_y_continuous(breaks=c(-1.5, -1, -0.75, -0.5, -0.25, 0, 0.25, 0.5, 0.75, 1, 1.5, 2)) + # log10_trans() has been removed here
+  coord_flip()
+
+outcome.linear.separate.plot.zscore.ant_control
+```
+
+```{r linear regression outcome plot zscore ant control for sgdp center talk, include=FALSE}
+data.outcome.linear.zscore.ant_control.sgdp.plot <- data.outcome.linear.zscore.ant_control %>% 
+  filter(Significance == "Significant",
+         Domain != "Physical health domain",
+         Class == "Increasing")
+
+outcome.linear.separate.plot.zscore.ant_control.SGDP.centre <- ggplot(
+  data.outcome.linear.zscore.ant_control.sgdp.plot, 
+  aes(x = Variable,
+      y = estimate,
+      ymin = conf.low,
+      ymax = conf.high,
+      color = Class)
+  ) +
+  scale_shape_manual(values = c(19)) +
+  scale_fill_manual(values = "#EEB6E9") +
+  scale_color_manual(values = "#EEB6E9") +
+  geom_pointrange(aes(shape = Significance), position = position_dodge(width = 0.7)) +
+  facet_grid(Domain ~ Class, drop = TRUE, scales = "free_y", space = "free") +
+  labs(y = "Standardised Beta Estimate (95% CI)",
+       x = "names",
+       title = "Continuous outcomes whilst controlling for antecedents",
+       subtitle = paste("N(Total) = ", length(dat$sex),
+                        "; N(Increasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Increasing"])),
+                        "; N(Decreasing) = ", sum(!is.na(dat$class_renamed[dat$class_renamed=="Decreasing"])), sep = ""),
+       color = "",
+       shape = "") +
+  theme.outcome +
+  theme(
+    strip.text.x = element_text(
+        size = 10, color = "black", face = "bold", 
+        ),
+    strip.background = element_rect(
+     color = "black", fill = "white", size = 0.5, linetype = "solid"
+     ),
+    plot.title = element_text(size = 12,face = "bold"),
+        axis.title.x = element_text(size = 10, face = "bold"),
+        axis.text.x = element_text(size = 8, colour = "black"),
+        axis.text.y = element_text(size = 10)
+  ) +
+  theme(legend.position = "none") +
+  geom_hline(linetype = "dashed", yintercept = 0) +
+ scale_y_continuous(breaks=c(-1.5, -1, -0.75, -0.5, -0.25, 0, 0.25, 0.5, 0.75, 1, 1.5, 2)) + # log10_trans() has been removed here
+  coord_flip()
+
+outcome.linear.separate.plot.zscore.ant_control.SGDP.centre
+```
+
+```{r save SGDP separate plot, include=FALSE}
+if(posterior.cut == FALSE){
+ggsave(
+  "outcome.linear.separate.plot.zscore.ant_control.SGDP.centre.png",
+  plot = outcome.linear.separate.plot.zscore.ant_control.SGDP.centre,
+  device = "png",
+  path = paste0(graph_save_data_path, "outcomes/"),
+  width = 7,
+  height = 3
+)
+}
+```
+

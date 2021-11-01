@@ -1,0 +1,1360 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>GMM trajectory statistics and figures for quadratic models</title>
+
+<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { font-weight: bold; } /* Alert */
+code span.an { font-style: italic; } /* Annotation */
+code span.cf { font-weight: bold; } /* ControlFlow */
+code span.co { font-style: italic; } /* Comment */
+code span.cv { font-style: italic; } /* CommentVar */
+code span.do { font-style: italic; } /* Documentation */
+code span.dt { text-decoration: underline; } /* DataType */
+code span.er { font-weight: bold; } /* Error */
+code span.in { font-style: italic; } /* Information */
+code span.kw { font-weight: bold; } /* Keyword */
+code span.pp { font-weight: bold; } /* Preprocessor */
+code span.wa { font-style: italic; } /* Warning */
+
+.sourceCode .row {
+  width: 100%;
+}
+.sourceCode {
+  overflow-x: auto;
+}
+.code-folding-btn {
+  margin-right: -30px;
+}
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"></a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Home
+  </a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/knthompson26/Childhood-social-isolation-trajectories_GMM">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">GMM trajectory statistics and figures for quadratic models</h1>
+
+</div>
+
+
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#source raw data directory: data_raw and data included</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;../../../isolation_trajectories_data_path.R&quot;</span>)</span></code></pre></div>
+<div id="quadratic-gmm" class="section level1">
+<h1>Quadratic GMM</h1>
+<div id="quadratic-term-significance-for-each-model" class="section level2 tabset tabset-fade">
+<h2 class="tabset tabset-fade">Quadratic term significance for each model</h2>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>si.quad.all <span class="ot">&lt;-</span> <span class="fu">readModels</span>(<span class="fu">paste0</span>(mplus_GMM_clustered_full_output_QUAD_data_path), <span class="at">recursive =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#extract the summary variables from the mplus output files. Assuming there are multiple files in the above directory, model summaries could be retained as a data.frame as follows:</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>si_quad_summaries <span class="ot">&lt;-</span> <span class="fu">do.call</span>(<span class="st">&quot;rbind.fill&quot;</span>,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>                        <span class="fu">sapply</span>(si.quad.all,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>                               <span class="st">&quot;[&quot;</span>, </span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>                               <span class="st">&quot;summaries&quot;</span>))</span></code></pre></div>
+<p>Here we only reprt trsults for the two and three class models as the four to six class models did not converge.</p>
+<ul>
+<li>4th class originally had problems with negative S variances - set <a href="mailto:S@0" class="email">S@0</a> for this model, this then resulted in non-convergence.</li>
+<li>5th class originally had problems with negative S variances - set <a href="mailto:S@0" class="email">S@0</a> for this model, this then resulted in non-convergence.</li>
+<li>6th class originally had problems with negative S variances - set <a href="mailto:S@0" class="email">S@0</a> for this model, this then resulted in non-convergence.</li>
+</ul>
+<p><strong>Significance values for 2 class model:</strong> Q has significant mean for class 1 (0.044), although only just. Q has non significant mean for class 2 (0.085).</p>
+<p><strong>Significance values for 3 class model:</strong> Q has significant mean for class 1 (0.001). Q has significant mean for class 2 (0.002). Q has significant mean for class 3 (0.008).</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># two class</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>quad.mean.two.class <span class="ot">&lt;-</span> si.quad.all<span class="sc">$</span>X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.<span class="fl">1.</span>data_analysis.mplus.GMM.clustered.full_sample.quadratic..isolation_2traj_full_sample_clustered_QUAD.out<span class="sc">$</span>parameters<span class="sc">$</span>unstandardized <span class="sc">%&gt;%</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(paramHeader <span class="sc">==</span> <span class="st">&quot;Means&quot;</span> <span class="sc">&amp;</span> LatentClass <span class="sc">&lt;</span> <span class="dv">7</span>) <span class="co"># filter out the means for I, S and Q for each class </span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>quad.variance.two.class <span class="ot">&lt;-</span> si.quad.all<span class="sc">$</span>X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.<span class="fl">1.</span>data_analysis.mplus.GMM.clustered.full_sample.quadratic..isolation_2traj_full_sample_clustered_QUAD.out<span class="sc">$</span>parameters<span class="sc">$</span>unstandardized <span class="sc">%&gt;%</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(paramHeader <span class="sc">==</span> <span class="st">&quot;Variances&quot;</span> <span class="sc">&amp;</span> LatentClass <span class="sc">&lt;</span> <span class="dv">7</span>) <span class="co"># filter out the means for I, S and Q for each class </span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co"># three class</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>quad.mean.three.class <span class="ot">&lt;-</span> si.quad.all<span class="sc">$</span>X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.<span class="fl">1.</span>data_analysis.mplus.GMM.clustered.full_sample.quadratic..isolation_3traj_full_sample_clustered_QUAD.out<span class="sc">$</span>parameters<span class="sc">$</span>unstandardized <span class="sc">%&gt;%</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(paramHeader <span class="sc">==</span> <span class="st">&quot;Means&quot;</span> <span class="sc">&amp;</span> LatentClass <span class="sc">&lt;</span> <span class="dv">7</span>) <span class="co"># filter out the means for I, S and Q for each class </span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>quad.variance.three.class <span class="ot">&lt;-</span> si.quad.all<span class="sc">$</span>X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.<span class="fl">1.</span>data_analysis.mplus.GMM.clustered.full_sample.quadratic..isolation_3traj_full_sample_clustered_QUAD.out<span class="sc">$</span>parameters<span class="sc">$</span>unstandardized <span class="sc">%&gt;%</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(paramHeader <span class="sc">==</span> <span class="st">&quot;Variances&quot;</span> <span class="sc">&amp;</span> LatentClass <span class="sc">&lt;</span> <span class="dv">7</span>) <span class="co"># filter out the means for I, S and Q for each class </span></span></code></pre></div>
+<div id="two-class-model" class="section level3">
+<h3>Two class model</h3>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>two.class.mean.var <span class="ot">&lt;-</span> <span class="fu">rbind</span>(quad.mean.two.class, quad.variance.two.class) <span class="sc">%&gt;%</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="st">`</span><span class="at">Mean/variance</span><span class="st">`</span> <span class="ot">=</span> paramHeader, </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">Intercept/slope/quadratic</span><span class="st">`</span> <span class="ot">=</span> param, </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">estimate</span><span class="st">`</span> <span class="ot">=</span> est, </span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">standard error</span><span class="st">`</span> <span class="ot">=</span> se, </span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">p value</span><span class="st">`</span> <span class="ot">=</span> pval)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(two.class.mean.var)</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Mean/variance</th>
+<th align="left">Intercept/slope/quadratic</th>
+<th align="right">estimate</th>
+<th align="right">standard error</th>
+<th align="right">p value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Means</td>
+<td align="left">I</td>
+<td align="right">0.714</td>
+<td align="right">0.030</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="even">
+<td align="left">Means</td>
+<td align="left">S</td>
+<td align="right">0.033</td>
+<td align="right">0.022</td>
+<td align="right">0.127</td>
+</tr>
+<tr class="odd">
+<td align="left">Means</td>
+<td align="left">Q</td>
+<td align="right">-0.006</td>
+<td align="right">0.003</td>
+<td align="right">0.044</td>
+</tr>
+<tr class="even">
+<td align="left">Means</td>
+<td align="left">I</td>
+<td align="right">1.979</td>
+<td align="right">0.227</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="odd">
+<td align="left">Means</td>
+<td align="left">S</td>
+<td align="right">-0.087</td>
+<td align="right">0.254</td>
+<td align="right">0.732</td>
+</tr>
+<tr class="even">
+<td align="left">Means</td>
+<td align="left">Q</td>
+<td align="right">0.067</td>
+<td align="right">0.039</td>
+<td align="right">0.085</td>
+</tr>
+<tr class="odd">
+<td align="left">Variances</td>
+<td align="left">I</td>
+<td align="right">0.642</td>
+<td align="right">0.119</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="even">
+<td align="left">Variances</td>
+<td align="left">S</td>
+<td align="right">0.081</td>
+<td align="right">0.029</td>
+<td align="right">0.006</td>
+</tr>
+<tr class="odd">
+<td align="left">Variances</td>
+<td align="left">Q</td>
+<td align="right">0.001</td>
+<td align="right">0.001</td>
+<td align="right">0.013</td>
+</tr>
+<tr class="even">
+<td align="left">Variances</td>
+<td align="left">I</td>
+<td align="right">0.642</td>
+<td align="right">0.119</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="odd">
+<td align="left">Variances</td>
+<td align="left">S</td>
+<td align="right">0.081</td>
+<td align="right">0.029</td>
+<td align="right">0.006</td>
+</tr>
+<tr class="even">
+<td align="left">Variances</td>
+<td align="left">Q</td>
+<td align="right">0.001</td>
+<td align="right">0.001</td>
+<td align="right">0.013</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="three-class-model" class="section level3">
+<h3>Three class model</h3>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>three.class.mean.var <span class="ot">&lt;-</span> <span class="fu">rbind</span>(quad.mean.three.class, quad.variance.three.class) <span class="sc">%&gt;%</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="st">`</span><span class="at">Mean/variance</span><span class="st">`</span> <span class="ot">=</span> paramHeader, </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">Intercept/slope/quadratic</span><span class="st">`</span> <span class="ot">=</span> param, </span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">estimate</span><span class="st">`</span> <span class="ot">=</span> est, </span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">standard error</span><span class="st">`</span> <span class="ot">=</span> se, </span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">p value</span><span class="st">`</span> <span class="ot">=</span> pval)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(three.class.mean.var)</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Mean/variance</th>
+<th align="left">Intercept/slope/quadratic</th>
+<th align="right">estimate</th>
+<th align="right">standard error</th>
+<th align="right">p value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Means</td>
+<td align="left">I</td>
+<td align="right">0.594</td>
+<td align="right">0.041</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="even">
+<td align="left">Means</td>
+<td align="left">S</td>
+<td align="right">0.078</td>
+<td align="right">0.023</td>
+<td align="right">0.001</td>
+</tr>
+<tr class="odd">
+<td align="left">Means</td>
+<td align="left">Q</td>
+<td align="right">-0.010</td>
+<td align="right">0.003</td>
+<td align="right">0.001</td>
+</tr>
+<tr class="even">
+<td align="left">Means</td>
+<td align="left">I</td>
+<td align="right">1.417</td>
+<td align="right">0.223</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="odd">
+<td align="left">Means</td>
+<td align="left">S</td>
+<td align="right">-0.142</td>
+<td align="right">0.207</td>
+<td align="right">0.493</td>
+</tr>
+<tr class="even">
+<td align="left">Means</td>
+<td align="left">Q</td>
+<td align="right">0.095</td>
+<td align="right">0.031</td>
+<td align="right">0.002</td>
+</tr>
+<tr class="odd">
+<td align="left">Means</td>
+<td align="left">I</td>
+<td align="right">4.274</td>
+<td align="right">0.638</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="even">
+<td align="left">Means</td>
+<td align="left">S</td>
+<td align="right">-0.826</td>
+<td align="right">0.202</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="odd">
+<td align="left">Means</td>
+<td align="left">Q</td>
+<td align="right">0.069</td>
+<td align="right">0.026</td>
+<td align="right">0.008</td>
+</tr>
+<tr class="even">
+<td align="left">Variances</td>
+<td align="left">I</td>
+<td align="right">0.244</td>
+<td align="right">0.095</td>
+<td align="right">0.010</td>
+</tr>
+<tr class="odd">
+<td align="left">Variances</td>
+<td align="left">S</td>
+<td align="right">0.073</td>
+<td align="right">0.028</td>
+<td align="right">0.010</td>
+</tr>
+<tr class="even">
+<td align="left">Variances</td>
+<td align="left">Q</td>
+<td align="right">0.001</td>
+<td align="right">0.000</td>
+<td align="right">0.014</td>
+</tr>
+<tr class="odd">
+<td align="left">Variances</td>
+<td align="left">I</td>
+<td align="right">0.244</td>
+<td align="right">0.095</td>
+<td align="right">0.010</td>
+</tr>
+<tr class="even">
+<td align="left">Variances</td>
+<td align="left">S</td>
+<td align="right">0.073</td>
+<td align="right">0.028</td>
+<td align="right">0.010</td>
+</tr>
+<tr class="odd">
+<td align="left">Variances</td>
+<td align="left">Q</td>
+<td align="right">0.001</td>
+<td align="right">0.000</td>
+<td align="right">0.014</td>
+</tr>
+<tr class="even">
+<td align="left">Variances</td>
+<td align="left">I</td>
+<td align="right">0.244</td>
+<td align="right">0.095</td>
+<td align="right">0.010</td>
+</tr>
+<tr class="odd">
+<td align="left">Variances</td>
+<td align="left">S</td>
+<td align="right">0.073</td>
+<td align="right">0.028</td>
+<td align="right">0.010</td>
+</tr>
+<tr class="even">
+<td align="left">Variances</td>
+<td align="left">Q</td>
+<td align="right">0.001</td>
+<td align="right">0.000</td>
+<td align="right">0.014</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="model-fit-statistics-for-two-and-three-class-models" class="section level2">
+<h2>Model fit statistics for two and three class models</h2>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># remove 4,5,6 class models</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>si.two_three.summaries <span class="ot">&lt;-</span> si_quad_summaries[<span class="sc">-</span><span class="fu">c</span>(<span class="dv">3</span><span class="sc">:</span><span class="dv">5</span>),] </span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">#social isolation summaries </span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>si.class.summaries <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">matrix</span>(<span class="at">nrow =</span> <span class="dv">2</span>, </span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>                                         <span class="at">ncol =</span> <span class="dv">8</span>)) </span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">#create column names for the variables you will be adding to the empty matrix of si.class.summaries</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(si.class.summaries) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Model&quot;</span>, </span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>                                  <span class="st">&quot;Parameters&quot;</span>, </span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>                                  <span class="st">&quot;AIC&quot;</span>, </span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>                                  <span class="st">&quot;BIC&quot;</span>, </span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>                                  <span class="st">&quot;aBIC&quot;</span>, </span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>                                  <span class="st">&quot;Entropy&quot;</span>, </span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>                                  <span class="st">&quot;VLMR LRT p-value&quot;</span>, </span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>                                  <span class="st">&quot;Class Proportions&quot;</span>) <span class="co">#or whichever indices you want to compare; do si_summaries$ to see what&#39;s in there</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="co">#check colnames</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="co">#si.class.summaries</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="co">#create &quot;Model&quot; variable</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>si.class.summaries <span class="ot">&lt;-</span> si.class.summaries <span class="sc">%&gt;%</span></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">Model =</span> </span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.factor</span>(<span class="fu">c</span>(<span class="st">&quot;Two Class&quot;</span>, <span class="co">#change nrow in data frame above when adding more models</span></span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>                <span class="st">&quot;Three Class&quot;</span>)))  </span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a><span class="co">#add summary information into data frame </span></span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>si.class.summaries <span class="ot">&lt;-</span> si.class.summaries <span class="sc">%&gt;%</span></span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">Parameters =</span> </span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>      si.two_three.summaries<span class="sc">$</span>Parameters) <span class="sc">%&gt;%</span> <span class="co">#parameters col from original summaries data set</span></span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">AIC =</span> </span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>      si.two_three.summaries<span class="sc">$</span>AIC) <span class="sc">%&gt;%</span> <span class="co">#AIC col from original summaries data set</span></span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">BIC =</span> </span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>      si.two_three.summaries<span class="sc">$</span>BIC) <span class="sc">%&gt;%</span> <span class="co">#BIC col from original summaries data set</span></span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">aBIC =</span> </span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a>      si.two_three.summaries<span class="sc">$</span>aBIC) <span class="sc">%&gt;%</span> <span class="co">#aBIC col from original summaries data set</span></span>
+<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">Entropy =</span> </span>
+<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a>      si.two_three.summaries<span class="sc">$</span>Entropy) <span class="sc">%&gt;%</span> <span class="co">#Entropy col from original summaries data set</span></span>
+<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">VLMR LRT p-value</span><span class="st">`</span> <span class="ot">=</span> </span>
+<span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a>      si.two_three.summaries<span class="sc">$</span>T11_VLMR_PValue) <span class="co">#T11_VLMR_PValue col from original summaries data set</span></span>
+<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-46"><a href="#cb8-46" aria-hidden="true" tabindex="-1"></a><span class="co">#check</span></span>
+<span id="cb8-47"><a href="#cb8-47" aria-hidden="true" tabindex="-1"></a><span class="co">#si.class.summaries</span></span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">#for each class we want to add in the model estimated class counts - then convert this into a list with the percentage of people in each class</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co">#two classes</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>si.class.summaries<span class="sc">$</span><span class="st">`</span><span class="at">Class Proportions</span><span class="st">`</span>[si.class.summaries<span class="sc">$</span>Model <span class="sc">==</span> <span class="st">&quot;Two Class&quot;</span>] <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="fu">sprintf</span>(<span class="st">&quot;%.0f&quot;</span>, si.quad.all<span class="sc">$</span>X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.<span class="fl">1.</span>data_analysis.mplus.GMM.clustered.full_sample.quadratic..isolation_2traj_full_sample_clustered_QUAD.out<span class="sc">$</span>class_counts<span class="sc">$</span>modelEstimated<span class="sc">$</span>proportion<span class="sc">*</span><span class="dv">100</span>)))</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co">#three classes</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>si.class.summaries<span class="sc">$</span><span class="st">`</span><span class="at">Class Proportions</span><span class="st">`</span>[si.class.summaries<span class="sc">$</span>Model <span class="sc">==</span> <span class="st">&quot;Three Class&quot;</span>] <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="fu">sprintf</span>(<span class="st">&#39;%.0f&#39;</span>, si.quad.all<span class="sc">$</span>X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.<span class="fl">1.</span>data_analysis.mplus.GMM.clustered.full_sample.quadratic..isolation_3traj_full_sample_clustered_QUAD.out<span class="sc">$</span>class_counts<span class="sc">$</span>modelEstimated<span class="sc">$</span>proportion<span class="sc">*</span><span class="dv">100</span>)))</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">#two classes</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>si.class.summaries<span class="sc">$</span><span class="st">`</span><span class="at">Class N</span><span class="st">`</span>[si.class.summaries<span class="sc">$</span>Model <span class="sc">==</span> <span class="st">&quot;Two Class&quot;</span>] <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="fu">sprintf</span>(<span class="st">&quot;%.0f&quot;</span>, si.quad.all<span class="sc">$</span>X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.<span class="fl">1.</span>data_analysis.mplus.GMM.clustered.full_sample.quadratic..isolation_2traj_full_sample_clustered_QUAD.out<span class="sc">$</span>class_counts<span class="sc">$</span>posteriorProb<span class="sc">$</span>count)))</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co">#three classes</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>si.class.summaries<span class="sc">$</span><span class="st">`</span><span class="at">Class N</span><span class="st">`</span>[si.class.summaries<span class="sc">$</span>Model <span class="sc">==</span> <span class="st">&quot;Three Class&quot;</span>] <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="fu">sprintf</span>(<span class="st">&quot;%.0f&quot;</span>, si.quad.all<span class="sc">$</span>X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.<span class="fl">1.</span>data_analysis.mplus.GMM.clustered.full_sample.quadratic..isolation_3traj_full_sample_clustered_QUAD.out<span class="sc">$</span>class_counts<span class="sc">$</span>posteriorProb<span class="sc">$</span>count)))</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Look at summary table </span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(si.class.summaries)</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Model</th>
+<th align="right">Parameters</th>
+<th align="right">AIC</th>
+<th align="right">BIC</th>
+<th align="right">aBIC</th>
+<th align="right">Entropy</th>
+<th align="right">VLMR LRT p-value</th>
+<th align="left">Class Proportions</th>
+<th align="left">Class N</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Two Class</td>
+<td align="right">17</td>
+<td align="right">25392.55</td>
+<td align="right">25489.63</td>
+<td align="right">25435.62</td>
+<td align="right">0.950</td>
+<td align="right">0.0562</td>
+<td align="left">93, 7</td>
+<td align="left">2071, 161</td>
+</tr>
+<tr class="even">
+<td align="left">Three Class</td>
+<td align="right">21</td>
+<td align="right">24762.68</td>
+<td align="right">24882.60</td>
+<td align="right">24815.88</td>
+<td align="right">0.956</td>
+<td align="right">0.2802</td>
+<td align="left">90, 5 , 5</td>
+<td align="left">2014, 114 , 104</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="plots" class="section level2 tabset tabset-fade">
+<h2 class="tabset tabset-fade">Plots</h2>
+<div id="two-class-model-1" class="section level3">
+<h3>Two Class model</h3>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">#create two class data frame with means and variances</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>two_class_si <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  si.quad.all<span class="sc">$</span>X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.<span class="fl">1.</span>data_analysis.mplus.GMM.clustered.full_sample.quadratic..isolation_2traj_full_sample_clustered_QUAD.out<span class="sc">$</span>gh5<span class="sc">$</span>means_and_variances_data<span class="sc">$</span>y_estimated_means)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co">#name the variables</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(two_class_si) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Class 1&quot;</span>,<span class="st">&quot;Class 2&quot;</span>)</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="co">#create time point column </span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>two_class_si<span class="sc">$</span>timepoint <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">7</span>, <span class="dv">10</span>, <span class="dv">12</span>)</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="co">#convert data to long format </span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>two_class_si <span class="ot">&lt;-</span> two_class_si <span class="sc">%&gt;%</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>timepoint, </span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">&quot;Class&quot;</span>, </span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>               <span class="at">values_to =</span> <span class="st">&quot;social.isolation_score&quot;</span>)</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a><span class="co">#check</span></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a><span class="co">#two_class_si</span></span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>two_traj_plot_clustered_full_sample <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(two_class_si,</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>        <span class="fu">aes</span>(<span class="at">x =</span> timepoint, </span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">y =</span> social.isolation_score, </span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">colour =</span> Class)) <span class="sc">+</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>          <span class="fu">geom_line</span>(<span class="at">size =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="co">#shape = class, </span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>                 <span class="at">size =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> palette2) <span class="sc">+</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> palette2) <span class="sc">+</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Age (in years)&quot;</span>, </span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">&quot;Two class model&quot;</span>,</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">&quot;Class&quot;</span>,</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span><span class="st">&quot;Social isolation score&quot;</span>) <span class="sc">+</span>   </span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="fl">0.1</span>,<span class="fl">0.1</span>),</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>                     <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">12</span>),</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>                     <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">12</span>, <span class="dv">2</span>)) <span class="sc">+</span></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="fl">0.1</span>,<span class="fl">0.1</span>),</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>                     <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">5</span>,<span class="dv">12</span>),</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>                     <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">7</span>, <span class="dv">10</span>, <span class="dv">12</span>)) <span class="sc">+</span></span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">panel.grid.major.y =</span> <span class="fu">element_line</span>(<span class="at">size =</span> <span class="fl">0.5</span>,</span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">linetype =</span> <span class="st">&#39;dashed&#39;</span>,</span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">colour =</span> <span class="st">&quot;gray&quot;</span>),</span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">colour=</span><span class="st">&quot;black&quot;</span>, </span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">size =</span> <span class="dv">12</span>),</span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">colour=</span><span class="st">&quot;black&quot;</span>, </span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">size =</span> <span class="dv">12</span>),</span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.background =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a>        <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">16</span>, <span class="at">hjust =</span> <span class="fl">0.5</span>)) <span class="sc">+</span> </span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">shape =</span> <span class="cn">FALSE</span>, <span class="at">size =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a>two_traj_plot_clustered_full_sample</span></code></pre></div>
+<p><img src="trajectory_statistics_and_figures_GMM_QUADRATIC_files/figure-html/plot%202%20class%20GMM%20%20model-1.png" width="672" /></p>
+</div>
+<div id="three-class-model-1" class="section level3">
+<h3>Three Class model</h3>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">#create three class data frame with means and variances</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>three_class_si <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  si.quad.all<span class="sc">$</span>X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.<span class="fl">1.</span>data_analysis.mplus.GMM.clustered.full_sample.quadratic..isolation_3traj_full_sample_clustered_QUAD.out<span class="sc">$</span>gh5<span class="sc">$</span>means_and_variances_data<span class="sc">$</span>y_estimated_means)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="co">#name the variables</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(three_class_si) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Class 1&quot;</span>,<span class="st">&quot;Class 2&quot;</span>,<span class="st">&quot;Class 3&quot;</span>)</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="co">#create time point column </span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>three_class_si<span class="sc">$</span>timepoint <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">7</span>, <span class="dv">10</span>, <span class="dv">12</span>)</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="co">#convert data to long format </span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>three_class_si <span class="ot">&lt;-</span> three_class_si <span class="sc">%&gt;%</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>timepoint, </span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">&quot;Class&quot;</span>, </span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>               <span class="at">values_to =</span> <span class="st">&quot;social.isolation_score&quot;</span>)</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a><span class="co">#check</span></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a><span class="co">#three_class_si</span></span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>three_traj_plot_clustered_full_sample <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(three_class_si,</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>        <span class="fu">aes</span>(<span class="at">x =</span> timepoint, </span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">y =</span> social.isolation_score, </span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">colour =</span> Class)) <span class="sc">+</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>          <span class="fu">geom_line</span>(<span class="at">size =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">size =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> palette3) <span class="sc">+</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> palette3) <span class="sc">+</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Age (in years)&quot;</span>, </span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">&quot;Three class model&quot;</span>,</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">&quot;Class&quot;</span>,</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span><span class="st">&quot;Social isolation score&quot;</span>) <span class="sc">+</span>   </span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="fl">0.1</span>,<span class="fl">0.1</span>),</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>                     <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">12</span>),</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>                     <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">12</span>, <span class="dv">2</span>)) <span class="sc">+</span></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="fl">0.1</span>,<span class="fl">0.1</span>),</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>                     <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">5</span>,<span class="dv">12</span>),</span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>                     <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">7</span>, <span class="dv">10</span>, <span class="dv">12</span>)) <span class="sc">+</span></span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">panel.grid.major.y =</span> <span class="fu">element_line</span>(<span class="at">size =</span> <span class="fl">0.5</span>,</span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">linetype =</span> <span class="st">&#39;dashed&#39;</span>,</span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">colour =</span> <span class="st">&quot;gray&quot;</span>),</span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">colour=</span><span class="st">&quot;black&quot;</span>, </span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">size =</span> <span class="dv">12</span>),</span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">colour=</span><span class="st">&quot;black&quot;</span>, </span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">size =</span> <span class="dv">12</span>),</span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.background =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a>        <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">16</span>, <span class="at">hjust=</span><span class="fl">0.5</span>)) <span class="sc">+</span> </span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">shape =</span> <span class="cn">FALSE</span>, <span class="at">size =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a>three_traj_plot_clustered_full_sample</span></code></pre></div>
+<p><img src="trajectory_statistics_and_figures_GMM_QUADRATIC_files/figure-html/plot%203%20class%20GMM%20model-1.png" width="672" /></p>
+</div>
+</div>
+</div>
+<div id="allocation-differences-between-linear-and-quadratic-3-class-model" class="section level1">
+<h1>Allocation differences between linear and quadratic 3 class model</h1>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>dat.descriptives <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="at">file =</span> <span class="fu">paste0</span>(data_path, <span class="st">&quot;preprocessed_isolation_trajectories_Jan2021_full_sample.rds&quot;</span>))</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="co">#colnames(dat.descriptives)</span></span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>dat.tra.prob.full.LINEAR <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="fu">paste0</span>(mplus_GMM_clustered_full_output_data_path, <span class="st">&quot;GMM_SI_3Cl_full_sample_clustered.txt&quot;</span>), </span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>                            <span class="at">header =</span> <span class="cn">FALSE</span>, </span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>                            <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">&quot;SISOE5&quot;</span>, <span class="co"># original social isolation score at age 5</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">&quot;SISOE7&quot;</span>,  <span class="co"># original social isolation score at age 7</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">&quot;SISOE10&quot;</span>, <span class="co"># original social isolation score at age 10</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">&quot;SISOE12&quot;</span>, <span class="co"># original social isolation score at age 12</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">&quot;I&quot;</span>,       <span class="co"># intercept</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">&quot;S&quot;</span>,       <span class="co"># slope</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">&quot;C_I&quot;</span>,     <span class="co"># factor scores based on most likely class membership</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">&quot;C_S&quot;</span>,     <span class="co"># factor scores based on most likely class membership</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">&quot;CPROB1&quot;</span>,  <span class="co"># class probability 1</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">&quot;CPROB2&quot;</span>,  <span class="co"># class probability 2</span></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">&quot;CPROB3&quot;</span>,  <span class="co"># class probability 3</span></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">&quot;C&quot;</span>,       <span class="co"># class </span></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">&quot;ID&quot;</span>,      <span class="co"># ID</span></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">&quot;FAMILYID&quot;</span> <span class="co"># Family ID - twin clustering  </span></span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>                                       ))   </span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a><span class="co">#check </span></span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a><span class="co">#dat.tra.prob.full.LINEAR</span></span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>dat.tra.prob.full.QUAD <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="fu">paste0</span>(mplus_GMM_clustered_full_output_QUAD_data_path, <span class="st">&quot;GMM_SI_3Cl_full_sample_clustered_QUAD.txt&quot;</span>), </span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>                            <span class="at">header =</span> <span class="cn">FALSE</span>, </span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>                            <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">&quot;SISOE5&quot;</span>, <span class="co"># original social isolation score at age 5</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">&quot;SISOE7&quot;</span>,  <span class="co"># original social isolation score at age 7</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">&quot;SISOE10&quot;</span>, <span class="co"># original social isolation score at age 10</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">&quot;SISOE12&quot;</span>, <span class="co"># original social isolation score at age 12</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">&quot;I&quot;</span>,       <span class="co"># intercept</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">&quot;S&quot;</span>,       <span class="co"># slope</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">&quot;Q&quot;</span>,       <span class="co"># quadratic</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">&quot;C_I&quot;</span>,     <span class="co"># factor scores based on most likely class membership</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">&quot;C_S&quot;</span>,     <span class="co"># factor scores based on most likely class membership</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">&quot;C_Q&quot;</span>,     <span class="co"># factor scores based on most likely class membership</span></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">&quot;CPROB1&quot;</span>,  <span class="co"># class probability 1</span></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">&quot;CPROB2&quot;</span>,  <span class="co"># class probability 2</span></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">&quot;CPROB3&quot;</span>,  <span class="co"># class probability 3</span></span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">&quot;C&quot;</span>,       <span class="co"># class </span></span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">&quot;ID&quot;</span>,      <span class="co"># ID</span></span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">&quot;FAMILYID&quot;</span> <span class="co"># Family ID - twin clustering  </span></span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>                                       ))   </span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a><span class="co">#check </span></span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a><span class="co">#dat.tra.prob.full.QUAD</span></span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>dat.tra.prob.LINEAR <span class="ot">&lt;-</span> dat.tra.prob.full.LINEAR <span class="sc">%&gt;%</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="at">id =</span> ID, </span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">prob1.linear =</span> CPROB1,</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">prob2.linear =</span> CPROB2,</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">prob3.linear =</span> CPROB3,</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">class.linear =</span> C</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>         )</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="co">#check </span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="co">#dat.tra.prob.LINEAR</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>dat.tra.prob.QUAD <span class="ot">&lt;-</span> dat.tra.prob.full.QUAD <span class="sc">%&gt;%</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="at">id =</span> ID, </span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>         <span class="at">prob1.quad =</span> CPROB1,</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>         <span class="at">prob2.quad =</span> CPROB2,</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>         <span class="at">prob3.quad =</span> CPROB3,</span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>         <span class="at">class.quad =</span> C</span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>         )</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a><span class="co">#check </span></span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a><span class="co">#dat.tra.prob.QUAD</span></span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a><span class="co">#create list of data frames to merge</span></span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>dataframe_list <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>  dat.descriptives,</span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a>  dat.tra.prob.LINEAR,</span>
+<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a>  dat.tra.prob.QUAD</span>
+<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a><span class="co">#merge data frames</span></span>
+<span id="cb19-29"><a href="#cb19-29" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> plyr<span class="sc">::</span><span class="fu">join_all</span>(</span>
+<span id="cb19-30"><a href="#cb19-30" aria-hidden="true" tabindex="-1"></a>  dataframe_list,</span>
+<span id="cb19-31"><a href="#cb19-31" aria-hidden="true" tabindex="-1"></a>  <span class="at">by =</span> <span class="st">&quot;id&quot;</span> <span class="co"># Alternatively you can join by several columns</span></span>
+<span id="cb19-32"><a href="#cb19-32" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb19-33"><a href="#cb19-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-34"><a href="#cb19-34" aria-hidden="true" tabindex="-1"></a><span class="co">#check</span></span>
+<span id="cb19-35"><a href="#cb19-35" aria-hidden="true" tabindex="-1"></a><span class="co">#colnames(dat)</span></span></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># linear</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> dat <span class="sc">%&gt;%</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">class_renamed.linear =</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">recode_factor</span>(class.linear,</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>      <span class="st">&quot;1&quot;</span> <span class="ot">=</span> <span class="st">&quot;Low stable&quot;</span>,</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>      <span class="st">&quot;2&quot;</span> <span class="ot">=</span> <span class="st">&quot;Increasing&quot;</span>,</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>      <span class="st">&quot;3&quot;</span> <span class="ot">=</span> <span class="st">&quot;Decreasing&quot;</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a><span class="fu">as.data.frame</span>(<span class="fu">table</span>(dat<span class="sc">$</span>class_renamed.linear)) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="st">`</span><span class="at">Linear classes</span><span class="st">`</span> <span class="ot">=</span> Var1,</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>         Freq)</span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Linear classes"],"name":[1],"type":["fct"],"align":["left"]},{"label":["Freq"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"Low stable","2":"2009"},{"1":"Increasing","2":"106"},{"1":"Decreasing","2":"117"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># quadratic</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> dat <span class="sc">%&gt;%</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">class_renamed.quad =</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">recode_factor</span>(class.quad,</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>      <span class="st">&quot;1&quot;</span> <span class="ot">=</span> <span class="st">&quot;Low stable&quot;</span>,</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>      <span class="st">&quot;2&quot;</span> <span class="ot">=</span> <span class="st">&quot;Increasing&quot;</span>,</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>      <span class="st">&quot;3&quot;</span> <span class="ot">=</span> <span class="st">&quot;Decreasing&quot;</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a><span class="fu">as.data.frame</span>(<span class="fu">table</span>(dat<span class="sc">$</span>class_renamed.quad)) <span class="sc">%&gt;%</span> </span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="st">`</span><span class="at">Quadratic classes</span><span class="st">`</span> <span class="ot">=</span> Var1,</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>         Freq)</span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Quadratic classes"],"name":[1],"type":["fct"],"align":["left"]},{"label":["Freq"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"Low stable","2":"2026"},{"1":"Increasing","2":"107"},{"1":"Decreasing","2":"99"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<div id="matching-classification" class="section level2">
+<h2>Matching classification</h2>
+<p>96.51% of people were classified the same way regardless if the model was linear or quadratic.</p>
+<p>Overall average movement from Linear to Quadratic:</p>
+<ul>
+<li>1 more person in the increasing class</li>
+<li>18 less people in the decreasing class</li>
+<li>17 more people in the low stable class</li>
+</ul>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> dat <span class="sc">%&gt;%</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">matching.class =</span> </span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>      <span class="fu">case_when</span>(</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>        class.linear <span class="sc">==</span> class.quad <span class="sc">~</span> <span class="st">&quot;Matching&quot;</span>,</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>        class.linear <span class="sc">!=</span> class.quad <span class="sc">~</span> <span class="st">&quot;Not matching&quot;</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a><span class="fu">freq</span>(dat<span class="sc">$</span>matching.class,</span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">cumul =</span> <span class="cn">FALSE</span>, </span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">display.type =</span> <span class="cn">FALSE</span>, </span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">headings =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">style =</span> <span class="st">&quot;rmarkdown&quot;</span>,</span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">report.nas =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="right"> </th>
+<th align="right">Freq</th>
+<th align="right">%</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right"><strong>Matching</strong></td>
+<td align="right">2154</td>
+<td align="right">96.51</td>
+</tr>
+<tr class="even">
+<td align="right"><strong>Not matching</strong></td>
+<td align="right">78</td>
+<td align="right">3.49</td>
+</tr>
+<tr class="odd">
+<td align="right"><strong>Total</strong></td>
+<td align="right">2232</td>
+<td align="right">100.00</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>29 in the decreasing class changed classes in the quadratic model.</li>
+<li>19 in the increasing class changed classes in the quadratic model.</li>
+<li>30 in the low stable class changed classes in the quadratic model. == 78 who are not matching.</li>
+</ul>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> dat <span class="sc">%&gt;%</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">matching.isolated =</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>           <span class="fu">case_when</span>(</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>             matching.class <span class="sc">==</span> <span class="st">&quot;Matching&quot;</span> <span class="sc">&amp;</span> class_renamed.linear <span class="sc">==</span> <span class="st">&quot;Increasing&quot;</span> <span class="sc">~</span> <span class="st">&quot;Matching and increasing&quot;</span>,</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>             matching.class <span class="sc">==</span> <span class="st">&quot;Matching&quot;</span> <span class="sc">&amp;</span> class_renamed.linear <span class="sc">==</span> <span class="st">&quot;Decreasing&quot;</span> <span class="sc">~</span> <span class="st">&quot;Matching and decreasing&quot;</span>,</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>             matching.class <span class="sc">==</span> <span class="st">&quot;Matching&quot;</span> <span class="sc">&amp;</span> class_renamed.linear <span class="sc">==</span> <span class="st">&quot;Low stable&quot;</span> <span class="sc">~</span> <span class="st">&quot;Matching and low stable&quot;</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>           ))</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a><span class="fu">freq</span>(dat<span class="sc">$</span>matching.isolated,</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">cumul =</span> <span class="cn">FALSE</span>, </span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">display.type =</span> <span class="cn">FALSE</span>, </span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">headings =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">style =</span> <span class="st">&quot;rmarkdown&quot;</span>,</span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">report.nas =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="right"> </th>
+<th align="right">Freq</th>
+<th align="right">%</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right"><strong>Matching and decreasing</strong></td>
+<td align="right">88</td>
+<td align="right">4.09</td>
+</tr>
+<tr class="even">
+<td align="right"><strong>Matching and increasing</strong></td>
+<td align="right">87</td>
+<td align="right">4.04</td>
+</tr>
+<tr class="odd">
+<td align="right"><strong>Matching and low stable</strong></td>
+<td align="right">1979</td>
+<td align="right">91.88</td>
+</tr>
+<tr class="even">
+<td align="right"><strong>Total</strong></td>
+<td align="right">2154</td>
+<td align="right">100.00</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>dat.non.match <span class="ot">&lt;-</span> dat <span class="sc">%&gt;%</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(matching.class <span class="sc">==</span> <span class="st">&quot;Not matching&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># from linear to quadratic model</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>dat.non.match <span class="ot">&lt;-</span> dat.non.match <span class="sc">%&gt;%</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">direction.match =</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">case_when</span>(</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>        class_renamed.linear <span class="sc">==</span> <span class="st">&quot;Increasing&quot;</span> <span class="sc">&amp;</span> class_renamed.quad <span class="sc">==</span> <span class="st">&quot;Low stable&quot;</span> <span class="sc">~</span> <span class="st">&quot;Increasing to low stable&quot;</span>,</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>        class_renamed.linear <span class="sc">==</span> <span class="st">&quot;Decreasing&quot;</span> <span class="sc">&amp;</span> class_renamed.quad <span class="sc">==</span> <span class="st">&quot;Low stable&quot;</span> <span class="sc">~</span> <span class="st">&quot;Decreasing to low stable&quot;</span>,</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>        class_renamed.linear <span class="sc">==</span> <span class="st">&quot;Increasing&quot;</span> <span class="sc">&amp;</span> class_renamed.quad <span class="sc">==</span> <span class="st">&quot;Decreasing&quot;</span> <span class="sc">~</span> <span class="st">&quot;Increasing to decreasing&quot;</span>,</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>        class_renamed.linear <span class="sc">==</span> <span class="st">&quot;Decreasing&quot;</span> <span class="sc">&amp;</span> class_renamed.quad <span class="sc">==</span> <span class="st">&quot;Increasing&quot;</span> <span class="sc">~</span> <span class="st">&quot;Decreasing to increasing&quot;</span>,</span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>        class_renamed.linear <span class="sc">==</span> <span class="st">&quot;Low stable&quot;</span> <span class="sc">&amp;</span> class_renamed.quad <span class="sc">==</span> <span class="st">&quot;Increasing&quot;</span> <span class="sc">~</span> <span class="st">&quot;Low stable to increasing&quot;</span>,</span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>        class_renamed.linear <span class="sc">==</span> <span class="st">&quot;Low stable&quot;</span> <span class="sc">&amp;</span> class_renamed.quad <span class="sc">==</span> <span class="st">&quot;Decreasing&quot;</span> <span class="sc">~</span> <span class="st">&quot;Low stable to decreasing&quot;</span>,</span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a><span class="fu">freq</span>(dat.non.match<span class="sc">$</span>direction.match,</span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>     <span class="at">cumul =</span> <span class="cn">FALSE</span>, </span>
+<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a>       <span class="at">display.type =</span> <span class="cn">FALSE</span>, </span>
+<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a>       <span class="at">headings =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a>       <span class="at">style =</span> <span class="st">&quot;rmarkdown&quot;</span>,</span>
+<span id="cb25-20"><a href="#cb25-20" aria-hidden="true" tabindex="-1"></a>       <span class="at">report.nas =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="right"> </th>
+<th align="right">Freq</th>
+<th align="right">%</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right"><strong>Decreasing to increasing</strong></td>
+<td align="right">1</td>
+<td align="right">1.28</td>
+</tr>
+<tr class="even">
+<td align="right"><strong>Decreasing to low stable</strong></td>
+<td align="right">28</td>
+<td align="right">35.90</td>
+</tr>
+<tr class="odd">
+<td align="right"><strong>Increasing to low stable</strong></td>
+<td align="right">19</td>
+<td align="right">24.36</td>
+</tr>
+<tr class="even">
+<td align="right"><strong>Low stable to decreasing</strong></td>
+<td align="right">11</td>
+<td align="right">14.10</td>
+</tr>
+<tr class="odd">
+<td align="right"><strong>Low stable to increasing</strong></td>
+<td align="right">19</td>
+<td align="right">24.36</td>
+</tr>
+<tr class="even">
+<td align="right"><strong>Total</strong></td>
+<td align="right">78</td>
+<td align="right">100.00</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>1 person moved from the decreasing to the increasing class.</li>
+<li>28 people moved from the decreasing to the low stable class.</li>
+<li>19 people moved from the increasing to the low stable class.</li>
+<li>11 people moved from the low stable to the decreasing class.</li>
+<li>19 people moved from the low stable to the increasing class. == 78 non matching.</li>
+</ul>
+</div>
+</div>
+
+<!-- Add footer -->
+
+&nbsp;
+
+<hr />
+
+<center>
+
+<img src="kcl_logo.png" 
+
+     width="100" 
+
+     height="75" />
+
+</center>
+
+<br>
+
+<p style="text-align: center;">Work by <a href="https://github.com/knthompson26/">Katherine N Thompson</a></p>
+
+<p style="text-align: center;"><span style="color: #808080;"><em>katherine.n.thompson@kcl.ac.uk</em></span></p>
+
+
+
+<!-- Add icon library -->
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
+
+<!-- Add font awesome icons -->
+
+<p style="text-align: center;">
+
+    <a href="https://twitter.com/KTNThompson" class="fa fa-twitter"></a>
+
+    <a href="https://github.com/knthompson26/" class="fa fa-github"></a>
+
+</p>
+
+
+
+&nbsp;
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

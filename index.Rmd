@@ -53,7 +53,7 @@ All following links are displayed in the order that the code was run for these a
 
 * [Mplus code](Mplus_models.html)
 * [Descriptives for the three class growth mixture model](trajectory_descriptives_THREE_CLASS.html)
-* [Latent growth curve models and growth mixture models](trajectory_statistics_and_figures_GMM_&_LGCM.html)
+* [Latent growth curve models and growth mixture models](trajectory_statistics_and_figures_GMM_LGCM.html)
 * [Latent class growth analysis](trajectory_statistics_and_figures_LCGA.html)
 * [Quadratic growth mixture models](trajectory_statistics_and_figures_GMM_QUADRATIC.html)
 
