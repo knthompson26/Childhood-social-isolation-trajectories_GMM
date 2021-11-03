@@ -447,6 +447,7 @@ div.tocify {
 <hr />
 <div id="latent-growth-curve-models-lgcm" class="section level1 tabset tabset-fade">
 <h1 class="tabset tabset-fade">Latent growth curve models (LGCM)</h1>
+<p>We chose the non-adjusted linear growth curve model as the best fitting model and used linear forms in all subsequent models.</p>
 <div id="non-adjusted" class="section level2 tabset tabset-fade">
 <h2 class="tabset tabset-fade">Non-adjusted</h2>
 <div id="linear" class="section level3">
@@ -633,7 +634,7 @@ div.tocify {
 </div>
 <div id="latent-class-growth-analysis-lcga" class="section level1 tabset tabset-fade">
 <h1 class="tabset tabset-fade">Latent class growth analysis (LCGA)</h1>
-<p>LCGA is an initial modeling step before specifying growth mixture models. LCGA specifies models similar to GMM but assumes all individuals within a class share exactly the same trajectory (no within-class individual variation). We fitted LCGA for two to six class (trajectory) models.</p>
+<p>LCGA is an initial modeling step before specifying growth mixture models. LCGA specifies models similar to GMM but assumes all individuals within a class share exactly the same trajectory (no within-class individual variation). We fitted LCGA for two to six class (trajectory) models. We identified the four class model as the best fitting model.</p>
 <div id="class-model" class="section level2">
 <h2>2 class model</h2>
 <div class="sourceCode" id="cb5"><pre class="sourceCode bash fold-show"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">!</span> MPLUS CODE FOR LCGA FOR ERISK SOCIAL ISOLATION TRAJECTORIES</span>
@@ -917,7 +918,7 @@ div.tocify {
 </div>
 <div id="growth-mixture-models-gmm" class="section level1 tabset tabset-fade">
 <h1 class="tabset tabset-fade">Growth mixture models (GMM)</h1>
-<p>Clustering was used for familyid. Residual variances were estimated freely as is the default setting in Mplus.</p>
+<p>Clustering was used for familyid. Residual variances were estimated freely as is the default setting in Mplus. <strong>The three class model was chosen as the best fitting GMM model, with a low stable, increasing, and decreasing class.</strong></p>
 <div id="class-model-5" class="section level2">
 <h2>2 class model</h2>
 <div class="sourceCode" id="cb10"><pre class="sourceCode bash fold-show"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">!</span> MPLUS CODE FOR GROWTH MIXTURE MODEL FOR ERISK SOCIAL ISOLATION TRAJECTORIES</span>
@@ -972,7 +973,7 @@ div.tocify {
 </div>
 <div id="class-model-6" class="section level2 tabset tabset-fade">
 <h2 class="tabset tabset-fade">3 class model</h2>
-<p><strong>This model was chosen as the best fitting GMM model, with a low stable, increasing, and decreasing class.</strong> To check the three class model did not converge on a local solution, the <em>OPTSEED</em> funtion was used in Mplus. Whereby, XXXXXXXXX. The probability of correct classification was high for the low stable (0.99), increasing (0.87), and decreasing (0.90) trajectory groups.</p>
+<p>To check the three class model did not converge on a local solution, the <em>OPTSEED</em> funtion was used in Mplus. Whereby, XXXXXXXXX. The probability of correct classification was high for the low stable (0.99), increasing (0.87), and decreasing (0.90) trajectory groups.</p>
 <div id="original-model" class="section level3">
 <h3>Original model</h3>
 <div class="sourceCode" id="cb11"><pre class="sourceCode bash fold-show"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">!</span> MPLUS CODE FOR GROWTH MIXTURE MODEL FOR ERISK SOCIAL ISOLATION TRAJECTORIES</span>

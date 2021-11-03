@@ -35,6 +35,8 @@ This page includes the raw Mplus code used in Mplus input files used to create l
 
 # Latent growth curve models (LGCM) {.tabset .tabset-fade}
 
+We chose the non-adjusted linear growth curve model as the best fitting model and used linear forms in all subsequent models. 
+
 ## Non-adjusted {.tabset .tabset-fade}
 
 ### Linear
@@ -225,7 +227,7 @@ OUTPUT:
 
 # Latent class growth analysis (LCGA) {.tabset .tabset-fade}
 
-LCGA is an initial modeling step before specifying growth mixture models. LCGA specifies models similar to GMM but assumes all individuals within a class share exactly the same trajectory (no within-class individual variation). We fitted LCGA for two to six class (trajectory) models. 
+LCGA is an initial modeling step before specifying growth mixture models. LCGA specifies models similar to GMM but assumes all individuals within a class share exactly the same trajectory (no within-class individual variation). We fitted LCGA for two to six class (trajectory) models. We identified the four class model as the best fitting model. 
 
 ## 2 class model
 
@@ -519,7 +521,7 @@ OUTPUT:
 
 # Growth mixture models (GMM) {.tabset .tabset-fade}
 
-Clustering was used for familyid. Residual variances were estimated freely as is the default setting in Mplus. 
+Clustering was used for familyid. Residual variances were estimated freely as is the default setting in Mplus. **The three class model was chosen as the best fitting GMM model, with a low stable, increasing, and decreasing class.**
 
 ## 2 class model 
 
@@ -577,7 +579,7 @@ OUTPUT:
 
 ## 3 class model {.tabset .tabset-fade}
 
-**This model was chosen as the best fitting GMM model, with a low stable, increasing, and decreasing class.** To check the three class model did not converge on a local solution, the *OPTSEED* funtion was used in Mplus. Whereby,  XXXXXXXXX. The probability of correct classification was high for the low stable (0.99), increasing (0.87), and decreasing (0.90) trajectory groups. 
+To check the three class model did not converge on a local solution, the *OPTSEED* funtion was used in Mplus. Whereby,  XXXXXXXXX. The probability of correct classification was high for the low stable (0.99), increasing (0.87), and decreasing (0.90) trajectory groups. 
 
 ### Original model
 

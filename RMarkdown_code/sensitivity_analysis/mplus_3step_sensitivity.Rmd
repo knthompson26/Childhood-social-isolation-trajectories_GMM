@@ -1,30 +1,28 @@
 ---
-title: "Mplus manual 3step sensitivity analysis"
-author: "Katherine N Thompson"
-date: "20th Sep 2021"
-output:
-  word_document:
-    toc: yes
-    toc_depth: '2'
+title: "Mplus 3-Step sensitivity analysis interpretation"
+output:  
   html_document:
     df_print: paged
     toc: yes
     toc_depth: 2
     toc_float:
-      collapsed: no
-    number_sections: no
+      collapsed: false
+    number_sections: false
     highlight: monochrome
-    theme: cerulean
-code_folding: hide
+    theme: flatly
+    code_folding: hide
+    includes:
+      after_body: footer.html
 ---
+
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE,
+knitr::opts_chunk$set(echo = TRUE,
                       comment = NA,
                       prompt = FALSE,
                       cache = FALSE,
                       message = FALSE,
-                      warning = FALSE)
-
+                      warning = FALSE,
+                      results = 'asis')
 
 options(bitmapType = 'quartz') # to render fonts better
 ```
@@ -39,7 +37,7 @@ palette <- c("#78D9C5","#F5BE5E","#EEB6E9","#DBDB73","#FFED98","#BFD2EB")
  
 ```{r source the data file path}
 #source raw data directory: data_raw and data included
-source("../../../../../isolation_trajectories_data_path.R")
+source("../../../isolation_trajectories_data_path.R")
 ```
 
 ```{r Mplus packages}
@@ -56,12 +54,25 @@ library(tidyverse)
 library(plyr) #conflicts with tidyverse for e.g. rename and row_number
 ```
 
-```{r MplusAutomation citation}
+***
+
+This page displays the results from the 3-step sensitivity analysis used to assess how social isolation trajectories are associated with outcomes and antecedents while accounting for classification errors in class trajectories. From this sensitivity analysis we conclude that there was very limited difference in accounting for class classification error rates (the results were replicated), therefore the hard classification was presented in the manuscript. 
+
+***
+
+```{r MplusAutomation citation, include=FALSE}
 citation("MplusAutomation") # need the citation for the paper
 ```
-# Functions
 
-```{r functions}
+***
+
+# Functions 
+
+To run the following code more clearly, I have created these functions:
+
+* add.significance.variable() which assesses the p value and creates a new variable based on if the result is significant or not. 
+
+```{r functions, class.source = 'fold-show'}
 add.significance.variable <- function(data){
   data <- data %>%
     mutate(
@@ -82,36 +93,114 @@ add.significance.variable <- function(data){
 
 # Antecedents
 
-Regression fit statistics: OR for "categorical latent variable regression" using Reference Class 1 (Low stable)
-*Remember to check if you are reading in the full data set or for the one excluding the three missing*
+In Mplus, to assess the association with antecedents, I manually added the code to account for Logits for the Classification Probabilities in the original GMM. 
 
-## Read in the model
-
-```{r read in data for regression model, include=FALSE}
-antecedent.model <- readModels(target = paste0(mplus_antecedent_output_3step), recursive = TRUE)
+```{bash, eval=FALSE, class.source = 'fold-show'}
+    %OVERALL%
+    
+    C ON seswq35 P5CACORNCategoryrecoded vndngdm5 socprbm5 nchildren00e5 
+	schmeals00e5 harm3em5recoded tsibl5 tssupm5 actvm5 nobiodl5 anyviom5 warme5 fdepmm5 
+	bfiom5 bficm5 bfiem5 bfiam5 bfinm5 antisocialparent alcoholismparent iqe5 exfunce5 
+	tomtote5 totexte5 intisoe5 totadde5 totproe5 ;
+     
+    %C#1%
+     [class#1@5.092]; [class#2@-0.194];
+     
+    %C#2%
+     [class#1@2.193]; [class#2@4.204];
+     
+    %C#3%
+     [class#1@-2.233]; [class#2@-5.270];
 ```
 
-*READING IN THE DATA IN R DOES NOT PROVIDE THE RIGHT INFORMATION FOR THE ANTECEDENTS - need to look in .out file*
-This only gives the unstandardised paratimisations - need the "ODDS RATIO FOR THE ALTERNATIVE PARAMETERIZATIONS FOR THE CATEGORICAL LATENT VARIABLE REGRESSION: Parameterization using Reference Class 1" and this is not available using MplusAutomation. For now I have manually copied over the correct table needed. 
+*READING IN THE DATA IN RMD DOES NOT PROVIDE THE RIGHT INFORMATION FOR THE ANTECEDENTS - need to look at the Mplus .out file*
+You can only access the unstandardised paratimisations in R. To find the results, go to the section: "ODDS RATIO FOR THE ALTERNATIVE PARAMETERIZATIONS FOR THE CATEGORICAL LATENT VARIABLE REGRESSION: Parameterization using Reference Class 1".For now I have manually copied over the correct table needed. 
 
-```{r extract summary stats for regression model, include=FALSE}
-# extract the summary variables from the mplus output file
-antecedent.model_summaries <- antecedent.model[["summaries"]]
+```{bash, eval=FALSE, class.source = 'fold-show'}
+ODDS RATIO FOR THE ALTERNATIVE PARAMETERIZATIONS FOR THE CATEGORICAL LATENT VARIABLE REGRESSION
 
-antecedent.model_parameters <- antecedent.model[["parameters"]]
+                                         (Est. - 1) Two-Tailed
+                    Estimate       S.E.     / S.E.    P-Value
+
+Parameterization using Reference Class 1
+
+ C#2      ON
+    SESWQ35            0.886      0.247     -0.463      0.643
+    P5CACORNCA         1.199      0.477      0.418      0.676
+    VNDNGDM5           0.855      0.102     -1.417      0.157
+    SOCPRBM5           1.139      0.144      0.965      0.335
+    NCHILDREN0         1.000      0.001      0.315      0.753
+    SCHMEALS00         1.000      0.015     -0.028      0.978
+    HARM3EM5RE         1.160      0.526      0.304      0.761
+    TSIBL5             0.848      0.128     -1.185      0.236
+    TSSUPM5            0.981      0.026     -0.729      0.466
+    ACTVM5             0.867      0.076     -1.746      0.081
+    NOBIODL5           1.241      0.670      0.359      0.719
+    ANYVIOM5           0.742      0.271     -0.950      0.342
+    WARME5             0.981      0.160     -0.119      0.906
+    FDEPMM5            1.093      0.425      0.220      0.826
+    BFIOM5             0.996      0.030     -0.119      0.905
+    BFICM5             0.994      0.034     -0.163      0.871
+    BFIEM5             1.010      0.038      0.251      0.802
+    BFIAM5             0.988      0.028     -0.433      0.665
+    BFINM5             0.989      0.032     -0.358      0.721
+    ANTISOCIAL         1.000      0.010     -0.043      0.966
+    ALCOHOLISM         0.967      0.022     -1.521      0.128
+    IQE5               1.003      0.012      0.289      0.772
+    EXFUNCE5           1.098      0.052      1.895      0.058
+    TOMTOTE5           0.936      0.045     -1.427      0.154
+    TOTEXTE5           1.020      0.014      1.399      0.162
+    INTISOE5           1.056      0.035      1.603      0.109
+    TOTADDE5           1.064      0.016      3.948      0.000
+    TOTPROE5           1.000      0.030      0.002      0.998
+
+ C#3      ON
+    SESWQ35            1.000      0.391     -0.001      1.000
+    P5CACORNCA         0.286      0.244     -2.933      0.003
+    VNDNGDM5           0.851      0.158     -0.944      0.345
+    SOCPRBM5           0.907      0.206     -0.453      0.651
+    NCHILDREN0         1.004      0.002      2.406      0.016
+    SCHMEALS00         1.029      0.024      1.221      0.222
+    HARM3EM5RE         1.300      0.631      0.476      0.634
+    TSIBL5             1.216      0.161      1.341      0.180
+    TSSUPM5            0.964      0.040     -0.911      0.362
+    ACTVM5             1.019      0.105      0.181      0.856
+    NOBIODL5           0.876      0.532     -0.233      0.816
+    ANYVIOM5           0.704      0.411     -0.720      0.472
+    WARME5             1.160      0.220      0.727      0.467
+    FDEPMM5            1.187      0.548      0.342      0.733
+    BFIOM5             1.092      0.037      2.493      0.013
+    BFICM5             0.981      0.030     -0.648      0.517
+    BFIEM5             0.946      0.044     -1.205      0.228
+    BFIAM5             1.004      0.046      0.094      0.925
+    BFINM5             1.001      0.054      0.018      0.985
+    ANTISOCIAL         1.003      0.012      0.258      0.796
+    ALCOHOLISM         1.008      0.036      0.233      0.816
+    IQE5               0.986      0.016     -0.869      0.385
+    EXFUNCE5           0.886      0.046     -2.505      0.012
+    TOMTOTE5           1.020      0.075      0.271      0.786
+    TOTEXTE5           1.023      0.020      1.153      0.249
+    INTISOE5           1.389      0.092      4.238      0.000
+    TOTADDE5           1.056      0.021      2.643      0.008
+    TOTPROE5           0.908      0.033     -2.755      0.006
 ```
 
-# Outcomes
 
-## Read in the model
+# Outcomes {.tabset .tabset-fade}
 
-```{r read in data for outcome results}
+We conducted the outcome associations two ways. First, the [Auxillary DE3STEP method](https://www.statmodel.com/examples/webnotes/webnote15.pdf), then the more recently developed [BCH approach](https://www.statmodel.com/examples/webnotes/webnote21.pdf). 
+
+## Auxillary DE3STEP method 
+
+First we need to read in the output file from Mplus, then extract all the means per variable. 
+
+```{r read in data for outcome results, results='hide'}
 outcome.model <- readModels(target = paste0(mplus_outcome_output_3step), recursive = TRUE)
 ```
 
 ```{r extract overall class means per variable}
 # extract overall means for each class per variable
-outcome.model_overall_means <- outcome.model[["X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.3step.output.outcomes..isolation_3traj_full_sample_clustered_3STEP_outcomes.out"]][["lcCondMeans"]][["overall"]]
+outcome.model_overall_means <- outcome.model[["X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.3step.output.outcomes..isolation_3traj_full_sample_clustered_3STEP_DE3STEP_outcomes.out"]][["lcCondMeans"]][["overall"]]
 
 colnames(outcome.model_overall_means) <- c("Variable",
                                            "Low stable class mean",
@@ -126,10 +215,12 @@ colnames(outcome.model_overall_means) <- c("Variable",
 outcome.model_overall_means
 ```
 
-We are not interested in comparison from class 2 to 3. We are only interested in the comparisons to the low stable class (class 1). 
+We are not interested in comparison from class 2 to 3, ware only interested in the comparisons to the low stable class (class 1). Significant results have been presented here, split by increasing and decreasing class, respectively.  
+
+We also ran the analysis using the "DU3STEP" method in Mplus. But the DU3STEP option showed errors such as: PROBLEMS OCCURRED DURING THE ESTIMATION FOR THE DISTAL OUTCOME NEETE18. THE VARIANCE OF THE DISTAL OUTCOME IN CLASS 1 IS ZERO. THE PROBLEM CAN BE RESOLVED BY USING THE DE3STEP OPTION. **Therefore the DE3STEP option was used instead**
 
 ```{r extract pairwise comparisons - auxiliary}
-outcome.model_all_pairwise_tests <- outcome.model[["X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.3step.output.outcomes..isolation_3traj_full_sample_clustered_3STEP_outcomes.out"]][["lcCondMeans"]][["pairwise"]]
+outcome.model_all_pairwise_tests <- outcome.model[["X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.3step.output.outcomes..isolation_3traj_full_sample_clustered_3STEP_DE3STEP_outcomes.out"]][["lcCondMeans"]][["pairwise"]]
 
 # Overall table
 outcome.model_pairwise_tests <- outcome.model_all_pairwise_tests %>% 
@@ -137,7 +228,6 @@ outcome.model_pairwise_tests <- outcome.model_all_pairwise_tests %>%
   select(!df) %>%            # remove df column (it was empty)
   add.significance.variable 
         
-
 # Increasing comparisons - significant only
 outcome.model_pairwise_tests_significant_increasing <- outcome.model_pairwise_tests %>%
   filter(classB == 2 & Significance == "Significant") %>%
@@ -161,64 +251,49 @@ outcome.model_pairwise_tests_significant_decreasing
 # All significant results
 outcome.model_pairwise_tests_significant <- rbind(outcome.model_pairwise_tests_significant_increasing, 
                                                   outcome.model_pairwise_tests_significant_decreasing)
-outcome.model_pairwise_tests_significant
+#outcome.model_pairwise_tests_significant
 ```
-*Variables that are significant using pairwise t-tests: Using "DE3STEP" in Mplus* (Y=same as original analysis)
+
+*Summary of variables that are significant using pairwise t-tests: Using "DE3STEP" in Mplus:* (Y indicates same as original analysis)
 
 Increasing:
-- Moderate conduct disorder diagnosis Y
-- Not in employment or education Y
-- ADHD symptoms Y
-- Conduct disorder symptoms Y
-- Loneliness Y
-- Technology use Y
-- Coping with stress Y 
-- Sleep Y
-- Job preparedness: attributes Y
+
+* Moderate conduct disorder diagnosis Y
+* Not in employment or education Y
+* ADHD symptoms Y
+* Conduct disorder symptoms Y
+* Loneliness Y
+* Technology use Y
+* Coping with stress Y 
+* Sleep Y
+* Job preparedness: attributes Y
 
 Decreasing:
-- Depression symptoms Y
+
+* Depression symptoms Y
 
 Both:
-- Psychotic experiences Y
-- Physical activity Y
-- Life satisfaction Y (but only for increasing)
-- Job optimism Y
+
+* Psychotic experiences Y
+* Physical activity Y
+* Life satisfaction Y (but only for increasing)
+* Job optimism Y
 
 Missing but reported in original analysis:
-- Self harm or suicide attempt
-- Cannabis dependence - DUE TO ERROR ACCOUNTED IN MPLUS
-- ADHD diagnosis 
-- Service use
 
-*Variables that are significant using pairwise t-tests: Using "DU3STEP" in Mplus* (Y=same as original analysis; X=same as DE3STEP)
-This DU3STEP option throws errors such as: PROBLEMS OCCURRED DURING THE ESTIMATION FOR THE DISTAL OUTCOME NEETE18. THE VARIANCE OF THE DISTAL OUTCOME IN CLASS 1 IS ZERO. THE PROBLEM CAN BE RESOLVED BY USING THE DE3STEP OPTION. **Therefore the DE3STEP option was used**
-
-Increasing:
-- Self harm or suicide attempt Y
-- ADHD symptoms Y X
-- Conduct disorder symptoms Y X
-- BMI
-- Loneliness  Y X
-- Coping with stress Y X
-- Sleep  Y X
-- Job preparedness: attributes Y X
-- Job optimism Y (but for both)
-
-Decreasing:
-- Depression symptoms Y X
-- Alcohol symptoms 
-- Physical activity Y (but for both) 
-
-Both:
-- Life satisfaction Y (but only for increasing) X
+* Self harm or suicide attempt
+* Cannabis dependence - DUE TO ERROR ACCOUNTED IN MPLUS
+* ADHD diagnosis 
+* Service use
 
 
-# BCH approach
+## BCH approach
 
-Similar to the auxilary DE3STEP approach, the BCH approach:
+Similar to the auxilary DE3STEP approach, the [BCH approach](https://www.statmodel.com/examples/webnotes/webnote21.pdf):
 
 The BCH method, BCH for short, described in Vermunt (2010) and also in Bakk et al. (2013). For the distal outcome model that evaluates the means across classes for a continuous auxiliary variable these simulations show that the BCH method substantially outperforms Lanza’s method and the 3-step method. The BCH method avoids shifts in latent class in the final stage that the 3-step method is susceptible to. In its final stage the BCH method uses a weighted multiple group analysis, where the groups correspond to the latent classes, and thus the class shift is not possible because the classes are known. In addition, the BCH method performs well when the variance of the auxiliary variable differs substantially across classes, i.e., resolving the problems that Lanza’s method is susceptible to. The BCH method uses weights wij which reflect the measurement error of the latent class variable. In the estimation of the auxiliary model, the i-th observation in class/group j is assigned a weight of wij and the auxiliary model is estimated as a multiple group model using these weights. 
+
+No errors were thrown when running this BCH model - all variables were thus included in the analyses. 
 
 ```{r extract pairwise comparisons - BCH}
 outcome.model_all_pairwise_tests_bch <- outcome.model[["X.Users.katiethompson.Documents.PhD.LISS.DTP_Louise_and_Tim.Social.isolation.trajectories_Paper.1.data_analysis.mplus.GMM.clustered.full_sample.3step.output.outcomes..isolation_3traj_full_sample_clustered_3STEP_BCH_outcomes.out"]][["lcCondMeans"]][["pairwise"]]
@@ -257,35 +332,36 @@ kable(outcome.model_pairwise_tests_bch_full) # compare to auxilary
 # kable(outcome.model_pairwise_tests_significant)
 ```
 
-No errors were thrown when running this BCH model - all variables were thus included in the analyses. 
-
-*Variables that are significant using pairwise t-tests: Using "BCH" in Mplus* (Y=same as original analysis)
+*Summary of variables that were significant using pairwise t-tests: Using "BCH" in Mplus* (Y indicates same as original analysis)
 
 Increasing:
-- ADHD diagnosis Y
-- Moderate conduct disorder diagnosis Y
-- Cannabis dependence Y (both in original)
-- Self harm or suicide attempt Y (both in original)
-- Not in employment or education Y
-- ADHD symptoms Y
-- Conduct disorder symptoms Y
-- Loneliness Y
-- Technology use Y
-- Coping with stress Y 
-- Sleep Y
-- Job preparedness: attributes Y
+
+* ADHD diagnosis Y
+* Moderate conduct disorder diagnosis Y
+* Cannabis dependence Y (both in original)
+* Self harm or suicide attempt Y (both in original)
+* Not in employment or education Y
+* ADHD symptoms Y
+* Conduct disorder symptoms Y
+* Loneliness Y
+* Technology use Y
+* Coping with stress Y 
+* Sleep Y
+* Job preparedness: attributes Y
 
 Decreasing:
-- Depression symptoms Y
-- Cannabis symptoms (diagnosis in original analysis)
+
+* Depression symptoms Y
+* Cannabis symptoms (diagnosis in original analysis)
 
 Both:
-- Psychotic experiences Y
-- Physical activity Y
-- Life satisfaction Y (but only for increasing)
-- Job optimism Y
-- Smoking (increasing in original)
+
+* Psychotic experiences Y
+* Physical activity Y
+* Life satisfaction Y (but only for increasing)
+* Job optimism Y
+* Smoking (increasing in original)
 
 Missing here but included in original:
-- Service use (increasing)
 
+* Service use (increasing)
