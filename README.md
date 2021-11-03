@@ -73,4 +73,3 @@ Analyses for this project were conducted in R (Version 4.0.3), Mplus (Version 8.
 1. mplus_3step_sensitivity.Rmd: three step sensitivity analyses for antecedents and outcomes
 
 2. sex_interactions_outcomes_isolation_THREE_trajectories.Rmd: Sex interaction effects for all outcome regressions
-
