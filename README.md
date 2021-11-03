@@ -1,95 +1,75 @@
-# Childhood-social-isolation-trajectories_GMM
+## Developmental trajectories of social isolation
+[Katherine N Thompson](https://twitter.com/KTNThompson)
+November, 2021
 
-## This repository holds code for the manuscript titled "Trajectories of childhood social isolation in a nationally representative cohort: Associations with antecedents and early adulthood outcomes"
+***
 
-### All code written by Katherine N Thompson and reviewed by XX.
+This repository holds code for for manuscript titled "Trajectories of childhood social isolation in a nationally representative cohort: Associations with antecedents and early adulthood outcomes" is outlined below. Analyses include growth mixture models (GMM) of social isolation at ages 5, 7, 10 and 12 and associations with antecedents and outcomes. All data from the E-Risk Study. 
 
-Authors: Katherine N. Thompson, Candice L. Odgers, Bridget T. Bryan, Andrea Danese, Lily Strange, Timothy Matthews*, and Louise Arseneault*
+For greater clarity when reviewing the code and results for this manuscript, this repository has been converted into an R pages website. **The website can be accessed here: https://knthompson26.github.io/Childhood-social-isolation-trajectories_GMM/index.html** 
 
-*Joint senior author
+Analyses for this project were conducted in R (Version 4.0.3), Mplus (Version 8.4), and STATA (Version 16). Below names and locations for all  scripts are listed, with a brief explanation of what each script entails, for more detail please go to the [website](https://knthompson26.github.io/Childhood-social-isolation-trajectories_GMM/index.html). 
 
-Analyses for this project were conducted in MPlus version 8.4, STATA version 16, and R version 4.0.3 (All R code written in Rmd format). Scripts are ordered here in the same order they should be run to replicate findings. Folders are listed in the brackets of each header. 
+***
 
-All data provided by the Environmental Risk Longitudinal Twin (E-Risk) Study. 
+**Processing the data and running preliminary statistics (Rmd code can be found in the "/RMarkdown_code/" folder)**
 
+1. preprocessing_isolation_trajectories.Rmd (/preprocessing/): Script to clean, rename, and prepare variables for subsequent analysis
 
-**Preprocessing (Rmd):** (RMarkdown_code/preprocessing)
+2. preliminary_desriptives_of_social_isolation.Rmd (/descriptives/): Script to provide sample descriptives 
 
-1. preprocessing_isolation_trajectories.Rmd 
- - Cleans, renames, and prepares variables for subsequent analysis
+***
 
+**Mplus trajectory models (Mplus code can be found in the "/Mplus_trajectory_models/" folder)** 
 
-**Preliminary descriptives:** (RMarkdown_code/descriptives)
+1. Latent growth curve model (/LGCM/): Mplus code for linear, log linear, quadratic and log quadratic growth models
 
-1. preliminary_desriptives_of_social_isolation.Rmd
- - provides simple sample descriptives: missingness statistics, differences in those who had missing data, and means for combined, teacher, and parent report
- - uses preprocessing script
+2. Latent class growth analysis (/LCGA/): Mplus code for linear LCGA models for 2-6 classes
+        
+3. Growth mixture models (/GMM/): 
 
+* Mplus code for linear models of 2-6 classes (/Linear/Original/): OPTSEED checks on 3 and 4 class models, 5 and 6 class models fixed to zero.
 
-**Trajectory_models (Mplus):** (Mplus_trajectory_models)
+* Mplus code for quadratic models of 2-6 classes (/Quadratic/): 4-6 classes did not converge
 
-These models are run in Mplus and interpreted in Rmd. 
+* Mplus code for 3-step sensitivity analysis (Linear/3Step_sensitivity). 1) Manual 3-step for antecedents, 2) Auxiliary DE3STEP for outcomes, 3) BCH for outcomes
+                
+***
 
-1. LATENT GROWTH MODELS (LGCM):
- - Linear, log linear, quadratic and log quadratic growth models
+**Data merging from Mplus and Rmd, and trajectory descriptives (Rmd code can be found in the "/RMarkdown_code/descriptives/" folder):**
 
-2. LATENT CLASS GROWTH ANALYSIS (LCGA): 
- - Linear models of 2-6 classes, includes clustering 
+1. trajectory_descriptives_THREE_CLASS.Rmd: merges mplus and Rmd data and provides descroptives for the three class (chosen) GMM model
+        
+***
 
-3. GROWTH MIXTURE MODELS (GMM): 
- - Linear models of 2-6 classes, includes clustering
- - OPTSEED checks on 3 and 4 class models
- - 5 and 6 class models with slope fixed to zero
- - Quadratic models for 2-6 classes: 4-6 class models with slope fixed to zero
- - 3-Step sensitivity analyses: antecedents (manual) and outcomes (BCH)
+**Trajectory results imported from Mplus (Rmd code can be found in the "/RMarkdown_code/trajectory_analysis/" folder):**
 
+1. trajectory_statistics_and_figures_GMM_LGCM.Rmd: Results for all LCGM and GMM models
 
-**Trajectory descriptives:** (RMarkdown_code/descriptives)
+2. trajectory_statistics_and_figures_LCGA.Rmd: Results for all LCGA models
 
-1. trajectory_descriptives_THREE_CLASS.Rmd
- - combines the preprocessed data with the data from Mplus - needed for all other scripts
- - gives decriptives for class specific variables
+3. trajectory_statistics_and_figures_GMM_QUADRATIC.Rmd: Results for all quadratic GMM models
 
+***
 
-**Trajectory interpretation:** (RMarkdown_code/trajectory_analysis)
+**Antecedent analysis (Rmd code can be found in the "/antecedent_analysis/"" folder):**
 
-1. trajectory_statistics_and_figures_GMM_&_LGCM.Rmd 
- - Imports Mplus data and creates tables and figures for linear/log-linear LGCM and Linear GMM results for 2-6 classes
+1. antecedent_multinomial_regression.do: STATA .do file which runs all multinomial regressions
 
-2. trajectory_statistics_and_figures_GMM_QUADRATIC.Rmd
- - Imports Mplus data and creates tables and figures for Quadratic GMM for 2-6 classes
+2. stata_antecedent_isolation_THREE_trajectories.Rmd: Rmd file which displays all results from the STATA .do file
 
-3. trajectory_statistics_and_figures_LCGA.Rmd 
- - Imports Mplus data and creates tables and figures for Linear LCGA for 2-6 classes
+3. antecedent_multinomial_regression_POSTERIOR.do: STATA file which runs posterior probability sensitivity analysis 
 
-**Antecedent analysis:** (RMarkdown_code/antecedent_analysis)
+***
 
-1. antecedent_multinomial_regression.do
- - STATA do file containing univariate and multivariate antecedent regressions with clustering
+**Outcome analysis (Rmd code can be found in the "/outcome_analysis/"" folder)**
 
-2. antecedent_multinomial_regression_POSTERIOR.do
- - STATA do file containing univariate and multivariate antecedent regressions with clustering: posterior probabilities sensitvity analysis
- - Only includes data with people who had a posterior probability >0.8 (the R script for this is enbedded in the no. 3 R script here)
+1. outcomes_isolation_THREE_trajectories.Rmd: runs all outcome linear and logistic regressions and displays results
 
-3. stata_antecedent_isolation_THREE_trajectories.Rmd
- - R script adapting output from STATA into tables and graphs  
+*** 
 
-**Outcome analysis:** (RMarkdown_code/outcome_analysis)
+**Sensitivity analysis (Rmd code can be found in the "/sensitivity_analysis/"" folder)**
 
-1. outcomes_isolation_THREE_trajectories.Rmd
- - Outcome linear and logistic regressions with output and graphs - with clustering
+1. mplus_3step_sensitivity.Rmd: three step sensitivity analyses for antecedents and outcomes
 
-**Sensitivity analysis: sex interactions for outcomes and mplus 3step** (RMarkdown_code/sensitivity_analysis)
-
-1. sex_interactions_outcomes_isolation_THREE_trajectories.Rmd
- - Sex interaction terms are added to outcome regressions
- - Where significant interactions occur, regressions are rerun for males and females separately
-
-2. mplus_3step_sensitivity.Rmd
- - Outcome tables were imported from Mplus BCH approach and prepared for manuscript
-
-
-If you have any queries with the above, please contact katherine.n.thompson@kcl.ac.uk
-
-*Please note that all analyses have not yet undergone peer review. Once published, the reference and DOI will be provided*
-
+2. sex_interactions_outcomes_isolation_THREE_trajectories.Rmd: Sex interaction effects for all outcome regressions
