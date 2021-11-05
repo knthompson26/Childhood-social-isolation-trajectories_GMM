@@ -737,7 +737,12 @@ div.tocify {
 <span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">&quot;Model&quot;</span>, </span>
 <span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>               <span class="at">values_to =</span> <span class="st">&quot;score&quot;</span>)</span>
 <span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a><span class="co">#check</span></span>
-<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a><span class="co"># dat_si</span></span></code></pre></div>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>dat_si</span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Timepoint"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["Model"],"name":[2],"type":["chr"],"align":["left"]},{"label":["score"],"name":[3],"type":["dbl[,1]"],"align":["right"]}],"data":[{"1":"5","2":"Observed","3":"0.8130376"},{"1":"5","2":"Linear","3":"0.8079278"},{"1":"5","2":"Quadratic","3":"0.8059806"},{"1":"7","2":"Observed","3":"0.8313605"},{"1":"7","2":"Linear","3":"0.8498929"},{"1":"7","2":"Quadratic","3":"0.8530149"},{"1":"10","2":"Observed","3":"0.9398521"},{"1":"10","2":"Linear","3":"0.9128405"},{"1":"10","2":"Quadratic","3":"0.9147807"},{"1":"12","2":"Observed","3":"0.9421209"},{"1":"12","2":"Linear","3":"0.9548056"},{"1":"12","2":"Quadratic","3":"0.9501010"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>isolation_growth_curve_clustered_full_sample <span class="ot">&lt;-</span> <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="co">#change name of graph here if using the 3 missing sample </span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> dat_si,</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>        <span class="fu">aes</span>(<span class="at">x =</span> Timepoint, </span>
@@ -1207,7 +1212,13 @@ div.tocify {
 <span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a>two_class_si <span class="ot">&lt;-</span> two_class_si <span class="sc">%&gt;%</span></span>
 <span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Class =</span> </span>
 <span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a>              <span class="fu">factor</span>(Class, </span>
-<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a>                     <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;Class 1&quot;</span>,<span class="st">&quot;Class 2&quot;</span>)))</span></code></pre></div>
+<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a>                     <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;Class 1&quot;</span>,<span class="st">&quot;Class 2&quot;</span>)))</span>
+<span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a>two_class_si</span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["timepoint"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["Class"],"name":[2],"type":["fct"],"align":["left"]},{"label":["social.isolation_score"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"5","2":"Class 1","3":"0.7310599"},{"1":"5","2":"Class 2","3":"1.8424783"},{"1":"7","2":"Class 1","3":"0.7182576"},{"1":"7","2":"Class 2","3":"2.6119223"},{"1":"10","2":"Class 1","3":"0.6990541"},{"1":"10","2":"Class 2","3":"3.7660882"},{"1":"12","2":"Class 1","3":"0.6862518"},{"1":"12","2":"Class 2","3":"4.5355325"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
 <div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>two_traj_plot_clustered_full_sample <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(two_class_si,</span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>        <span class="fu">aes</span>(<span class="at">x =</span> timepoint, </span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">y =</span> social.isolation_score, </span>
@@ -1251,7 +1262,13 @@ div.tocify {
 <span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a>three_class_si <span class="ot">&lt;-</span> three_class_si <span class="sc">%&gt;%</span></span>
 <span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Class =</span> </span>
 <span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a>              <span class="fu">factor</span>(Class, </span>
-<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a>                     <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;Class 1&quot;</span>,<span class="st">&quot;Class 2&quot;</span>,<span class="st">&quot;Class 3&quot;</span>)))</span></code></pre></div>
+<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a>                     <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;Class 1&quot;</span>,<span class="st">&quot;Class 2&quot;</span>,<span class="st">&quot;Class 3&quot;</span>)))</span>
+<span id="cb26-22"><a href="#cb26-22" aria-hidden="true" tabindex="-1"></a>three_class_si</span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["timepoint"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["Class"],"name":[2],"type":["fct"],"align":["left"]},{"label":["social.isolation_score"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"5","2":"Class 1","3":"0.6124852"},{"1":"5","2":"Class 2","3":"1.0768824"},{"1":"5","2":"Class 3","3":"3.9828351"},{"1":"7","2":"Class 1","3":"0.6357493"},{"1":"7","2":"Class 2","3":"2.1597672"},{"1":"7","2":"Class 3","3":"3.3466430"},{"1":"10","2":"Class 1","3":"0.6706455"},{"1":"10","2":"Class 2","3":"3.7840946"},{"1":"10","2":"Class 3","3":"2.3923547"},{"1":"12","2":"Class 1","3":"0.6939096"},{"1":"12","2":"Class 2","3":"4.8669796"},{"1":"12","2":"Class 3","3":"1.7561624"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
 <div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>three_traj_plot_clustered_full_sample <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(three_class_si,</span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>        <span class="fu">aes</span>(<span class="at">x =</span> timepoint, </span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">y =</span> social.isolation_score, </span>
@@ -1298,7 +1315,13 @@ div.tocify {
 <span id="cb28-21"><a href="#cb28-21" aria-hidden="true" tabindex="-1"></a>                     <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;Class 2&quot;</span>, </span>
 <span id="cb28-22"><a href="#cb28-22" aria-hidden="true" tabindex="-1"></a>                                <span class="st">&quot;Class 4&quot;</span>, </span>
 <span id="cb28-23"><a href="#cb28-23" aria-hidden="true" tabindex="-1"></a>                                <span class="st">&quot;Class 1&quot;</span>,</span>
-<span id="cb28-24"><a href="#cb28-24" aria-hidden="true" tabindex="-1"></a>                                <span class="st">&quot;Class 3&quot;</span>)))</span></code></pre></div>
+<span id="cb28-24"><a href="#cb28-24" aria-hidden="true" tabindex="-1"></a>                                <span class="st">&quot;Class 3&quot;</span>)))</span>
+<span id="cb28-25"><a href="#cb28-25" aria-hidden="true" tabindex="-1"></a>four_class_si</span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["timepoint"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["Class"],"name":[2],"type":["fct"],"align":["left"]},{"label":["social.isolation_score"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"5","2":"Class 1","3":"4.0764589"},{"1":"5","2":"Class 2","3":"0.5844820"},{"1":"5","2":"Class 3","3":"2.9543934"},{"1":"5","2":"Class 4","3":"1.1094221"},{"1":"7","2":"Class 1","3":"3.2367558"},{"1":"7","2":"Class 2","3":"0.5748914"},{"1":"7","2":"Class 3","3":"4.0208783"},{"1":"7","2":"Class 4","3":"1.6997762"},{"1":"10","2":"Class 1","3":"1.9772013"},{"1":"10","2":"Class 2","3":"0.5605054"},{"1":"10","2":"Class 3","3":"5.6206064"},{"1":"10","2":"Class 4","3":"2.5853071"},{"1":"12","2":"Class 1","3":"1.1374984"},{"1":"12","2":"Class 2","3":"0.5509147"},{"1":"12","2":"Class 3","3":"6.6870914"},{"1":"12","2":"Class 4","3":"3.1756613"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
 <div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>four_traj_plot_clustered_full_sample <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(four_class_si,</span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>        <span class="fu">aes</span>(<span class="at">x =</span> timepoint, </span>
 <span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">y =</span> social.isolation_score, </span>
@@ -1346,7 +1369,13 @@ div.tocify {
 <span id="cb30-22"><a href="#cb30-22" aria-hidden="true" tabindex="-1"></a>                                <span class="st">&quot;Class 5&quot;</span>,</span>
 <span id="cb30-23"><a href="#cb30-23" aria-hidden="true" tabindex="-1"></a>                                <span class="st">&quot;Class 1&quot;</span>,</span>
 <span id="cb30-24"><a href="#cb30-24" aria-hidden="true" tabindex="-1"></a>                                <span class="st">&quot;Class 4&quot;</span>,</span>
-<span id="cb30-25"><a href="#cb30-25" aria-hidden="true" tabindex="-1"></a>                                <span class="st">&quot;Class 3&quot;</span>)))</span></code></pre></div>
+<span id="cb30-25"><a href="#cb30-25" aria-hidden="true" tabindex="-1"></a>                                <span class="st">&quot;Class 3&quot;</span>)))</span>
+<span id="cb30-26"><a href="#cb30-26" aria-hidden="true" tabindex="-1"></a>five_class_si</span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["timepoint"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["Class"],"name":[2],"type":["fct"],"align":["left"]},{"label":["social.isolation_score"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"5","2":"Class 1","3":"3.4583399"},{"1":"5","2":"Class 2","3":"0.5514885"},{"1":"5","2":"Class 3","3":"4.6675916"},{"1":"5","2":"Class 4","3":"1.7420547"},{"1":"5","2":"Class 5","3":"0.9665641"},{"1":"7","2":"Class 1","3":"2.7389581"},{"1":"7","2":"Class 2","3":"0.5479812"},{"1":"7","2":"Class 3","3":"4.6339130"},{"1":"7","2":"Class 4","3":"3.4817522"},{"1":"7","2":"Class 5","3":"1.5929656"},{"1":"10","2":"Class 1","3":"1.6598852"},{"1":"10","2":"Class 2","3":"0.5427203"},{"1":"10","2":"Class 3","3":"4.5833950"},{"1":"10","2":"Class 4","3":"6.0912981"},{"1":"10","2":"Class 5","3":"2.5325677"},{"1":"12","2":"Class 1","3":"0.9405032"},{"1":"12","2":"Class 2","3":"0.5392131"},{"1":"12","2":"Class 3","3":"4.5497165"},{"1":"12","2":"Class 4","3":"7.8309956"},{"1":"12","2":"Class 5","3":"3.1589692"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
 <div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>five_traj_plot_clustered_full_sample <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(five_class_si,</span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>        <span class="fu">aes</span>(<span class="at">x =</span> timepoint, </span>
 <span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">y =</span> social.isolation_score, </span>
@@ -1394,7 +1423,13 @@ div.tocify {
 <span id="cb32-22"><a href="#cb32-22" aria-hidden="true" tabindex="-1"></a>                                <span class="st">&quot;Class 6&quot;</span>,</span>
 <span id="cb32-23"><a href="#cb32-23" aria-hidden="true" tabindex="-1"></a>                                <span class="st">&quot;Class 2&quot;</span>,</span>
 <span id="cb32-24"><a href="#cb32-24" aria-hidden="true" tabindex="-1"></a>                                <span class="st">&quot;Class 1&quot;</span>,</span>
-<span id="cb32-25"><a href="#cb32-25" aria-hidden="true" tabindex="-1"></a>                                <span class="st">&quot;Class 5&quot;</span>)))</span></code></pre></div>
+<span id="cb32-25"><a href="#cb32-25" aria-hidden="true" tabindex="-1"></a>                                <span class="st">&quot;Class 5&quot;</span>)))</span>
+<span id="cb32-26"><a href="#cb32-26" aria-hidden="true" tabindex="-1"></a>six_class_si</span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["timepoint"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["Class"],"name":[2],"type":["fct"],"align":["left"]},{"label":["social.isolation_score"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"5","2":"Class 1","3":"4.7005148"},{"1":"5","2":"Class 2","3":"1.6504158"},{"1":"5","2":"Class 3","3":"0.9363144"},{"1":"5","2":"Class 4","3":"0.5601926"},{"1":"5","2":"Class 5","3":"0.6944927"},{"1":"5","2":"Class 6","3":"3.6354647"},{"1":"7","2":"Class 1","3":"4.6111927"},{"1":"7","2":"Class 2","3":"3.7566674"},{"1":"7","2":"Class 3","3":"1.3484336"},{"1":"7","2":"Class 4","3":"0.5227709"},{"1":"7","2":"Class 5","3":"1.8748000"},{"1":"7","2":"Class 6","3":"2.8328533"},{"1":"10","2":"Class 1","3":"4.4772096"},{"1":"10","2":"Class 2","3":"6.9160447"},{"1":"10","2":"Class 3","3":"1.9666123"},{"1":"10","2":"Class 4","3":"0.4666382"},{"1":"10","2":"Class 5","3":"3.6452608"},{"1":"10","2":"Class 6","3":"1.6289362"},{"1":"12","2":"Class 1","3":"4.3878880"},{"1":"12","2":"Class 2","3":"9.0222960"},{"1":"12","2":"Class 3","3":"2.3787315"},{"1":"12","2":"Class 4","3":"0.4292165"},{"1":"12","2":"Class 5","3":"4.8255682"},{"1":"12","2":"Class 6","3":"0.8263248"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
 <div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>six_traj_plot_clustered_full_sample <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(six_class_si,</span>
 <span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>        <span class="fu">aes</span>(<span class="at">x =</span> timepoint, </span>
 <span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">y =</span> social.isolation_score, </span>

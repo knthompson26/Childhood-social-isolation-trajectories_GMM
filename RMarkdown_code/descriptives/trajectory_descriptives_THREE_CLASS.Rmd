@@ -57,7 +57,7 @@ source("../../../isolation_trajectories_data_path.R")
 
 ***
 
-This page contains the code to combine the original Rmd dataset and the new Mplus output. We also include relevant descriptive statistics for the classes/trajectories. We have used the hard classification variable given by Mplus for our analyses. We conduct sensitivity analyses using the 3STEP approach, data is prepped for this at the end of this page. *Please note, if you are running this analysis for yourself, you wiull need to do this step after running your Mplus models and before analysing the data in Rmd*
+This page contains the code to combine the original Rmd dataset and the new Mplus output. We also include relevant descriptive statistics for the classes/trajectories. We have used the hard classification variable given by Mplus for our analyses. We conduct sensitivity analyses using the 3STEP approach, data is prepped for this at the end of this page. *Please note, if you are running this analysis for yourself, you will need to do this step after running your Mplus models and before analysing the data in Rmd*
 
 ***
 
