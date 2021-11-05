@@ -239,7 +239,7 @@ dat_si <- dat_si %>%
                names_to = "Model", 
                values_to = "score")
 #check
-# dat_si
+dat_si
 ```
 
 ```{r Plot groth curves for social isolation}
@@ -557,6 +557,7 @@ two_class_si <- two_class_si %>%
   mutate(Class = 
               factor(Class, 
                      levels = c("Class 1","Class 2")))
+two_class_si
 ```
 
 ```{r plot 2 class GMM  model}
@@ -605,6 +606,7 @@ three_class_si <- three_class_si %>%
   mutate(Class = 
               factor(Class, 
                      levels = c("Class 1","Class 2","Class 3")))
+three_class_si
 ```
 
 ```{r plot 3 class GMM model}
@@ -687,6 +689,7 @@ four_class_si <- four_class_si %>%
                                 "Class 4", 
                                 "Class 1",
                                 "Class 3")))
+four_class_si
 ```
 
 ```{r plot 4 class GMM model}
@@ -739,6 +742,7 @@ five_class_si <- five_class_si %>%
                                 "Class 1",
                                 "Class 4",
                                 "Class 3")))
+five_class_si
 ```
 
 ```{r plot 5 class GMM model}
@@ -791,6 +795,7 @@ six_class_si <- six_class_si %>%
                                 "Class 2",
                                 "Class 1",
                                 "Class 5")))
+six_class_si
 ```
 
 ```{r plot 6 class GMM model}
