@@ -675,6 +675,27 @@ names(logistic.stats.outcome) <- outcome.dependent.logistic
 data.outcome.logistic <- create.dataset(logistic.stats.outcome, model = "logistic") 
 ```
 
+```{r multiple testing correction for logistic models, include=FALSE}
+### Getting multiple testing correction (BH FDR) p values -- IGNORE -- **FDR correction not applied here.** 
+data.outcome.logistic.decreasing.fdr <- multiple.testing(data = data.outcome.logistic,
+                                                          class = "Decreasing",
+                                                          method = "BH",
+                                                          n.tests = 11)
+
+data.outcome.logistic.increasing.fdr <- multiple.testing(data = data.outcome.logistic,
+                                                          class = "Increasing",
+                                                          method = "BH",
+                                                          n.tests = 11)
+  
+data.outcome.logistic.fdr <- rbind(
+  data.outcome.logistic.decreasing.fdr,
+  data.outcome.logistic.increasing.fdr
+)
+# variables that were significant that become non-significant
+data.outcome.logistic.fdr %>%
+  filter(Significance == "Significant" & Significance.adjusted == "Non-significant")
+```
+
 ## Table 
 
 ```{r table for combined logistic dataframes}
@@ -855,6 +876,9 @@ data.outcome.linear.zscore.fdr <- rbind(
   data.outcome.linear.zscore.decreasing,
   data.outcome.linear.zscore.increasing
 )
+# variables that were significant that become non-significant
+data.outcome.linear.zscore.fdr %>%
+  filter(Significance == "Significant" & Significance.adjusted == "Non-significant")
 ```
 
 ```{r table for multiple corrected, include=FALSE}
@@ -1049,6 +1073,27 @@ names(logistic.stats.outcome.ant_control) <- outcome.dependent.logistic
 data.outcome.logistic.ant_control <- create.dataset(logistic.stats.outcome.ant_control, model = "logistic") 
 ```
 
+```{r multiple testing correction for logistic models ant control, include=FALSE}
+### Getting multiple testing correction (BH FDR) p values -- IGNORE -- **FDR correction not applied here.** 
+data.outcome.logistic.decreasing.ant_control.fdr <- multiple.testing(data = data.outcome.logistic.ant_control,
+                                                          class = "Decreasing",
+                                                          method = "BH",
+                                                          n.tests = 11)
+
+data.outcome.logistic.increasing.ant_control.fdr <- multiple.testing(data = data.outcome.logistic.ant_control,
+                                                          class = "Increasing",
+                                                          method = "BH",
+                                                          n.tests = 11)
+  
+data.outcome.logistic.ant_control.fdr <- rbind(
+  data.outcome.logistic.decreasing.ant_control.fdr,
+  data.outcome.logistic.increasing.ant_control.fdr
+)
+# variables that were significant that become non-significant
+data.outcome.logistic.ant_control.fdr %>%
+  filter(Significance == "Significant" & Significance.adjusted == "Non-significant")
+```
+
 ### Table 
 
 ```{r table for combined logistic dataframes controlling for antecedents}
@@ -1130,6 +1175,33 @@ names(linear.stats.outcome.zscore.ant_control) <- outcome.dependent.linear.zscor
 
 ```{r combine linear dataframes zscore ant control}
 data.outcome.linear.zscore.ant_control <- create.dataset(linear.stats.outcome.zscore.ant_control, model = "linear")
+```
+
+```{r multiple testing correction for linear models ant control, include=FALSE}
+### Getting multiple testing correction (BH FDR) p values -- IGNORE -- **FDR correction not applied here.** 
+data.outcome.linear.zscore.decreasing.ant_control.fdr <- multiple.testing(data = data.outcome.linear.zscore.ant_control,
+                                                          class = "Decreasing",
+                                                          method = "BH",
+                                                          n.tests = 20)
+
+data.outcome.linear.zscore.increasing.ant_control.fdr <- multiple.testing(data = data.outcome.linear.zscore.ant_control,
+                                                          class = "Increasing",
+                                                          method = "BH",
+                                                          n.tests = 20)
+  
+data.outcome.linear.zscore.ant_control.fdr <- rbind(
+  data.outcome.linear.zscore.decreasing.ant_control.fdr,
+  data.outcome.linear.zscore.increasing.ant_control.fdr
+)
+# Originally significant variables 
+data.outcome.linear.zscore.ant_control.fdr %>%
+  filter(Significance == "Significant")
+# variables that were significant that become non-significant
+data.outcome.linear.zscore.ant_control.fdr %>%
+  filter(Significance == "Significant" & Significance.adjusted == "Non-significant")
+# Significant in both
+data.outcome.linear.zscore.ant_control.fdr %>%
+  filter(Significance == "Significant" & Significance.adjusted == "Significant")
 ```
 
 ### Table
