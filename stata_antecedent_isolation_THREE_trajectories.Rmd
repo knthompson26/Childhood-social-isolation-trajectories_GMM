@@ -595,7 +595,8 @@ dat.stata.individual.fdr <- rbind(
   dat.stata.individual.increasing
 )
 
-kable(dat.stata.individual.fdr, digits = 2)
+dat.stata.individual.fdr %>%
+  filter(Significance == "Significant" & Significance.adjusted == "Non-significant")
 ```
 
 Bind *z score* trasformed values to order the graph according to block of variables
