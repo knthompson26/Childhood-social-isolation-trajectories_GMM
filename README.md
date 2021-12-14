@@ -4,7 +4,7 @@ November, 2021
 
 ***
 
-This repository holds code for for manuscript titled "Trajectories of childhood social isolation in a nationally representative cohort: Associations with antecedents and early adulthood outcomes" is outlined below. Analyses include growth mixture models (GMM) of social isolation at ages 5, 7, 10 and 12 and associations with antecedents and outcomes. All data from the E-Risk Study. 
+This repository holds code for for manuscript titled "Trajectories of childhood social isolation in a nationally representative cohort: Associations with antecedents and early adulthood outcomes". Analyses include growth mixture models (GMM) of social isolation at ages 5, 7, 10 and 12 and associations with antecedents and outcomes. All data from the E-Risk Study. 
 
 For greater clarity when reviewing the code and results for this manuscript, this repository has been converted into an R pages website. **The website can be accessed here: https://knthompson26.github.io/Childhood-social-isolation-trajectories_GMM/index.html** 
 
