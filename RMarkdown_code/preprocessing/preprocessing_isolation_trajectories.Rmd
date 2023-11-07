@@ -45,7 +45,7 @@ library(tidyverse)
 
 ```{r source data file path, include=FALSE}
 #source raw data directory: data_raw and data included
-source("../../../isolation_trajectories_data_path.R") 
+source("../../../../../isolation_trajectories_data_path.R") 
 ```
 
 ***
@@ -57,7 +57,7 @@ dat <- read.spss(file = paste0(data.raw_path, "Katie_18Dec20.sav"), # Read in fu
                   use.value.labels = FALSE, #convert value labels into factors with those labels
                   to.data.frame = TRUE) #return data frame 
 
-#colnames(dat) # check colnames
+colnames(dat) # check colnames
 ```
 
 ```{r prepare item lists, include=FALSE}
